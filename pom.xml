@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codeprimate</groupId>
+    <artifactId>cp-core</artifactId>
+    <version>1.1.0.RELEASE</version>
+  </parent>
+
+  <artifactId>cp-domain</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>cp-domain</name>
+  <description>
+    'Codeprimate Domain' (a.k.a. cp-domain) is a Java class library containing application domain object types
+    used in the construction and development of software applications model, process and maintain state.
+  </description>
+  <inceptionYear>2017</inceptionYear>
+  <url>http://www.codeprimate.org/projects/cp-domain</url>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <comments>
+        Copyright 2016-Present Author or Authors.
+
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+      </comments>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Codeprimate, LLC</name>
+    <url>http://www.codeprimate.org/</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>jblum</id>
+      <name>John J. Blum</name>
+      <email>john dot blum at codeprimate dot org</email>
+      <organization>Codeprimate, LLC.</organization>
+      <organizationUrl>http://www.codeprimate.org</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:codeprimate-software/cp-domain.git</connection>
+    <developerConnection>scm:git:git@github.com:codeprimate-software/cp-domain.git</developerConnection>
+    <url>https://github.com/codeprimate-software/cp-domain</url>
+  </scm>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/codeprimate-software/cp-domain/issues</url>
+  </issueManagement>
+
+  <properties>
+    <cp-elements.version>1.0.0.M3</cp-elements.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codeprimate</groupId>
+      <artifactId>cp-elements</artifactId>
+      <version>${cp-elements.version}</version>
+    </dependency>
+  </dependencies>
+
+</project>
