@@ -57,6 +57,7 @@ public class Person implements Comparable<Person>, Identifiable<Long>, Nameable<
 
   protected static final String BIRTH_DATE_PATTERN = "yyyy-MM-dd";
   protected static final String BIRTH_DATE_TIME_PATTERN = "yyyy-MM-dd hh:mm a";
+  protected static final String UNKNOWN = "unknown";
 
   private Gender gender;
 
@@ -535,10 +536,11 @@ public class Person implements Comparable<Person>, Identifiable<Long>, Nameable<
   public String toString() {
     String birthDateAsString = getBirthDate()
       .map(birthDate -> DateTimeFormatter.ofPattern(BIRTH_DATE_TIME_PATTERN).format(birthDate))
-      .orElse(null);
+      .orElse(UNKNOWN);
 
     return String.format(
       "{ @type = %1$s, firstName = %2$s, middleName = %3$s, lastName = %4$s, birthDate = %5$s, gender = %6$s }",
-        getClass().getName(), getFirstName(), getMiddleName(), getLastName(), birthDateAsString, getGender());
+        getClass().getName(), getFirstName(), getMiddleName().orElse(UNKNOWN), getLastName(), birthDateAsString,
+          getGender().map(Gender::toString).orElse(UNKNOWN));
   }
 }
