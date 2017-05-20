@@ -229,14 +229,14 @@ public class NameTests {
   }
 
   @Test
-  public void compareToIsLessThan() {
-    Name ellieBloom = Name.of("Ellie", "Bloom");
-    Name jonBloom = Name.of("Jon", "Bloom");
+  public void compareToIsEqual() {
+    Name jonBloomOne = Name.of("Jon", "Bloom");
+    Name jonBloomTwo = Name.of("Jon", "Bloom");
 
-    assertThat(ellieBloom).isNotNull();
-    assertThat(jonBloom).isNotNull();
-    assertThat(ellieBloom).isNotSameAs(jonBloom);
-    assertThat(ellieBloom.compareTo(jonBloom)).isLessThan(0);
+    assertThat(jonBloomOne).isNotNull();
+    assertThat(jonBloomTwo).isNotNull();
+    assertThat(jonBloomOne).isNotSameAs(jonBloomTwo);
+    assertThat(jonBloomOne.compareTo(jonBloomTwo)).isEqualTo(0);
   }
 
   @Test
@@ -251,14 +251,14 @@ public class NameTests {
   }
 
   @Test
-  public void compareToIsEqual() {
-    Name jonBloomOne = Name.of("Jon", "Bloom");
-    Name jonBloomTwo = Name.of("Jon", "Bloom");
+  public void compareToIsLessThan() {
+    Name ellieBloom = Name.of("Ellie", "Bloom");
+    Name jonBloom = Name.of("Jon", "Bloom");
 
-    assertThat(jonBloomOne).isNotNull();
-    assertThat(jonBloomTwo).isNotNull();
-    assertThat(jonBloomOne).isNotSameAs(jonBloomTwo);
-    assertThat(jonBloomOne.compareTo(jonBloomTwo)).isEqualTo(0);
+    assertThat(ellieBloom).isNotNull();
+    assertThat(jonBloom).isNotNull();
+    assertThat(ellieBloom).isNotSameAs(jonBloom);
+    assertThat(ellieBloom.compareTo(jonBloom)).isLessThan(0);
   }
 
   @Test
@@ -273,7 +273,7 @@ public class NameTests {
   }
 
   @Test
-  public void equalsWithAlmostEqualNamesIsFalse() {
+  public void equalsWithNearlyEqualNamesIsFalse() {
     Name jonBloomOne = Name.of("Jon", "J", "Bloom");
     Name jonBloomTwo = Name.of("Jon", "Bloom");
 
@@ -295,6 +295,12 @@ public class NameTests {
   }
 
   @Test
+  @SuppressWarnings("all")
+  public void equalsNullIsFalse() {
+    assertThat(Name.of("Jon", "J", "Bloom").equals(null)).isFalse();
+  }
+
+  @Test
   public void hashCodeForNameIsNotZero() {
     assertThat(Name.of("Jon", "J", "Bloom").hashCode()).isNotEqualTo(0);
   }
@@ -305,7 +311,7 @@ public class NameTests {
   }
 
   @Test
-  public void hashCodeForSimilarNamesAreNotEqual() {
+  public void hashCodeForDifferentNamesAreNotEqual() {
     assertThat(Name.of("Jon", "J", "Bloom").hashCode()).isNotEqualTo(Name.of("Jon", "Bloom").hashCode());
   }
 
