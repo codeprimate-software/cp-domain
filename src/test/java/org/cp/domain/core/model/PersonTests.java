@@ -22,12 +22,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 
 import org.cp.elements.enums.Gender;
+import org.cp.elements.io.IOUtils;
 import org.cp.elements.lang.Visitor;
 import org.junit.Test;
 
@@ -421,5 +423,142 @@ public class PersonTests {
     person.accept(mockVisitor);
 
     verify(mockVisitor, times(1)).visit(eq(person));
+  }
+
+  @Test
+  public void compareToIsEqual() {
+    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
+    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
+
+    assertThat(jonBloomOne).isNotNull();
+    assertThat(jonBloomTwo).isNotNull();
+    assertThat(jonBloomOne).isNotSameAs(jonBloomTwo);
+    assertThat(jonBloomOne.compareTo(jonBloomTwo)).isEqualTo(0);
+  }
+
+  @Test
+  public void compareToIsGreater() {
+    Person jonBloom = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(1974, Month.MAY, 27, 12, 0));
+    Person ellieBloom = Person.newPerson(Name.of("Ellie", "A", "Bloom"), LocalDateTime.of(2008, Month.AUGUST, 25, 12, 0));
+
+    assertThat(jonBloom).isNotNull();
+    assertThat(ellieBloom).isNotNull();
+    assertThat(jonBloom.compareTo(ellieBloom)).isGreaterThan(0);
+  }
+
+  @Test
+  public void compareToIsLessThan() {
+    Person jonBloom = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(1974, Month.MAY, 27, 12, 0));
+    Person saraBloom = Person.newPerson(Name.of("Sarah", "E", "Bloom"), LocalDateTime.of(1975, Month.JANUARY, 22, 12, 0));
+
+    assertThat(jonBloom).isNotNull();
+    assertThat(saraBloom).isNotNull();
+    assertThat(jonBloom.compareTo(saraBloom)).isLessThan(0);
+  }
+
+  @Test
+  public void equalsWithEqualPersonIsTrue() {
+    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
+    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
+
+    assertThat(jonBloomOne).isNotNull();
+    assertThat(jonBloomTwo).isNotNull();
+    assertThat(jonBloomOne).isNotSameAs(jonBloomTwo);
+    assertThat(jonBloomOne.equals(jonBloomTwo)).isTrue();
+  }
+
+  @Test
+  public void equalsWithNearlyEqualPersonIsFalse() {
+    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
+    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 35));
+
+    assertThat(jonBloomOne).isNotNull();
+    assertThat(jonBloomTwo).isNotNull();
+    assertThat(jonBloomOne).isNotSameAs(jonBloomTwo);
+    assertThat(jonBloomOne.equals(jonBloomTwo)).isFalse();
+  }
+
+  @Test
+  public void equalsWithSimilarPersonIsFalse() {
+    Person johnBlum = Person.newPerson(Name.of("John", "J", "Blum"), LocalDateTime.of(1974, Month.MAY, 27, 12, 0));
+    Person jonBloom = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(1874, Month.MAY, 27, 23, 0));
+
+    assertThat(johnBlum).isNotNull();
+    assertThat(jonBloom).isNotNull();
+    assertThat(johnBlum).isNotSameAs(jonBloom);
+    assertThat(johnBlum.equals(jonBloom)).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void equalsNullIsFalse() {
+    assertThat(Person.newPerson("Jon", "Bloom", getBirthDateForAge(16)).equals(null)).isFalse();
+  }
+
+  @Test
+  public void hashCodeForPersonIsNotZero() {
+    assertThat(Person.newPerson(Name.of("Jon", "J", "Bloom"), getBirthDateForAge(42)).hashCode()).isNotEqualTo(0);
+  }
+
+  @Test
+  public void hashCodeForDifferentPeopleIsNotEqual() {
+    Person jonBloom = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 27, 12, 0));
+    Person sarahBloom = Person.newPerson(Name.of("Sarah", "E", "Bloom"), LocalDateTime.of(1975, Month.JANUARY, 22, 0, 0));
+
+    assertThat(jonBloom).isNotNull();
+    assertThat(sarahBloom).isNotNull();
+    assertThat(jonBloom).isNotSameAs(sarahBloom);
+    assertThat(jonBloom.hashCode()).isNotEqualTo(sarahBloom.hashCode());
+  }
+
+  @Test
+  public void hashCodeForIdenticalPeopleIsEqual() {
+    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
+    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
+
+    assertThat(jonBloomOne).isNotNull();
+    assertThat(jonBloomTwo).isNotNull();
+    assertThat(jonBloomOne).isNotSameAs(jonBloomTwo);
+    assertThat(jonBloomOne.hashCode()).isEqualTo(jonBloomTwo.hashCode());
+  }
+
+  @Test
+  public void toStringWithNameIsCorrect() {
+    Person person = Person.newPerson("Jon", "Bloom");
+
+    assertThat(person).isNotNull();
+    assertThat(person.toString()).isEqualTo(String.format(
+      "{ @type = %s, firstName = Jon, middleName = unknown, lastName = Bloom, birthDate = unknown, gender = unknown }",
+        Person.class.getName()));
+  }
+
+  @Test
+  public void toStringWithNameGenderAndDateOfBirthIsCorrect() {
+    Person person = Person.newPerson(Name.of("Jon", "J", "Bloom"))
+      .born(LocalDateTime.of(2000, Month.MAY, 19, 23, 30))
+      .as(Gender.MALE);
+
+    assertThat(person).isNotNull();
+    assertThat(person.toString()).isEqualTo(String.format(
+      "{ @type = %s, firstName = Jon, middleName = J, lastName = Bloom, birthDate = 2000-05-19 11:30 PM, gender = Male }",
+      Person.class.getName()));
+  }
+
+  @Test
+  public void personIsSerializable() throws IOException, ClassNotFoundException {
+    Person person = Person.newPerson(Name.of("Jon", "J", "Bloom")).born(getBirthDateForAge(42)).as(Gender.MALE);
+
+    assertThat(person).isNotNull();
+
+    byte[] personBytes = IOUtils.serialize(person);
+
+    assertThat(personBytes).isNotNull();
+    assertThat(personBytes).isNotEmpty();
+
+    Person deserializedPerson = IOUtils.deserialize(personBytes);
+
+    assertThat(deserializedPerson).isNotNull();
+    assertThat(deserializedPerson).isNotSameAs(person);
+    assertThat(deserializedPerson).isEqualTo(person);
   }
 }
