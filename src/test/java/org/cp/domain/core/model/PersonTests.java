@@ -77,7 +77,7 @@ public class PersonTests {
   }
 
   @Test
-  public void newPersonWithFirstAndLastName() {
+  public void newPersonWithFirstNameAndLastName() {
     Person person = Person.newPerson("Jon", "Bloom");
 
     assertThat(person).isNotNull();
@@ -89,7 +89,7 @@ public class PersonTests {
   }
 
   @Test
-  public void newPersonWithFirstNameLastNameDateOfBirth() {
+  public void newPersonWithFirstNameLastNameAndDateOfBirth() {
     LocalDateTime birthDate = LocalDateTime.of(1999, Month.MAY, 15, 12, 30);
     Person person = Person.newPerson("Jon", "Bloom", birthDate);
 
@@ -116,7 +116,7 @@ public class PersonTests {
   }
 
   @Test
-  public void newPersonWithNameAndBirthDate() {
+  public void newPersonWithNameAndDateOfBirth() {
     LocalDateTime birthDate = LocalDateTime.of(1998, Month.MAY, 10, 8, 0);
     Name name = Name.of("Jon", "Jason", "Bloom");
     Person person = Person.newPerson(name, birthDate);
@@ -145,7 +145,7 @@ public class PersonTests {
   }
 
   @Test
-  public void constructPersonWithNameAndBirthDate() {
+  public void constructPersonWithNameAndDateOfBirth() {
     LocalDateTime birthDate = LocalDateTime.of(1993, Month.OCTOBER, 3, 20, 0);
     Name name = Name.of("Jon", "Jason", "Bloom");
     Person person = new Person(name, birthDate);
@@ -426,9 +426,17 @@ public class PersonTests {
   }
 
   @Test
+  public void compareToItselfIsEqual() {
+    Person jonBloom = Person.newPerson(Name.of("Jon", "J", "Bloom"),LocalDateTime.of(2001, Month.FEBRUARY, 1, 0, 0));
+
+    assertThat(jonBloom).isNotNull();
+    assertThat(jonBloom.compareTo(jonBloom)).isEqualTo(0);
+  }
+
+  @Test
   public void compareToIsEqual() {
-    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
-    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
+    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2017, Month.MAY, 19, 22, 30));
+    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2017, Month.MAY, 19, 22, 30));
 
     assertThat(jonBloomOne).isNotNull();
     assertThat(jonBloomTwo).isNotNull();
@@ -457,9 +465,9 @@ public class PersonTests {
   }
 
   @Test
-  public void equalsWithEqualPersonIsTrue() {
-    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
-    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
+  public void equalsWithEqualPeopleIsTrue() {
+    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2017, Month.MAY, 19, 22, 30));
+    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2017, Month.MAY, 19, 22, 30));
 
     assertThat(jonBloomOne).isNotNull();
     assertThat(jonBloomTwo).isNotNull();
@@ -468,9 +476,18 @@ public class PersonTests {
   }
 
   @Test
-  public void equalsWithNearlyEqualPersonIsFalse() {
-    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
-    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 35));
+  @SuppressWarnings("all")
+  public void equalsWithIdenticalPeopleIsTrue() {
+    Person jonBloom = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2017, Month.MAY, 21, 0, 0));
+
+    assertThat(jonBloom).isNotNull();
+    assertThat(jonBloom.equals(jonBloom)).isTrue();
+  }
+
+  @Test
+  public void equalsWithNearlyEqualPeopleIsFalse() {
+    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2017, Month.MAY, 19, 22, 30));
+    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "Bloom"), LocalDateTime.of(2017, Month.MAY, 19, 22, 35));
 
     assertThat(jonBloomOne).isNotNull();
     assertThat(jonBloomTwo).isNotNull();
@@ -479,7 +496,7 @@ public class PersonTests {
   }
 
   @Test
-  public void equalsWithSimilarPersonIsFalse() {
+  public void equalsWithSimilarPeopleIsFalse() {
     Person johnBlum = Person.newPerson(Name.of("John", "J", "Blum"), LocalDateTime.of(1974, Month.MAY, 27, 12, 0));
     Person jonBloom = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(1874, Month.MAY, 27, 23, 0));
 
@@ -501,25 +518,33 @@ public class PersonTests {
   }
 
   @Test
+  public void hashCodeForIdenticalPeopleIsSame() {
+    Person jonBloom = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2017, Month.MAY, 21, 0, 0));
+
+    assertThat(jonBloom).isNotNull();
+    assertThat(jonBloom.hashCode()).isEqualTo(jonBloom.hashCode());
+  }
+
+  @Test
+  public void hashCodeForEqualPeopleIsSame() {
+    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2017, Month.MAY, 19, 22, 30));
+    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2017, Month.MAY, 19, 22, 30));
+
+    assertThat(jonBloomOne).isNotNull();
+    assertThat(jonBloomTwo).isNotNull();
+    assertThat(jonBloomOne).isNotSameAs(jonBloomTwo);
+    assertThat(jonBloomOne.hashCode()).isEqualTo(jonBloomTwo.hashCode());
+  }
+
+  @Test
   public void hashCodeForDifferentPeopleIsNotEqual() {
-    Person jonBloom = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 27, 12, 0));
+    Person jonBloom = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(1974, Month.MAY, 27, 12, 0));
     Person sarahBloom = Person.newPerson(Name.of("Sarah", "E", "Bloom"), LocalDateTime.of(1975, Month.JANUARY, 22, 0, 0));
 
     assertThat(jonBloom).isNotNull();
     assertThat(sarahBloom).isNotNull();
     assertThat(jonBloom).isNotSameAs(sarahBloom);
     assertThat(jonBloom.hashCode()).isNotEqualTo(sarahBloom.hashCode());
-  }
-
-  @Test
-  public void hashCodeForIdenticalPeopleIsEqual() {
-    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
-    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "J", "Bloom"), LocalDateTime.of(2000, Month.MAY, 19, 22, 30));
-
-    assertThat(jonBloomOne).isNotNull();
-    assertThat(jonBloomTwo).isNotNull();
-    assertThat(jonBloomOne).isNotSameAs(jonBloomTwo);
-    assertThat(jonBloomOne.hashCode()).isEqualTo(jonBloomTwo.hashCode());
   }
 
   @Test

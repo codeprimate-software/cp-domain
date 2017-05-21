@@ -79,7 +79,7 @@ public class NameTests {
   }
 
   @Test
-  public void ofStringContainingFirstAndLastName() {
+  public void ofStringContainingFirstNameAndLastName() {
     Name name = Name.of("Jon Bloom");
 
     assertThat(name).isNotNull();
@@ -90,7 +90,7 @@ public class NameTests {
   }
 
   @Test
-  public void ofStringContainingFirstMiddleAndLastName() {
+  public void ofStringContainingFirstNameMiddleNameAndLastName() {
     Name name = Name.of("Jon Jason Bloom");
 
     assertThat(name).isNotNull();
@@ -101,7 +101,7 @@ public class NameTests {
   }
 
   @Test
-  public void ofStringContainingFirstMiddleLastAndSuffixName() {
+  public void ofStringContainingFirstNameMiddleNameLastNameAndSuffix() {
     Name name = Name.of("Jon Jason Bloom Jr.");
 
     assertThat(name).isNotNull();
@@ -112,7 +112,7 @@ public class NameTests {
   }
 
   @Test
-  public void ofStringContainingPaddedFirstMiddleAndLastName() {
+  public void ofStringContainingPaddedFirstNameMiddleNameAndLastName() {
     Name name = Name.of("  Jon   J Bloom ");
 
     assertThat(name).isNotNull();
@@ -162,7 +162,7 @@ public class NameTests {
   }
 
   @Test
-  public void ofFirstAndLastName() {
+  public void ofFirstNameAndLastName() {
     Name name = Name.of("Jon", "Bloom");
 
     assertThat(name).isNotNull();
@@ -173,7 +173,7 @@ public class NameTests {
   }
 
   @Test
-  public void ofFirstMiddleAndLastName() {
+  public void ofFirstNameMiddleNameAndLastName() {
     Name name = Name.of("Jon", "Jason", "Bloom");
 
     assertThat(name).isNotNull();
@@ -229,6 +229,14 @@ public class NameTests {
   }
 
   @Test
+  public void compareToItselfIsIdentical() {
+    Name name = Name.of("Jon", "J", "Bloom");
+
+    assertThat(name).isNotNull();
+    assertThat(name.compareTo(name)).isEqualTo(0);
+  }
+
+  @Test
   public void compareToIsEqual() {
     Name jonBloomOne = Name.of("Jon", "Bloom");
     Name jonBloomTwo = Name.of("Jon", "Bloom");
@@ -273,6 +281,15 @@ public class NameTests {
   }
 
   @Test
+  @SuppressWarnings("all")
+  public void equalsWithIdenticalNamesIsTrue() {
+    Name name = Name.of("Jon", "J", "Bloom");
+
+    assertThat(name).isNotNull();
+    assertThat(name.equals(name)).isTrue();
+  }
+
+  @Test
   public void equalsWithNearlyEqualNamesIsFalse() {
     Name jonBloomOne = Name.of("Jon", "J", "Bloom");
     Name jonBloomTwo = Name.of("Jon", "Bloom");
@@ -306,7 +323,7 @@ public class NameTests {
   }
 
   @Test
-  public void hashCodeForIdenticalNamesAreEqual() {
+  public void hashCodeForEqualNamesAreEqual() {
     assertThat(Name.of("Jon", "Bloom").hashCode()).isEqualTo(Name.of("Jon", "Bloom").hashCode());
   }
 
@@ -316,12 +333,20 @@ public class NameTests {
   }
 
   @Test
-  public void toStringWithFirstAndLastNameIsCorrect() {
+  public void hashCodeForIdenticalNamesAreEqual() {
+    Name name = Name.of("Jon", "J", "Bloom");
+
+    assertThat(name).isNotNull();
+    assertThat(name.hashCode()).isEqualTo(name.hashCode());
+  }
+
+  @Test
+  public void toStringWithFirstNameAndLastNameIsCorrect() {
     assertThat(Name.of("Jon", "Bloom").toString()).isEqualTo("Jon Bloom");
   }
 
   @Test
-  public void toStringWithFirstMiddleAndLastNameIsCorrect() {
+  public void toStringWithFirstNameMiddleNameAndLastNameIsCorrect() {
     assertThat(Name.of("Jon", "J", "Bloom").toString()).isEqualTo("Jon J Bloom");
     assertThat(Name.of("Jon", "Jason", "Bloom").toString()).isEqualTo("Jon Jason Bloom");
   }
