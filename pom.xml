@@ -72,7 +72,8 @@
   </issueManagement>
 
   <properties>
-    <cp-elements.version>1.0.0.M3</cp-elements.version>
+    <cp-elements.version>1.0.0.SNAPSHOT</cp-elements.version>
+    <!--<cp-elements.version>1.0.0.M3</cp-elements.version>-->
   </properties>
 
   <dependencies>
