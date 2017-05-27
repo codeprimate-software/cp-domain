@@ -64,6 +64,7 @@ public final class Name implements Comparable<Name>, Nameable<Name>, Serializabl
    * @see #of(String, String, String)
    */
   public static Name of(Nameable<Name> nameable) {
+
     return Optional.ofNullable(nameable)
       .map(localNameable -> {
         Name name = localNameable.getName();
@@ -85,7 +86,9 @@ public final class Name implements Comparable<Name>, Nameable<Name>, Serializabl
    * @see #parseName(String)
    */
   public static Name of(String name) {
+
     String[] parts = parseName(name);
+
     return (parts.length < 3 ? of(parts[0], parts[1]) : of(parts[0], parts[1], parts[2]));
   }
 
@@ -129,6 +132,7 @@ public final class Name implements Comparable<Name>, Nameable<Name>, Serializabl
    * or does not minimally consist of both a first and last name.
    */
   protected static String[] parseName(String name) {
+
     return Optional.ofNullable(name)
       .filter(StringUtils::hasText)
       .map(StringUtils::trim)
@@ -147,6 +151,7 @@ public final class Name implements Comparable<Name>, Nameable<Name>, Serializabl
    * @throws IllegalArgumentException if first or last name are not specified.
    */
   private Name(String firstName, String middleName, String lastName) {
+
     Assert.hasText(firstName, "First name is required");
     Assert.hasText(lastName, "Last name is required");
 
@@ -215,6 +220,23 @@ public final class Name implements Comparable<Name>, Nameable<Name>, Serializabl
   }
 
   /**
+   * Determines whether the given {@link Name} and this {@link Name} are alike in anyway.
+   *
+   * Technically, the {@link Name names} are considered alike if they match on either {@link #getFirstName() first name}
+   * or {@link #getLastName() last name}.
+   *
+   * @param name {@link Name} to compare.
+   * @return a boolean value indicating whether the given {@link Name} and this {@link Name} are alike in anyway.
+   */
+  public boolean like(Name name) {
+
+    return Optional.ofNullable(name).map(it ->
+        ObjectUtils.equals(this.getFirstName(), it.getFirstName())
+          || ObjectUtils.equals(this.getLastName(), it.getLastName()))
+      .orElse(false);
+  }
+
+  /**
    * Compares this {@link Name} with the other given {@link Name} to determine the natural ordering (sort)
    * of the {@link Name names}.
    *
@@ -230,6 +252,7 @@ public final class Name implements Comparable<Name>, Nameable<Name>, Serializabl
    */
   @Override
   public int compareTo(Name other) {
+
     return ComparatorResultBuilder.<String>create()
       .doCompare(this.getLastName(), other.getLastName())
       .doCompare(this.getFirstName(), other.getFirstName())
@@ -246,6 +269,7 @@ public final class Name implements Comparable<Name>, Nameable<Name>, Serializabl
    */
   @Override
   public boolean equals(Object obj) {
+
     if (this == obj) {
       return true;
     }
@@ -269,10 +293,13 @@ public final class Name implements Comparable<Name>, Nameable<Name>, Serializabl
    */
   @Override
   public int hashCode() {
+
     int hashValue = 17;
+
     hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getFirstName());
     hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getMiddleName());
     hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getLastName());
+
     return hashValue;
   }
 
@@ -284,6 +311,7 @@ public final class Name implements Comparable<Name>, Nameable<Name>, Serializabl
    */
   @Override
   public String toString() {
+
     StringBuilder name = new StringBuilder(getFirstName());
 
     getMiddleName().ifPresent(middleName -> name.append(NAME_PART_SEPARATOR).append(middleName));

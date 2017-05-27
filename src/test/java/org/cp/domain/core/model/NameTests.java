@@ -229,6 +229,35 @@ public class NameTests {
   }
 
   @Test
+  public void likeByFirstNameReturnsTrue() {
+    Name jonBloom = Name.of("Jon", "R", "Bloom");
+    Name jonBlum = Name.of("Jon", "J", "Blum");
+
+    assertThat(jonBloom.like(jonBlum)).isTrue();
+  }
+
+  @Test
+  public void likeByLastNameReturnsTrue() {
+    Name jonBloom = Name.of("Jon", "R", "Bloom");
+    Name johnBloom = Name.of("John", "J", "Bloom");
+
+    assertThat(jonBloom.like(johnBloom)).isTrue();
+  }
+
+  @Test
+  public void likeByUnlikeNamesReturnsFalse() {
+    Name johnBlum = Name.of("John", "J", "Blum");
+    Name jonDoe = Name.of("Jon", "J", "Doe");
+
+    assertThat(johnBlum.like(jonDoe)).isFalse();
+  }
+
+  @Test
+  public void likeHandlesNullReturnsFalse() {
+    assertThat(Name.of("Jon", "R", "Bloom").like(null)).isFalse();
+  }
+
+  @Test
   public void compareToItselfIsIdentical() {
     Name name = Name.of("Jon", "J", "Bloom");
 
