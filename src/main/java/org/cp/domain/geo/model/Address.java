@@ -77,8 +77,11 @@ public interface Address extends Comparable<Address>, Serializable,
   void setStreet(Street street);
 
   /**
-   * Returns an {@link Optional} {@link Unit} for this {@link Address}.  The {@link Unit} may represent
-   * an apartment number, an office or a suite.
+   * Returns an {@link Optional} {@link Unit} for this {@link Address}.
+   *
+   * The {@link Unit} may represent an apartment number, an office or a suite number.
+   *
+   * Defaults to {@link Optional#empty()}.
    *
    * @return the {@link Optional} {@link Unit} for this {@link Address}.
    * @see org.cp.domain.geo.model.Unit
@@ -89,8 +92,11 @@ public interface Address extends Comparable<Address>, Serializable,
   }
 
   /**
-   * Sets the {@link Optional} {@link Unit} for this {@link Address}.  The {@link Unit} may represent
-   * an apartment number, an office or a suite.  The default method implementation is a no-op.
+   * Sets the {@link Optional} {@link Unit} for this {@link Address}.
+   *
+   * The {@link Unit} may represent an apartment number, an office or a suite number.
+   *
+   * The default method implementation is a no-op.
    *
    * @param unit {@link Unit} for this {@link Address}; may be {@literal null}.
    * @see org.cp.domain.geo.model.Unit
@@ -151,11 +157,11 @@ public interface Address extends Comparable<Address>, Serializable,
    * Returns the {@link Optional} {@link Type type} of this {@link Address}, such as {@link Type#HOME},
    * {@link Type#MAILING}, {@link Type#WORK}, and so on.
    *
-   * The default is {@link Type#UNKNOWN}.
+   * Defaults to {@link Type#UNKNOWN}.
    *
    * @return the {@link Optional} {@link Type type} of this {@link Address};
    * defaults to {@link Type#UNKNOWN}.
-   * @see Type
+   * @see org.cp.domain.geo.model.Address.Type
    * @see java.util.Optional
    */
   default Optional<Type> getType() {
@@ -164,10 +170,12 @@ public interface Address extends Comparable<Address>, Serializable,
 
   /**
    * Sets {@link Address} {@link Type type}, such as {@link Type#HOME}, {@link Type#MAILING},
-   * {@link Type#WORK}, and so on.  The default method implementation is a no-op.
+   * {@link Type#WORK}, and so on.
+   *
+   * The default method implementation is a no-op.
    *
    * @param type {@link Type type} for this {@link Address}.
-   * @see Type
+   * @see org.cp.domain.geo.model.Address.Type
    */
   default void setType(Type type) {
   }
@@ -205,7 +213,7 @@ public interface Address extends Comparable<Address>, Serializable,
       .doCompare(this.getCity(), address.getCity())
       .doCompare(this.getPostalCode(), address.getPostalCode())
       .doCompare(this.getStreet(), address.getStreet())
-      .doCompare(this.getUnit().orElse(null), address.getUnit().orElse(null))
+      .doCompare(this.getUnit().orElse(Unit.EMPTY), address.getUnit().orElse(Unit.EMPTY))
       .build();
   }
 
@@ -223,10 +231,10 @@ public interface Address extends Comparable<Address>, Serializable,
   @Override
   default Address validate() {
 
-    Optional.ofNullable(getStreet()).orElseThrow(() -> newIllegalStateException("Street is not set"));
-    Optional.ofNullable(getCity()).orElseThrow(() -> newIllegalStateException("City is not set"));
-    Optional.ofNullable(getPostalCode()).orElseThrow(() -> newIllegalStateException("Postal Code is not set"));
-    Optional.ofNullable(getCountry()).orElseThrow(() -> newIllegalStateException("Country is not set"));
+    Optional.ofNullable(getStreet()).orElseThrow(() -> newIllegalStateException("Street is required"));
+    Optional.ofNullable(getCity()).orElseThrow(() -> newIllegalStateException("City is required"));
+    Optional.ofNullable(getPostalCode()).orElseThrow(() -> newIllegalStateException("Postal Code is required"));
+    Optional.ofNullable(getCountry()).orElseThrow(() -> newIllegalStateException("Country is required"));
 
     return this;
   }
