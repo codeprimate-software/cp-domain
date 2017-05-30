@@ -41,6 +41,8 @@ import org.cp.elements.util.ComparatorResultBuilder;
 @SuppressWarnings("unused")
 public class Unit implements Comparable<Unit>, Serializable {
 
+  public static final Unit EMPTY = Unit.of("0");
+
   private final String number;
 
   private Type type;
@@ -56,7 +58,7 @@ public class Unit implements Comparable<Unit>, Serializable {
    * @see #Unit(String)
    */
   public static Unit of(String number) {
-    return new Unit(number);
+    return new Unit(number).as(Type.UNKNOWN);
   }
 
   /**
@@ -135,9 +137,10 @@ public class Unit implements Comparable<Unit>, Serializable {
   @Override
   @SuppressWarnings("unchecked")
   public int compareTo(Unit unit) {
+
     return ComparatorResultBuilder.<Comparable>create()
-      .doCompare(this.getType().orElse(null), unit.getType().orElse(null))
       .doCompare(this.getNumber(), unit.getNumber())
+      .doCompare(this.getType().orElse(Type.UNKNOWN), unit.getType().orElse(Type.UNKNOWN))
       .build();
   }
 
@@ -203,7 +206,8 @@ public class Unit implements Comparable<Unit>, Serializable {
     APARTMENT("APT", "Apartment"),
     OFFICE("OFC", "Office"),
     ROOM("RM", "Room"),
-    SUITE("STE", "Suite");
+    SUITE("STE", "Suite"),
+    UNKNOWN("UKN", "Unknown");
 
     private final String abbreviation;
     private final String name;

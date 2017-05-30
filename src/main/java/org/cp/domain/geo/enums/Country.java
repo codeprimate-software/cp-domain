@@ -16,7 +16,8 @@
 
 package org.cp.domain.geo.enums;
 
-import java.util.Arrays;
+import static java.util.Arrays.stream;
+
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ import org.cp.elements.util.CollectionUtils;
  * The {@link Country} enum is an enumerated type of all the Countries in the World.
  *
  * @author John Blum
+ * @see org.cp.domain.geo.enums.Continent
  * @see <a href="https://www.countries-ofthe-world.com/all-countries.html">COUNTRIES-ofthe-WORLD.COM</a>
  * @since 1.0.0
  */
@@ -230,22 +232,46 @@ public enum Country {
   VIETNAM(Continent.ASIA),
   YEMEN(Continent.ASIA),
   ZAMBIA(Continent.AFRICA),
-  ZIMBABWE(Continent.AFRICA);
+  ZIMBABWE(Continent.AFRICA),
+  UNKNOWN;
+
+  /**
+   * Returns a {@link Set} of all the {@link Country Countries} in the World that are on the given {@link Continent}.
+   *
+   * @param continent {@link Continent} to determine the {@link Set} of {@link Country Countries} to return.
+   * @return all {@link Country Countries} in the World that are on the given {@link Continent}.
+   * @see org.cp.domain.geo.enums.Continent
+   * @see org.cp.domain.geo.enums.Country
+   * @see #values()
+   */
+  public static Set<Country> byContinent(Continent continent) {
+    return stream(values()).filter(country -> country.isOnContinent(continent)).collect(Collectors.toSet());
+  }
 
   private final Continent[] continents;
 
+  /* (non-Javadoc) */
   Country(Continent... continents) {
     this.continents = continents;
   }
 
-  public static Set<Country> byContinent(Continent continent) {
-    return Arrays.stream(values()).filter(country -> country.isOnContinent(continent)).collect(Collectors.toSet());
-  }
-
+  /**
+   * Returns a {@link Set} of {@link Continent Continents} in the World in which this {@link Country} belongs.
+   *
+   * @return a {@link Set} of {@link Continent Continents} in the World in which this {@link Country} belongs.
+   * @see org.cp.domain.geo.enums.Continent
+   */
   public Set<Continent> getContinents() {
     return Collections.unmodifiableSet(CollectionUtils.asSet(this.continents));
   }
 
+  /**
+   * Null-safe operation to determine whether this {@link Country} is on the given {@link Continent}.
+   *
+   * @param continent {@link Continent} to evaluate this {@link Country} against.
+   * @return a boolean value indicating whether this {@link Country} is on the given {@link Continent}.
+   * @see org.cp.domain.geo.enums.Continent
+   */
   @NullSafe
   public boolean isOnContinent(Continent continent) {
     return getContinents().contains(continent);

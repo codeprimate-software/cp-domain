@@ -83,6 +83,7 @@ public class Street implements Comparable<Street>, Serializable {
    * or {@link String name} is empty.
    */
   public Street(Integer number, String name) {
+
     this.number = Optional.ofNullable(number)
       .orElseThrow(() -> newIllegalArgumentException("Number is required"));
 
@@ -115,7 +116,7 @@ public class Street implements Comparable<Street>, Serializable {
    * @see org.cp.domain.geo.model.Street.Type
    */
   public Optional<Type> getType() {
-    return Optional.ofNullable(type);
+    return Optional.ofNullable(this.type);
   }
 
   /**
@@ -145,9 +146,10 @@ public class Street implements Comparable<Street>, Serializable {
   @Override
   @SuppressWarnings("unchecked")
   public int compareTo(Street street) {
+
     return ComparatorResultBuilder.<Comparable>create()
       .doCompare(this.getName(), street.getName())
-      .doCompare(this.getType().orElse(null), street.getType().orElse(null))
+      .doCompare(this.getType().orElse(Type.UNKNOWN), street.getType().orElse(Type.UNKNOWN))
       .doCompare(this.getNumber(), street.getNumber())
       .build();
   }
@@ -231,7 +233,8 @@ public class Street implements Comparable<Street>, Serializable {
     ROAD("RD", "Road"),
     ROUTE("RT", "Route"),
     STREET("ST", "Street"),
-    WAY("WY", "Way");
+    WAY("WY", "Way"),
+    UNKNOWN("UKN", "Unknown");
 
     /**
      * Factory method used to search for an appropriate {@link Street} {@link Type}

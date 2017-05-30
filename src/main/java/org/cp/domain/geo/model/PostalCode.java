@@ -123,6 +123,7 @@ public class PostalCode implements Comparable<PostalCode>, Serializable {
    */
   @Override
   public int compareTo(PostalCode postalCode) {
+
     return ComparatorResultBuilder.<String>create()
       .doCompare(this.toString(), postalCode.toString())
       .build();
@@ -159,8 +160,11 @@ public class PostalCode implements Comparable<PostalCode>, Serializable {
    */
   @Override
   public int hashCode() {
+
     int hashValue = 17;
+
     hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getNumber());
+
     return hashValue;
   }
 

@@ -36,7 +36,8 @@ public enum Continent {
   ASIA,
   EUROPE,
   NORTH_AMERICA,
-  SOUTH_AMERICA;
+  SOUTH_AMERICA,
+  UNKNOWN;
 
   public Set<Country> countries() {
     return Arrays.stream(Country.values()).filter(country -> country.isOnContinent(this))

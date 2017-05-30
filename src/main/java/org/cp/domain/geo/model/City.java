@@ -115,8 +115,9 @@ public class City implements Comparable<City>, Serializable {
   @Override
   @SuppressWarnings("unchecked")
   public int compareTo(City city) {
+
     return ComparatorResultBuilder.<Comparable>create()
-      .doCompare(this.getCountry().orElse(null), city.getCountry().orElse(null))
+      .doCompare(this.getCountry().orElse(Country.UNKNOWN), city.getCountry().orElse(Country.UNKNOWN))
       .doCompare(this.getName(), city.getName())
       .build();
   }
@@ -152,8 +153,11 @@ public class City implements Comparable<City>, Serializable {
    */
   @Override
   public int hashCode() {
+
     int hashValue = 17;
+
     hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getName());
+
     return hashValue;
   }
 
