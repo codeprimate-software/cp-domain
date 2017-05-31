@@ -18,12 +18,13 @@ package org.cp.domain.geo.enums;
 
 import static java.util.Arrays.stream;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.NullSafe;
-import org.cp.elements.util.CollectionUtils;
 
 /**
  * The {@link Country} enum is an enumerated type of all the Countries in the World.
@@ -51,7 +52,7 @@ public enum Country {
   BAHRAIN(Continent.ASIA),
   BANGLADESH(Continent.ASIA),
   BARBADOS(Continent.NORTH_AMERICA),
-  BALARUS(Continent.EUROPE),
+  BELARUS(Continent.EUROPE),
   BELGIUM(Continent.EUROPE),
   BELIZE(Continent.NORTH_AMERICA),
   BENIN(Continent.AFRICA),
@@ -262,7 +263,7 @@ public enum Country {
    * @see org.cp.domain.geo.enums.Continent
    */
   public Set<Continent> getContinents() {
-    return Collections.unmodifiableSet(CollectionUtils.asSet(this.continents));
+    return Collections.unmodifiableSet(new TreeSet<>(Arrays.asList(this.continents)));
   }
 
   /**
