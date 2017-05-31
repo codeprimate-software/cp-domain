@@ -16,7 +16,8 @@
 
 package org.cp.domain.geo.enums;
 
-import java.util.Arrays;
+import static java.util.Arrays.stream;
+
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
  * The {@link Continent} enum is a enumerated type of all 7 Continents in the World.
  *
  * @author John Blum
+ * @see org.cp.domain.geo.enums.Country
  * @see <a href="https://www.countries-ofthe-world.com/continents-of-the-world.html">COUNTRIES-ofthe-WORLD.COM</a>
  * @since 1.0.0
  */
@@ -32,15 +34,21 @@ public enum Continent {
 
   AFRICA,
   ANTARCTICA,
-  AUSTRALIA_AND_OCEANIA,
   ASIA,
+  AUSTRALIA_AND_OCEANIA,
   EUROPE,
   NORTH_AMERICA,
   SOUTH_AMERICA,
   UNKNOWN;
 
+  /**
+   * Returns all the {@link Country Countries} that reside on this {@link Continent}.
+   *
+   * @return a {@link Set} of {@link Country Countries} that reside on this {@link Continent}.
+   * @see org.cp.domain.geo.enums.Country
+   */
   public Set<Country> countries() {
-    return Arrays.stream(Country.values()).filter(country -> country.isOnContinent(this))
+    return stream(Country.values()).filter(country -> country.isOnContinent(this))
       .collect(Collectors.toSet());
   }
 }
