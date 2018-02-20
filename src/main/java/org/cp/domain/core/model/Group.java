@@ -142,7 +142,9 @@ public interface Group extends Identifiable<String>, Iterable<Person>, Nameable<
    * @return a {@link Integer#TYPE int value} with the number of {@link Person people} in this {@link Group}.
    * @see #isEmpty()
    */
-  int size();
+  default int size() {
+    return (int) StreamSupport.stream(spliterator(), false).count();
+  }
 
   /**
    * Accepts the given {@link Visitor} to visit each {@link Person} in this {@link Group}.

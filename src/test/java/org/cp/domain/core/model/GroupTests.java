@@ -326,6 +326,53 @@ public class GroupTests {
   }
 
   @Test
+  public void sizeOfGroupWithTwoPeopleReturnsTwo() {
+
+    Person jonDoe = Person.newPerson("Jon", "Doe");
+    Person janeDoe = Person.newPerson("Jane", "Doe");
+
+    Group mockGroup = mock(Group.class);
+
+    when(mockGroup.iterator()).thenAnswer(invocation -> asIterator(jonDoe, janeDoe));
+    when(mockGroup.spliterator()).thenCallRealMethod();
+    when(mockGroup.size()).thenCallRealMethod();
+
+    assertThat(mockGroup.size()).isEqualTo(2);
+
+    verify(mockGroup, times(1)).iterator();
+  }
+
+  @Test
+  public void sizeOfGroupWithOnePersonReturnsOne() {
+
+    Person jonDoe = Person.newPerson("Jon", "Doe");
+
+    Group mockGroup = mock(Group.class);
+
+    when(mockGroup.iterator()).thenAnswer(invocation -> asIterator(jonDoe));
+    when(mockGroup.spliterator()).thenCallRealMethod();
+    when(mockGroup.size()).thenCallRealMethod();
+
+    assertThat(mockGroup.size()).isEqualTo(1);
+
+    verify(mockGroup, times(1)).iterator();
+  }
+
+  @Test
+  public void sizeOfEmptyGroupReturnsZero() {
+
+    Group mockGroup = mock(Group.class);
+
+    when(mockGroup.iterator()).thenAnswer(invocation -> Collections.emptyIterator());
+    when(mockGroup.spliterator()).thenCallRealMethod();
+    when(mockGroup.size()).thenCallRealMethod();
+
+    assertThat(mockGroup.size()).isEqualTo(0);
+
+    verify(mockGroup, times(1)).iterator();
+  }
+
+  @Test
   public void acceptsVisitor() {
 
     Person personOne = mock(Person.class);
