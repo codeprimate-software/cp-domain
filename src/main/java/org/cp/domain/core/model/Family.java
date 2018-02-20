@@ -20,6 +20,8 @@ import static java.util.stream.StreamSupport.stream;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 import static org.cp.elements.util.CollectionUtils.nullSafeIterable;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
@@ -27,123 +29,167 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Filter;
-import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.IdentifierSequence;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.support.UUIDIdentifierSequence;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
  * The {@link Family} class is an Abstract Data Type (ADT) modeling a collection of {@link Person people}
- * that make up a family unit.
+ * that make up a family.
  *
  * @author John Blum
- * @see java.lang.Iterable
- * @see java.util.Iterator
+ * @see org.cp.domain.core.model.Group
  * @see org.cp.domain.core.model.Person
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class Family implements Iterable<Person> {
+public class Family implements Group {
 
-  @SuppressWarnings("unchecked")
-  private final Set<Person> people = new TreeSet<>((personOne, personTwo) ->
-    ComparatorResultBuilder.<Comparable>create()
-      .doCompare(personOne.getBirthDate().get(), personTwo.getBirthDate().get())
-      .doCompare(personOne.getLastName(), personTwo.getLastName())
-      .doCompare(personOne.getFirstName(), personTwo.getFirstName())
-      .doCompare(personOne.getMiddleName().orElse(null), personTwo.getMiddleName().orElse(null))
-      .build()
-  );
+  private static final IdentifierSequence<String> ID_SEQUENCE = new UUIDIdentifierSequence();
+
+  private static final LocalDateTime EPOCH_BIRTH_DATE =
+    LocalDateTime.ofEpochSecond(0L, 0, ZoneOffset.UTC);
+
+  private static final String FAMILY_NAME_TEMPLATE = "%s Family";
 
   /**
    * Factory method used to construct a new, empty {@link Family}.
    *
-   * @return a new instance of {@link Family} containing now {@link Person people}.
+   * @return a new instance of {@link Family} containing no {@link Person people}.
    */
   public static Family empty() {
     return new Family();
   }
 
   /**
-   * Null-safe factory method used to construct an instance of {@link Family}
-   * initialized with given {@link Person people}.
+   * Generates a new {@link String identifier} that can used to uniquely identifying a {@link Family}.
    *
-   * @param people array of {@link Person people} to group together as a {@link Family}.
+   * @return a generated {@link String identifier} that can used to uniquely identifying a {@link Family}.
+   * @see org.cp.elements.lang.IdentifierSequence
+   * @see java.lang.String
+   */
+  public static String generateId() {
+    return ID_SEQUENCE.nextId();
+  }
+
+  /**
+   * Factory method used to construct a new instance of {@link Family} initialized with given {@link Person people}.
+   *
+   * @param people array of {@link Person people} grouped together as a {@link Family}.
    * @return a new instance of {@link Family} initialized with the given {@link Person people}.
    * @see org.cp.domain.core.model.Person
+   * @see #of(Iterable)
    */
   @NullSafe
   public static Family of(Person... people) {
+
     Family family = new Family();
+
     Collections.addAll(family.people, nullSafeArray(people, Person.class));
+
     return family;
   }
 
   /**
-   * Null-safe factory method used to construct an instance of {@link Family}
-   * initialized with given {@link Person people}.
+   * Factory method used to construct a new instance of {@link Family} initialized with given {@link Person people}.
    *
-   * @param people {@link Iterable} of {@link Person people} to group together as a {@link Family}.
+   * @param people {@link Iterable} of {@link Person people} grouped together as a {@link Family}.
    * @return a new instance of {@link Family} initialized with the given {@link Person people}.
    * @see org.cp.domain.core.model.Person
    * @see java.lang.Iterable
+   * @see #of(Person...)
    */
   @NullSafe
   public static Family of(Iterable<Person> people) {
+
     Family family = new Family();
+
     CollectionUtils.addAll(family.people, nullSafeIterable(people));
+
     return family;
+  }
+
+  @SuppressWarnings("unchecked")
+  private final Set<Person> people = new TreeSet<>((personOne, personTwo) ->
+    ComparatorResultBuilder.<Comparable>create()
+      .doCompare(personOne.getBirthDate().orElse(EPOCH_BIRTH_DATE), personTwo.getBirthDate().orElse(EPOCH_BIRTH_DATE))
+      .doCompare(personOne.getLastName(), personTwo.getLastName())
+      .doCompare(personOne.getFirstName(), personTwo.getFirstName())
+      .doCompare(personOne.getMiddleName().orElse(Constants.UNDEFINED),
+        personTwo.getMiddleName().orElse(Constants.UNDEFINED))
+      .build()
+  );
+
+  private String id;
+  private String name;
+
+  /**
+   * Returns the {@link String identifier} uniquely identifying this {@link Family}.
+   *
+   * @return an {@link String identifier} uniquely identifying this {@link Family}.
+   * @see #setId(String)
+   * @see java.lang.String
+   */
+  @Override
+  public String getId() {
+    return this.id;
+  }
+
+  /**
+   * Sets the {@link String identifier} uniquely identifying this {@link Family}.
+   *
+   * @param id {@link String identifier} uniquely identifying this {@link Family}.
+   * @see #getId()
+   * @see java.lang.String
+   */
+  @Override
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  /**
+   * Returns the {@link String name} of this {@link Family}.
+   *
+   * The {@link String name} of the {@link Family} might be something like {@literal Doe Family}.
+   *
+   * @return the {@link String name} of this {@link Family}.
+   * @see java.lang.String
+   */
+  @Override
+  @SuppressWarnings("unchecked")
+  public String getName() {
+
+    return Optional.ofNullable(this.name)
+      .filter(StringUtils::hasText)
+      .orElseGet(() -> Optional.ofNullable(CollectionUtils.findOne(this, Filter.accepting()))
+        .map(person -> String.format(FAMILY_NAME_TEMPLATE, person.getLastName()))
+        .orElse(null));
   }
 
   /**
    * Adds the given {@link Person} to this {@link Family} iff the given {@link Person} is not {@literal null}
    * and the {@link Person} is not already part of this {@link Family}.
    *
-   * @param person {@link Person} to add to this {@link Family}.
-   * @return a boolean value indicating whehther the given {@link Person} was successfully added
-   * to this {@link Family}.  Must not be {@literal null}.
+   * @param person {@link Person} to add; must not be {@literal null}.
+   * @return a boolean value indicating whether the given {@link Person} was successfully added
+   * to this {@link Family}.
    * @see org.cp.domain.core.model.Person
+   * @see #remove(Person)
    */
   public boolean add(Person person) {
     return Optional.ofNullable(person).map(this.people::add).orElse(false);
   }
 
   /**
-   * Finds all {@link Person people} in this {@link Family} that match the criteria of the given {@link Filter}.
-   *
-   * @param predicate {@link Filter} used to find {@link Person people} in this {@link Family} that match the criteria
-   * defined by the {@link Filter}.
-   * @return all {@link Person people} in this {@link Family} that match the criteria of the given {@link Filter}.
-   * @see org.cp.domain.core.model.Person
-   * @see org.cp.elements.lang.Filter
-   */
-  public Set<Person> findBy(Filter<Person> predicate) {
-
-    Set<Person> searchResult = new TreeSet<>();
-
-    stream(this.spliterator(), false).forEach(person -> {
-      if (predicate.accept(person)) {
-        searchResult.add(person);
-      }
-    });
-
-    return searchResult;
-  }
-
-  /**
-   * Determines whether this {@link Family} contains any {@link Person people}.
-   *
-   * @return a boolean value indicating whether this {@link Family} contains any {@link Person people}.
-   */
-  public boolean isEmpty() {
-    return this.people.isEmpty();
-  }
-
-  /**
    * Iterates over the collection of {@link Person people} in this {@link Family}.
    *
-   * @return an unmodifiable {@link Iterator} over the collection of {@link Person people} in this {@link Family}.
+   * @return an unmodifiable {@link Iterator} to iterate over the collection of {@link Person people}
+   * in this {@link Family}.
    * @see java.util.Iterator
    */
   @Override
@@ -152,9 +198,35 @@ public class Family implements Iterable<Person> {
   }
 
   /**
-   * Returns a {@link Integer#TYPE int} value with the number of {@link Person people} in this {@link Family}.
+   * Sets the {@link String name} of this {@link Family}.
    *
-   * @return a {@link Integer#TYPE int} value with the number of {@link Person people} in this {@link Family}.
+   * @param name {@link String} containing the name of this {@link Family}.
+   * @return this {@link Family}.
+   * @see #getName()
+   */
+  public Family named(String name) {
+    this.name = name;
+    return this;
+  }
+
+  /**
+   * Removes the given {@link Person} from this {@link Family}.
+   *
+   * @param person {@link Person} to remove.
+   * @return a boolean value indicating whether the {@link Person} was a member of this {@link Family}
+   * and was removed successfully.
+   * @see #add(Person)
+   * @see org.cp.domain.core.model.Person
+   */
+  @Override
+  public boolean remove(Person person) {
+    return person != null && this.people.remove(person);
+  }
+
+  /**
+   * Returns a {@link Integer#TYPE int value} with the number of {@link Person people} in this {@link Family}.
+   *
+   * @return a {@link Integer#TYPE int value} with the number of {@link Person people} in this {@link Family}.
    */
   public int size() {
     return this.people.size();
@@ -170,13 +242,16 @@ public class Family implements Iterable<Person> {
   public String toString() {
 
     StringBuilder builder = new StringBuilder("[");
-    AtomicBoolean addComma = new AtomicBoolean(false);
+
+    AtomicBoolean addDelimiter = new AtomicBoolean(false);
 
     stream(this.spliterator(), false).forEach(person -> {
-      builder.append(addComma.get() ? "; " : StringUtils.EMPTY_STRING);
+
+      builder.append(addDelimiter.get() ? "; " : StringUtils.EMPTY_STRING);
       builder.append(String.format("%1$s, %2$s%3$s", person.getLastName(), person.getFirstName(),
         person.getMiddleName().map(StringUtils.SINGLE_SPACE::concat).orElse(StringUtils.EMPTY_STRING)));
-      addComma.set(true);
+      addDelimiter.set(true);
+
     });
 
     builder.append("]");
