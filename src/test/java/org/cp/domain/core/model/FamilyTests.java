@@ -27,6 +27,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.cp.elements.enums.Gender;
 import org.junit.Test;
@@ -89,6 +92,18 @@ public class FamilyTests {
 
     assertThat(family).isNotNull();
     assertThat(family).isEmpty();
+  }
+
+  @Test
+  public void generatesUniqueIds() {
+
+    AtomicInteger counter = new AtomicInteger(0);
+
+    assertThat(Stream.generate(counter::incrementAndGet)
+      .limit(100)
+      .map(count -> Family.generateId())
+      .collect(Collectors.toSet()))
+      .hasSize(100);
   }
 
   @Test
