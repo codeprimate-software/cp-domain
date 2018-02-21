@@ -186,6 +186,16 @@ public class Family implements Group {
   }
 
   /**
+   * Determines whether this {@link Family} contains any {@link Person people}.
+   *
+   * @return a boolean value indicating whether this {@link Family} contains any {@link Person people}.
+   * @see #size()
+   */
+  public boolean isEmpty() {
+    return this.people.isEmpty();
+  }
+
+  /**
    * Iterates over the collection of {@link Person people} in this {@link Family}.
    *
    * @return an unmodifiable {@link Iterator} to iterate over the collection of {@link Person people}
@@ -227,6 +237,7 @@ public class Family implements Group {
    * Returns a {@link Integer#TYPE int value} with the number of {@link Person people} in this {@link Family}.
    *
    * @return a {@link Integer#TYPE int value} with the number of {@link Person people} in this {@link Family}.
+   * @see #isEmpty()
    */
   public int size() {
     return this.people.size();
