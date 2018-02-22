@@ -21,6 +21,7 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateExcep
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.cp.domain.geo.enums.Country;
@@ -33,14 +34,15 @@ import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
  * The {@link Address} interface is an Abstract Data Type (ADT) defining a contract for a postal address.
- * This interface models a universally accepted address format across the World.
+ *
+ * This interface models a universally accepted address format across the world.
  *
  * This {@link Address} is also {@link Locatable} by geographic coordinates on a map.
  *
  * @author John Blum
  * @see java.io.Serializable
+ * @see java.lang.Cloneable
  * @see java.lang.Comparable
- * @see org.cp.domain.geo.enums.Continent
  * @see org.cp.domain.geo.enums.Country
  * @see org.cp.domain.geo.model.AbstractAddress
  * @see org.cp.domain.geo.model.Address.Type
@@ -52,12 +54,12 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.domain.geo.model.Street
  * @see org.cp.domain.geo.model.Unit
  * @see org.cp.elements.lang.Identifiable
- * @see Verifyable
+ * @see org.cp.elements.lang.Verifyable
  * @see org.cp.elements.lang.Visitable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Address extends Comparable<Address>, Serializable,
+public interface Address extends Cloneable, Comparable<Address>, Serializable,
     Identifiable<Long>, Locatable, Verifyable<Address>, Visitable {
 
   /**
@@ -100,7 +102,6 @@ public interface Address extends Comparable<Address>, Serializable,
    *
    * @param unit {@link Unit} for this {@link Address}; may be {@literal null}.
    * @see org.cp.domain.geo.model.Unit
-   * @see java.util.Optional
    */
   default void setUnit(Unit unit) {
   }
@@ -154,13 +155,12 @@ public interface Address extends Comparable<Address>, Serializable,
   void setCountry(Country country);
 
   /**
-   * Returns the {@link Optional} {@link Type type} of this {@link Address}, such as {@link Type#HOME},
-   * {@link Type#MAILING}, {@link Type#WORK}, and so on.
+   * Returns an {@link Optional} {@link Type type} of this {@link Address}, such as {@link Type#BILLING},
+   * {@link Type#HOME}, {@link Type#MAILING}, {@link Type#OFFICE}, and so on.
    *
    * Defaults to {@link Type#UNKNOWN}.
    *
-   * @return the {@link Optional} {@link Type type} of this {@link Address};
-   * defaults to {@link Type#UNKNOWN}.
+   * @return the {@link Optional} {@link Type type} of this {@link Address}; defaults to {@link Type#UNKNOWN}.
    * @see org.cp.domain.geo.model.Address.Type
    * @see java.util.Optional
    */
@@ -169,24 +169,90 @@ public interface Address extends Comparable<Address>, Serializable,
   }
 
   /**
-   * Sets {@link Address} {@link Type type}, such as {@link Type#HOME}, {@link Type#MAILING},
-   * {@link Type#WORK}, and so on.
+   * Sets the {@link Address} {@link Type type}, such as {@link Type#BILLING}, {@link Type#HOME}, {@link Type#MAILING},
+   * {@link Type#OFFICE}, and so on.
    *
    * The default method implementation is a no-op.
    *
-   * @param type {@link Type type} for this {@link Address}.
+   * @param type {@link Type type} of this {@link Address}.
    * @see org.cp.domain.geo.model.Address.Type
    */
   default void setType(Type type) {
   }
 
   /**
-   * Accepts an {@link Address} {@link Visitor} visiting this {@link Address} in order to perform
-   * any type of data access operation as required by the application.
+   * Determines whether this {@link Address} is a {@link Type#BILLING} {@link Address}.
+   *
+   * @return a boolean value indicating whether this {@link Address} is a {@link Type#BILLING} {@link Address}.
+   * @see org.cp.domain.geo.model.Address.Type#BILLING
+   * @see #getType()
+   */
+  default boolean isBilling() {
+    return Type.BILLING.equals(getType().orElse(null));
+  }
+
+  /**
+   * Determines whether this {@link Address} is a {@link Type#HOME} {@link Address}.
+   *
+   * @return a boolean value indicating whether this {@link Address} is a {@link Type#HOME} {@link Address}.
+   * @see org.cp.domain.geo.model.Address.Type#HOME
+   * @see #getType()
+   */
+  default boolean isHome() {
+    return Type.HOME.equals(getType().orElse(null));
+  }
+
+  /**
+   * Determines whether this {@link Address} is a {@link Type#MAILING} {@link Address}.
+   *
+   * @return a boolean value indicating whether this {@link Address} is a {@link Type#MAILING} {@link Address}.
+   * @see org.cp.domain.geo.model.Address.Type#MAILING
+   * @see #getType()
+   */
+  default boolean isMailing() {
+    return Type.MAILING.equals(getType().orElse(null));
+  }
+
+  /**
+   * Determines whether this {@link Address} is an {@link Type#OFFICE} {@link Address}.
+   *
+   * @return a boolean value indicating whether this {@link Address} is an {@link Type#OFFICE} {@link Address}.
+   * @see org.cp.domain.geo.model.Address.Type#OFFICE
+   * @see #getType()
+   */
+  default boolean isOffice() {
+    return Type.OFFICE.equals(getType().orElse(null));
+  }
+
+  /**
+   * Determines whether this {@link Address} is a {@link Type#PO_BOX}.
+   *
+   * @return a boolean value indicating whether this {@link Address} is a {@link Type#PO_BOX}.
+   * @see org.cp.domain.geo.model.Address.Type#PO_BOX
+   * @see #getType()
+   */
+  default boolean isPoBox() {
+    return Type.PO_BOX.equals(getType().orElse(null));
+  }
+
+  /**
+   * Determines whether this {@link Address} is a {@link Type#WORK} {@link Address}.
+   *
+   * @return a boolean value indicating whether this {@link Address} is a {@link Type#WORK} {@link Address}.
+   * @see org.cp.domain.geo.model.Address.Type#WORK
+   * @see #getType()
+   */
+  default boolean isWork() {
+    return Type.WORK.equals(getType().orElse(null));
+  }
+
+  /**
+   * Accepts a {@link Visitor} visiting this {@link Address} in order to perform any type of data access operation
+   * required by this application.
    *
    * @param visitor {@link Visitor} visiting this {@link Address}.
    * @see org.cp.elements.lang.Visitable#accept(Visitor)
-   * @see org.cp.elements.lang.Visitor
+   * @see org.cp.elements.lang.Visitor#visit(Visitable)
    */
   @Override
   default void accept(Visitor visitor) {
@@ -194,13 +260,13 @@ public interface Address extends Comparable<Address>, Serializable,
   }
 
   /**
-   * Compares this {@link Address} to the given {@link Address} to determine the relative sort order.
+   * Compares this {@link Address} to the given {@link Address} in order to determine the relative ordering.
    *
-   * @param address {@link Address} being compared with this {@link Address} to determine the relative sort order.
-   * @return a {@link Integer#TYPE int} value indicating the sort order of this {@link Address}
+   * @param address the {@link Address} to compare with this {@link Address}.
+   * @return a {@link Integer value} indicating the sort order of this {@link Address}
    * relative to the given {@link Address}.
-   * Returns a negative number to indicate this {@link Address} comes before the given {@link Address} in the sort order.
-   * Returns a positive number to indicate this {@link Address} comes after the given {@link Address} in the sort order.
+   * Returns a negative number to indicate this {@link Address} comes before the given {@link Address} in the order.
+   * Returns a positive number to indicate this {@link Address} comes after the given {@link Address} in the order.
    * Returns {@literal 0} if this {@link Address} is equal to the given {@link Address}.
    * @see java.lang.Comparable#compareTo(Object)
    */
@@ -221,12 +287,12 @@ public interface Address extends Comparable<Address>, Serializable,
    * Validates that this {@link Address} is valid.
    *
    * The {@link Address} is considered valid iff the {@link #getStreet() street}, {@link #getCity() city}
-   * {@link #getPostalCode() postal code} and {@link #getCountry() country} are set, i.e. not {@literal null}.
+   * {@link #getPostalCode() postal code} and {@link #getCountry() country} are set, i.e. are not {@literal null}.
    *
    * @return this {@link Address}.
-   * @throws IllegalStateException if {@link #getStreet() street}, {@link #getCity() city}
+   * @throws IllegalStateException if {@link #getStreet() street}, {@link #getCity() city},
    * {@link #getPostalCode() postal code} or {@link #getCountry() country} are not set.
-   * @see Verifyable#validate()
+   * @see org.cp.elements.lang.Verifyable#validate()
    */
   @Override
   default Address validate() {
@@ -245,36 +311,175 @@ public interface Address extends Comparable<Address>, Serializable,
     return (T) this;
   }
 
+  /**
+   * Sets the {@link Address.Type type} of this {@link Address} to {@link Type#BILLING}.
+   *
+   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @return this {@link Address}.
+   * @see org.cp.domain.geo.model.Address.Type#BILLING
+   * @see #as(Type)
+   */
+  default <T extends Address> T asBilling() {
+    return as(Type.BILLING);
+  }
+
+  /**
+   * Sets the {@link Address.Type type} of this {@link Address} to {@link Type#HOME}.
+   *
+   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @return this {@link Address}.
+   * @see org.cp.domain.geo.model.Address.Type#HOME
+   * @see #as(Type)
+   */
+  default <T extends Address> T asHome() {
+    return as(Type.HOME);
+  }
+
+  /**
+   * Sets the {@link Address.Type type} of this {@link Address} to {@link Type#MAILING}.
+   *
+   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @return this {@link Address}.
+   * @see org.cp.domain.geo.model.Address.Type#MAILING
+   * @see #as(Type)
+   */
+  default <T extends Address> T asMailing() {
+    return as(Type.MAILING);
+  }
+
+  /**
+   * Sets the {@link Address.Type type} of this {@link Address} to {@link Type#OFFICE}.
+   *
+   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @return this {@link Address}.
+   * @see org.cp.domain.geo.model.Address.Type#OFFICE
+   * @see #as(Type)
+   */
+  default <T extends Address> T asOffice() {
+    return as(Type.OFFICE);
+  }
+
+  /**
+   * Sets the {@link Address.Type type} of this {@link Address} to {@link Type#PO_BOX}.
+   *
+   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @return this {@link Address}.
+   * @see org.cp.domain.geo.model.Address.Type#PO_BOX
+   * @see #as(Type)
+   */
+  default <T extends Address> T asPoBox() {
+    return as(Type.PO_BOX);
+  }
+
+  /**
+   * Sets the {@link Address.Type type} of this {@link Address} to {@link Type#WORK}.
+   *
+   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @return this {@link Address}.
+   * @see org.cp.domain.geo.model.Address.Type#WORK
+   * @see #as(Type)
+   */
+  default <T extends Address> T asWork() {
+    return as(Type.WORK);
+  }
+
+  /**
+   * Builder method to set the {@link Street} of this {@link Address}.
+   *
+   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @param street {@link Street} to set.
+   * @return this {@link Address}
+   * @see org.cp.domain.geo.model.Street
+   * @see #setStreet(Street)
+   */
   @SuppressWarnings("unchecked")
   default <T extends Address> T on(Street street) {
     setStreet(street);
     return (T) this;
   }
 
+  /**
+   * Builder method to set the {@link Unit} of this {@link Address}.
+   *
+   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @param unit  {@link Unit} to set.
+   * @return this {@link Address}
+   * @see org.cp.domain.geo.model.Unit
+   * @see #setUnit(Unit)
+   */
   @SuppressWarnings("unchecked")
   default <T extends Address> T in(Unit unit) {
     setUnit(unit);
     return (T) this;
   }
 
+  /**
+   * Builder method to set the {@link City} of this {@link Address}.
+   *
+   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @param city  {@link City} to set.
+   * @return this {@link Address}
+   * @see org.cp.domain.geo.model.City
+   * @see #setCity(City)
+   */
   @SuppressWarnings("unchecked")
   default <T extends Address> T in(City city) {
     setCity(city);
     return (T) this;
   }
 
+  /**
+   * Builder method to set the {@link PostalCode} of this {@link Address}.
+   *
+   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @param postalCode {@link PostalCode} to set.
+   * @return this {@link Address}
+   * @see org.cp.domain.geo.model.PostalCode
+   * @see #setPostalCode(PostalCode)
+   */
   @SuppressWarnings("unchecked")
   default <T extends Address> T in(PostalCode postalCode) {
     setPostalCode(postalCode);
     return (T) this;
   }
 
+  /**
+   * Builder method to set the {@link Country} of this {@link Address}.
+   *
+   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @param country {@link Country} to set.
+   * @return this {@link Address}
+   * @see org.cp.domain.geo.enums.Country
+   * @see #setCountry(Country)
+   */
   @SuppressWarnings("unchecked")
   default <T extends Address> T in(Country country) {
     setCountry(country);
     return (T) this;
   }
 
+  /**
+   * Builder method to set the {@link Country} of this {@link Address}
+   * to this {@link Locale Locale's} {@link Country}.
+   *
+   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @return this {@link Address}
+   * @see org.cp.domain.geo.enums.Country#localCountry()
+   * @see #in(Country)
+   */
+  default <T extends Address> T inLocalCountry() {
+    return in(Country.localCountry());
+  }
+
+  /**
+   * Builder method to set the {@link Coordinates} of this {@link Address}.
+   *
+   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @param coordinates {@link Coordinates} to set.
+   * @return this {@link Address}
+   * @see org.cp.domain.geo.model.Coordinates
+   * @see #setCoordinates(Coordinates)
+   */
   @SuppressWarnings("unchecked")
   default <T extends Address> T with(Coordinates coordinates) {
     setCoordinates(coordinates);
@@ -284,7 +489,6 @@ public interface Address extends Comparable<Address>, Serializable,
   /**
    * The {@link Type} enum is an enumeration of different {@link Address} types.
    */
-  @SuppressWarnings("unused")
   enum Type {
 
     BILLING("BA", "Billing Address"),

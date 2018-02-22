@@ -16,10 +16,10 @@
 
 package org.cp.domain.geo.model;
 
-import static java.util.Arrays.stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -27,11 +27,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.elements.lang.Visitor;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -42,10 +42,8 @@ import org.mockito.junit.MockitoJUnitRunner;
  *
  * @author John Blum
  * @see org.junit.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.domain.geo.enums.Country
  * @see org.cp.domain.geo.model.Address
  * @since 1.0.0
@@ -56,68 +54,232 @@ public class AddressTests {
   @Mock
   private Address mockAddress;
 
-  @Before
-  public void setup() {
-    when(mockAddress.getType()).thenCallRealMethod();
-    doCallRealMethod().when(mockAddress).setType(any(Address.Type.class));
-    when(mockAddress.getUnit()).thenCallRealMethod();
-    doCallRealMethod().when(mockAddress).setUnit(any(Unit.class));
-    doCallRealMethod().when(mockAddress).accept(any(Visitor.class));
-    when(mockAddress.compareTo(any(Address.class))).thenCallRealMethod();
-    when(mockAddress.validate()).thenCallRealMethod();
-    when(mockAddress.as(any(Address.Type.class))).thenCallRealMethod();
-    when(mockAddress.on(any(Street.class))).thenCallRealMethod();
-    when(mockAddress.in(any(Unit.class))).thenCallRealMethod();
-    when(mockAddress.in(any(City.class))).thenCallRealMethod();
-    when(mockAddress.in(any(PostalCode.class))).thenCallRealMethod();
-    when(mockAddress.in(any(Country.class))).thenCallRealMethod();
-    when(mockAddress.with(any(Coordinates.class))).thenCallRealMethod();
+  @SuppressWarnings("unused")
+  private Address mockAddress(Street street, City city, PostalCode postalCode) {
+    return mockAddress(street, null, city, postalCode);
   }
 
   private Address mockAddress(Street street, Unit unit, City city, PostalCode postalCode) {
-    return mockAddress(mock(Address.class), street, unit, city, postalCode);
+    return mockAddress(street, unit, city, postalCode, Country.localCountry());
   }
 
-  private Address mockAddress(Address mockAddress, Street street, Unit unit, City city, PostalCode postalCode) {
+  private Address mockAddress(Street street, Unit unit, City city, PostalCode postalCode, Country country) {
+
+    Address mockAddress = mock(Address.class);
 
     when(mockAddress.getStreet()).thenReturn(street);
     when(mockAddress.getUnit()).thenReturn(Optional.ofNullable(unit));
     when(mockAddress.getCity()).thenReturn(city);
     when(mockAddress.getPostalCode()).thenReturn(postalCode);
-    when(mockAddress.getCountry()).thenReturn(Country.UNITED_STATES_OF_AMERICA);
+    when(mockAddress.getCountry()).thenReturn(country);
 
     return mockAddress;
   }
 
   @Test
-  public void setAndGetTypeReturnsUnknown() {
+  public void setAndGetUnitReturnsEmptyOptional() {
+
+    when(this.mockAddress.getUnit()).thenCallRealMethod();
+
+    assertThat(this.mockAddress.getUnit().isPresent()).isFalse();
+
+    this.mockAddress.setUnit(Unit.of("123"));
+
+    assertThat(this.mockAddress.getUnit().isPresent()).isFalse();
+
+    this.mockAddress.setUnit(null);
+
+    assertThat(this.mockAddress.getUnit().isPresent()).isFalse();
+  }
+
+  @Test
+  public void setAndGetTypeReturnsAddressTypeUnknown() {
+
+    when(this.mockAddress.getType()).thenCallRealMethod();
+
     assertThat(this.mockAddress.getType().orElse(null)).isEqualTo(Address.Type.UNKNOWN);
 
     this.mockAddress.setType(Address.Type.HOME);
 
     assertThat(this.mockAddress.getType().orElse(null)).isEqualTo(Address.Type.UNKNOWN);
 
-    this.mockAddress.setType(Address.Type.OFFICE);
+    this.mockAddress.setType(null);
 
     assertThat(this.mockAddress.getType().orElse(null)).isEqualTo(Address.Type.UNKNOWN);
 
-    this.mockAddress.setType(Address.Type.UNKNOWN);
+    this.mockAddress.setType(Address.Type.PO_BOX);
 
     assertThat(this.mockAddress.getType().orElse(null)).isEqualTo(Address.Type.UNKNOWN);
   }
 
   @Test
-  public void setAndGetUnitReturnsEmptyOptional() {
-    assertThat(this.mockAddress.getUnit()).isEqualTo(Optional.empty());
+  public void isBillingAddressReturnsTrue() {
 
-    this.mockAddress.setUnit(Unit.of("123").as(Unit.Type.OFFICE));
+    when(this.mockAddress.getType()).thenReturn(Optional.of(Address.Type.BILLING));
+    when(this.mockAddress.isBilling()).thenCallRealMethod();
 
-    assertThat(this.mockAddress.getUnit()).isEqualTo(Optional.empty());
+    assertThat(this.mockAddress.isBilling()).isTrue();
+
+    verify(this.mockAddress, times(1)).getType();
   }
 
   @Test
-  public void acceptVisitsTheAddress() {
+  public void isBillingAddressReturnsFalse() {
+
+    Arrays.stream(Address.Type.values())
+      .filter(addressType -> !Address.Type.BILLING.equals(addressType))
+      .forEach(addressType -> {
+
+        when(this.mockAddress.getType()).thenReturn(Optional.of(addressType));
+        when(this.mockAddress.isBilling()).thenCallRealMethod();
+
+        assertThat(this.mockAddress.isBilling()).isFalse();
+
+        verify(this.mockAddress, atLeastOnce()).getType();
+      });
+  }
+
+  @Test
+  public void isHomeAddressReturnsTrue() {
+
+    when(this.mockAddress.getType()).thenReturn(Optional.of(Address.Type.HOME));
+    when(this.mockAddress.isHome()).thenCallRealMethod();
+
+    assertThat(this.mockAddress.isHome()).isTrue();
+
+    verify(this.mockAddress, times(1)).getType();
+  }
+
+  @Test
+  public void isHomeAddressReturnsFalse() {
+
+    Arrays.stream(Address.Type.values())
+      .filter(addressType -> !Address.Type.HOME.equals(addressType))
+      .forEach(addressType -> {
+
+        when(this.mockAddress.getType()).thenReturn(Optional.of(addressType));
+        when(this.mockAddress.isHome()).thenCallRealMethod();
+
+        assertThat(this.mockAddress.isHome()).isFalse();
+
+        verify(this.mockAddress, atLeastOnce()).getType();
+      });
+  }
+
+  @Test
+  public void isMailingAddressReturnsTrue() {
+
+    when(this.mockAddress.getType()).thenReturn(Optional.of(Address.Type.MAILING));
+    when(this.mockAddress.isMailing()).thenCallRealMethod();
+
+    assertThat(this.mockAddress.isMailing()).isTrue();
+
+    verify(this.mockAddress, times(1)).getType();
+  }
+
+  @Test
+  public void isMailingAddressReturnsFalse() {
+
+    Arrays.stream(Address.Type.values())
+      .filter(addressType -> !Address.Type.MAILING.equals(addressType))
+      .forEach(addressType -> {
+
+        when(this.mockAddress.getType()).thenReturn(Optional.of(addressType));
+        when(this.mockAddress.isMailing()).thenCallRealMethod();
+
+        assertThat(this.mockAddress.isMailing()).isFalse();
+
+        verify(this.mockAddress, atLeastOnce()).getType();
+      });
+  }
+
+  @Test
+  public void isOfficeAddressReturnsTrue() {
+
+    when(this.mockAddress.getType()).thenReturn(Optional.of(Address.Type.OFFICE));
+    when(this.mockAddress.isOffice()).thenCallRealMethod();
+
+    assertThat(this.mockAddress.isOffice()).isTrue();
+
+    verify(this.mockAddress, times(1)).getType();
+  }
+
+  @Test
+  public void isOfficeAddressReturnsFalse() {
+
+    Arrays.stream(Address.Type.values())
+      .filter(addressType -> !Address.Type.OFFICE.equals(addressType))
+      .forEach(addressType -> {
+
+        when(this.mockAddress.getType()).thenReturn(Optional.of(addressType));
+        when(this.mockAddress.isOffice()).thenCallRealMethod();
+
+        assertThat(this.mockAddress.isOffice()).isFalse();
+
+        verify(this.mockAddress, atLeastOnce()).getType();
+      });
+  }
+
+  @Test
+  public void isPoBoxAddressReturnsTrue() {
+
+    when(this.mockAddress.getType()).thenReturn(Optional.of(Address.Type.PO_BOX));
+    when(this.mockAddress.isPoBox()).thenCallRealMethod();
+
+    assertThat(this.mockAddress.isPoBox()).isTrue();
+
+    verify(this.mockAddress, times(1)).getType();
+  }
+
+  @Test
+  public void isPoBoxAddressReturnsFalse() {
+
+    Arrays.stream(Address.Type.values())
+      .filter(addressType -> !Address.Type.PO_BOX.equals(addressType))
+      .forEach(addressType -> {
+
+        when(this.mockAddress.getType()).thenReturn(Optional.of(addressType));
+        when(this.mockAddress.isPoBox()).thenCallRealMethod();
+
+        assertThat(this.mockAddress.isPoBox()).isFalse();
+
+        verify(this.mockAddress, atLeastOnce()).getType();
+      });
+  }
+
+  @Test
+  public void isWorkAddressReturnsTrue() {
+
+    when(this.mockAddress.getType()).thenReturn(Optional.of(Address.Type.WORK));
+    when(this.mockAddress.isWork()).thenCallRealMethod();
+
+    assertThat(this.mockAddress.isWork()).isTrue();
+
+    verify(this.mockAddress, times(1)).getType();
+  }
+
+  @Test
+  public void isWorkAddressReturnsFalse() {
+
+    Arrays.stream(Address.Type.values())
+      .filter(addressType -> !Address.Type.WORK.equals(addressType))
+      .forEach(addressType -> {
+
+        when(this.mockAddress.getType()).thenReturn(Optional.of(addressType));
+        when(this.mockAddress.isWork()).thenCallRealMethod();
+
+        assertThat(this.mockAddress.isWork()).isFalse();
+
+        verify(this.mockAddress, atLeastOnce()).getType();
+      });
+  }
+
+  @Test
+  public void acceptVisitsAddress() {
+
     Visitor mockVisitor = mock(Visitor.class);
+
+    doCallRealMethod().when(this.mockAddress).accept(any(Visitor.class));
 
     this.mockAddress.accept(mockVisitor);
 
@@ -126,234 +288,359 @@ public class AddressTests {
 
   @Test
   public void compareToEqualAddressReturnsZero() {
-    Address mockAddress = mockAddress(Street.of(100, "Main").as(Street.Type.STREET),
+
+    Address mockAddressOne = mockAddress(Street.of(100, "Main").as(Street.Type.STREET),
       Unit.of("100").as(Unit.Type.OFFICE), City.of("Portland"), PostalCode.of("97205"));
 
-    mockAddress(this.mockAddress, Street.of(100, "Main").as(Street.Type.STREET), Unit.of("100").as(Unit.Type.OFFICE),
-      City.of("Portland"), PostalCode.of("97205"));
+    Address mockAddressTwo = mockAddress(Street.of(100, "Main").as(Street.Type.STREET),
+      Unit.of("100").as(Unit.Type.OFFICE), City.of("Portland"), PostalCode.of("97205"));
 
-    assertThat(this.mockAddress.compareTo(mockAddress)).isEqualTo(0);
+    when(mockAddressOne.compareTo(any(Address.class))).thenCallRealMethod();
 
-    verify(this.mockAddress, times(1)).getCountry();
-    verify(this.mockAddress, times(1)).getCity();
-    verify(this.mockAddress, times(1)).getPostalCode();
-    verify(this.mockAddress, times(1)).getStreet();
-    verify(this.mockAddress, times(1)).getUnit();
+    assertThat(mockAddressOne).isNotSameAs(mockAddressTwo);
+    assertThat(mockAddressOne.compareTo(mockAddressTwo)).isEqualTo(0);
+
+    Arrays.asList(mockAddressOne, mockAddressTwo).forEach(mockAddress -> {
+      verify(mockAddress, times(1)).getCountry();
+      verify(mockAddress, times(1)).getCity();
+      verify(mockAddress, times(1)).getPostalCode();
+      verify(mockAddress, times(1)).getStreet();
+      verify(mockAddress, times(1)).getUnit();
+    });
   }
 
   @Test
   public void compareToGreaterAddressReturnsNegativeInt() {
-    Address mockAddress = mockAddress(Street.of(100, "Main").as(Street.Type.STREET),
-      Unit.of("100").as(Unit.Type.OFFICE), City.of("Portland"), PostalCode.of("97205"));
 
-    mockAddress(this.mockAddress, Street.of(200, "One").as(Street.Type.WAY), Unit.of("200").as(Unit.Type.SUITE),
-      City.of("Ashland"), PostalCode.of("98765"));
+    Address mockAddressOne = mockAddress(Street.of(100, "Main").as(Street.Type.STREET),
+      Unit.of("100").as(Unit.Type.OFFICE), City.of("Ashland"), PostalCode.of("97205"));
 
-    assertThat(this.mockAddress.compareTo(mockAddress)).isLessThan(0);
+    Address mockAddressTwo = mockAddress(Street.of(200, "One").as(Street.Type.WAY),
+      Unit.of("200").as(Unit.Type.SUITE), City.of("Portland"), PostalCode.of("98765"));
 
-    verify(this.mockAddress, times(1)).getCountry();
-    verify(this.mockAddress, times(1)).getCity();
-    verify(this.mockAddress, times(1)).getPostalCode();
-    verify(this.mockAddress, times(1)).getStreet();
-    verify(this.mockAddress, times(1)).getUnit();
+    when(mockAddressOne.compareTo(any(Address.class))).thenCallRealMethod();
+
+    assertThat(mockAddressOne).isNotSameAs(mockAddressTwo);
+    assertThat(mockAddressOne.compareTo(mockAddressTwo)).isLessThan(0);
+
+    Arrays.asList(mockAddressOne, mockAddressTwo).forEach(mockAddress -> {
+      verify(mockAddress, times(1)).getCountry();
+      verify(mockAddress, times(1)).getCity();
+      verify(mockAddress, times(1)).getPostalCode();
+      verify(mockAddress, times(1)).getStreet();
+      verify(mockAddress, times(1)).getUnit();
+    });
   }
 
   @Test
   public void compareToLesserAddressReturnsPositiveInt() {
+
+    Address mockAddressOne = mockAddress(Street.of(200, "Main").as(Street.Type.STREET),
+      Unit.of("10").as(Unit.Type.SUITE), City.of("Portland"), PostalCode.of("97205"));
+
+    Address mockAddressTwo = mockAddress(Street.of(100, "Main").as(Street.Type.STREET),
+      Unit.of("100").as(Unit.Type.APARTMENT), City.of("Portland"), PostalCode.of("97205"));
+
+    when(mockAddressOne.compareTo(any(Address.class))).thenCallRealMethod();
+
+    assertThat(mockAddressOne).isNotSameAs(mockAddressTwo);
+    assertThat(mockAddressOne.compareTo(mockAddressTwo)).isGreaterThan(0);
+
+    Arrays.asList(mockAddressOne, mockAddressTwo).forEach(mockAddress -> {
+      verify(mockAddress, times(1)).getCountry();
+      verify(mockAddress, times(1)).getCity();
+      verify(mockAddress, times(1)).getPostalCode();
+      verify(mockAddress, times(1)).getStreet();
+      verify(mockAddress, times(1)).getUnit();
+    });
+  }
+
+  @Test
+  public void validateValidAddress() {
+
     Address mockAddress = mockAddress(Street.of(100, "Main").as(Street.Type.STREET),
-      Unit.of("100").as(Unit.Type.SUITE), City.of("Portland"), PostalCode.of("97205"));
+      null, City.of("Portland"), PostalCode.of("97205"), Country.UNITED_STATES_OF_AMERICA);
 
-    mockAddress(this.mockAddress, Street.of(200, "Main").as(Street.Type.STREET), Unit.of("10").as(Unit.Type.APARTMENT),
-      City.of("Portland"), PostalCode.of("97205"));
+    when(mockAddress.validate()).thenCallRealMethod();
 
-    assertThat(this.mockAddress.compareTo(mockAddress)).isGreaterThan(0);
+    assertThat(mockAddress.validate()).isSameAs(mockAddress);
 
-    verify(this.mockAddress, times(1)).getCountry();
-    verify(this.mockAddress, times(1)).getCity();
-    verify(this.mockAddress, times(1)).getPostalCode();
-    verify(this.mockAddress, times(1)).getStreet();
-    verify(this.mockAddress, times(1)).getUnit();
+    verify(mockAddress, times(1)).getStreet();
+    verify(mockAddress, times(1)).getCity();
+    verify(mockAddress, times(1)).getPostalCode();
+    verify(mockAddress, times(1)).getCountry();
+    verify(mockAddress, never()).getType();
+    verify(mockAddress, never()).getUnit();
   }
 
   @Test(expected = IllegalStateException.class)
   public void validateFailsOnStreet() {
-    try {
-      mockAddress(this.mockAddress, null, Unit.EMPTY, City.of("Portland"), PostalCode.of("97205"));
 
-      this.mockAddress.validate();
+    Address mockAddress = mockAddress(null, Unit.EMPTY, City.of("Portland"), PostalCode.of("97205"));
+
+    when(mockAddress.validate()).thenCallRealMethod();
+
+    try {
+      mockAddress.validate();
     }
     catch (IllegalStateException expected) {
+
       assertThat(expected).hasMessage("Street is required");
       assertThat(expected).hasNoCause();
 
       throw expected;
     }
     finally {
-      verify(this.mockAddress, times(1)).getStreet();
-      verify(this.mockAddress, never()).getCity();
-      verify(this.mockAddress, never()).getPostalCode();
-      verify(this.mockAddress, never()).getCountry();
+      verify(mockAddress, times(1)).getStreet();
+      verify(mockAddress, never()).getCity();
+      verify(mockAddress, never()).getPostalCode();
+      verify(mockAddress, never()).getCountry();
+      verify(mockAddress, never()).getType();
+      verify(mockAddress, never()).getUnit();
     }
   }
 
   @Test(expected = IllegalStateException.class)
   public void validateFailsOnCity() {
-    try {
-      mockAddress(this.mockAddress, Street.of(100, "Main").as(Street.Type.STREET), Unit.EMPTY,
-        null, PostalCode.of("97205"));
 
-      this.mockAddress.validate();
+    Address mockAddress = mockAddress(Street.of(100, "Main").as(Street.Type.STREET),
+      Unit.EMPTY, null, PostalCode.of("97205"));
+
+    when(mockAddress.validate()).thenCallRealMethod();
+
+    try {
+      mockAddress.validate();
     }
     catch (IllegalStateException expected) {
+
       assertThat(expected).hasMessage("City is required");
       assertThat(expected).hasNoCause();
 
       throw expected;
     }
     finally {
-      verify(this.mockAddress, times(1)).getStreet();
-      verify(this.mockAddress, times(1)).getCity();
-      verify(this.mockAddress, never()).getPostalCode();
-      verify(this.mockAddress, never()).getCountry();
+      verify(mockAddress, times(1)).getStreet();
+      verify(mockAddress, times(1)).getCity();
+      verify(mockAddress, never()).getPostalCode();
+      verify(mockAddress, never()).getCountry();
+      verify(mockAddress, never()).getType();
+      verify(mockAddress, never()).getUnit();
     }
   }
 
   @Test(expected = IllegalStateException.class)
   public void validateFailsOnPostalCode() {
-    try {
-      mockAddress(this.mockAddress, Street.of(100, "Main").as(Street.Type.STREET), Unit.EMPTY,
-        City.of("Portland"), null);
 
-      this.mockAddress.validate();
+    Address mockAddress = mockAddress(Street.of(100, "Main"), null,
+      City.of("Portland"), null);
+
+    when(mockAddress.validate()).thenCallRealMethod();
+
+    try {
+      mockAddress.validate();
     }
     catch (IllegalStateException expected) {
+
       assertThat(expected).hasMessage("Postal Code is required");
       assertThat(expected).hasNoCause();
 
       throw expected;
     }
     finally {
-      verify(this.mockAddress, times(1)).getStreet();
-      verify(this.mockAddress, times(1)).getCity();
-      verify(this.mockAddress, times(1)).getPostalCode();
-      verify(this.mockAddress, never()).getCountry();
+      verify(mockAddress, times(1)).getStreet();
+      verify(mockAddress, times(1)).getCity();
+      verify(mockAddress, times(1)).getPostalCode();
+      verify(mockAddress, never()).getCountry();
+      verify(mockAddress, never()).getType();
+      verify(mockAddress, never()).getUnit();
     }
   }
 
   @Test(expected = IllegalStateException.class)
   public void validateFailsOnCountry() {
+
+    Address mockAddress = mockAddress(Street.of(100, "Main"),null,
+      City.of("Portland"), PostalCode.of("97205"), null);
+
+    when(mockAddress.validate()).thenCallRealMethod();
+
     try {
-      mockAddress(this.mockAddress, Street.of(100, "Main").as(Street.Type.STREET), Unit.EMPTY,
-        City.of("Portland"), PostalCode.of("97205"));
-
-      when(this.mockAddress.getCountry()).thenReturn(null);
-
-      this.mockAddress.validate();
+      mockAddress.validate();
     }
     catch (IllegalStateException expected) {
+
       assertThat(expected).hasMessage("Country is required");
       assertThat(expected).hasNoCause();
 
       throw expected;
     }
     finally {
-      verify(this.mockAddress, times(1)).getStreet();
-      verify(this.mockAddress, times(1)).getCity();
-      verify(this.mockAddress, times(1)).getPostalCode();
-      verify(this.mockAddress, times(1)).getCountry();
+      verify(mockAddress, times(1)).getStreet();
+      verify(mockAddress, times(1)).getCity();
+      verify(mockAddress, times(1)).getPostalCode();
+      verify(mockAddress, times(1)).getCountry();
+      verify(mockAddress, never()).getType();
+      verify(mockAddress, never()).getUnit();
     }
   }
 
   @Test
-  public void asTypeCallsSetTypeReturnsThis() {
+  public void asTypeCallsSetTypeAndReturnsThis() {
+
+    when(this.mockAddress.as(any(Address.Type.class))).thenCallRealMethod();
+
     assertThat(this.mockAddress.<Address>as(Address.Type.HOME)).isSameAs(this.mockAddress);
+
     verify(this.mockAddress, times(1)).setType(eq(Address.Type.HOME));
   }
 
   @Test
+  public void asBillingCallsSetTypeWithAddressTypeBillingAndReturnsThis() {
+
+    when(this.mockAddress.as(any(Address.Type.class))).thenCallRealMethod();
+    when(this.mockAddress.asBilling()).thenCallRealMethod();
+
+    assertThat(this.mockAddress.<Address>asBilling()).isSameAs(this.mockAddress);
+
+    verify(this.mockAddress, times(1)).setType(eq(Address.Type.BILLING));
+  }
+
+  @Test
+  public void asHomeCallsSetTypeWithAddressTypeHomeAndReturnsThis() {
+
+    when(this.mockAddress.as(any(Address.Type.class))).thenCallRealMethod();
+    when(this.mockAddress.asHome()).thenCallRealMethod();
+
+    assertThat(this.mockAddress.<Address>asHome()).isSameAs(this.mockAddress);
+
+    verify(this.mockAddress, times(1)).setType(eq(Address.Type.HOME));
+  }
+
+  @Test
+  public void asMailingCallsSetTypeWithAddressTypeMailingAndReturnsThis() {
+
+    when(this.mockAddress.as(any(Address.Type.class))).thenCallRealMethod();
+    when(this.mockAddress.asMailing()).thenCallRealMethod();
+
+    assertThat(this.mockAddress.<Address>asMailing()).isSameAs(this.mockAddress);
+
+    verify(this.mockAddress, times(1)).setType(eq(Address.Type.MAILING));
+  }
+
+  @Test
+  public void asOfficeCallsSetTypeWithAddressTypeOfficeAndReturnsThis() {
+
+    when(this.mockAddress.as(any(Address.Type.class))).thenCallRealMethod();
+    when(this.mockAddress.asOffice()).thenCallRealMethod();
+
+    assertThat(this.mockAddress.<Address>asOffice()).isSameAs(this.mockAddress);
+
+    verify(this.mockAddress, times(1)).setType(eq(Address.Type.OFFICE));
+  }
+
+  @Test
+  public void asPoBoxCallsSetTypeWithAddressTypePoBoxAndReturnsThis() {
+
+    when(this.mockAddress.as(any(Address.Type.class))).thenCallRealMethod();
+    when(this.mockAddress.asPoBox()).thenCallRealMethod();
+
+    assertThat(this.mockAddress.<Address>asPoBox()).isSameAs(this.mockAddress);
+
+    verify(this.mockAddress, times(1)).setType(eq(Address.Type.PO_BOX));
+  }
+
+  @Test
+  public void asWorkCallsSetTypeWithAddressTypeWorkAndReturnsThis() {
+
+    when(this.mockAddress.as(any(Address.Type.class))).thenCallRealMethod();
+    when(this.mockAddress.asWork()).thenCallRealMethod();
+
+    assertThat(this.mockAddress.<Address>asWork()).isSameAs(this.mockAddress);
+
+    verify(this.mockAddress, times(1)).setType(eq(Address.Type.WORK));
+  }
+
+  @Test
   public void onStreetCallsSetStreetReturnsThis() {
-    Street expectedStreet = Street.of(100, "Main").as(Street.Type.AVENUE);
+
+    Street expectedStreet = Street.of(100, "Main").as(Street.Type.STREET);
+
+    when(this.mockAddress.on(any(Street.class))).thenCallRealMethod();
 
     assertThat(this.mockAddress.<Address>on(expectedStreet)).isSameAs(this.mockAddress);
+
     verify(this.mockAddress, times(1)).setStreet(eq(expectedStreet));
   }
 
   @Test
   public void inUnitCallsSetUnitReturnsThis() {
+
     Unit expectedUnit = Unit.of("123").as(Unit.Type.OFFICE);
 
+    when(this.mockAddress.in(any(Unit.class))).thenCallRealMethod();
+
     assertThat(this.mockAddress.<Address>in(expectedUnit)).isSameAs(this.mockAddress);
+
     verify(this.mockAddress, times(1)).setUnit(eq(expectedUnit));
   }
 
   @Test
   public void inCityCallsSetCityReturnsThis() {
+
     City expectedCity = City.of("Portland");
 
+    when(this.mockAddress.in(any(City.class))).thenCallRealMethod();
+
     assertThat(this.mockAddress.<Address>in(expectedCity)).isSameAs(this.mockAddress);
+
     verify(this.mockAddress, times(1)).setCity(eq(expectedCity));
   }
 
   @Test
   public void inPostalCodeCallsSetPostalCodeReturnsThis() {
+
     PostalCode expectedPostalCode = PostalCode.of("12345");
 
+    when(this.mockAddress.in(any(PostalCode.class))).thenCallRealMethod();
+
     assertThat(this.mockAddress.<Address>in(expectedPostalCode)).isSameAs(this.mockAddress);
+
     verify(this.mockAddress, times(1)).setPostalCode(eq(expectedPostalCode));
   }
 
   @Test
   public void inCountryCallsSetCountryReturnsThis() {
+
     Country expectedCountry = Country.UNITED_KINGDOM;
 
+    when(this.mockAddress.in(any(Country.class))).thenCallRealMethod();
+
     assertThat(this.mockAddress.<Address>in(expectedCountry)).isSameAs(this.mockAddress);
+
     verify(this.mockAddress, times(1)).setCountry(eq(expectedCountry));
   }
 
   @Test
+  public void inLocalCountry() {
+
+    when(this.mockAddress.in(any(Country.class))).thenCallRealMethod();
+    when(this.mockAddress.inLocalCountry()).thenCallRealMethod();
+
+    assertThat(this.mockAddress.<Address>inLocalCountry()).isSameAs(this.mockAddress);
+
+    verify(this.mockAddress, times(1)).in(eq(Country.localCountry()));
+    verify(this.mockAddress, times(1)).setCountry(eq(Country.localCountry()));
+  }
+
+  @Test
   public void withCoordinatesCallsSetCoordinatesReturnsThis() {
+
     Coordinates expectedCoordinates = Coordinates.of(1.012489753, 10.2501248);
 
+    when(this.mockAddress.with(any(Coordinates.class))).thenCallRealMethod();
+
     assertThat(this.mockAddress.<Address>with(expectedCoordinates)).isSameAs(this.mockAddress);
+
     verify(this.mockAddress, times(1)).setCoordinates(eq(expectedCoordinates));
-  }
-
-  @Test
-  public void addressTypeAbbreviations() {
-    assertThat(Address.Type.BILLING.getAbbreviation()).isEqualTo("BA");
-    assertThat(Address.Type.HOME.getAbbreviation()).isEqualTo("HA");
-    assertThat(Address.Type.MAILING.getAbbreviation()).isEqualTo("MA");
-    assertThat(Address.Type.OFFICE.getAbbreviation()).isEqualTo("OA");
-    assertThat(Address.Type.PO_BOX.getAbbreviation()).isEqualTo("PO");
-    assertThat(Address.Type.WORK.getAbbreviation()).isEqualTo("WA");
-    assertThat(Address.Type.UNKNOWN.getAbbreviation()).isEqualTo("??");
-  }
-
-  @Test
-  public void addressTypeDescriptions() {
-    assertThat(Address.Type.BILLING.getDescription()).isEqualTo("Billing Address");
-    assertThat(Address.Type.HOME.getDescription()).isEqualTo("Home Address");
-    assertThat(Address.Type.MAILING.getDescription()).isEqualTo("Mailing Address");
-    assertThat(Address.Type.OFFICE.getDescription()).isEqualTo("Office Address");
-    assertThat(Address.Type.PO_BOX.getDescription()).isEqualTo("Post Office Box");
-    assertThat(Address.Type.WORK.getDescription()).isEqualTo("Work Address");
-    assertThat(Address.Type.UNKNOWN.getDescription()).isEqualTo("Unknown");
-  }
-
-  @Test
-  public void addressTypeToStringIsSameAsDecription() {
-    assertThat(Address.Type.BILLING.toString()).isEqualTo(Address.Type.BILLING.getDescription());
-    assertThat(Address.Type.HOME.toString()).isEqualTo(Address.Type.HOME.getDescription());
-    assertThat(Address.Type.MAILING.toString()).isEqualTo(Address.Type.MAILING.getDescription());
-    assertThat(Address.Type.OFFICE.toString()).isEqualTo(Address.Type.OFFICE.getDescription());
-    assertThat(Address.Type.PO_BOX.toString()).isEqualTo(Address.Type.PO_BOX.getDescription());
-    assertThat(Address.Type.WORK.toString()).isEqualTo(Address.Type.WORK.getDescription());
-    assertThat(Address.Type.UNKNOWN.toString()).isEqualTo(Address.Type.UNKNOWN.getDescription());
-  }
-
-  @Test
-  public void addressTypeValueOfAbbreviationIsCorrect() {
-    stream(Address.Type.values()).forEach(addressType ->
-      assertThat(Address.Type.valueOfAbbreviation(addressType.getAbbreviation())).isSameAs(addressType));
   }
 }
