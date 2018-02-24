@@ -46,12 +46,12 @@ public class AddressTypeTests {
   @Test
   public void addressTypeDescriptions() {
 
-    assertThat(Address.Type.BILLING.getDescription()).isEqualTo("Billing Address");
-    assertThat(Address.Type.HOME.getDescription()).isEqualTo("Home Address");
-    assertThat(Address.Type.MAILING.getDescription()).isEqualTo("Mailing Address");
-    assertThat(Address.Type.OFFICE.getDescription()).isEqualTo("Office Address");
+    assertThat(Address.Type.BILLING.getDescription()).isEqualTo("Billing");
+    assertThat(Address.Type.HOME.getDescription()).isEqualTo("Home");
+    assertThat(Address.Type.MAILING.getDescription()).isEqualTo("Mailing");
+    assertThat(Address.Type.OFFICE.getDescription()).isEqualTo("Office");
     assertThat(Address.Type.PO_BOX.getDescription()).isEqualTo("Post Office Box");
-    assertThat(Address.Type.WORK.getDescription()).isEqualTo("Work Address");
+    assertThat(Address.Type.WORK.getDescription()).isEqualTo("Work");
     assertThat(Address.Type.UNKNOWN.getDescription()).isEqualTo("Unknown");
   }
 
