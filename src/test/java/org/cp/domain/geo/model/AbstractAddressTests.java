@@ -23,7 +23,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.model.generic.GenericAddress;
@@ -36,7 +38,10 @@ import org.junit.Test;
  * @author John Blum
  * @see org.junit.Test
  * @see org.mockito.Mockito
+ * @see org.cp.domain.geo.enums.Country
  * @see org.cp.domain.geo.model.AbstractAddress
+ * @see org.cp.domain.geo.model.generic.GenericAddress
+ * @see org.cp.domain.geo.model.usa.UnitedStatesAddress
  * @since 1.0.0
  */
 public class AbstractAddressTests {
@@ -83,7 +88,7 @@ public class AbstractAddressTests {
   }
 
   @Test
-  public void ofSreetCityPostalCodeAndCountry() {
+  public void ofStreetCityPostalCodeAndCountry() {
 
     City city = City.of("Portland");
     PostalCode postalCode = PostalCode.of("97205");
@@ -228,5 +233,246 @@ public class AbstractAddressTests {
     address.setUnit(null);
 
     assertThat(address.getUnit().isPresent()).isFalse();
+  }
+
+  @Test
+  public void setAndGetCity() {
+
+    Address address = AbstractAddress.newAddress();
+
+    City newYork = City.of("New York");
+    City portland = City.of("Portland");
+
+    assertThat(address).isNotNull();
+    assertThat(address.getCity()).isNull();
+
+    address.setCity(newYork);
+
+    assertThat(address.getCity()).isEqualTo(newYork);
+    assertThat(address.<Address>in(portland)).isSameAs(address);
+    assertThat(address.getCity()).isEqualTo(portland);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setCityToNullThrowsIllegalArgumentException() {
+
+    try {
+      AbstractAddress.newAddress().setCity(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("City is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  public void setAndGetPostalCode() {
+
+    Address address = AbstractAddress.newAddress();
+
+    PostalCode postalCodeOne = PostalCode.of("12345");
+    PostalCode postalCodeTwo = PostalCode.of("54321");
+
+    assertThat(address).isNotNull();
+    assertThat(address.getPostalCode()).isNull();
+
+    address.setPostalCode(postalCodeOne);
+
+    assertThat(address.getPostalCode()).isEqualTo(postalCodeOne);
+    assertThat(address.<Address>in(postalCodeTwo)).isSameAs(address);
+    assertThat(address.getPostalCode()).isEqualTo(postalCodeTwo);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setPostalCodeToNullThrowsIllegalArgumentException() {
+
+    try {
+      AbstractAddress.newAddress().setPostalCode(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Postal Code is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  public void setAndGetCountry() {
+
+    Address address = AbstractAddress.newAddress(null);
+
+    Country canada = Country.CANADA;
+    Country unitedStates = Country.UNITED_STATES_OF_AMERICA;
+
+    assertThat(address).isNotNull();
+    assertThat(address.getCountry()).isNull();
+
+    address.setCountry(unitedStates);
+
+    assertThat(address.getCountry()).isEqualTo(unitedStates);
+    assertThat(address.<Address>in(canada)).isSameAs(address);
+    assertThat(address.getCountry()).isEqualTo(canada);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setCountryToNullThrowsIllegalArgumentException() {
+
+    try {
+      AbstractAddress.newAddress().setCountry(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Country is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  public void setAndGetCoordinates() {
+
+    Address address = AbstractAddress.newAddress();
+
+    Coordinates coordinatesOne = Coordinates.of(1.0d, 1.0d);
+    Coordinates coordinatesTwo = Coordinates.of(2.0d, 2.0d);
+
+    assertThat(address).isNotNull();
+    assertThat(address.getCoordinates().isPresent()).isFalse();
+
+    address.setCoordinates(coordinatesOne);
+
+    assertThat(address.getCoordinates().orElse(null)).isEqualTo(coordinatesOne);
+    assertThat(address.<Address>with(coordinatesTwo)).isSameAs(address);
+    assertThat(address.getCoordinates().orElse(null)).isEqualTo(coordinatesTwo);
+
+    address.setCoordinates(null);
+
+    assertThat(address.getCoordinates().isPresent()).isFalse();
+  }
+
+  @Test
+  public void setAndGetType() {
+
+    Address address = AbstractAddress.newAddress();
+
+    assertThat(address).isNotNull();
+    assertThat(address.getType().orElse(null)).isEqualTo(Address.Type.UNKNOWN);
+
+    address.setType(Address.Type.HOME);
+
+    assertThat(address.getType().orElse(null)).isEqualTo(Address.Type.HOME);
+    assertThat(address.<Address>as(Address.Type.WORK)).isSameAs(address);
+    assertThat(address.getType().orElse(null)).isEqualTo(Address.Type.WORK);
+
+    address.setType(null);
+
+    assertThat(address.getType().orElse(null)).isEqualTo(Address.Type.UNKNOWN);
+  }
+
+  @Test
+  public void differentAddressesAreNotEqual() {
+
+    Street street = Street.of(100, "Main").as(Street.Type.AVENUE);
+    City city = City.of("Portland");
+    PostalCode postalCode = PostalCode.of("97205");
+
+    Address addressOne = AbstractAddress.of(street, city, postalCode, Country.UNITED_STATES_OF_AMERICA)
+      .in(Unit.of("A100").as(Unit.Type.APARTMENT))
+      .asOffice();
+
+    Address addressTwo = AbstractAddress.of(street, city, postalCode, Country.UNITED_KINGDOM)
+      .in(Unit.of("S2100").as(Unit.Type.SUITE))
+      .asWork();
+
+    assertThat(addressOne).isNotNull();
+    assertThat(addressTwo).isNotNull();
+    assertThat(addressOne).isNotSameAs(addressTwo);
+    assertThat(addressOne).isNotEqualTo(addressTwo);
+  }
+
+  @Test
+  public void equalAddressesAreEqual() {
+
+    Street street = Street.of(100, "Main").as(Street.Type.AVENUE);
+    Unit unit = Unit.of("S2100").as(Unit.Type.SUITE);
+    City city = City.of("Portland");
+    PostalCode postalCode = PostalCode.of("97205");
+    Country country = Country.CANADA;
+
+    Address addressOne = AbstractAddress.of(street, city, postalCode, country).in(unit).asBilling();
+    Address addressTwo = AbstractAddress.of(street, city, postalCode, country).in(unit).asMailing();
+
+    assertThat(addressOne).isNotNull();
+    assertThat(addressTwo).isNotNull();
+    assertThat(addressOne).isNotSameAs(addressTwo);
+    assertThat(addressOne).isEqualTo(addressTwo);
+  }
+
+  @Test
+  public void equalToNullReturnsFalse() {
+
+    Address address = AbstractAddress.of(Street.of(100, "One").as(Street.Type.WAY),
+      City.of("Portland"), PostalCode.of("123"), Country.UNITED_STATES_OF_AMERICA);
+
+    assertThat(address).isNotEqualTo(null);
+  }
+
+  @Test
+  public void identicalAddressIsEqualToItself() {
+
+    Street street = Street.of(100, "Main").as(Street.Type.AVENUE);
+    Unit unit = Unit.of("S2100").as(Unit.Type.SUITE);
+    City city = City.of("Portland");
+    PostalCode postalCode = PostalCode.of("97205");
+    Country country = Country.UNITED_STATES_OF_AMERICA;
+
+    Address address = AbstractAddress.of(street, city, postalCode, country).in(unit).asOffice();
+
+    assertThat(address).isNotNull();
+    assertThat(address).isSameAs(address);
+    assertThat(address).isEqualTo(address);
+  }
+
+  @Test
+  public void hashCodeOfAddressIsCorrect() {
+
+    Set<Integer> hashCodes = new HashSet<>();
+
+    Address address = AbstractAddress.newAddress(Country.UNITED_STATES_OF_AMERICA)
+      .on(Street.of(100, "Main").as(Street.Type.AVENUE))
+      .in(City.of("Portland"))
+      .in(PostalCode.of("12345"));
+
+    hashCodes.add(address.hashCode());
+    hashCodes.add(address.in(Unit.of("A100").as(Unit.Type.APARTMENT)).hashCode());
+    hashCodes.add(address.asBilling().hashCode());
+    hashCodes.add(address.in(PostalCode.of("97205")).hashCode());
+    hashCodes.add(address.asMailing().hashCode());
+    hashCodes.add(address.in(Country.UNITED_KINGDOM).hashCode());
+
+    assertThat(hashCodes).hasSize(4);
+
+    hashCodes.forEach(hashCode -> assertThat(hashCode).isNotZero());
+  }
+
+  @Test
+  public void toStringReturnsAddressStringRepresentation() {
+
+    Address address = AbstractAddress.newAddress(Country.CANADA)
+      .on(Street.of(100, "One").as(Street.Type.WAY))
+      .in(Unit.of("S2100").as(Unit.Type.SUITE))
+      .in(City.of("Portland"))
+      .in(PostalCode.of("97205"))
+      .asOffice();
+
+    assertThat(address.toString()).isEqualTo(String.format(
+      "{ @type = %s, street = 100 One WY, unit = Suite S2100, city = Portland, postal code = 97205, country = CANADA, type = Office }",
+        address.getClass().getName()));
   }
 }

@@ -63,7 +63,7 @@ import org.cp.elements.lang.annotation.NullSafe;
 public abstract class AbstractAddress implements Address {
 
   protected static final String ADDRESS_TO_STRING =
-    "{ @type = %1$s, street = %2$s, unit = %3$s, city = %4$s, postalCode = %5$s, country = %6$s, type = %7$s }";
+    "{ @type = %1$s, street = %2$s, unit = %3$s, city = %4$s, postal code = %5$s, country = %6$s, type = %7$s }";
 
   /**
    * Factory method used to construct a new instance of {@link AbstractAddress} based in the {@link Country}
@@ -412,8 +412,8 @@ public abstract class AbstractAddress implements Address {
 
     return ObjectUtils.equals(this.getStreet(), that.getStreet())
       && ObjectUtils.equals(this.getUnit(), that.getUnit())
-      && ObjectUtils.equals(this.getCity(), that.getCity())
       && ObjectUtils.equals(this.getPostalCode(), that.getPostalCode())
+      && ObjectUtils.equals(this.getCity(), that.getCity())
       && ObjectUtils.equals(this.getCountry(), that.getCountry());
   }
 
@@ -430,8 +430,8 @@ public abstract class AbstractAddress implements Address {
 
     hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getStreet());
     hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getUnit());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getCity());
     hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getPostalCode());
+    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getCity());
     hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getCountry());
 
     return hashValue;
@@ -447,6 +447,7 @@ public abstract class AbstractAddress implements Address {
   @Override
   public String toString() {
     return String.format(ADDRESS_TO_STRING,
-        getClass().getName(), getStreet(), getUnit(), getCity(), getPostalCode(), getCountry(), getType());
+      getClass().getName(), getStreet(), getUnit().orElse(null), getCity(), getPostalCode(), getCountry(),
+        getType().orElse(null));
   }
 }
