@@ -491,12 +491,12 @@ public interface Address extends Cloneable, Comparable<Address>, Serializable,
    */
   enum Type {
 
-    BILLING("BA", "Billing Address"),
-    HOME("HA", "Home Address"),
-    MAILING("MA", "Mailing Address"),
-    OFFICE("OA", "Office Address"),
+    BILLING("BA", "Billing"),
+    HOME("HA", "Home"),
+    MAILING("MA", "Mailing"),
+    OFFICE("OA", "Office"),
     PO_BOX("PO", "Post Office Box"),
-    WORK("WA", "Work Address"),
+    WORK("WA", "Work"),
     UNKNOWN("??", "Unknown");
 
     /**
