@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import org.cp.domain.geo.enums.Country;
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.util.ComparatorResultBuilder;
@@ -39,21 +40,16 @@ import org.cp.elements.util.ComparatorResultBuilder;
 @SuppressWarnings("unused")
 public class Street implements Comparable<Street>, Serializable {
 
-  private Integer number;
-
-  private String name;
-
-  private Type type;
-
   /**
    * Factory method used to construct a new instance of {@link Street} initialized with
    * the given {@link Integer number} and {@link String name}.
    *
    * @param number {@link Integer} containing the {@link Street} number.
-   * @param name {@link String} containing the name of the new {@link Street}.
+   * @param name {@link String} containing the {@link Street} name.
    * @return a new {@link Street} initialized with the given {@link Integer number} and {@link String name}.
    * @throws IllegalArgumentException if either {@link Integer number} or {@link String name} is {@literal null}
-   * or {@link String name} is empty.
+   * or {@link String name} is {@link String#isEmpty() empty}.
+   * @see org.cp.domain.geo.model.Street
    * @see #Street(Integer, String)
    */
   public static Street of(Integer number, String name) {
@@ -61,59 +57,71 @@ public class Street implements Comparable<Street>, Serializable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Street} from the given {@link Street}.
+   * Factory method used to construct a new instance of {@link Street} copied from the given {@link Street}.
    *
    * @param street {@link Street} to copy; must not be {@literal null}.
-   * @return a new {@link Street} from the given {@link Street}.
+   * @return a new {@link Street} copied from the given {@link Street}.
    * @throws IllegalArgumentException if the {@link Street} to copy is {@literal null}.
    * @see org.cp.domain.geo.model.Street
    * @see #of(Integer, String)
    */
   public static Street from(Street street) {
+
+    Assert.notNull(street, "The Street to copy is required");
+
     return of(street.getNumber(), street.getName()).as(street.getType().orElse(null));
   }
+
+  private Integer number;
+
+  private String name;
+
+  private Type type;
 
   /**
    * Constructs a new instance of {@link Street} initialized with the given {@link Integer number}
    * and {@link String name}.
    *
    * @param number {@link Integer} containing the {@link Street} number.
-   * @param name {@link String} containing the name of the new {@link Street}.
+   * @param name {@link String} containing the {@link Street} name.
    * @throws IllegalArgumentException if either {@link Integer number} or {@link String name} is {@literal null}
-   * or {@link String name} is empty.
+   * or {@link String name} is {@link String#isEmpty() empty}.
    */
   public Street(Integer number, String name) {
 
-    this.number = Optional.ofNullable(number)
-      .orElseThrow(() -> newIllegalArgumentException("Number is required"));
+    Assert.notNull(number, "Street number is required");
+    Assert.hasText(name, "Street name [%s] is required", name);
 
-    this.name = Optional.ofNullable(name).filter(StringUtils::hasText)
-      .orElseThrow(() -> newIllegalArgumentException("Name is required"));
+    this.number = number;
+    this.name = name;
   }
 
   /**
    * Returns the {@link String name} of this {@link Street}.
    *
    * @return the {@link String name} of this {@link Street}.
+   * @see java.lang.String
    */
   public String getName() {
-    return name;
+    return this.name;
   }
 
   /**
    * Returns the {@link Integer number} on this {@link Street}.
    *
    * @return the {@link Integer number} on this {@link Street}.
+   * @see java.lang.Integer
    */
   public Integer getNumber() {
     return this.number;
   }
 
   /**
-   * Returns the {@link Type} of this {@link Street}.
+   * Returns an {@link Optional} {@link Type} of this {@link Street}.
    *
-   * @return the {@link Type} of this {@link Street}.
+   * @return an {@link Optional} {@link Type} of this {@link Street}.
    * @see org.cp.domain.geo.model.Street.Type
+   * @see java.util.Optional
    */
   public Optional<Type> getType() {
     return Optional.ofNullable(this.type);
@@ -129,6 +137,105 @@ public class Street implements Comparable<Street>, Serializable {
   public Street as(Type type) {
     this.type = type;
     return this;
+  }
+
+  /**
+   * Sets the {@link Type} of this {@link Street} to {@link Street.Type#AVENUE}.
+   *
+   * @return this {@link Street}.
+   * @see org.cp.domain.geo.model.Street.Type#AVENUE
+   * @see #as(Type)
+   */
+  public Street asAvenue() {
+    return as(Type.AVENUE);
+  }
+
+  /**
+   * Sets the {@link Type} of this {@link Street} to {@link Street.Type#BOULEVARD}.
+   *
+   * @return this {@link Street}.
+   * @see org.cp.domain.geo.model.Street.Type#BOULEVARD
+   * @see #as(Type)
+   */
+  public Street asBoulevard() {
+    return as(Type.BOULEVARD);
+  }
+
+  /**
+   * Sets the {@link Type} of this {@link Street} to {@link Street.Type#DRIVE}.
+   *
+   * @return this {@link Street}.
+   * @see org.cp.domain.geo.model.Street.Type#DRIVE
+   * @see #as(Type)
+   */
+  public Street asDrive() {
+    return as(Type.DRIVE);
+  }
+
+  /**
+   * Sets the {@link Type} of this {@link Street} to {@link Street.Type#HIGHWAY}.
+   *
+   * @return this {@link Street}.
+   * @see org.cp.domain.geo.model.Street.Type#HIGHWAY
+   * @see #as(Type)
+   */
+  public Street asHighway() {
+    return as(Type.HIGHWAY);
+  }
+
+  /**
+   * Sets the {@link Type} of this {@link Street} to {@link Street.Type#LANE}.
+   *
+   * @return this {@link Street}.
+   * @see org.cp.domain.geo.model.Street.Type#LANE
+   * @see #as(Type)
+   */
+  public Street asLane() {
+    return as(Type.LANE);
+  }
+
+  /**
+   * Sets the {@link Type} of this {@link Street} to {@link Street.Type#ROAD}.
+   *
+   * @return this {@link Street}.
+   * @see org.cp.domain.geo.model.Street.Type#ROAD
+   * @see #as(Type)
+   */
+  public Street asRoad() {
+    return as(Type.ROAD);
+  }
+
+  /**
+   * Sets the {@link Type} of this {@link Street} to {@link Street.Type#ROUTE}.
+   *
+   * @return this {@link Street}.
+   * @see org.cp.domain.geo.model.Street.Type#ROUTE
+   * @see #as(Type)
+   */
+  public Street asRoute() {
+    return as(Type.ROUTE);
+  }
+
+  /**
+   * Sets the {@link Type} of this {@link Street} to {@link Street.Type#STREET}.
+   *
+   * @return this {@link Street}.
+   * @see org.cp.domain.geo.model.Street.Type#STREET
+   * @see #as(Type)
+   */
+  public Street asStreet() {
+    return as(Type.STREET);
+  }
+
+  /**
+   * Sets the {@link Type} of this {@link Street} to {@link Street.Type#WAY}.
+   *
+   * @return this {@link Street}.
+   * @see org.cp.domain.geo.model.Street.Type#WAY
+   * @see #as(Type)
+   */
+  public Street asWay() {
+    return as(Type.WAY);
   }
 
   /**
@@ -202,6 +309,7 @@ public class Street implements Comparable<Street>, Serializable {
    *
    * @return a {@link String} describing this {@link Street}.
    * @see java.lang.Object#toString()
+   * @see java.lang.String
    */
   @Override
   public String toString() {
@@ -210,10 +318,11 @@ public class Street implements Comparable<Street>, Serializable {
   }
 
   /**
-   * The {@link Type} enum is a enumeration of {@link Street} suffixes recognized around the World.
+   * The {@link Type} {@link Class#isEnum()} enum is a enumeration of {@link Street} suffixes
+   * recognized around the World.
    *
-   * NOTE: not every {@link Country countries} may recognize all {@link Street} suffixes
-   * and this is not a complete list and only represents some of the more common types.
+   * NOTE: not every {@link Country} may recognize all {@link Street} suffixes nor is this a complete list,
+   * only representing some of the more common types.
    *
    * @see <a href="https://en.wikipedia.org/wiki/Street_suffix">Street Suffixes</a>
    */
@@ -222,7 +331,7 @@ public class Street implements Comparable<Street>, Serializable {
     ALLEY("ALY", "Alley"),
     AVENUE("AVE", "Avenue"),
     BOULEVARD("BLVD", "Boulevard"),
-    CIRCLE("CR", "Circle"),
+    CIRCLE("CRCL", "Circle"),
     COURT("CT", "Court"),
     DRIVE("DR", "Drive"),
     HIGHWAY("HWY", "Highway"),
@@ -285,7 +394,7 @@ public class Street implements Comparable<Street>, Serializable {
      * @return the {@link String abbreviation} for this {@link Street} {@link Type}.
      */
     public String getAbbreviation() {
-      return abbreviation;
+      return this.abbreviation;
     }
 
     /**
@@ -294,7 +403,7 @@ public class Street implements Comparable<Street>, Serializable {
      * @return the {@link String name} for this {@link Street} {@link Type}.
      */
     public String getName() {
-      return name;
+      return this.name;
     }
 
     /**
