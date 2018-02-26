@@ -16,8 +16,9 @@
 
 package org.cp.domain.geo.model;
 
-import static java.util.Arrays.stream;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -58,19 +59,14 @@ public class AddressTypeTests {
   @Test
   public void addressTypeToStringIsSameAsDescription() {
 
-    assertThat(Address.Type.BILLING.toString()).isEqualTo(Address.Type.BILLING.getDescription());
-    assertThat(Address.Type.HOME.toString()).isEqualTo(Address.Type.HOME.getDescription());
-    assertThat(Address.Type.MAILING.toString()).isEqualTo(Address.Type.MAILING.getDescription());
-    assertThat(Address.Type.OFFICE.toString()).isEqualTo(Address.Type.OFFICE.getDescription());
-    assertThat(Address.Type.PO_BOX.toString()).isEqualTo(Address.Type.PO_BOX.getDescription());
-    assertThat(Address.Type.WORK.toString()).isEqualTo(Address.Type.WORK.getDescription());
-    assertThat(Address.Type.UNKNOWN.toString()).isEqualTo(Address.Type.UNKNOWN.getDescription());
+    Arrays.stream(Address.Type.values()).forEach(addressType ->
+      assertThat(addressType.toString()).isEqualTo(addressType.getDescription()));
   }
 
   @Test
   public void addressTypeValueOfAbbreviationIsCorrect() {
 
-    stream(Address.Type.values()).forEach(addressType ->
+    Arrays.stream(Address.Type.values()).forEach(addressType ->
       assertThat(Address.Type.valueOfAbbreviation(addressType.getAbbreviation())).isSameAs(addressType));
   }
 }
