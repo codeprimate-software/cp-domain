@@ -16,15 +16,12 @@
 
 package org.cp.domain.geo.model;
 
-import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
-
 import java.io.Serializable;
 import java.util.Optional;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.Immutable;
 import org.cp.elements.util.ComparatorResultBuilder;
 
@@ -34,6 +31,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  *
  * @author John Blum
  * @see java.io.Serializable
+ * @see java.lang.Cloneable
  * @see java.lang.Comparable
  * @see org.cp.domain.geo.enums.Country
  * @see org.cp.elements.lang.annotation.Immutable
@@ -41,7 +39,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  */
 @Immutable
 @SuppressWarnings("unused")
-public class PostalCode implements Comparable<PostalCode>, Serializable {
+public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializable {
 
   private final String number;
 
@@ -49,7 +47,7 @@ public class PostalCode implements Comparable<PostalCode>, Serializable {
    * Factory method used to construct a new instance of {@link PostalCode} initialized with
    * the given {@link String number}.
    *
-   * @param number {@link String} containing the {@link PostalCode} number.
+   * @param number {@link String} containing the number for the {@link PostalCode}.
    * @return a new {@link PostalCode} initialized with the given {@link String number}.
    * @throws IllegalArgumentException if the {@link String number} is {@literal null} or empty.
    * @see #PostalCode(String)
@@ -63,14 +61,15 @@ public class PostalCode implements Comparable<PostalCode>, Serializable {
    * existing {@link PostalCode}.
    *
    * @param postalCode {@link PostalCode} to copy; must not be {@literal null}.
-   * @return an new {@link PostalCode} copied from the given {@link PostalCode}.
+   * @return a new {@link PostalCode} copied from the given {@link PostalCode}.
    * @throws IllegalArgumentException if the {@link PostalCode} to copy is {@literal null}.
+   * @see org.cp.domain.geo.model.PostalCode#getNumber()
    * @see org.cp.domain.geo.model.PostalCode
    * @see #of(String)
    */
   public static PostalCode from(PostalCode postalCode) {
 
-    Assert.notNull(postalCode, "PostalCode must not be null");
+    Assert.notNull(postalCode, "Postal Code is required");
 
     return of(postalCode.getNumber());
   }
@@ -82,12 +81,14 @@ public class PostalCode implements Comparable<PostalCode>, Serializable {
    * @throws IllegalArgumentException if the {@link String number} is {@literal null} or empty.
    */
   public PostalCode(String number) {
-    this.number = Optional.ofNullable(number).filter(StringUtils::hasText)
-      .orElseThrow(() -> newIllegalArgumentException("Number [%s] is required"));
+
+    Assert.hasText(number, "Postal Code number [%s] is required", number);
+
+    this.number = number;
   }
 
   /**
-   * Returns a {@link Optional} {@link Country} to which this {@link PostalCode} belongs.
+   * Returns an {@link Optional} {@link Country} to which this {@link PostalCode} belongs.
    *
    * @return an {@link Optional} {@link Country} to which this {@link PostalCode} belongs.
    * @see org.cp.domain.geo.enums.Country
@@ -105,6 +106,19 @@ public class PostalCode implements Comparable<PostalCode>, Serializable {
    */
   public String getNumber() {
     return this.number;
+  }
+
+  /**
+   * Clone this {@link PostalCode}.
+   *
+   * @return a clone of this {@link PostalCode}.
+   * @see java.lang.Object#clone()
+   * @see #from(PostalCode)
+   */
+  @Override
+  @SuppressWarnings("all")
+  public Object clone() throws CloneNotSupportedException {
+    return from(this);
   }
 
   /**
