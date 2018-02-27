@@ -28,37 +28,92 @@ import org.cp.elements.lang.StringUtils;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
- * The {@link Unit} class is an Abstract Data Type (ADT) that models an apartment, office or suite
+ * The {@link Unit} class is an Abstract Data Type (ADT) that models an apartment, office, room or suite
  * at a particular postal {@link Address}.
  *
  * @author John Blum
  * @see java.io.Serializable
+ * @see java.lang.Cloneable
  * @see java.lang.Comparable
  * @see org.cp.domain.geo.model.Address
  * @see org.cp.elements.lang.annotation.Immutable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class Unit implements Comparable<Unit>, Serializable {
+public class Unit implements Cloneable, Comparable<Unit>, Serializable {
 
   public static final Unit EMPTY = Unit.of("0");
 
-  private final String number;
-
-  private Type type;
+  /**
+   * Factory method used to construct a new instance of {@link Unit} initialized with the given {@link String number}
+   * as type {@link Unit.Type#APARTMENT}.
+   *
+   * @param number {@link String} containing the number of the {@link Unit}.
+   * @return a new {@link Unit.Type#APARTMENT} {@link Unit} initialized with the given {@link String number}.
+   * @see org.cp.domain.geo.model.Unit.Type#APARTMENT
+   * @see #Unit(String)
+   * @see #as(Type)
+   */
+  public static Unit apartment(String number) {
+    return new Unit(number).as(Type.APARTMENT);
+  }
 
   /**
-   * Factory method used to construct an instance of {@link Unit} initialized with given,
+   * Factory method used to construct a new instance of {@link Unit} initialized with the given {@link String number}
+   * as type {@link Unit.Type#OFFICE}.
+   *
+   * @param number {@link String} containing the number of the {@link Unit}.
+   * @return a new {@link Unit.Type#OFFICE} {@link Unit} initialized with the given {@link String number}.
+   * @see org.cp.domain.geo.model.Unit.Type#OFFICE
+   * @see #Unit(String)
+   * @see #as(Type)
+   */
+  public static Unit office(String number) {
+    return new Unit(number).as(Type.OFFICE);
+  }
+
+  /**
+   * Factory method used to construct a new instance of {@link Unit} initialized with the given {@link String number}
+   * as type {@link Unit.Type#ROOM}.
+   *
+   * @param number {@link String} containing the number of the {@link Unit}.
+   * @return a new {@link Unit.Type#ROOM} {@link Unit} initialized with the given {@link String number}.
+   * @see org.cp.domain.geo.model.Unit.Type#ROOM
+   * @see #Unit(String)
+   * @see #as(Type)
+   */
+  public static Unit room(String number) {
+    return new Unit(number).as(Type.ROOM);
+  }
+
+  /**
+   * Factory method used to construct a new instance of {@link Unit} initialized with the given {@link String number}
+   * as type {@link Unit.Type#SUITE}.
+   *
+   * @param number {@link String} containing the number of the {@link Unit}.
+   * @return a new {@link Unit.Type#SUITE} {@link Unit} initialized with the given {@link String number}.
+   * @see org.cp.domain.geo.model.Unit.Type#SUITE
+   * @see #Unit(String)
+   * @see #as(Type)
+   */
+  public static Unit suite(String number) {
+    return new Unit(number).as(Type.SUITE);
+  }
+
+  /**
+   * Factory method used to construct an instance of {@link Unit} initialized with the given,
    * required {@link String number}.
    *
    * @param number {@link String} containing the number of the new {@link Unit}.
    * @return a new {@link Unit} initialized with the given, required {@link String number};
    * must not be {@literal null} or empty.
    * @throws IllegalArgumentException if {@link String number} is {@literal null} or empty.
+   * @see org.cp.domain.geo.model.Unit.Type#UNKNOWN
    * @see #Unit(String)
+   * @see #as(Type)
    */
   public static Unit of(String number) {
-    return new Unit(number).as(Type.UNKNOWN);
+    return new Unit(number);
   }
 
   /**
@@ -73,20 +128,26 @@ public class Unit implements Comparable<Unit>, Serializable {
    */
   public static Unit from(Unit unit) {
 
-    Assert.notNull(unit, "Unit must not be null");
+    Assert.notNull(unit, "Unit is required");
 
-    return of(unit.getNumber());
+    return of(unit.getNumber()).as(unit.getType().orElse(null));
   }
+
+  private final String number;
+
+  private Type type;
 
   /**
    * Constructs a new instance of {@link Unit} initialized with the given {@link String number}.
    *
    * @param number {@link String} containing the number of this new {@link Unit}.
-   * @throws IllegalArgumentException if number is {@literal null} or empty.
+   * @throws IllegalArgumentException if {@link String number} is {@literal null} or empty.
    */
   public Unit(String number) {
-    this.number = Optional.ofNullable(number).filter(StringUtils::hasText)
-      .orElseThrow(() -> newIllegalArgumentException("Number is required"));
+
+    Assert.hasText(number, "Unit number [%s] is required", number);
+
+    this.number = number;
   }
 
   /**
@@ -100,9 +161,9 @@ public class Unit implements Comparable<Unit>, Serializable {
   }
 
   /**
-   * Returns the {@link Optional} {@link Type} of this {@link Unit}.
+   * Returns an {@link Optional} {@link Type} for this {@link Unit}.
    *
-   * @return the {@link Optional} {@link Type} of this {@link Unit}.
+   * @return an {@link Optional} {@link Type} for this {@link Unit}.
    * @see org.cp.domain.geo.model.Unit.Type
    */
   public Optional<Type> getType() {
@@ -122,16 +183,72 @@ public class Unit implements Comparable<Unit>, Serializable {
   }
 
   /**
-   * Compares this {@link Unit} with the given {@link Unit} to determine the relative sort order.
+   * Sets the {@link Unit.Type} of this {@link Unit} to {@link Unit.Type#APARTMENT}.
    *
-   * A {@link Unit} is ordered by {@link #getNumber() number} first and {@link Type}, if present, second.
+   * @return this {@link Unit}.
+   * @see org.cp.domain.geo.model.Unit.Type#APARTMENT
+   * @see #as(Type)
+   */
+  public Unit asApartment() {
+    return as(Type.APARTMENT);
+  }
+
+  /**
+   * Sets the {@link Unit.Type} of this {@link Unit} to {@link Unit.Type#OFFICE}.
    *
-   * @param unit {@link Unit} to compare with this {@link Unit} to determine the relative sort order.
-   * @return a {@link Integer#TYPE int} value determining the sort order of this {@link Unit}
-   * relative to the given {@link Unit}.
-   * Returns a negative number to indicate this {@link Unit} comes before the given {@link Unit}.
-   * Returns a positive number to indicate this {@link Unit} comes after the given {@link Unit}.
-   * Returns {@literal 0} if this {@link Unit} is equal to the given {@link Unit Units}.
+   * @return this {@link Unit}.
+   * @see org.cp.domain.geo.model.Unit.Type#OFFICE
+   * @see #as(Type)
+   */
+  public Unit asOffice() {
+    return as(Type.OFFICE);
+  }
+
+  /**
+   * Sets the {@link Unit.Type} of this {@link Unit} to {@link Unit.Type#ROOM}.
+   *
+   * @return this {@link Unit}.
+   * @see org.cp.domain.geo.model.Unit.Type#ROOM
+   * @see #as(Type)
+   */
+  public Unit asRoom() {
+    return as(Type.ROOM);
+  }
+
+  /**
+   * Sets the {@link Unit.Type} of this {@link Unit} to {@link Unit.Type#SUITE}.
+   *
+   * @return this {@link Unit}.
+   * @see org.cp.domain.geo.model.Unit.Type#SUITE
+   * @see #as(Type)
+   */
+  public Unit asSuite() {
+    return as(Type.SUITE);
+  }
+
+  /**
+   * Clones this {@link Unit}.
+   *
+   * @return a clone of this {@link Unit}.
+   * @see #from(Unit)
+   */
+  @Override
+  @SuppressWarnings("all")
+  public Object clone() throws CloneNotSupportedException {
+    return from(this);
+  }
+
+  /**
+   * Compares this {@link Unit} with the given {@link Unit} to determine relative ordering in a sort.
+   *
+   * A {@link Unit} is ordered by {@link #getNumber() number} first and {@link Type} second, if present.
+   *
+   * @param unit {@link Unit} to compare with this {@link Unit}.
+   * @return a {@link Integer} value determining the order of this {@link Unit} relative to the given {@link Unit}
+   * in a sort.
+   * Returns a negative number to indicate this {@link Unit} comes before the given {@link Unit} in the sort order.
+   * Returns a positive number to indicate this {@link Unit} comes after the given {@link Unit} in the sort order.
+   * Returns {@literal 0} if this {@link Unit} is equal to the given {@link Unit}.
    * @see java.lang.Comparable#compareTo(Object)
    */
   @Override
@@ -169,9 +286,9 @@ public class Unit implements Comparable<Unit>, Serializable {
   }
 
   /**
-   * Computes the hash code of this {@link Unit}.
+   * Computes the {@link Integer hash code} of this {@link Unit}.
    *
-   * @return the computed hash code of this {@link Unit}.
+   * @return the computed {@link Integer hash code} of this {@link Unit}.
    * @see java.lang.Object#hashCode()
    */
   @Override
@@ -190,11 +307,14 @@ public class Unit implements Comparable<Unit>, Serializable {
    *
    * @return a {@link String} describing this {@link Unit}.
    * @see java.lang.Object#toString()
+   * @see java.lang.String
    */
   @Override
   public String toString() {
+
     return String.format("%1$s%2$s",
-      getType().map(type -> type.getName().concat(StringUtils.SINGLE_SPACE)).orElse(StringUtils.EMPTY_STRING),
+      getType().map(type -> type.getName().concat(StringUtils.SINGLE_SPACE))
+        .orElse(Type.UNIT.getName().concat(StringUtils.SINGLE_SPACE)),
       getNumber());
   }
 
@@ -207,6 +327,7 @@ public class Unit implements Comparable<Unit>, Serializable {
     OFFICE("OFC", "Office"),
     ROOM("RM", "Room"),
     SUITE("STE", "Suite"),
+    UNIT("UNT", "Unit"),
     UNKNOWN("UKN", "Unknown");
 
     private final String abbreviation;
@@ -226,7 +347,7 @@ public class Unit implements Comparable<Unit>, Serializable {
       return Arrays.stream(values())
         .filter(type -> type.getAbbreviation().equalsIgnoreCase(StringUtils.trim(abbreviation)))
         .findFirst()
-        .orElseThrow(() -> newIllegalArgumentException("No Unit Type was found for abbreviation [%s]", abbreviation));
+        .orElseThrow(() -> newIllegalArgumentException("Unit Type for abbreviation [%s] was not found", abbreviation));
     }
 
     /**
@@ -243,7 +364,7 @@ public class Unit implements Comparable<Unit>, Serializable {
       return Arrays.stream(values())
         .filter(type -> type.getName().equalsIgnoreCase(StringUtils.trim(name)))
         .findFirst()
-        .orElseThrow(() -> newIllegalArgumentException("No Unit Type was found for name [%s]", name));
+        .orElseThrow(() -> newIllegalArgumentException("Unit Type for name [%s] was not found", name));
     }
 
     /* (non-Javadoc) */
