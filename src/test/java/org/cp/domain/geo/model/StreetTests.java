@@ -234,7 +234,18 @@ public class StreetTests {
   }
 
   @Test
-  public void compareToEqualStreetsReturnsZero() {
+  public void cloneIsCorrect() throws CloneNotSupportedException {
+
+    Street street = Street.of(100, "Main").asStreet();
+    Street streetClone = (Street) street.clone();
+
+    assertThat(streetClone).isNotNull();
+    assertThat(streetClone).isNotSameAs(street);
+    assertThat(streetClone).isEqualTo(street);
+  }
+
+  @Test
+  public void comparedToEqualStreetsReturnsZero() {
 
     Street streetOne = Street.of(100, "Main").asStreet();
     Street streetTwo = Street.of(100, "Main").asStreet();
@@ -245,7 +256,7 @@ public class StreetTests {
   }
 
   @Test
-  public void compareToGreeterStreetReturnsLessThanZero() {
+  public void comparedToGreeterStreetReturnsLessThanZero() {
 
     Street streetOne = Street.of(100, "Main").asStreet();
     Street streetTwo = Street.of(100, "One").asWay();
@@ -256,7 +267,7 @@ public class StreetTests {
   }
 
   @Test
-  public void compareToLesserStreetReturnsGreeterThanZero() {
+  public void comparedToLesserStreetReturnsGreeterThanZero() {
 
     Street streetOne = Street.of(100, "Main").asStreet();
     Street streetTwo = Street.of(100, "66").asRoute();
@@ -267,13 +278,8 @@ public class StreetTests {
   }
 
   @Test
-  public void differentStreetsAreNotEqual() {
-
-    Street streetOne = Street.of(100, "Main").asStreet();
-    Street streetTwo = Street.of(100, "One").asWay();
-
-    assertThat(streetOne).isNotSameAs(streetTwo);
-    assertThat(streetOne).isNotEqualTo(streetTwo);
+  public void equalsNullReturnsFalse() {
+    assertThat(Street.of(100, "Main").asStreet()).isNotEqualTo(null);
   }
 
   @Test
@@ -287,11 +293,6 @@ public class StreetTests {
   }
 
   @Test
-  public void equalToNullReturnsFalse() {
-    assertThat(Street.of(100, "Main").asStreet()).isNotEqualTo(null);
-  }
-
-  @Test
   public void identicalStreetsAreEqual() {
 
     Street street = Street.of(100, "Main").asStreet();
@@ -300,7 +301,17 @@ public class StreetTests {
   }
 
   @Test
-  public void hashCodeIsCorrect() {
+  public void unequalStreetsAreNotEqual() {
+
+    Street streetOne = Street.of(100, "Main").asStreet();
+    Street streetTwo = Street.of(100, "One").asWay();
+
+    assertThat(streetOne).isNotSameAs(streetTwo);
+    assertThat(streetOne).isNotEqualTo(streetTwo);
+  }
+
+  @Test
+  public void hashCodeOfStreetIsCorrect() {
 
     Street street = Street.of(100, "Main");
 
@@ -318,8 +329,13 @@ public class StreetTests {
   }
 
   @Test
-  public void toStringReturnsStreetAsString() {
+  public void toStringWithTypeIsCorrect() {
     assertThat(Street.of(100, "Oregon").asStreet().toString()).isEqualTo("100 Oregon ST");
     assertThat(Street.of(100, "One").asWay().toString()).isEqualTo("100 One WY");
+  }
+
+  @Test
+  public void toStringWithoutTypeIsCorrect() {
+    assertThat(Street.of(100, "Main").toString()).isEqualTo("100 Main");
   }
 }

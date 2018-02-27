@@ -33,12 +33,13 @@ import org.cp.elements.util.ComparatorResultBuilder;
  *
  * @author John Blum
  * @see java.io.Serializable
+ * @see java.lang.Cloneable
  * @see java.lang.Comparable
  * @see org.cp.domain.geo.model.Address
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class Street implements Comparable<Street>, Serializable {
+public class Street implements Cloneable, Comparable<Street>, Serializable {
 
   /**
    * Factory method used to construct a new instance of {@link Street} initialized with
@@ -239,12 +240,24 @@ public class Street implements Comparable<Street>, Serializable {
   }
 
   /**
-   * Compares this {@link Street} with the given {@link Street} to determine the sort order.
+   * Clones this {@link Street}.
    *
-   * @param street {@link Street} being compared to this {@link Street}
-   * to determine the relative sort order.
-   * @return a {@link Integer#TYPE int} value indicating the sort order of this {@link Street}
-   * relative to the given {@link Street}.
+   * @return a clone of this {@link Street}.
+   * @see java.lang.Object#clone()
+   * @see #from(Street)
+   */
+  @Override
+  @SuppressWarnings("all")
+  public Object clone() throws CloneNotSupportedException {
+    return from(this);
+  }
+
+  /**
+   * Compares this {@link Street} with the given {@link Street} to determine relative ordering in a sort.
+   *
+   * @param street {@link Street} to compare with this {@link Street}.
+   * @return a {@link Integer} value indicating the order of this {@link Street} relative to the given {@link Street}
+   * in a sort.
    * Returns a negative number to indicate this {@link Street} comes before the given {@link Street} in the sort order.
    * Returns a positive number to indicate this {@link Street} comes after the given {@link Street} in the sort order.
    * Returns {@literal 0} if this {@link Street} is equal to the given {@link Street}.
@@ -287,9 +300,9 @@ public class Street implements Comparable<Street>, Serializable {
   }
 
   /**
-   * Computes the hash code for this {@link Street}.
+   * Computes the {@link Integer hash code} for this {@link Street}.
    *
-   * @return the computed hash code for this {@link Street}.
+   * @return the computed {@link Integer hash code} for this {@link Street}.
    * @see java.lang.Object#hashCode()
    */
   @Override
@@ -313,6 +326,7 @@ public class Street implements Comparable<Street>, Serializable {
    */
   @Override
   public String toString() {
+
     return String.format("%1$d %2$s%3$s", getNumber(), getName(),
       getType().map(type -> StringUtils.SINGLE_SPACE.concat(type.getAbbreviation())).orElse(StringUtils.EMPTY_STRING));
   }

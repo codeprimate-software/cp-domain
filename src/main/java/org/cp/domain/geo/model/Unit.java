@@ -230,6 +230,7 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
    * Clones this {@link Unit}.
    *
    * @return a clone of this {@link Unit}.
+   * @see java.lang.Object#clone()
    * @see #from(Unit)
    */
   @Override

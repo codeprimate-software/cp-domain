@@ -102,7 +102,7 @@ public class AbstractAddressTests {
     assertThat(address.getCity()).isEqualTo(city);
     assertThat(address.getPostalCode()).isEqualTo(postalCode);
     assertThat(address.getCountry()).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
-    assertThat(address.getType().orElse(null)).isEqualTo(Address.Type.UNKNOWN);
+    assertThat(address.getType().isPresent()).isFalse();
   }
 
   @Test
@@ -362,7 +362,7 @@ public class AbstractAddressTests {
     Address address = AbstractAddress.newAddress();
 
     assertThat(address).isNotNull();
-    assertThat(address.getType().orElse(null)).isEqualTo(Address.Type.UNKNOWN);
+    assertThat(address.getType().isPresent()).isFalse();
 
     address.setType(Address.Type.HOME);
 
@@ -372,28 +372,42 @@ public class AbstractAddressTests {
 
     address.setType(null);
 
-    assertThat(address.getType().orElse(null)).isEqualTo(Address.Type.UNKNOWN);
+    assertThat(address.getType().isPresent()).isFalse();
   }
 
   @Test
-  public void differentAddressesAreNotEqual() {
+  public void cloneIsCorrect() throws CloneNotSupportedException {
 
-    Street street = Street.of(100, "Main").as(Street.Type.AVENUE);
-    City city = City.of("Portland");
-    PostalCode postalCode = PostalCode.of("97205");
+    Street street = Street.of(100, "One").asWay();
+    Unit unit = Unit.apartment("100");
+    City city = City.of("Toronto");
+    PostalCode postalCode = PostalCode.of("12345");
+    Coordinates coordinates = Coordinates.of(1.0d, 2.0d);
 
-    Address addressOne = AbstractAddress.of(street, city, postalCode, Country.UNITED_STATES_OF_AMERICA)
-      .in(Unit.of("A100").as(Unit.Type.APARTMENT))
-      .asOffice();
+    Address address = AbstractAddress.newAddress(Country.CANADA)
+      .on(street)
+      .in(unit)
+      .in(city)
+      .in(postalCode)
+      .with(coordinates)
+      .asPoBox();
 
-    Address addressTwo = AbstractAddress.of(street, city, postalCode, Country.UNITED_KINGDOM)
-      .in(Unit.of("S2100").as(Unit.Type.SUITE))
-      .asWork();
+    Address addressClone = (Address) address.clone();
 
-    assertThat(addressOne).isNotNull();
-    assertThat(addressTwo).isNotNull();
-    assertThat(addressOne).isNotSameAs(addressTwo);
-    assertThat(addressOne).isNotEqualTo(addressTwo);
+    assertThat(addressClone).isNotNull();
+    assertThat(addressClone).isNotSameAs(address);
+    assertThat(addressClone).isEqualTo(address);
+    assertThat(addressClone.getCoordinates()).isEqualTo(address.getCoordinates());
+    assertThat(addressClone.getType()).isEqualTo(address.getType());
+  }
+
+  @Test
+  public void equalsNullReturnsFalse() {
+
+    Address address = AbstractAddress.of(Street.of(100, "One").as(Street.Type.WAY),
+      City.of("Portland"), PostalCode.of("123"), Country.UNITED_STATES_OF_AMERICA);
+
+    assertThat(address).isNotEqualTo(null);
   }
 
   @Test
@@ -415,16 +429,7 @@ public class AbstractAddressTests {
   }
 
   @Test
-  public void equalToNullReturnsFalse() {
-
-    Address address = AbstractAddress.of(Street.of(100, "One").as(Street.Type.WAY),
-      City.of("Portland"), PostalCode.of("123"), Country.UNITED_STATES_OF_AMERICA);
-
-    assertThat(address).isNotEqualTo(null);
-  }
-
-  @Test
-  public void identicalAddressIsEqualToItself() {
+  public void identicalAddressAreEqual() {
 
     Street street = Street.of(100, "Main").as(Street.Type.AVENUE);
     Unit unit = Unit.of("S2100").as(Unit.Type.SUITE);
@@ -437,6 +442,27 @@ public class AbstractAddressTests {
     assertThat(address).isNotNull();
     assertThat(address).isSameAs(address);
     assertThat(address).isEqualTo(address);
+  }
+
+  @Test
+  public void unequalAddressesAreNotEqual() {
+
+    Street street = Street.of(100, "Main").as(Street.Type.AVENUE);
+    City city = City.of("Portland");
+    PostalCode postalCode = PostalCode.of("97205");
+
+    Address addressOne = AbstractAddress.of(street, city, postalCode, Country.UNITED_STATES_OF_AMERICA)
+      .in(Unit.of("A100").as(Unit.Type.APARTMENT))
+      .asOffice();
+
+    Address addressTwo = AbstractAddress.of(street, city, postalCode, Country.UNITED_KINGDOM)
+      .in(Unit.of("S2100").as(Unit.Type.SUITE))
+      .asWork();
+
+    assertThat(addressOne).isNotNull();
+    assertThat(addressTwo).isNotNull();
+    assertThat(addressOne).isNotSameAs(addressTwo);
+    assertThat(addressOne).isNotEqualTo(addressTwo);
   }
 
   @Test

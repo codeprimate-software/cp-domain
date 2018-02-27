@@ -384,7 +384,20 @@ public abstract class AbstractAddress implements Address {
    */
   @Override
   public Optional<Type> getType() {
-    return Optional.of(Optional.ofNullable(this.type).orElse(Type.UNKNOWN));
+    return Optional.ofNullable(this.type);
+  }
+
+  /**
+   * Clones this {@link Address}.
+   *
+   * @return a clone of this {@link Address}.
+   * @see java.lang.Object#clone()
+   * @see #from(Address)
+   */
+  @Override
+  @SuppressWarnings("all")
+  public Object clone() throws CloneNotSupportedException {
+    return from(this);
   }
 
   /**
@@ -446,6 +459,7 @@ public abstract class AbstractAddress implements Address {
    */
   @Override
   public String toString() {
+
     return String.format(ADDRESS_TO_STRING,
       getClass().getName(), getStreet(), getUnit().orElse(null), getCity(), getPostalCode(), getCountry(),
         getType().orElse(null));

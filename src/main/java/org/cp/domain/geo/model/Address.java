@@ -260,13 +260,21 @@ public interface Address extends Cloneable, Comparable<Address>, Serializable,
   }
 
   /**
-   * Compares this {@link Address} to the given {@link Address} in order to determine the relative ordering.
+   * Clones this {@link Address}.
    *
-   * @param address the {@link Address} to compare with this {@link Address}.
-   * @return a {@link Integer value} indicating the sort order of this {@link Address}
-   * relative to the given {@link Address}.
-   * Returns a negative number to indicate this {@link Address} comes before the given {@link Address} in the order.
-   * Returns a positive number to indicate this {@link Address} comes after the given {@link Address} in the order.
+   * @return a clone of this {@link Address}.
+   * @throws CloneNotSupportedException if the {@link Object#clone()} is not supported.
+   */
+  Object clone() throws CloneNotSupportedException;
+
+  /**
+   * Compares this {@link Address} to the given {@link Address} to determine relative ordering in a sort.
+   *
+   * @param address {@link Address} to compare with this {@link Address}.
+   * @return a {@link Integer} value indicating the order of this {@link Address} relative to the given {@link Address}
+   * in a sort.
+   * Returns a negative number to indicate this {@link Address} comes before the given {@link Address} in the sort order.
+   * Returns a positive number to indicate this {@link Address} comes after the given {@link Address} in the sort order.
    * Returns {@literal 0} if this {@link Address} is equal to the given {@link Address}.
    * @see java.lang.Comparable#compareTo(Object)
    */
