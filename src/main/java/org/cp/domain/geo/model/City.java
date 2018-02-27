@@ -16,15 +16,12 @@
 
 package org.cp.domain.geo.model;
 
-import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
-
 import java.io.Serializable;
 import java.util.Optional;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.Immutable;
 import org.cp.elements.util.ComparatorResultBuilder;
 
@@ -33,13 +30,14 @@ import org.cp.elements.util.ComparatorResultBuilder;
  *
  * @author John Blum
  * @see java.io.Serializable
+ * @see java.lang.Cloneable
  * @see java.lang.Comparable
  * @see org.cp.elements.lang.annotation.Immutable
  * @since 1.0.0
  */
 @Immutable
 @SuppressWarnings("unused")
-public class City implements Comparable<City>, Serializable {
+public class City implements Cloneable, Comparable<City>, Serializable {
 
   private final String name;
 
@@ -61,12 +59,13 @@ public class City implements Comparable<City>, Serializable {
    * @param city {@link City} to copy; must not be {@literal null}.
    * @return a new {@link City} copied from the given {@link City}.
    * @throws IllegalArgumentException if the {@link City} to copy is {@literal null}.
+   * @see org.cp.domain.geo.model.City#getName()
    * @see org.cp.domain.geo.model.City
    * @see #of(String)
    */
   public static City from(City city) {
 
-    Assert.notNull(city, "City must not be null");
+    Assert.notNull(city, "City is required");
 
     return of(city.getName());
   }
@@ -78,14 +77,17 @@ public class City implements Comparable<City>, Serializable {
    * @throws IllegalArgumentException if {@link String name} is {@literal null} or empty.
    */
   public City(String name) {
-    this.name = Optional.ofNullable(name).filter(StringUtils::hasText)
-      .orElseThrow(() -> newIllegalArgumentException("Name is required"));
+
+    Assert.hasText(name, "City name [%s] is required", name);
+
+    this.name = name;
   }
 
   /**
    * Returns an {@link Optional} {@link Country} of origin for this {@link City};
    *
    * @return an {@link Optional} {@link Country} of origin for this {@link City};
+   * @see org.cp.domain.geo.enums.Country
    * @see java.util.Optional
    */
   public Optional<Country> getCountry() {
@@ -96,17 +98,31 @@ public class City implements Comparable<City>, Serializable {
    * Returns the {@link String name} of this {@link City}.
    *
    * @return the {@link String name} of this {@link City}.
+   * @see java.lang.String
    */
   public String getName() {
     return this.name;
   }
 
   /**
-   * Compares this {@link City} to the given {@link City} to determine the relative, natural sort order.
+   * Clones this {@link City}.
    *
-   * @param city {@link City} being compared with this {@link City} to determine the relative, natural sort order.
-   * @return a {@link Integer#TYPE int} value indicating the sort order of this {@link City}
-   * relative to the given {@link City}.
+   * @return a clone of this {@link City}.
+   * @see java.lang.Object#clone()
+   * @see #from(City)
+   */
+  @Override
+  @SuppressWarnings("all")
+  public Object clone() throws CloneNotSupportedException {
+    return from(this);
+  }
+
+  /**
+   * Compares this {@link City} to the given {@link City} to determine relative ordering in a sort.
+   *
+   * @param city {@link City} to compare with this {@link City}.
+   * @return an {@link Integer} value indicating the order of this {@link City} relative to the given {@link City}
+   * in a sort.
    * Returns a negative value to indicate this {@link City} comes before the given {@link City} in the sort order.
    * Returns a positive value to indicate this {@link City} comes after the given {@link City} in the sort order.
    * Returns {@literal 0} if this {@link City} is equal to the given {@link City}.
@@ -146,9 +162,9 @@ public class City implements Comparable<City>, Serializable {
   }
 
   /**
-   * Computes the hash code of this {@link City}.
+   * Computes the {@link Integer hash code} of this {@link City}.
    *
-   * @return an {@link Integer#TYPE int} value containing the computed hash code of this {@link City}.
+   * @return an {@link Integer} value containing the computed hash code of this {@link City}.
    * @see java.lang.Object#hashCode()
    */
   @Override
