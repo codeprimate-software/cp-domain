@@ -36,6 +36,7 @@ public class ContinentTests {
 
   @Test
   public void countriesInAfrica() {
+
     Set<Country> expectedCountriesInAfrica = CollectionUtils.asSet(
       Country.ALGERIA,
       Country.ANGOLA,
@@ -49,7 +50,7 @@ public class ContinentTests {
       Country.CHAD,
       Country.COMOROS,
       Country.DEMOCRATIC_REPUBLIC_OF_THE_CONGO,
-      Country.REPUBLIC_OF_THE_CONGO,
+      Country.CONGO,
       Country.COTE_D_IVOIRE,
       Country.DJIBOUTI,
       Country.EGYPT,
@@ -102,6 +103,7 @@ public class ContinentTests {
 
   @Test
   public void countriesInAntarctica() {
+
     Set<Country> countriesInAntarctica = Continent.ANTARCTICA.countries();
 
     assertThat(countriesInAntarctica).isNotNull();
@@ -110,6 +112,7 @@ public class ContinentTests {
 
   @Test
   public void countriesInAsia() {
+
     Set<Country> expectedCountriesInAsia = CollectionUtils.asSet(
       Country.AFGHANISTAN,
       Country.ARMENIA,
@@ -117,7 +120,7 @@ public class ContinentTests {
       Country.BAHRAIN,
       Country.BANGLADESH,
       Country.BHUTAN,
-      Country.BRUNEI,
+      Country.BRUNEI_DARUSSALAM,
       Country.CAMBODIA,
       Country.CHINA,
       Country.CYPRUS,
@@ -130,6 +133,8 @@ public class ContinentTests {
       Country.JAPAN,
       Country.JORDAN,
       Country.KAZAKHSTAN,
+      Country.DEMOCRATIC_PEOPLES_REPUBLIC_OF_KOREA,
+      Country.REPUBLIC_OF_KOREA,
       Country.KUWAIT,
       Country.KYRGYZSTAN,
       Country.LAOS,
@@ -139,7 +144,6 @@ public class ContinentTests {
       Country.MONGOLIA,
       Country.MYANMAR,
       Country.NEPAL,
-      Country.NORTH_KOREA,
       Country.OMAN,
       Country.PAKISTAN,
       Country.PALESTINE,
@@ -148,7 +152,6 @@ public class ContinentTests {
       Country.RUSSIA,
       Country.SAUDI_ARABIA,
       Country.SINGAPORE,
-      Country.SOUTH_KOREA,
       Country.SRI_LANKA,
       Country.SYRIA,
       Country.TAIWAN,
@@ -172,6 +175,7 @@ public class ContinentTests {
 
   @Test
   public void countriesInAustraliaAndOceania() {
+
     Set<Country> expectedCountriesInAustraliaAndOceania = CollectionUtils.asSet(
       Country.AUSTRALIA,
       Country.FIJI,
@@ -198,6 +202,7 @@ public class ContinentTests {
 
   @Test
   public void countriesInEurope() {
+
     Set<Country> expectedCountriesInEurope = CollectionUtils.asSet(
       Country.ALBANIA,
       Country.ANDORRA,
@@ -210,7 +215,7 @@ public class ContinentTests {
       Country.BULGARIA,
       Country.CROATIA,
       Country.CYPRUS,
-      Country.CZECH_REPUBLIC,
+      Country.CZECHIA,
       Country.DENMARK,
       Country.ESTONIA,
       Country.FINLAND,
@@ -261,6 +266,7 @@ public class ContinentTests {
 
   @Test
   public void countriesInNorthAmerica() {
+
     Set<Country> expectedCountriesInNorthAmerica = CollectionUtils.asSet(
       Country.ANTIGUA_AND_BARBUDA,
       Country.BAHAMAS,
@@ -296,6 +302,7 @@ public class ContinentTests {
 
   @Test
   public void countriesInSouthAmerica() {
+
     Set<Country> expectedCountiesInSouthAmerica = CollectionUtils.asSet(
       Country.ARGENTINA,
       Country.BOLIVIA,
@@ -320,6 +327,7 @@ public class ContinentTests {
 
   @Test
   public void countiesInUnknown() {
+
     Set<Country> countriesInUnknown = Continent.UNKNOWN.countries();
 
     assertThat(countriesInUnknown).isNotNull();

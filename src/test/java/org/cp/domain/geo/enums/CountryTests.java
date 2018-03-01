@@ -18,8 +18,10 @@ package org.cp.domain.geo.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.cp.elements.util.CollectionUtils;
 import org.junit.Before;
@@ -49,7 +51,8 @@ public class CountryTests {
   }
 
   @Test
-  public void getContinentsIsCorrect() {
+  public void allCountryContinentsAreCorrect() {
+
     assertThat(add(Country.AFGHANISTAN).getContinents()).containsExactly(Continent.ASIA);
     assertThat(add(Country.ALBANIA).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.ALGERIA).getContinents()).containsExactly(Continent.AFRICA);
@@ -74,7 +77,7 @@ public class CountryTests {
     assertThat(add(Country.BOSNIA_AND_HERZEGOVINA).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.BOTSWANA).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.BRAZIL).getContinents()).containsExactly(Continent.SOUTH_AMERICA);
-    assertThat(add(Country.BRUNEI).getContinents()).containsExactly(Continent.ASIA);
+    assertThat(add(Country.BRUNEI_DARUSSALAM).getContinents()).containsExactly(Continent.ASIA);
     assertThat(add(Country.BULGARIA).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.BURKINA_FASO).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.BURUNDI).getContinents()).containsExactly(Continent.AFRICA);
@@ -89,13 +92,13 @@ public class CountryTests {
     assertThat(add(Country.COLOMBIA).getContinents()).containsExactly(Continent.SOUTH_AMERICA);
     assertThat(add(Country.COMOROS).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.DEMOCRATIC_REPUBLIC_OF_THE_CONGO).getContinents()).containsExactly(Continent.AFRICA);
-    assertThat(add(Country.REPUBLIC_OF_THE_CONGO).getContinents()).containsExactly(Continent.AFRICA);
+    assertThat(add(Country.CONGO).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.COSTA_RICA).getContinents()).containsExactly(Continent.NORTH_AMERICA);
     assertThat(add(Country.COTE_D_IVOIRE).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.CROATIA).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.CUBA).getContinents()).containsExactly(Continent.NORTH_AMERICA);
     assertThat(add(Country.CYPRUS).getContinents()).containsExactly(Continent.ASIA, Continent.EUROPE);
-    assertThat(add(Country.CZECH_REPUBLIC).getContinents()).containsExactly(Continent.EUROPE);
+    assertThat(add(Country.CZECHIA).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.DENMARK).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.DJIBOUTI).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.DOMINICA).getContinents()).containsExactly(Continent.NORTH_AMERICA);
@@ -138,6 +141,8 @@ public class CountryTests {
     assertThat(add(Country.KAZAKHSTAN).getContinents()).containsExactly(Continent.ASIA, Continent.EUROPE);
     assertThat(add(Country.KENYA).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.KIRIBATI).getContinents()).containsExactly(Continent.AUSTRALIA_AND_OCEANIA);
+    assertThat(add(Country.DEMOCRATIC_PEOPLES_REPUBLIC_OF_KOREA).getContinents()).containsExactly(Continent.ASIA);
+    assertThat(add(Country.REPUBLIC_OF_KOREA).getContinents()).containsExactly(Continent.ASIA);
     assertThat(add(Country.KOSOVO).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.KUWAIT).getContinents()).containsExactly(Continent.ASIA);
     assertThat(add(Country.KYRGYZSTAN).getContinents()).containsExactly(Continent.ASIA);
@@ -177,7 +182,6 @@ public class CountryTests {
     assertThat(add(Country.NICARAGUA).getContinents()).containsExactly(Continent.NORTH_AMERICA);
     assertThat(add(Country.NIGER).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.NIGERIA).getContinents()).containsExactly(Continent.AFRICA);
-    assertThat(add(Country.NORTH_KOREA).getContinents()).containsExactly(Continent.ASIA);
     assertThat(add(Country.NORWAY).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.OMAN).getContinents()).containsExactly(Continent.ASIA);
     assertThat(add(Country.PAKISTAN).getContinents()).containsExactly(Continent.ASIA);
@@ -211,7 +215,6 @@ public class CountryTests {
     assertThat(add(Country.SOLOMON_ISLANDS).getContinents()).containsExactly(Continent.AUSTRALIA_AND_OCEANIA);
     assertThat(add(Country.SOMALIA).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.SOUTH_AFRICA).getContinents()).containsExactly(Continent.AFRICA);
-    assertThat(add(Country.SOUTH_KOREA).getContinents()).containsExactly(Continent.ASIA);
     assertThat(add(Country.SOUTH_SUDAN).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.SPAIN).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.SRI_LANKA).getContinents()).containsExactly(Continent.ASIA);
@@ -253,6 +256,7 @@ public class CountryTests {
 
   @Test
   public void countriesInAfrica() {
+
     Set<Country> expectedAfricanCountries = CollectionUtils.asSet(
       Country.ALGERIA,
       Country.ANGOLA,
@@ -266,7 +270,7 @@ public class CountryTests {
       Country.CHAD,
       Country.COMOROS,
       Country.DEMOCRATIC_REPUBLIC_OF_THE_CONGO,
-      Country.REPUBLIC_OF_THE_CONGO,
+      Country.CONGO,
       Country.COTE_D_IVOIRE,
       Country.DJIBOUTI,
       Country.EGYPT,
@@ -319,6 +323,7 @@ public class CountryTests {
 
   @Test
   public void countriesInAntarctica() {
+
     Set<Country> countries = Country.byContinent(Continent.ANTARCTICA);
 
     assertThat(countries).isNotNull();
@@ -327,6 +332,7 @@ public class CountryTests {
 
   @Test
   public void countriesInAsia() {
+
     Set<Country> expectedAsianCounties = CollectionUtils.asSet(
       Country.AFGHANISTAN,
       Country.ARMENIA,
@@ -334,7 +340,7 @@ public class CountryTests {
       Country.BAHRAIN,
       Country.BANGLADESH,
       Country.BHUTAN,
-      Country.BRUNEI,
+      Country.BRUNEI_DARUSSALAM,
       Country.CAMBODIA,
       Country.CHINA,
       Country.CYPRUS,
@@ -347,6 +353,8 @@ public class CountryTests {
       Country.JAPAN,
       Country.JORDAN,
       Country.KAZAKHSTAN,
+      Country.DEMOCRATIC_PEOPLES_REPUBLIC_OF_KOREA,
+      Country.REPUBLIC_OF_KOREA,
       Country.KUWAIT,
       Country.KYRGYZSTAN,
       Country.LAOS,
@@ -356,7 +364,6 @@ public class CountryTests {
       Country.MONGOLIA,
       Country.MYANMAR,
       Country.NEPAL,
-      Country.NORTH_KOREA,
       Country.OMAN,
       Country.PAKISTAN,
       Country.PALESTINE,
@@ -365,7 +372,6 @@ public class CountryTests {
       Country.RUSSIA,
       Country.SAUDI_ARABIA,
       Country.SINGAPORE,
-      Country.SOUTH_KOREA,
       Country.SRI_LANKA,
       Country.SYRIA,
       Country.TAIWAN,
@@ -389,6 +395,7 @@ public class CountryTests {
 
   @Test
   public void countriesInAustraliaAndOceania() {
+
     Set<Country> expectedAustralianAndOceaniaCountries = CollectionUtils.asSet(
       Country.AUSTRALIA,
       Country.FIJI,
@@ -415,6 +422,7 @@ public class CountryTests {
 
   @Test
   public void countriesInEurope() {
+
     Set<Country> expectedEuropeanCountries = CollectionUtils.asSet(
       Country.ALBANIA,
       Country.ANDORRA,
@@ -427,7 +435,7 @@ public class CountryTests {
       Country.BULGARIA,
       Country.CROATIA,
       Country.CYPRUS,
-      Country.CZECH_REPUBLIC,
+      Country.CZECHIA,
       Country.DENMARK,
       Country.ESTONIA,
       Country.FINLAND,
@@ -478,6 +486,7 @@ public class CountryTests {
 
   @Test
   public void countriesInNorthAmerica() {
+
     Set<Country> expectedNorthAmericanCountries = CollectionUtils.asSet(
       Country.ANTIGUA_AND_BARBUDA,
       Country.BAHAMAS,
@@ -513,6 +522,7 @@ public class CountryTests {
 
   @Test
   public void countriesInSouthAmerica() {
+
     Set<Country> expectedSouthAmericanCountries = CollectionUtils.asSet(
       Country.ARGENTINA,
       Country.BOLIVIA,
@@ -537,6 +547,7 @@ public class CountryTests {
 
   @Test
   public void countriesInUnknown() {
+
     Set<Country> unknownCountries = Country.byContinent(Continent.UNKNOWN);
 
     assertThat(unknownCountries).isNotNull();
@@ -544,7 +555,59 @@ public class CountryTests {
   }
 
   @Test
-  public void countryIsOnContinent() {
+  public void countryIsoNumericThreeDigitCodesAreUnique() {
+
+    Set<String> isoNumericThreeDigitCodes = Arrays.stream(Country.values())
+      .map(Country::getIsoNumericThreeDigitCode)
+      .collect(Collectors.toSet());
+
+    assertThat(isoNumericThreeDigitCodes).hasSize(Country.values().length);
+  }
+
+  @Test
+  public void countryIsoAlphaThreeLetterCodesAreUnique() {
+
+    Set<String> isoAlphaThreeLetterCodes = Arrays.stream(Country.values())
+      .map(Country::getIsoAlphaThreeLetterCode)
+      .collect(Collectors.toSet());
+
+    assertThat(isoAlphaThreeLetterCodes).hasSize(Country.values().length);
+  }
+
+  @Test
+  public void countryIsoAlphaTwoLetterCodesAreUnique() {
+
+    Set<String> isoAlphaTwoLetterCodes = Arrays.stream(Country.values())
+      .map(Country::getIsoAlphaTwoLetterCode)
+      .collect(Collectors.toSet());
+
+    assertThat(isoAlphaTwoLetterCodes).hasSize(Country.values().length);
+  }
+
+  @Test
+  public void byIsoNumericThreeDigitCodeIsCorrect() {
+
+    Arrays.stream(Country.values()).forEach(country ->
+      assertThat(Country.byIsoNumeric(country.getIsoNumericThreeDigitCode())).isEqualTo(country));
+  }
+
+  @Test
+  public void byIsoAlphaThreeLetterCodeIsCorrect() {
+
+    Arrays.stream(Country.values()).forEach(country ->
+      assertThat(Country.byIsoThree(country.getIsoAlphaThreeLetterCode())).isEqualTo(country));
+  }
+
+  @Test
+  public void byIsoAlphaTwoLetterCodeIsCorrect() {
+
+    Arrays.stream(Country.values()).forEach(country ->
+      assertThat(Country.byIsoTwo(country.getIsoAlphaTwoLetterCode())).isEqualTo(country));
+  }
+
+  @Test
+  public void isOnContinentReturnsTrue() {
+
     assertThat(Country.EGYPT.isOnContinent(Continent.AFRICA)).isTrue();
     assertThat(Country.RUSSIA.isOnContinent(Continent.ASIA)).isTrue();
     assertThat(Country.AUSTRALIA.isOnContinent(Continent.AUSTRALIA_AND_OCEANIA)).isTrue();
@@ -555,7 +618,8 @@ public class CountryTests {
   }
 
   @Test
-  public void countryIsNotOnContinent() {
+  public void isOnContinentReturnsFalse() {
+
     assertThat(Country.COLOMBIA.isOnContinent(Continent.AFRICA)).isFalse();
     assertThat(Country.UNITED_STATES_OF_AMERICA.isOnContinent(Continent.ANTARCTICA)).isFalse();
     assertThat(Country.AUSTRALIA.isOnContinent(Continent.ASIA)).isFalse();
