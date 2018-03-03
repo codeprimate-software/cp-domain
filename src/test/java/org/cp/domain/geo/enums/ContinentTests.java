@@ -257,11 +257,11 @@ public class ContinentTests {
       Country.VATICAN_CITY
     );
 
-    Set<Country> actualCountiesInEurope = Continent.EUROPE.countries();
+    Set<Country> actualCountriesInEurope = Continent.EUROPE.countries();
 
-    assertThat(actualCountiesInEurope).isNotNull();
-    assertThat(actualCountiesInEurope).hasSize(expectedCountriesInEurope.size());
-    assertThat(actualCountiesInEurope).containsAll(expectedCountriesInEurope);
+    assertThat(actualCountriesInEurope).isNotNull();
+    assertThat(actualCountriesInEurope).hasSize(expectedCountriesInEurope.size());
+    assertThat(actualCountriesInEurope).containsAll(expectedCountriesInEurope);
   }
 
   @Test
@@ -303,7 +303,7 @@ public class ContinentTests {
   @Test
   public void countriesInSouthAmerica() {
 
-    Set<Country> expectedCountiesInSouthAmerica = CollectionUtils.asSet(
+    Set<Country> expectedCountriesInSouthAmerica = CollectionUtils.asSet(
       Country.ARGENTINA,
       Country.BOLIVIA,
       Country.BRAZIL,
@@ -321,8 +321,8 @@ public class ContinentTests {
     Set<Country> actualCountriesInSouthAmerica = Continent.SOUTH_AMERICA.countries();
 
     assertThat(actualCountriesInSouthAmerica).isNotNull();
-    assertThat(actualCountriesInSouthAmerica).hasSize(expectedCountiesInSouthAmerica.size());
-    assertThat(actualCountriesInSouthAmerica).containsAll(expectedCountiesInSouthAmerica);
+    assertThat(actualCountriesInSouthAmerica).hasSize(expectedCountriesInSouthAmerica.size());
+    assertThat(actualCountriesInSouthAmerica).containsAll(expectedCountriesInSouthAmerica);
   }
 
   @Test
@@ -332,5 +332,18 @@ public class ContinentTests {
 
     assertThat(countriesInUnknown).isNotNull();
     assertThat(countriesInUnknown).isEmpty();
+  }
+
+  @Test
+  public void toStringReturnsFriendlyName() {
+
+    assertThat(Continent.AFRICA.toString()).isEqualTo("Africa");
+    assertThat(Continent.ANTARCTICA.toString()).isEqualTo("Antarctica");
+    assertThat(Continent.ASIA.toString()).isEqualTo("Asia");
+    assertThat(Continent.AUSTRALIA_AND_OCEANIA.toString()).isEqualTo("Australia & Oceania");
+    assertThat(Continent.EUROPE.toString()).isEqualTo("Europe");
+    assertThat(Continent.NORTH_AMERICA.toString()).isEqualTo("North America");
+    assertThat(Continent.SOUTH_AMERICA.toString()).isEqualTo("South America");
+    assertThat(Continent.UNKNOWN.toString()).isEqualTo("Unknown");
   }
 }

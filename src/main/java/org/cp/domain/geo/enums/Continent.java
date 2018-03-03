@@ -18,11 +18,14 @@ package org.cp.domain.geo.enums;
 
 import static java.util.Arrays.stream;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.cp.elements.lang.StringUtils;
+
 /**
- * The {@link Continent} enum is a enumerated type of all 7 Continents in the World.
+ * The {@link Continent} enum is an enumeration of all 7 continents in the world.
  *
  * @author John Blum
  * @see org.cp.domain.geo.enums.Country
@@ -50,5 +53,23 @@ public enum Continent {
   public Set<Country> countries() {
     return stream(Country.values()).filter(country -> country.isOnContinent(this))
       .collect(Collectors.toSet());
+  }
+
+  /**
+   * Returns a {@link String} representation of this {@link Continent}.
+   *
+   * @return a {@link String} describing this {@link Continent}
+   * @see java.lang.Object#toString()
+   * @see #name()
+   */
+  @Override
+  public String toString() {
+
+    return Arrays.stream(name().split("_"))
+      .map(String::toLowerCase)
+      .map(StringUtils::capitalize)
+      .map(part -> "and".equalsIgnoreCase(part) ? "&" : part)
+      .reduce((partOne, partTwo) -> partOne.concat(StringUtils.SINGLE_SPACE).concat(partTwo))
+      .orElse(name());
   }
 }
