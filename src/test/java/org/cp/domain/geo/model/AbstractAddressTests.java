@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -52,7 +53,7 @@ public class AbstractAddressTests {
     Address address = AbstractAddress.newAddress(null);
 
     assertThat(address).isNotNull();
-    assertThat(address.getCountry()).isNull();
+    assertThat(address.getCountry()).isEqualTo(Country.byIsoThree(Locale.getDefault().getISO3Country()));
   }
 
   @Test
@@ -310,7 +311,7 @@ public class AbstractAddressTests {
     Country unitedStates = Country.UNITED_STATES_OF_AMERICA;
 
     assertThat(address).isNotNull();
-    assertThat(address.getCountry()).isNull();
+    assertThat(address.getCountry()).isEqualTo(Country.byIsoThree(Locale.getDefault().getISO3Country()));
 
     address.setCountry(unitedStates);
 
