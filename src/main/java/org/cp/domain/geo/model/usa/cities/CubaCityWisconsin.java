@@ -18,8 +18,8 @@ package org.cp.domain.geo.model.usa.cities;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
+import org.cp.domain.geo.enums.State;
 import org.cp.domain.geo.model.usa.UnitedStatesCity;
-import org.cp.elements.enums.State;
 
 /**
  * The CubaCityWisconsin class...

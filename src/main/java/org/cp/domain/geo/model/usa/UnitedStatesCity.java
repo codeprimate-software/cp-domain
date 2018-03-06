@@ -21,8 +21,8 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentEx
 import java.util.Optional;
 
 import org.cp.domain.geo.enums.Country;
+import org.cp.domain.geo.enums.State;
 import org.cp.domain.geo.model.City;
-import org.cp.elements.enums.State;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.util.ComparatorResultBuilder;

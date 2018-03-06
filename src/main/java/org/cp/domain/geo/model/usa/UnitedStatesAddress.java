@@ -19,12 +19,12 @@ package org.cp.domain.geo.model.usa;
 import java.util.Optional;
 
 import org.cp.domain.geo.enums.Country;
+import org.cp.domain.geo.enums.State;
 import org.cp.domain.geo.model.AbstractAddress;
 import org.cp.domain.geo.model.Address;
 import org.cp.domain.geo.model.City;
 import org.cp.domain.geo.model.PostalCode;
 import org.cp.domain.geo.model.Street;
-import org.cp.elements.enums.State;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 
@@ -41,7 +41,7 @@ import org.cp.elements.lang.ObjectUtils;
  * @see org.cp.domain.geo.model.Street
  * @see org.cp.domain.geo.model.Unit
  * @see org.cp.domain.geo.model.usa.ZIP
- * @see org.cp.elements.enums.State
+ * @see State
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -76,7 +76,7 @@ public class UnitedStatesAddress extends AbstractAddress {
    * @see org.cp.domain.geo.model.Street
    * @see org.cp.domain.geo.model.City
    * @see org.cp.domain.geo.model.usa.ZIP
-   * @see org.cp.elements.enums.State
+   * @see State
    * @see #newUnitedStatesAddress()
    * @see #on(Street)
    * @see #in(City)
@@ -131,7 +131,7 @@ public class UnitedStatesAddress extends AbstractAddress {
    *
    * @param state {@link State} to set for this {@link UnitedStatesAddress}.
    * @throws IllegalArgumentException if {@link State} is {@literal null}.
-   * @see org.cp.elements.enums.State
+   * @see State
    */
   public void setState(State state) {
 
@@ -144,7 +144,7 @@ public class UnitedStatesAddress extends AbstractAddress {
    * Returns the {@link State} of this {@link UnitedStatesAddress}.
    *
    * @return the {@link State} of this {@link UnitedStatesAddress}.
-   * @see org.cp.elements.enums.State
+   * @see State
    */
   public State getState() {
     return this.state;
@@ -189,7 +189,7 @@ public class UnitedStatesAddress extends AbstractAddress {
    * @param state {@link State} to set for this {@link UnitedStatesAddress}.
    * @return this {@link UnitedStatesAddress}.
    * @throws IllegalArgumentException if {@link State} is {@literal null}.
-   * @see org.cp.elements.enums.State
+   * @see State
    * @see #setState(State)
    */
   public UnitedStatesAddress in(State state) {

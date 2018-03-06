@@ -24,7 +24,7 @@ import org.cp.domain.geo.model.Coordinates;
 import org.cp.domain.geo.model.PostalCode;
 import org.cp.domain.geo.model.Street;
 import org.cp.domain.geo.model.Unit;
-import org.cp.elements.enums.State;
+import org.cp.domain.geo.enums.State;
 import org.junit.Test;
 
 /**
