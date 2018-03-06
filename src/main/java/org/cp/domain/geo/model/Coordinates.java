@@ -24,7 +24,7 @@ import org.cp.elements.lang.ObjectUtils;
 
 /**
  * The {@link Coordinates} class is an Abstract Data Type (ADT) that models geographic coordinates
- * including latitude, longitude and elevation as represented on a map of the World.
+ * including latitude, longitude and elevation as represented on a map of the world.
  *
  * @author John Blum
  * @see java.awt.Point
@@ -34,23 +34,16 @@ import org.cp.elements.lang.ObjectUtils;
 @SuppressWarnings("unused")
 public class Coordinates implements Serializable {
 
-  // Altitude at these geographic coordinates.
-  private double elevation;
-
-  // North-South position on the Earth's surface.
-  private final double latitude;
-
-  // East-West position on the Earth's surface.
-  private final double longitude;
+  protected static final String COORDINATES_TO_STRING = "[latitude: %1$s, longitude: %2$s; @ elevation: %3$s]";
 
   /**
    * Factory method used to construct a new instance of {@link Coordinates} initialized with
-   * the given {@link Double#TYPE latitude} and {@link Double#TYPE longitude}.
+   * the given {@link Double latitude} and {@link Double longitude}.
    *
-   * @param latitude {@link Double#TYPE latitude} of the geographic coordinates.
-   * @param longitude {@link Double#TYPE longitude } of the geographic coordinates.
-   * @return a new set of {@link Coordinates} initialized with the given {@link Double#TYPE latitude}
-   * and {@link Double#TYPE longitude}.
+   * @param latitude {@link Double latitude} of the geographic coordinates.
+   * @param longitude {@link Double longitude} of the geographic coordinates.
+   * @return a new set of {@link Coordinates} initialized with the given {@link Double latitude}
+   * and {@link Double longitude}.
    * @see #Coordinates(double, double)
    */
   public static Coordinates of(double latitude, double longitude) {
@@ -68,17 +61,26 @@ public class Coordinates implements Serializable {
    */
   public static Coordinates from(Point point) {
 
-    Assert.notNull(point, "Point must not be null");
+    Assert.notNull(point, "Point is required");
 
     return of(point.getX(), point.getY());
   }
 
+  // Altitude at these geographic coordinates.
+  private double elevation;
+
+  // North-South position on the Earth's surface.
+  private final double latitude;
+
+  // East-West position on the Earth's surface.
+  private final double longitude;
+
   /**
-   * Constructs a new instance of {@link Coordinates} initialized with the given {@link Double#TYPE latitude}
-   * and {@link Double#TYPE longitude}.
+   * Constructs a new instance of {@link Coordinates} initialized with
+   * the given {@link Double latitude} and {@link Double longitude}.
    *
-   * @param latitude {@link Double#TYPE latitude} of the geographic coordinates.
-   * @param longitude {@link Double#TYPE longitude } of the geographic coordinates.
+   * @param latitude {@link Double latitude} of the geographic coordinates.
+   * @param longitude {@link Double longitude} of the geographic coordinates.
    */
   public Coordinates(double latitude, double longitude) {
     this.latitude = latitude;
@@ -86,27 +88,27 @@ public class Coordinates implements Serializable {
   }
 
   /**
-   * Returns the {@link Double#TYPE elevation} at these {@link Coordinates}.
+   * Returns the {@link Double elevation} at these {@link Coordinates}.
    *
-   * @return the {@link Double#TYPE elevation} at these {@link Coordinates}.
+   * @return the {@link Double elevation} at these {@link Coordinates}.
    */
   public double getElevation() {
     return this.elevation;
   }
 
   /**
-   * Returns the {@link Double#TYPE latitude} at these {@link Coordinates}.
+   * Returns the {@link Double latitude} at these {@link Coordinates}.
    *
-   * @return the {@link Double#TYPE latitude} at these {@link Coordinates}.
+   * @return the {@link Double latitude} at these {@link Coordinates}.
    */
   public double getLatitude() {
     return this.latitude;
   }
 
   /**
-   * Returns the {@link Double#TYPE longitude} at these {@link Coordinates}.
+   * Returns the {@link Double longitude} at these {@link Coordinates}.
    *
-   * @return the {@link Double#TYPE longitude} at these {@link Coordinates}.
+   * @return the {@link Double longitude} at these {@link Coordinates}.
    */
   public double getLongitude() {
     return this.longitude;
@@ -123,9 +125,9 @@ public class Coordinates implements Serializable {
   }
 
   /**
-   * Sets the {@link Double#TYPE elevation} at these {@link Coordinates}.
+   * Sets the {@link Double elevation} at these {@link Coordinates}.
    *
-   * @param elevation {@link Double#TYPE elevation} at these {@link Coordinates}.
+   * @param elevation {@link Double elevation} at these {@link Coordinates}.
    * @return these {@link Coordinates}.
    */
   public Coordinates at(double elevation) {
@@ -182,7 +184,6 @@ public class Coordinates implements Serializable {
    */
   @Override
   public String toString() {
-    return String.format("[latitude: %1$s, longitude: %2$s @ elevation: %3$s]",
-      getLatitude(), getLongitude(), getElevation());
+    return String.format(COORDINATES_TO_STRING, getLatitude(), getLongitude(), getElevation());
   }
 }
