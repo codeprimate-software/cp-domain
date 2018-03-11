@@ -19,6 +19,7 @@ package org.cp.domain.geo.model;
 import java.awt.Point;
 import java.io.Serializable;
 
+import org.cp.elements.enums.Distance;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 
@@ -66,14 +67,14 @@ public class Coordinates implements Serializable {
     return of(point.getX(), point.getY());
   }
 
-  // Altitude at these geographic coordinates.
-  private double elevation;
-
   // North-South position on the Earth's surface.
   private final double latitude;
 
   // East-West position on the Earth's surface.
   private final double longitude;
+
+  // Altitude at these geographic coordinates.
+  private Elevation elevation;
 
   /**
    * Constructs a new instance of {@link Coordinates} initialized with
@@ -83,16 +84,19 @@ public class Coordinates implements Serializable {
    * @param longitude {@link Double longitude} of the geographic coordinates.
    */
   public Coordinates(double latitude, double longitude) {
+
+    this.elevation = Elevation.of(0.0d);
     this.latitude = latitude;
     this.longitude = longitude;
   }
 
   /**
-   * Returns the {@link Double elevation} at these {@link Coordinates}.
+   * Returns the {@link Elevation} at these {@link Coordinates}.
    *
-   * @return the {@link Double elevation} at these {@link Coordinates}.
+   * @return the {@link Elevation} at these {@link Coordinates}.
+   * @see org.cp.domain.geo.model.Elevation
    */
-  public double getElevation() {
+  public Elevation getElevation() {
     return this.elevation;
   }
 
@@ -125,12 +129,41 @@ public class Coordinates implements Serializable {
   }
 
   /**
-   * Sets the {@link Double elevation} at these {@link Coordinates}.
+   * Sets the {@link Double elevation} using the {@link Distance#getDefault() default unit of measeurement}
+   * at these {@link Coordinates}.
    *
    * @param elevation {@link Double elevation} at these {@link Coordinates}.
    * @return these {@link Coordinates}.
+   * @see org.cp.elements.enums.Distance#getDefault()
+   * @see #at(double, Distance)
    */
   public Coordinates at(double elevation) {
+    return at(elevation, Distance.getDefault());
+  }
+
+  /**
+   * Sets the {@link Double elevation} using the given {@link Distance unit of measeurement}
+   * at these {@link Coordinates}.
+   *
+   * @param elevation {@link Double elevation} at these {@link Coordinates}.
+   * @param distance {@link Distance} used as the unit of measurement.
+   * @return these {@link Coordinates}.
+   * @see org.cp.elements.enums.Distance
+   * @see #at(Elevation)
+   */
+  public Coordinates at(double elevation, Distance distance) {
+    return at(Elevation.of(elevation).in(distance));
+  }
+
+  /**
+   * Sets the {@link Double elevation} using the given {@link Distance unit of measeurement}
+   * at these {@link Coordinates}.
+   *
+   * @param elevation {@link Elevation} at these {@link Coordinates}.
+   * @return these {@link Coordinates}.
+   * @see org.cp.domain.geo.model.Elevation
+   */
+  public Coordinates at(Elevation elevation) {
     this.elevation = elevation;
     return this;
   }

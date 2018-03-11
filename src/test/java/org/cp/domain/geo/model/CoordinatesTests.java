@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.awt.Point;
 import java.io.IOException;
 
+import org.cp.elements.enums.Distance;
 import org.cp.elements.io.IOUtils;
 import org.junit.Test;
 
@@ -36,11 +37,12 @@ import org.junit.Test;
 public class CoordinatesTests {
 
   @Test
-  public void constructCoordinatesWithLatitudAndLongitude() {
+  public void constructCoordinatesWithLatitudeAndLongitude() {
 
     Coordinates coordinates = new Coordinates(1.0d, 2.0d);
 
-    assertThat(coordinates.getElevation()).isEqualTo(0.0d);
+    assertThat(coordinates.getElevation().getAltitude()).isEqualTo(0.0d);
+    assertThat(coordinates.getElevation().getDistance()).isEqualTo(Distance.getDefault());
     assertThat(coordinates.getLatitude()).isEqualTo(1.0d);
     assertThat(coordinates.getLongitude()).isEqualTo(2.0d);
   }
@@ -51,7 +53,20 @@ public class CoordinatesTests {
     Coordinates coordinates = Coordinates.of(1.0d, 2.0d);
 
     assertThat(coordinates).isNotNull();
-    assertThat(coordinates.getElevation()).isEqualTo(0.0d);
+    assertThat(coordinates.getElevation().getAltitude()).isEqualTo(0.0d);
+    assertThat(coordinates.getElevation().getDistance()).isEqualTo(Distance.getDefault());
+    assertThat(coordinates.getLatitude()).isEqualTo(1.0d);
+    assertThat(coordinates.getLongitude()).isEqualTo(2.0d);
+  }
+
+  @Test
+  public void ofLatitudeAndLongitudeAtElevation() {
+
+    Coordinates coordinates = Coordinates.of(1.0d, 2.0d).at(4.0d);
+
+    assertThat(coordinates).isNotNull();
+    assertThat(coordinates.getElevation().getAltitude()).isEqualTo(4.0d);
+    assertThat(coordinates.getElevation().getDistance()).isEqualTo(Distance.getDefault());
     assertThat(coordinates.getLatitude()).isEqualTo(1.0d);
     assertThat(coordinates.getLongitude()).isEqualTo(2.0d);
   }
@@ -64,7 +79,8 @@ public class CoordinatesTests {
     Coordinates coordinates = Coordinates.from(point);
 
     assertThat(coordinates).isNotNull();
-    assertThat(coordinates.getElevation()).isEqualTo(0.0d);
+    assertThat(coordinates.getElevation().getAltitude()).isEqualTo(0.0d);
+    assertThat(coordinates.getElevation().getDistance()).isEqualTo(Distance.getDefault());
     assertThat(coordinates.getLatitude()).isEqualTo(point.getX());
     assertThat(coordinates.getLongitude()).isEqualTo(point.getY());
   }
@@ -100,11 +116,46 @@ public class CoordinatesTests {
     Coordinates coordinates = Coordinates.of(1.0d, 2.0d);
 
     assertThat(coordinates).isNotNull();
-    assertThat(coordinates.getElevation()).isEqualTo(0.0d);
+    assertThat(coordinates.getElevation().getAltitude()).isEqualTo(0.0d);
     assertThat(coordinates.getLatitude()).isEqualTo(1.0d);
     assertThat(coordinates.getLongitude()).isEqualTo(2.0d);
     assertThat(coordinates.at(3.0d)).isSameAs(coordinates);
-    assertThat(coordinates.getElevation()).isEqualTo(3.0d);
+    assertThat(coordinates.getElevation().getAltitude()).isEqualTo(3.0d);
+    assertThat(coordinates.getLatitude()).isEqualTo(1.0d);
+    assertThat(coordinates.getLongitude()).isEqualTo(2.0d);
+  }
+
+  @Test
+  public void atElevationWithDistanceSetsElevationReturnsThis() {
+
+    Coordinates coordinates = Coordinates.of(1.0d, 2.0d);
+
+    assertThat(coordinates).isNotNull();
+    assertThat(coordinates.getElevation().getAltitude()).isEqualTo(0.0d);
+    assertThat(coordinates.getElevation().getDistance()).isEqualTo(Distance.getDefault());
+    assertThat(coordinates.getLatitude()).isEqualTo(1.0d);
+    assertThat(coordinates.getLongitude()).isEqualTo(2.0d);
+    assertThat(coordinates.at(4.0d, Distance.NANOMETER)).isSameAs(coordinates);
+    assertThat(coordinates.getElevation().getAltitude()).isEqualTo(4.0d);
+    assertThat(coordinates.getElevation().getDistance()).isEqualTo(Distance.NANOMETER);
+    assertThat(coordinates.getLatitude()).isEqualTo(1.0d);
+    assertThat(coordinates.getLongitude()).isEqualTo(2.0d);
+  }
+
+  @Test
+  public void atElevationWithElevationSetsElevationReturnsThis() {
+
+    Elevation elevation = Elevation.of(8.0d).in(Distance.MILE);
+
+    Coordinates coordinates = Coordinates.of(1.0d, 2.0d);
+
+    assertThat(coordinates).isNotNull();
+    assertThat(coordinates.getElevation().getAltitude()).isEqualTo(0.0d);
+    assertThat(coordinates.getElevation().getDistance()).isEqualTo(Distance.getDefault());
+    assertThat(coordinates.getLatitude()).isEqualTo(1.0d);
+    assertThat(coordinates.getLongitude()).isEqualTo(2.0d);
+    assertThat(coordinates.at(elevation)).isSameAs(coordinates);
+    assertThat(coordinates.getElevation()).isEqualTo(elevation);
     assertThat(coordinates.getLatitude()).isEqualTo(1.0d);
     assertThat(coordinates.getLongitude()).isEqualTo(2.0d);
   }
@@ -163,16 +214,18 @@ public class CoordinatesTests {
   public void toStringIsCorrect() {
 
     assertThat(Coordinates.of(1.0d, 2.0d).at(3.0d).toString())
-      .isEqualTo("[latitude: 1.0, longitude: 2.0; @ elevation: 3.0]");
+      .isEqualTo("[latitude: 1.0, longitude: 2.0; @ elevation: 3.0 feet]");
   }
 
   @Test
   public void serializationIsCorrect() throws IOException, ClassNotFoundException {
 
-    Coordinates coordinates = Coordinates.of(1.0d, 2.0d).at(3.0d);
+    Elevation elevation = Elevation.of(4.0d).in(Distance.KILOMETER);
+
+    Coordinates coordinates = Coordinates.of(1.0d, 2.0d).at(elevation);
 
     assertThat(coordinates).isNotNull();
-    assertThat(coordinates.getElevation()).isEqualTo(3.0d);
+    assertThat(coordinates.getElevation()).isEqualTo(elevation);
     assertThat(coordinates.getLatitude()).isEqualTo(1.0d);
     assertThat(coordinates.getLongitude()).isEqualTo(2.0d);
 
