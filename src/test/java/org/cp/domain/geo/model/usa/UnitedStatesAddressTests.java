@@ -19,12 +19,12 @@ package org.cp.domain.geo.model.usa;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.cp.domain.geo.enums.Country;
+import org.cp.domain.geo.enums.State;
 import org.cp.domain.geo.model.City;
 import org.cp.domain.geo.model.Coordinates;
 import org.cp.domain.geo.model.PostalCode;
 import org.cp.domain.geo.model.Street;
 import org.cp.domain.geo.model.Unit;
-import org.cp.domain.geo.enums.State;
 import org.junit.Test;
 
 /**
@@ -221,7 +221,7 @@ public class UnitedStatesAddressTests {
   }
 
   @Test
-  public void settingPostalCodeDoesNotSetZipButReturnsZipOfPostalCode() {
+  public void settingPostalCodeDoesNotSetZipButReturnsZipForPostalCode() {
 
     UnitedStatesAddress address = UnitedStatesAddress.newUnitedStatesAddress();
 
