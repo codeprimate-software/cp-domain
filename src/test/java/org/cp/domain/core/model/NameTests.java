@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.core.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,15 +30,14 @@ import org.cp.elements.lang.Visitor;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link Name}.
+ * Unit Tests for {@link Name}.
  *
  * @author John Blum
  * @see org.junit.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.domain.core.model.Name
+ * @see org.cp.elements.lang.Nameable
  * @since 1.0.0
  */
 public class NameTests {
@@ -104,6 +102,27 @@ public class NameTests {
     verify(mockNameable, times(1)).getName();
   }
 
+  @Test
+  @SuppressWarnings("unchecked")
+  public void ofNameableOfNameWithNoMiddleName() {
+
+    Name name = Name.of("Jon", "Bloom");
+
+    Nameable<Name> mockNameable = mock(Nameable.class);
+
+    when(mockNameable.getName()).thenReturn(name);
+
+    Name copy = Name.of(mockNameable);
+
+    assertThat(copy).isNotNull();
+    assertThat(copy).isNotSameAs(name);
+    assertThat(copy.getFirstName()).isEqualTo("Jon");
+    assertThat(copy.getMiddleName().isPresent()).isFalse();
+    assertThat(copy.getLastName()).isEqualTo("Bloom");
+
+    verify(mockNameable, times(1)).getName();
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void ofNullNameableThrowsException() {
 
@@ -127,8 +146,8 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Jon");
-    assertThat(name.getMiddleName().isPresent()).isFalse();
     assertThat(name.getLastName()).isEqualTo("Bloom");
+    assertThat(name.getMiddleName().isPresent()).isFalse();
   }
 
   @Test
@@ -139,8 +158,8 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Jon");
-    assertThat(name.getMiddleName().orElse(null)).isEqualTo("J");
     assertThat(name.getLastName()).isEqualTo("Bloom");
+    assertThat(name.getMiddleName().orElse(null)).isEqualTo("J");
   }
 
   @Test
@@ -151,8 +170,8 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Jon");
-    assertThat(name.getMiddleName().orElse(null)).isEqualTo("Jason");
     assertThat(name.getLastName()).isEqualTo("Bloom");
+    assertThat(name.getMiddleName().orElse(null)).isEqualTo("Jason");
   }
 
   @Test
@@ -163,8 +182,8 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Jon");
-    assertThat(name.getMiddleName().isPresent()).isFalse();
     assertThat(name.getLastName()).isEqualTo("Bloom");
+    assertThat(name.getMiddleName().isPresent()).isFalse();
   }
 
   @Test
@@ -175,8 +194,8 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Jon");
-    assertThat(name.getMiddleName().orElse(null)).isEqualTo("J");
     assertThat(name.getLastName()).isEqualTo("Bloom");
+    assertThat(name.getMiddleName().orElse(null)).isEqualTo("J");
   }
 
   @Test
@@ -187,8 +206,8 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Charles");
-    assertThat(name.getMiddleName().orElse(null)).isEqualTo("Gordon");
     assertThat(name.getLastName()).isEqualTo("Howell");
+    assertThat(name.getMiddleName().orElse(null)).isEqualTo("Gordon");
   }
 
   @Test
@@ -199,8 +218,8 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Ellie");
-    assertThat(name.getMiddleName().isPresent()).isFalse();
     assertThat(name.getLastName()).isEqualTo("Bloom");
+    assertThat(name.getMiddleName().isPresent()).isFalse();
   }
 
   @Test
@@ -211,8 +230,8 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Sarah");
-    assertThat(name.getMiddleName().orElse(null)).isEqualTo("E");
     assertThat(name.getLastName()).isEqualTo("Bloom");
+    assertThat(name.getMiddleName().orElse(null)).isEqualTo("E");
   }
 
   @Test
@@ -223,8 +242,8 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Jon");
-    assertThat(name.getMiddleName().orElse(null)).isEqualTo("Jason");
     assertThat(name.getLastName()).isEqualTo("Bloom");
+    assertThat(name.getMiddleName().orElse(null)).isEqualTo("Jason");
   }
 
   @Test
@@ -235,8 +254,8 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Senior");
-    assertThat(name.getMiddleName().isPresent()).isFalse();
     assertThat(name.getLastName()).isEqualTo("Bloom");
+    assertThat(name.getMiddleName().isPresent()).isFalse();
   }
 
   @Test
@@ -247,8 +266,8 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Jon");
-    assertThat(name.getMiddleName().orElse(null)).isEqualTo("J");
     assertThat(name.getLastName()).isEqualTo("Bloom");
+    assertThat(name.getMiddleName().orElse(null)).isEqualTo("J");
   }
 
   @Test
@@ -259,53 +278,42 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Evil");
-    assertThat(name.getMiddleName().isPresent()).isFalse();
     assertThat(name.getLastName()).isEqualTo("Mister");
+    assertThat(name.getMiddleName().isPresent()).isFalse();
+  }
+
+  private void testOfStringContainingIllegalNameThrowsException(String name) {
+
+    try {
+      Name.of(name);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("First and last name are required; was [%s]", name);
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void ofStringContainingOnlyFirstNameThrowsException() {
+    testOfStringContainingIllegalNameThrowsException("Jon");
+  }
 
-    try {
-      Name.of("Jon");
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("First and last name are required; was [Jon]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+  @Test(expected = IllegalArgumentException.class)
+  public void ofBlankStringThrowsException() {
+    testOfStringContainingIllegalNameThrowsException("  ");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void ofEmptyStringThrowsException() {
-
-    try {
-      Name.of("  ");
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("First and last name are required; was [  ]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    testOfStringContainingIllegalNameThrowsException("");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void ofNullStringThrowsException() {
-
-    try {
-      Name.of((String) null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("First and last name are required; was [null]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    testOfStringContainingIllegalNameThrowsException(null);
   }
 
   @Test
@@ -316,8 +324,8 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Jon");
-    assertThat(name.getMiddleName().isPresent()).isFalse();
     assertThat(name.getLastName()).isEqualTo("Bloom");
+    assertThat(name.getMiddleName().isPresent()).isFalse();
   }
 
   @Test
@@ -328,8 +336,8 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Jon");
-    assertThat(name.getMiddleName().orElse(null)).isEqualTo("Jason");
     assertThat(name.getLastName()).isEqualTo("Bloom");
+    assertThat(name.getMiddleName().orElse(null)).isEqualTo("Jason");
   }
 
   @Test
@@ -340,12 +348,12 @@ public class NameTests {
     assertThat(name).isNotNull();
     assertThat(name.getName()).isSameAs(name);
     assertThat(name.getFirstName()).isEqualTo("Jon");
-    assertThat(name.getMiddleName().orElse(null)).isEqualTo("Jason");
     assertThat(name.getLastName()).isEqualTo("Bloom");
+    assertThat(name.getMiddleName().orElse(null)).isEqualTo("Jason");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void constructWithNoFirstName() {
+  public void constructNameWithNoFirstName() {
 
     try {
       new Name(" ", "J", "Bloom");
@@ -360,7 +368,7 @@ public class NameTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void constructWithNoLastName() {
+  public void constructNameWithNoLastName() {
 
     try {
       Name.of("Jon", " ", "");
@@ -403,6 +411,7 @@ public class NameTests {
 
     assertThat(nameChange).isNotNull();
     assertThat(nameChange).isNotSameAs(name);
+    assertThat(nameChange.getName()).isSameAs(nameChange);
     assertThat(nameChange.getFirstName()).isEqualTo("Jon");
     assertThat(nameChange.getLastName()).isEqualTo("Doe");
     assertThat(nameChange.getMiddleName().isPresent()).isFalse();
@@ -415,6 +424,7 @@ public class NameTests {
     Name jonBlum = Name.of("Jon", "J", "Blum");
 
     assertThat(jonBloom.like(jonBlum)).isTrue();
+    assertThat(jonBlum.like(jonBloom)).isTrue();
   }
 
   @Test
@@ -424,15 +434,17 @@ public class NameTests {
     Name johnBloom = Name.of("John", "J", "Bloom");
 
     assertThat(jonBloom.like(johnBloom)).isTrue();
+    assertThat(johnBloom.like(jonBloom)).isTrue();
   }
 
   @Test
   public void likeByUnlikeNamesReturnsFalse() {
 
     Name johnBlum = Name.of("John", "J", "Blum");
-    Name jonDoe = Name.of("Jon", "J", "Doe");
+    Name jonBloom = Name.of("Jon", "J", "Bloom");
 
-    assertThat(johnBlum.like(jonDoe)).isFalse();
+    assertThat(johnBlum.like(jonBloom)).isFalse();
+    assertThat(jonBloom.like(johnBlum)).isFalse();
   }
 
   @Test
@@ -441,16 +453,17 @@ public class NameTests {
   }
 
   @Test
-  public void cloneIsSuccessful() throws Exception {
+  public void cloneIsSuccessful() {
 
     Name name = Name.of("Jon", "Bloom");
     Name clone = (Name) name.clone();
 
     assertThat(clone).isNotNull();
     assertThat(clone).isNotSameAs(name);
+    assertThat(clone.getName()).isSameAs(clone);
     assertThat(clone.getFirstName()).isEqualTo("Jon");
-    assertThat(clone.getMiddleName().isPresent()).isFalse();
     assertThat(clone.getLastName()).isEqualTo("Bloom");
+    assertThat(clone.getMiddleName().isPresent()).isFalse();
   }
 
   @Test
@@ -552,6 +565,12 @@ public class NameTests {
   }
 
   @Test
+  @SuppressWarnings("all")
+  public void equalsRandomObjectIsFalse() {
+    assertThat(Name.of("Jon", "Bloom").equals("test")).isFalse();
+  }
+
+  @Test
   public void hashCodeForNameIsNotZero() {
     assertThat(Name.of("Jon", "J", "Bloom").hashCode()).isNotEqualTo(0);
   }
@@ -589,6 +608,11 @@ public class NameTests {
   }
 
   @Test
+  public void toStringWithTitleFirstNameMiddleNameLastNameAndSuffixIsStringWithFirstNameMiddleNameAndLastNameOnly() {
+    assertThat(Name.of("Dr. Evil T Doer Sr.").toString()).isEqualTo("Evil T Doer");
+  }
+
+  @Test
   public void nameIsSerializable() throws IOException, ClassNotFoundException {
 
     Name name = Name.of("Jon", "J", "Bloom");
@@ -605,7 +629,7 @@ public class NameTests {
     assertThat(deserializedName).isNotNull();
     assertThat(deserializedName).isNotSameAs(name);
     assertThat(deserializedName.getFirstName()).isEqualTo("Jon");
-    assertThat(deserializedName.getMiddleName().orElse(null)).isEqualTo("J");
     assertThat(deserializedName.getLastName()).isEqualTo("Bloom");
+    assertThat(deserializedName.getMiddleName().orElse(null)).isEqualTo("J");
   }
 }

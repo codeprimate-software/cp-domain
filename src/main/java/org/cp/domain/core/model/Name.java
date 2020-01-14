@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.core.model;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
@@ -48,6 +47,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
 public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, Serializable, Visitable {
 
   public static final String NAME_PART_SEPARATOR = StringUtils.SINGLE_SPACE;
+  public static final String NAME_PART_SEPARATOR_PATTERN = "\\s+";
 
   protected static final String DEFAULT_MIDDLE_NAME = null;
 
@@ -81,7 +81,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
    * @throws IllegalArgumentException if {@link Nameable} is {@literal null}.
    * @see org.cp.elements.lang.Nameable#getName()
    * @see org.cp.domain.core.model.Name
-   * @see #of(String, String, String)
+   * @see #of(Name)
    */
   public static Name of(Nameable<Name> nameable) {
 
@@ -92,7 +92,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Factory method used to parse the given {@link String} into the individual parts of a name
+   * Factory method used to parse the given {@link String} into the individual component parts of a name
    * and then construct a new instance of {@link Name} initialized with the individual name components.
    *
    * @param name {@link String} containing the name to parse.
@@ -111,13 +111,14 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Name} initialized with the given {@link String first}
-   * and {@link String last} names.
+   * Factory method used to construct a new instance of {@link Name} initialized with
+   * the given {@link String first name} and {@link String last name}.
    *
    * @param firstName {@link String} containing the first name.
    * @param lastName {@link String} containing the last name.
-   * @return a new instance of {@link Name} initialized to the given {@link String first} and {@link String last names}.
-   * @throws IllegalArgumentException if {@link String first} or {@link String last name} are not specified.
+   * @return a new instance of {@link Name} initialized to the given {@link String first name}
+   * and {@link String last name}.
+   * @throws IllegalArgumentException if {@link String first} or {@link String last} name are not specified.
    * @see #of(String, String, String)
    */
   public static Name of(String firstName, String lastName) {
@@ -125,15 +126,15 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Name} initialized with the given {@link String first},
-   * {@link String middle} and {@link String last names}.
+   * Factory method used to construct a new instance of {@link Name} initialized with
+   * the given {@link String first name}, {@link String middle name} and {@link String last name}.
    *
    * @param firstName {@link String} containing the first name.
    * @param middleName {@link String} containing the middle name; May just be the initial(s) or even {@literal null}.
    * @param lastName {@link String} containing the last name.
-   * @return a new instance of {@link Name} initialized to the given {@link String first}, {@link String middle}
-   * and {@link String last names}.
-   * @throws IllegalArgumentException if {@link String first} or {@link String last name} are not specified.
+   * @return a new instance of {@link Name} initialized to the given {@link String first name},
+   * {@link String middle name} and {@link String last name}.
+   * @throws IllegalArgumentException if {@link String first name} or {@link String last name} are not specified.
    * @see #Name(String, String, String)
    */
   public static Name of(String firstName, String middleName, String lastName) {
@@ -147,6 +148,8 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
    * @return an array of {@link String Strings} containing the component parts of a name.
    * @throws IllegalArgumentException if {@code name} is {@literal null}
    * or does not minimally consist of both a first and last name.
+   * @see #stripSuffix(String)
+   * @see #stripTitle(String)
    */
   private static String[] parseName(String name) {
 
@@ -155,13 +158,13 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
       .map(StringUtils::trim)
       .map(Name::stripSuffix)
       .map(Name::stripTitle)
-      .map(it -> it.split("\\s+"))
+      .map(it -> it.split(NAME_PART_SEPARATOR_PATTERN))
       .filter(nameParts -> nameParts.length >= 2)
       .orElseThrow(() -> newIllegalArgumentException("First and last name are required; was [%s]", name));
   }
 
   /**
-   * Strips any {@link Suffix Suffixes} from the given {@link String name}.
+   * Strips any {@link Suffix suffixes} from the given {@link String name}.
    *
    * @param name {@link String} containing the name to evaluate
    * @return the {@link String name} stripped of any {@link Suffix suffixes}.
@@ -180,7 +183,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Strips any {@link Title Titles} from the given {@link String name}.
+   * Strips any {@link Title titles} from the given {@link String name}.
    *
    * @param name {@link String} containing the name to evaluate
    * @return the {@link String name} stripped of any {@link Title titles}.
@@ -202,12 +205,12 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
 
   /**
    * Constructs a new instance of {@link Name} initialized with the given {@link String first name},
-   * {@link String middle name} (or initial(s) or even {@literal null}) and {@link String last name}.
+   * {@link String middle name} (or initial(s), or even {@literal null}) and {@link String last name}.
    *
    * @param firstName {@link String} containing the first name.
    * @param middleName {@link String} containing the middle name; May just be the initial(s) or even {@literal null}.
    * @param lastName {@link String} containing the last name.
-   * @throws IllegalArgumentException if {@link String first} or {@link String last name} are not specified.
+   * @throws IllegalArgumentException if {@link String first name} or {@link String last name} are not specified.
    */
   Name(String firstName, String middleName, String lastName) {
 
@@ -216,7 +219,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
 
     this.firstName = firstName;
     this.lastName = lastName;
-    this.middleName = Optional.ofNullable(middleName).filter(StringUtils::hasText).orElse(DEFAULT_MIDDLE_NAME);
+    this.middleName = StringUtils.hasText(middleName) ? middleName : DEFAULT_MIDDLE_NAME;
   }
 
   /**
@@ -253,7 +256,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Returns this {@link Name}.
+   * Return this {@link Name}.
    *
    * @return this {@link Name}.
    * @see org.cp.elements.lang.Nameable#getName()
@@ -264,7 +267,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Accepts a {@link Visitor} visiting this {@link Name}.
+   * Accepts a {@link Visitor} to visit this {@link Name}.
    *
    * @param visitor {@link Visitor} accepted to visit this {@link Name}.
    * @see org.cp.elements.lang.Visitable#accept(Visitor)
@@ -276,7 +279,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Builder method used to change the last name.
+   * Builder method used to change the {@link String last name}.
    *
    * This method returns a new instance of {@link Name} initialized with this {@link Name Name's}
    * {@link #getFirstName() first name}, {@link #getMiddleName() middle name} and the given,
@@ -284,6 +287,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
    *
    * @param lastName {@link String} containing the new last name.
    * @return a new instance of {@link Name} with the new {@link String last name}.
+   * @throws IllegalArgumentException if the given, new {@link String last name} is not specified.
    * @see #of(String, String, String)
    * @see #getFirstName()
    * @see #getMiddleName()
@@ -314,26 +318,27 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
    * Clones this {@link Name}.
    *
    * @return a clone (copy) of this {@link Name}.
-   * @throws CloneNotSupportedException if the clone operation is not supported.
    * @see #of(String, String, String)
    * @see java.lang.Object#clone()
    */
   @Override
-  public Object clone() throws CloneNotSupportedException {
+  @SuppressWarnings("all")
+  public Object clone() {
     return of(this);
   }
 
   /**
-   * Compares this {@link Name} with the other given {@link Name} to determine the natural ordering (sort)
+   * Compares this {@link Name} with the given {@link Name} to determine the natural ordering (sort order)
    * of the {@link Name names}.
    *
-   * The nature order of {@link Name names} as determined by this method is last name, first name
+   * The natural order of {@link Name names} as determined by this method is last name, first name
    * and then middle name (or initial(s)) in ascending order.
    *
    * @param other {@link Name} being compared with this {@link Name}.
-   * @return a integer value indicating the natural order of this {@link Name} relative to the other {@link Name}.
-   * A &lt; 0 indicates this {@link Name} comes before the other {@link Name}, &gt; 0 indicates this {@link Name}
-   * comes after the other {@link Name} and 0 indicates both {@link Name names} are equal.
+   * @return a integer value indicating the natural order of this {@link Name} relative to the given {@link Name}.
+   * A &lt; {@literal 0} indicates this {@link Name} comes before the given {@link Name}. A &gt; {@literal 0}
+   * indicates this {@link Name} comes after the given {@link Name} and {@literal 0} indicates both {@link Name names}
+   * are equal.
    * @see org.cp.elements.util.ComparatorResultBuilder
    * @see java.lang.Comparable#compareTo(Object)
    */
@@ -368,7 +373,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
     Name that = (Name) obj;
 
     return ObjectUtils.equals(this.getFirstName(), that.getFirstName())
-      && ObjectUtils.equals(this.getMiddleName(), that.getMiddleName())
+      && ObjectUtils.equals(this.getMiddleName().orElse(null), that.getMiddleName().orElse(null))
       && ObjectUtils.equals(this.getLastName(), that.getLastName());
   }
 
@@ -384,7 +389,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
     int hashValue = 17;
 
     hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getFirstName());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getMiddleName());
+    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getMiddleName().orElse(null));
     hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getLastName());
 
     return hashValue;
@@ -395,6 +400,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
    *
    * @return a {@link String} containing the current state of this {@link Name}.
    * @see java.lang.Object#toString()
+   * @see java.lang.String
    */
   @Override
   public String toString() {
@@ -410,7 +416,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Enumeration representing a {@link Name} suffix.
+   * Enumeration of {@link Name} suffixes.
    */
   @SuppressWarnings("unused")
   public enum Suffix {
@@ -425,7 +431,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Enumeration representing a {@link Name} title prefix.
+   * Enumeration of {@link Name} titles (prefix).
    *
    * @see <a href="https://en.wikipedia.org/wiki/English_honorifics">English Honorifics</a>
    */
