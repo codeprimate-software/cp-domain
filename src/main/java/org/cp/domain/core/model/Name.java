@@ -373,7 +373,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
     Name that = (Name) obj;
 
     return ObjectUtils.equals(this.getFirstName(), that.getFirstName())
-      && ObjectUtils.equals(this.getMiddleName().orElse(null), that.getMiddleName().orElse(null))
+      && ObjectUtils.equalsIgnoreNull(this.getMiddleName().orElse(null), that.getMiddleName().orElse(null))
       && ObjectUtils.equals(this.getLastName(), that.getLastName());
   }
 

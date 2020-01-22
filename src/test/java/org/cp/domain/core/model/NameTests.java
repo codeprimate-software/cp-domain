@@ -525,6 +525,18 @@ public class NameTests {
   }
 
   @Test
+  public void equalsWithEffectivelyEqualNamesIsTrue() {
+
+    Name jonBloomOne = Name.of("Jon", "Bloom");
+    Name jonBloomTwo = Name.of("Jon", "Bloom");
+
+    assertThat(jonBloomOne).isNotNull();
+    assertThat(jonBloomTwo).isNotNull();
+    assertThat(jonBloomOne).isNotSameAs(jonBloomTwo);
+    assertThat(jonBloomOne.equals(jonBloomTwo)).isTrue();
+  }
+
+  @Test
   @SuppressWarnings("all")
   public void equalsWithIdenticalNamesIsTrue() {
 
@@ -566,7 +578,7 @@ public class NameTests {
 
   @Test
   @SuppressWarnings("all")
-  public void equalsRandomObjectIsFalse() {
+  public void equalsObjectIsFalse() {
     assertThat(Name.of("Jon", "Bloom").equals("test")).isFalse();
   }
 
