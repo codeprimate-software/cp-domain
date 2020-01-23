@@ -18,15 +18,15 @@ package org.cp.domain.core.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 
 import org.cp.elements.enums.Gender;
 import org.cp.elements.io.IOUtils;
@@ -265,7 +265,7 @@ public class PersonTests {
   }
 
   @Test
-  public void isDeadWithDateOfDeathIsTrue() {
+  public void isAliveWithDateOfDeathIsFalse() {
 
     Person person = Person.newPerson("Some", "Person");
 
@@ -274,17 +274,17 @@ public class PersonTests {
     person.setDateOfDeath(LocalDateTime.now().minusYears(1));
 
     assertThat(person.getDateOfDeath().isPresent()).isTrue();
-    assertThat(person.isDead()).isTrue();
+    assertThat(person.isAlive()).isFalse();
   }
 
   @Test
-  public void isDeadWithoutDateOfDeathIsFalse() {
+  public void isAliveWithoutDateOfDeathIsTrue() {
 
     Person person = Person.newPerson("Some", "Person");
 
     assertThat(person).isNotNull();
     assertThat(person.getDateOfDeath().isPresent()).isFalse();
-    assertThat(person.isDead()).isFalse();
+    assertThat(person.isAlive()).isTrue();
   }
 
   @Test
@@ -458,13 +458,31 @@ public class PersonTests {
     assertThat(person.getDateOfDeath().isPresent()).isFalse();
   }
 
+  @Test
+  public void setDateOfDeathAfterBirthDate() {
+
+    LocalDateTime birthDate = LocalDateTime.of(1945, Month.NOVEMBER, 13, 11, 30, 15);
+    LocalDateTime dateOfDeath = LocalDateTime.of(2013, Month.FEBRUARY, 13, 23, 45, 30);
+
+    Person person = Person.newPerson("Some", "Person", birthDate);
+
+    assertThat(person).isNotNull();
+    assertThat(person.getBirthDate().orElse(null)).isEqualTo(birthDate);
+
+    person.setDateOfDeath(dateOfDeath);
+
+    assertThat(person.getDateOfDeath().orElse(null)).isEqualTo(dateOfDeath);
+    assertThat(person.getAge().orElse(-1))
+      .isEqualTo(Period.between(birthDate.toLocalDate(), dateOfDeath.toLocalDate()).getYears());
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void setDateOfDeathBeforeBirthDateThrowsIllegalArgumentException() {
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Person.DATE_TIME_OF_DEATH_PATTERN);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Person.DATE_OF_DEATH_PATTERN);
 
     LocalDateTime birthDate = LocalDateTime.of(2011, Month.JANUARY, 21, 23, 45, 30);
-    LocalDateTime dateOfDeath = birthDate.minusYears(1);
+    LocalDateTime dateOfDeath = birthDate.minusDays(1);
 
     try {
       Person.newPerson("Some", "Person", birthDate).died(dateOfDeath);
@@ -472,7 +490,7 @@ public class PersonTests {
     catch (IllegalArgumentException expected) {
 
       assertThat(expected).hasMessage("Date of death [%s] cannot be before the person's date of birth [%s]",
-        formatter.format(dateOfDeath), formatter.format(birthDate));
+        formatter.format(dateOfDeath.toLocalDate()), formatter.format(birthDate.toLocalDate()));
 
       assertThat(expected).hasNoCause();
 
@@ -483,9 +501,9 @@ public class PersonTests {
   @Test(expected = IllegalArgumentException.class)
   public void setDateOfDeathToFutureDateThrowsIllegalArgumentException() {
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Person.DATE_TIME_OF_DEATH_PATTERN);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Person.DATE_OF_DEATH_PATTERN);
 
-    LocalDateTime dateOfDeath = getDateTimeInFuture(1);
+    LocalDateTime dateOfDeath = getDateTimeInFuture(2);
 
     try {
       Person.newPerson("Some", "Person").setDateOfDeath(dateOfDeath);
@@ -519,32 +537,6 @@ public class PersonTests {
 
     person.setGender(Gender.MALE);
 
-    assertThat(person.getGender().orElse(null)).isEqualTo(Gender.MALE);
-    assertThat(person.isFemale()).isFalse();
-    assertThat(person.isMale()).isTrue();
-  }
-
-  @Test
-  public void setGenderAsFemale() {
-
-    Person person = Person.newPerson("LE", "Bloom");
-
-    assertThat(person).isNotNull();
-    assertThat(person.getGender().isPresent()).isFalse();
-    assertThat(person.asFemale()).isSameAs(person);
-    assertThat(person.getGender().orElse(null)).isEqualTo(Gender.FEMALE);
-    assertThat(person.isFemale()).isTrue();
-    assertThat(person.isMale()).isFalse();
-  }
-
-  @Test
-  public void setGenderAsMale() {
-
-    Person person = Person.newPerson("Jon", "Bloom");
-
-    assertThat(person).isNotNull();
-    assertThat(person.getGender().isPresent()).isFalse();
-    assertThat(person.asMale()).isSameAs(person);
     assertThat(person.getGender().orElse(null)).isEqualTo(Gender.MALE);
     assertThat(person.isFemale()).isFalse();
     assertThat(person.isMale()).isTrue();
@@ -602,7 +594,7 @@ public class PersonTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void ageWithNegativeValueThrowsException() {
+  public void ageWithNegativeValueThrowsIllegalArgumentException() {
 
     try {
       Person.newPerson("Jon", "Bloom").age(-1);
@@ -617,36 +609,58 @@ public class PersonTests {
   }
 
   @Test
+  public void ageWithZeroSetsBirthDate() {
+
+    Person person = Person.newPerson("Jon", "Bloom").age(0);
+
+    assertThat(person).isNotNull();
+    assertThat(person.getAge().orElse(-1)).isEqualTo(0);
+    assertThat(person.getBirthDate().map(LocalDateTime::toLocalDate).orElse(null))
+      .isEqualTo(getBirthDateForAge(0).toLocalDate());
+  }
+
+  @Test
+  public void asFemaleSetsGender() {
+
+    Person person = Person.newPerson("Ellie", "Bloom");
+
+    assertThat(person).isNotNull();
+    assertThat(person.getGender().isPresent()).isFalse();
+    assertThat(person.asFemale()).isSameAs(person);
+    assertThat(person.getGender().orElse(null)).isEqualTo(Gender.FEMALE);
+    assertThat(person.isFemale()).isTrue();
+    assertThat(person.isMale()).isFalse();
+  }
+
+  @Test
+  public void asMaleSetsGender() {
+
+    Person person = Person.newPerson("Jon", "Bloom");
+
+    assertThat(person).isNotNull();
+    assertThat(person.getGender().isPresent()).isFalse();
+    assertThat(person.asMale()).isSameAs(person);
+    assertThat(person.getGender().orElse(null)).isEqualTo(Gender.MALE);
+    assertThat(person.isFemale()).isFalse();
+    assertThat(person.isMale()).isTrue();
+  }
+
+  @Test
   public void bornSetsBirthDateAndAge() {
 
     LocalDateTime birthDate = getBirthDateForAge(42);
 
-    Person person = Person.newPerson("Jon", "Bloom").born(birthDate);
+    Person person = Person.newPerson("Jon", "Bloom");
 
     assertThat(person).isNotNull();
-    assertThat(person.getBirthDate().orElse(null)).isEqualTo(birthDate);
+
+    person = spy(person);
+
+    assertThat(person.born(birthDate)).isSameAs(person);
     assertThat(person.getAge().orElse(-1)).isEqualTo(42);
-  }
+    assertThat(person.getBirthDate().orElse(null)).isEqualTo(birthDate);
 
-  @Test(expected = IllegalArgumentException.class)
-  public void bornInFutureThrowsException() {
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Person.BIRTH_DATE_PATTERN);
-
-    LocalDateTime futureBirthDate = getDateTimeInFuture(42);
-
-    try {
-      Person.newPerson("Jon", "Bloom").born(futureBirthDate);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Birth date [%1$s] must be on or before today [%2$s]",
-        formatter.format(futureBirthDate.toLocalDate()), formatter.format(LocalDate.now()));
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    verify(person, times(1)).setBirthDate(eq(birthDate));
   }
 
   @Test
@@ -666,10 +680,14 @@ public class PersonTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void changeLastNameToNullThrowsException() {
+  public void changeLastNameToNullThrowsIllegalArgumentException() {
+
+    Person person = Person.newPerson("Jon", "Bloom");
+
+    assertThat(person).isNotNull();
 
     try {
-      Person.newPerson("Jon", "Bloom").change((String) null);
+      person.change((String) null);
     }
     catch (IllegalArgumentException expected) {
 
@@ -677,6 +695,10 @@ public class PersonTests {
       assertThat(expected).hasNoCause();
 
       throw expected;
+    }
+    finally {
+      assertThat(person.getFirstName()).isEqualTo("Jon");
+      assertThat(person.getLastName()).isEqualTo("Bloom");
     }
   }
 
@@ -699,10 +721,14 @@ public class PersonTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void changeNameToNullThrowsException() {
+  public void changeNameToNullThrowsIllegalArgumentException() {
+
+    Person person = Person.newPerson("Jon", "Bloom");
+
+    assertThat(person).isNotNull();
 
     try {
-      Person.newPerson("Jon", "Bloom").change((Name) null);
+      person.change((Name) null);
     }
     catch (IllegalArgumentException expected) {
 
@@ -711,17 +737,37 @@ public class PersonTests {
 
       throw expected;
     }
+    finally {
+      assertThat(person.getFirstName()).isEqualTo("Jon");
+      assertThat(person.getLastName()).isEqualTo("Bloom");
+    }
+  }
+
+  @Test
+  public void diedSetsDateOfDeath() {
+
+    LocalDateTime dateOfDeath = LocalDateTime.now().minusYears(5);
+
+    Person person = Person.newPerson("Some", "Person");
+
+    assertThat(person).isNotNull();
+
+    person = spy(person);
+
+    assertThat(person.died(dateOfDeath)).isSameAs(person);
+
+    verify(person, times(1)).setDateOfDeath(eq(dateOfDeath));
   }
 
   @Test
   public void initializesPersonWithFluentApiCorrectly() {
 
-    LocalDateTime birthDate = getBirthDateForAge(43);
+    LocalDateTime birthDate = getBirthDateForAge(45);
 
     Name jonJasonBloom = Name.of("Jon", "Jason", "Bloom");
 
     Person person = Person.newPerson(jonJasonBloom)
-      .as(Gender.MALE)
+      .asMale()
       .born(birthDate)
       .identifiedBy(1L);
 
@@ -731,9 +777,16 @@ public class PersonTests {
     assertThat(person.getMiddleName().orElse(null)).isEqualTo("Jason");
     assertThat(person.getLastName()).isEqualTo("Bloom");
     assertThat(person.getName()).isEqualTo(jonJasonBloom);
-    assertThat(person.getAge().orElse(-1)).isEqualTo(43);
+    assertThat(person.getAge().orElse(-1)).isEqualTo(45);
     assertThat(person.getBirthDate().orElse(null)).isEqualTo(birthDate);
+    assertThat(person.getDateOfDeath().isPresent()).isFalse();
     assertThat(person.getGender().orElse(null)).isEqualTo(Gender.MALE);
+    assertThat(person.isAlive()).isTrue();
+    assertThat(person.isBorn()).isTrue();
+    assertThat(person.isFemale()).isFalse();
+    assertThat(person.isMale()).isTrue();
+    assertThat(person.isNew()).isFalse();
+    assertThat(person.isNotNew()).isTrue();
   }
 
   @Test
@@ -751,11 +804,12 @@ public class PersonTests {
   @Test
   public void cloneIsSuccessful() throws CloneNotSupportedException {
 
-    LocalDateTime birthDate = getBirthDateForAge(43);
+    LocalDateTime birthDate = getBirthDateForAge(45);
 
-    Person person = Person.newPerson(Name.of("Jon", "J", "Bloom"))
-      .as(Gender.MALE)
+    Person person = Person.newPerson(Name.of("Some", "Random", "Person"))
+      .asMale()
       .born(birthDate)
+      .died(birthDate.plusYears(40))
       .identifiedBy(2L);
 
     Person personClone = (Person) person.clone();
@@ -763,16 +817,17 @@ public class PersonTests {
     assertThat(personClone).isNotNull();
     assertThat(personClone).isNotSameAs(person);
     assertThat(personClone).isEqualTo(person);
-    assertThat(personClone.getName()).isEqualTo(person.getName());
-    assertThat(personClone.getId()).isNull();
-    assertThat(personClone.getGender().orElse(null)).isEqualTo(Gender.MALE);
+    assertThat(personClone.getAge().orElse(-1)).isEqualTo(45);
     assertThat(personClone.getBirthDate().orElse(null)).isEqualTo(birthDate);
-    assertThat(personClone.getAge().orElse(-1)).isEqualTo(43);
+    assertThat(personClone.getDateOfDeath().isPresent()).isFalse();
+    assertThat(personClone.getGender().orElse(null)).isEqualTo(Gender.MALE);
+    assertThat(personClone.getId()).isNull();
+    assertThat(personClone.getName()).isEqualTo(person.getName());
   }
 
   @Test
   @SuppressWarnings("all")
-  public void comparedToItselfIsEqualTo() {
+  public void comparedToSelfIsEqualTo() {
 
     Person jonBloom = Person.newPerson(Name.of("Jon", "J", "Bloom"),
       LocalDateTime.of(2000, Month.MAY, 5, 0, 0));
@@ -840,6 +895,20 @@ public class PersonTests {
   }
 
   @Test
+  public void equalsWithEffectivelyEqualPeopleIsTrue() {
+
+    LocalDateTime birthDate = getBirthDateForAge(18);
+
+    Person jonBloomOne = Person.newPerson("Jon", "Bloom", birthDate).asMale();
+    Person jonBloomTwo = Person.newPerson("Jon", "Bloom", birthDate).asFemale();
+
+    assertThat(jonBloomOne).isNotNull();
+    assertThat(jonBloomTwo).isNotNull();
+    assertThat(jonBloomOne).isNotSameAs(jonBloomTwo);
+    assertThat(jonBloomOne.equals(jonBloomTwo)).isTrue();
+  }
+
+  @Test
   @SuppressWarnings("all")
   public void equalsWithIdenticalPeopleIsTrue() {
 
@@ -887,6 +956,12 @@ public class PersonTests {
   }
 
   @Test
+  @SuppressWarnings("all")
+  public void equalsObjectIsFalse() {
+    assertThat(Person.newPerson("Jon", "Bloom").equals("Jon Bloom")).isFalse();
+  }
+
+  @Test
   public void hashCodeForPersonIsNotZero() {
 
     Person person = Person.newPerson(Name.of("Jon", "J", "Bloom"),
@@ -898,21 +973,20 @@ public class PersonTests {
   @Test
   public void hashCodeForIdenticalPeopleIsSame() {
 
-    Person jonBloom = Person.newPerson(Name.of("Jon", "J", "Bloom"),
+    Person person = Person.newPerson(Name.of("Jon", "J", "Bloom"),
       LocalDateTime.of(2018, Month.FEBRUARY, 11, 10, 0));
 
-    assertThat(jonBloom).isNotNull();
-    assertThat(jonBloom.hashCode()).isEqualTo(jonBloom.hashCode());
+    assertThat(person).isNotNull();
+    assertThat(person.hashCode()).isEqualTo(person.hashCode());
   }
 
   @Test
   public void hashCodeForEqualPeopleIsSame() {
 
-    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"),
-      LocalDateTime.of(2018, Month.FEBRUARY, 11, 10, 30));
+    LocalDateTime birthDate = LocalDateTime.of(2018, Month.FEBRUARY, 11, 10, 30);
 
-    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "J", "Bloom"),
-      LocalDateTime.of(2018, Month.FEBRUARY, 11, 10, 30));
+    Person jonBloomOne = Person.newPerson(Name.of("Jon", "J", "Bloom"), birthDate);
+    Person jonBloomTwo = Person.newPerson(Name.of("Jon", "J", "Bloom"), birthDate);
 
     assertThat(jonBloomOne).isNotNull();
     assertThat(jonBloomTwo).isNotNull();
@@ -941,12 +1015,14 @@ public class PersonTests {
     Person person = Person.newPerson("Jon", "Bloom");
 
     assertThat(person).isNotNull();
+    assertThat(person.getName().toString()).isEqualTo("Jon Bloom");
     assertThat(person.getBirthDate().isPresent()).isFalse();
+    assertThat(person.getDateOfDeath().isPresent()).isFalse();
     assertThat(person.getGender().isPresent()).isFalse();
     assertThat(person.getMiddleName().isPresent()).isFalse();
 
     assertThat(person.toString()).isEqualTo(String.format(
-      "{ @type = %1$s, firstName = Jon, middleName = %2$s, lastName = Bloom, birthDate = %2$s, gender = %2$s }",
+      "{ @type = %1$s, firstName = Jon, middleName = %2$s, lastName = Bloom, birthDate = %2$s, dateOfDeath = %2$s, gender = %2$s }",
         Person.class.getName(), Constants.UNKNOWN));
   }
 
@@ -960,21 +1036,22 @@ public class PersonTests {
     assertThat(person.getGender().isPresent()).isFalse();
 
     assertThat(person.toString()).isEqualTo(String.format(
-      "{ @type = %1$s, firstName = Jon, middleName = J, lastName = Bloom, birthDate = 1999-11-11 06:30 AM, gender = %2$s }",
+      "{ @type = %1$s, firstName = Jon, middleName = J, lastName = Bloom, birthDate = 1999-11-11 06:30 AM, dateOfDeath = Unknown, gender = %2$s }",
         Person.class.getName(), Constants.UNKNOWN));
   }
 
   @Test
-  public void toStringWithNameGenderAndDateOfBirthIsCorrect() {
+  public void toStringWithNameGenderDateOfBirthAndDateOfDeathIsCorrect() {
 
-    Person person = Person.newPerson(Name.of("Jon", "Jason", "Bloom"))
+    Person person = Person.newPerson(Name.of("Some", "Random", "Person"))
+      .asMale()
       .born(LocalDateTime.of(2000, Month.MAY, 19, 23, 30))
-      .as(Gender.MALE);
+      .died(LocalDateTime.of(2019, Month.DECEMBER, 31, 23, 59, 59));
 
     assertThat(person).isNotNull();
 
     assertThat(person.toString()).isEqualTo(String.format(
-      "{ @type = %s, firstName = Jon, middleName = Jason, lastName = Bloom, birthDate = 2000-05-19 11:30 PM, gender = Male }",
+      "{ @type = %s, firstName = Some, middleName = Random, lastName = Person, birthDate = 2000-05-19 11:30 PM, dateOfDeath = 2019-12-31 11:59 PM, gender = Male }",
       Person.class.getName()));
   }
 

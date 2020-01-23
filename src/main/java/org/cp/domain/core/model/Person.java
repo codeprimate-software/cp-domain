@@ -58,6 +58,7 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
 
   protected static final String BIRTH_DATE_PATTERN = "yyyy-MM-dd";
   protected static final String BIRTH_DATE_TIME_PATTERN = "yyyy-MM-dd hh:mm a";
+  protected static final String DATE_OF_DEATH_PATTERN = BIRTH_DATE_PATTERN;
   protected static final String DATE_TIME_OF_DEATH_PATTERN = BIRTH_DATE_TIME_PATTERN;
   protected static final String PERSON_TO_STRING =
     "{ @type = %1$s, firstName = %2$s, middleName = %3$s, lastName = %4$s, birthDate = %5$s, dateOfDeath = %6$s, gender = %7$s }";
@@ -218,6 +219,16 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
   }
 
   /**
+   * Determines whether this {@link Person} is alive.
+   *
+   * @return a boolean value indicating whether this {@link Person} is alive.
+   * @see #getDateOfDeath()
+   */
+  public boolean isAlive() {
+    return !getDateOfDeath().isPresent();
+  }
+
+  /**
    * Determines whether this {@link Person} has been born.
    *
    * This {@link Person} may have a {@link #getBirthDate() birth date} in the future, which represents an expected
@@ -228,16 +239,6 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    */
   public boolean isBorn() {
     return getBirthDate().filter(birthDate -> birthDate.isBefore(LocalDateTime.now())).isPresent();
-  }
-
-  /**
-   * Determines whether this {@link Person} has died.
-   *
-   * @return a boolean value indicating whether this {@link Person} is deceased.
-   * @see #getDateOfDeath()
-   */
-  public boolean isDead() {
-    return getDateOfDeath().isPresent();
   }
 
   /**
@@ -362,7 +363,7 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
 
     if (dateOfDeath != null) {
 
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern((DATE_TIME_OF_DEATH_PATTERN));
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_OF_DEATH_PATTERN);
 
       getBirthDate().ifPresent(birthDate -> Assert.isFalse(dateOfDeath.isBefore(birthDate), () ->
           String.format("Date of death [%1$s] cannot be before the person's date of birth [%2$s]",
