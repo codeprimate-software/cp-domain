@@ -1015,10 +1015,12 @@ public class PersonTests {
     Person person = Person.newPerson("Jon", "Bloom");
 
     assertThat(person).isNotNull();
-    assertThat(person.getName().toString()).isEqualTo("Jon Bloom");
     assertThat(person.getBirthDate().isPresent()).isFalse();
     assertThat(person.getDateOfDeath().isPresent()).isFalse();
     assertThat(person.getGender().isPresent()).isFalse();
+    assertThat(person.getName().toString()).isEqualTo("Jon Bloom");
+    assertThat(person.getFirstName()).isEqualTo("Jon");
+    assertThat(person.getLastName()).isEqualTo("Bloom");
     assertThat(person.getMiddleName().isPresent()).isFalse();
 
     assertThat(person.toString()).isEqualTo(String.format(
@@ -1033,10 +1035,11 @@ public class PersonTests {
       .born(LocalDateTime.of(1999, Month.NOVEMBER, 11, 6, 30, 45));
 
     assertThat(person).isNotNull();
+    assertThat(person.getDateOfDeath().isPresent()).isFalse();
     assertThat(person.getGender().isPresent()).isFalse();
 
     assertThat(person.toString()).isEqualTo(String.format(
-      "{ @type = %1$s, firstName = Jon, middleName = J, lastName = Bloom, birthDate = 1999-11-11 06:30 AM, dateOfDeath = Unknown, gender = %2$s }",
+      "{ @type = %1$s, firstName = Jon, middleName = J, lastName = Bloom, birthDate = 1999-11-11 06:30 AM, dateOfDeath = %2$s, gender = %2$s }",
         Person.class.getName(), Constants.UNKNOWN));
   }
 
@@ -1045,7 +1048,7 @@ public class PersonTests {
 
     Person person = Person.newPerson(Name.of("Some", "Random", "Person"))
       .asMale()
-      .born(LocalDateTime.of(2000, Month.MAY, 19, 23, 30))
+      .born(LocalDateTime.of(2000, Month.MAY, 19, 23, 30, 45))
       .died(LocalDateTime.of(2019, Month.DECEMBER, 31, 23, 59, 59));
 
     assertThat(person).isNotNull();
@@ -1058,9 +1061,13 @@ public class PersonTests {
   @Test
   public void personIsSerializable() throws IOException, ClassNotFoundException {
 
-    Person person = Person.newPerson(Name.of("Jon", "J", "Bloom"))
-      .born(getBirthDateForAge(42))
-      .as(Gender.MALE);
+    LocalDateTime birthDate = getBirthDateForAge(42);
+    LocalDateTime dateOfDeath = birthDate.plusYears(27);
+
+    Person person = Person.newPerson(Name.of("Some", "Random", "Person"))
+      .asMale()
+      .born(birthDate)
+      .died(dateOfDeath);
 
     assertThat(person).isNotNull();
 
@@ -1074,7 +1081,8 @@ public class PersonTests {
     assertThat(deserializedPerson).isNotNull();
     assertThat(deserializedPerson).isNotSameAs(person);
     assertThat(deserializedPerson).isEqualTo(person);
-    assertThat(deserializedPerson.getAge().orElse(-1)).isEqualTo(42);
+    assertThat(deserializedPerson.getAge().orElse(-1)).isEqualTo(27);
+    assertThat(deserializedPerson.getDateOfDeath().orElse(null)).isEqualTo(dateOfDeath);
     assertThat(deserializedPerson.getGender().orElse(null)).isEqualTo(Gender.MALE);
   }
 }

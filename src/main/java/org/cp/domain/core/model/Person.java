@@ -412,6 +412,18 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
   }
 
   /**
+   * Returns the {@link Name full name} of this {@link Person person}.
+   *
+   * @return a {@link Name} object containing the full name of this {@link Person person}; never {@literal null}.
+   * @see org.cp.domain.core.model.Name
+   */
+  @NullSafe
+  @Override
+  public Name getName() {
+    return this.name;
+  }
+
+  /**
    * Returns this {@link Person person's} {@link String first name}.
    *
    * @return a {@link String} containing this {@link Person person's} first name.
@@ -446,18 +458,6 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    */
   public Optional<String> getMiddleName() {
     return getName().getMiddleName();
-  }
-
-  /**
-   * Returns the {@link Name full name} of this {@link Person person}.
-   *
-   * @return a {@link Name} object containing the full name of this {@link Person person}; never {@literal null}.
-   * @see org.cp.domain.core.model.Name
-   */
-  @NullSafe
-  @Override
-  public Name getName() {
-    return this.name;
   }
 
   /**
