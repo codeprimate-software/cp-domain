@@ -127,7 +127,7 @@ public interface Group extends Identifiable<String>, Iterable<Person>, Nameable<
    * @see #size()
    */
   default boolean isEmpty() {
-    return size() == 0;
+    return size() < 1;
   }
 
   /**
@@ -173,7 +173,7 @@ public interface Group extends Identifiable<String>, Iterable<Person>, Nameable<
 
     boolean result = false;
 
-    for (Iterator<Person> people = this.iterator(); people.hasNext(); ) {
+    for (Iterator<Person> people = iterator(); people.hasNext(); ) {
       if (predicate.test(people.next())) {
         people.remove();
         result = true;
