@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.core.model;
 
 import static java.util.stream.StreamSupport.stream;
@@ -45,6 +44,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @author John Blum
  * @see org.cp.domain.core.model.Group
  * @see org.cp.domain.core.model.Person
+ * @see org.cp.elements.lang.IdentifierSequence
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -61,15 +61,16 @@ public class Family implements Group {
    * Factory method used to construct a new, empty {@link Family}.
    *
    * @return a new instance of {@link Family} containing no {@link Person people}.
+   * @see Family()
    */
   public static Family empty() {
     return new Family();
   }
 
   /**
-   * Generates a new {@link String identifier} that can used to uniquely identifying a {@link Family}.
+   * Generates a new {@link String identifier} that can used to uniquely identify a {@link Family}.
    *
-   * @return a generated {@link String identifier} that can used to uniquely identifying a {@link Family}.
+   * @return a generated {@link String identifier} that can used to uniquely identify a {@link Family}.
    * @see org.cp.elements.lang.IdentifierSequence
    * @see java.lang.String
    */
@@ -78,7 +79,7 @@ public class Family implements Group {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Family} initialized with given {@link Person people}.
+   * Factory method used to construct a new instance of {@link Family} initialized with the given {@link Person people}.
    *
    * @param people array of {@link Person people} grouped together as a {@link Family}.
    * @return a new instance of {@link Family} initialized with the given {@link Person people}.
@@ -96,7 +97,7 @@ public class Family implements Group {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Family} initialized with given {@link Person people}.
+   * Factory method used to construct a new instance of {@link Family} initialized with the given {@link Person people}.
    *
    * @param people {@link Iterable} of {@link Person people} grouped together as a {@link Family}.
    * @return a new instance of {@link Family} initialized with the given {@link Person people}.
@@ -114,7 +115,7 @@ public class Family implements Group {
     return family;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   private final Set<Person> people = new TreeSet<>((personOne, personTwo) ->
     ComparatorResultBuilder.<Comparable>create()
       .doCompare(personOne.getBirthDate().orElse(EPOCH_BIRTH_DATE), personTwo.getBirthDate().orElse(EPOCH_BIRTH_DATE))
@@ -129,11 +130,11 @@ public class Family implements Group {
   private String name;
 
   /**
-   * Returns the {@link String identifier} uniquely identifying this {@link Family}.
+   * Returns the {@link String identifier} that uniquely identifies this {@link Family}.
    *
    * @return an {@link String identifier} uniquely identifying this {@link Family}.
-   * @see #setId(String)
    * @see java.lang.String
+   * @see #setId(String)
    */
   @Override
   public String getId() {
@@ -143,9 +144,9 @@ public class Family implements Group {
   /**
    * Sets the {@link String identifier} uniquely identifying this {@link Family}.
    *
-   * @param id {@link String identifier} uniquely identifying this {@link Family}.
-   * @see #getId()
+   * @param id {@link String identifier} that uniquely identifies this {@link Family}.
    * @see java.lang.String
+   * @see #getId()
    */
   @Override
   public void setId(String id) {
@@ -155,13 +156,16 @@ public class Family implements Group {
   /**
    * Returns the {@link String name} of this {@link Family}.
    *
+   * If {@link String name} was not explicitly set then the {@link String name} of this {@link Family}
+   * is derived from the {@link String last name} of the first {@link Person} found in this {@link Family}.
+   *
    * The {@link String name} of the {@link Family} might be something like {@literal Doe Family}.
    *
    * @return the {@link String name} of this {@link Family}.
    * @see java.lang.String
+   * @see #named(String)
    */
   @Override
-  @SuppressWarnings("unchecked")
   public String getName() {
 
     return Optional.ofNullable(this.name)
@@ -169,20 +173,6 @@ public class Family implements Group {
       .orElseGet(() -> Optional.ofNullable(CollectionUtils.findOne(this, Filter.accepting()))
         .map(person -> String.format(FAMILY_NAME_TEMPLATE, person.getLastName()))
         .orElse(null));
-  }
-
-  /**
-   * Adds the given {@link Person} to this {@link Family} iff the given {@link Person} is not {@literal null}
-   * and the {@link Person} is not already part of this {@link Family}.
-   *
-   * @param person {@link Person} to add; must not be {@literal null}.
-   * @return a boolean value indicating whether the given {@link Person} was successfully added
-   * to this {@link Family}.
-   * @see org.cp.domain.core.model.Person
-   * @see #remove(Person)
-   */
-  public boolean add(Person person) {
-    return Optional.ofNullable(person).map(this.people::add).orElse(false);
   }
 
   /**
@@ -200,6 +190,7 @@ public class Family implements Group {
    *
    * @return an unmodifiable {@link Iterator} to iterate over the collection of {@link Person people}
    * in this {@link Family}.
+   * @see org.cp.domain.core.model.Person
    * @see java.util.Iterator
    */
   @Override
@@ -208,7 +199,35 @@ public class Family implements Group {
   }
 
   /**
-   * Sets the {@link String name} of this {@link Family}.
+   * Adds the given {@link Person} to this {@link Family} iff the given {@link Person} is not {@literal null}
+   * and the {@link Person} is not already a member of this {@link Family}.
+   *
+   * @param person {@link Person} to add; must not be {@literal null}.
+   * @return a boolean value indicating whether the given {@link Person} was successfully added
+   * to this {@link Family}.
+   * @see org.cp.domain.core.model.Person
+   * @see #leave(Person)
+   */
+  public boolean join(Person person) {
+    return person != null && this.people.add(person);
+  }
+
+  /**
+   * Removes the given {@link Person} from this {@link Family}.
+   *
+   * @param person {@link Person} to remove.
+   * @return a boolean value indicating whether the {@link Person} was a member of this {@link Family}
+   * and was removed successfully.
+   * @see org.cp.domain.core.model.Person
+   * @see #join(Person)
+   */
+  @Override
+  public boolean leave(Person person) {
+    return person != null && this.people.remove(person);
+  }
+
+  /**
+   * Builder method used to set the {@link String name} of this {@link Family}.
    *
    * @param name {@link String} containing the name of this {@link Family}.
    * @return this {@link Family}.
@@ -220,23 +239,9 @@ public class Family implements Group {
   }
 
   /**
-   * Removes the given {@link Person} from this {@link Family}.
+   * Returns a {@link Integer#TYPE int value} specifying the number of {@link Person people} in this {@link Family}.
    *
-   * @param person {@link Person} to remove.
-   * @return a boolean value indicating whether the {@link Person} was a member of this {@link Family}
-   * and was removed successfully.
-   * @see #add(Person)
-   * @see org.cp.domain.core.model.Person
-   */
-  @Override
-  public boolean remove(Person person) {
-    return person != null && this.people.remove(person);
-  }
-
-  /**
-   * Returns a {@link Integer#TYPE int value} with the number of {@link Person people} in this {@link Family}.
-   *
-   * @return a {@link Integer#TYPE int value} with the number of {@link Person people} in this {@link Family}.
+   * @return a {@link Integer#TYPE int value} specifying the number of {@link Person people} in this {@link Family}.
    * @see #isEmpty()
    */
   public int size() {
@@ -246,8 +251,9 @@ public class Family implements Group {
   /**
    * Returns a {@link String} representation of this {@link Family}.
    *
-   * @return a {@link String} containing the {@link Name names} of {@link Person people} in this {@link Family}.
+   * @return a {@link String} containing the {@link Name names} of all the {@link Person people} in this {@link Family}.
    * @see java.lang.Object#toString()
+   * @see java.lang.String
    */
   @Override
   public String toString() {
