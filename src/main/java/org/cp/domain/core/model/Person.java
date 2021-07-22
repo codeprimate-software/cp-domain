@@ -30,6 +30,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.Renderable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.Id;
@@ -37,7 +38,7 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
- * Abstract Data Type (ADT) defining and modeling a person.
+ * Abstract Data Type (ADT) defining and modeling a person, or human being.
  *
  * @author John Blum
  * @see java.io.Serializable
@@ -47,12 +48,13 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.elements.enums.Gender
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Nameable
+ * @see org.cp.elements.lang.Renderable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.annotation.Id
  * @since 1.0.0
  */
 public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>, Nameable<Name>,
-    Serializable, Visitable {
+    Renderable, Serializable, Visitable {
 
   private static final long serialVersionUID = -1532809025522184045L;
 
@@ -207,8 +209,8 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    * @param name {@link Name} of the {@link Person}.
    * @param birthDate {@link LocalDateTime birth date} of the {@link Person}.
    * @throws IllegalArgumentException if {@link Name} is {@literal null}.
-   * @see java.time.LocalDateTime
    * @see org.cp.domain.core.model.Name
+   * @see java.time.LocalDateTime
    */
   public Person(Name name, LocalDateTime birthDate) {
 
@@ -238,7 +240,10 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    * @see #getBirthDate()
    */
   public boolean isBorn() {
-    return getBirthDate().filter(birthDate -> birthDate.isBefore(LocalDateTime.now())).isPresent();
+
+    return getBirthDate()
+      .filter(birthDate -> birthDate.isBefore(LocalDateTime.now()))
+      .isPresent();
   }
 
   /**
@@ -249,7 +254,10 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    * @see #getGender()
    */
   public boolean isFemale() {
-    return getGender().filter(Gender.FEMALE::equals).isPresent();
+
+    return getGender()
+      .filter(Gender.FEMALE::equals)
+      .isPresent();
   }
 
   /**
@@ -260,7 +268,10 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    * @see #getGender()
    */
   public boolean isMale() {
-    return getGender().filter(Gender.MALE::equals).isPresent();
+
+    return getGender()
+      .filter(Gender.MALE::equals)
+      .isPresent();
   }
 
   /**
