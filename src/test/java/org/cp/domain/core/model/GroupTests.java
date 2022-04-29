@@ -355,9 +355,10 @@ public class GroupTests {
 
     Group mockGroup = mock(Group.class);
 
-    when(mockGroup.iterator()).thenAnswer(invocation -> people.iterator());
-    when(mockGroup.leave(any(Person.class))).thenCallRealMethod();
-    when(mockGroup.leave(any(Predicate.class))).thenCallRealMethod();
+    doAnswer(invocation -> people.iterator()).when(mockGroup).iterator();
+    doAnswer(invocation -> people.spliterator()).when(mockGroup).spliterator();
+    doCallRealMethod().when(mockGroup).leave(any(Person.class));
+    doCallRealMethod().when(mockGroup).leave(any(Predicate.class));
 
     assertThat(mockGroup).containsExactlyInAnyOrder(jonDoe, janeDoe);
     assertThat(mockGroup.leave(janeDoe)).isTrue();
@@ -375,9 +376,10 @@ public class GroupTests {
 
     Group mockGroup = mock(Group.class);
 
-    when(mockGroup.iterator()).thenAnswer(invocation -> people.iterator());
-    when(mockGroup.leave(any(Person.class))).thenCallRealMethod();
-    when(mockGroup.leave(any(Predicate.class))).thenCallRealMethod();
+    doAnswer(invocation -> people.iterator()).when(mockGroup).iterator();
+    doAnswer(invocation -> people.spliterator()).when(mockGroup).spliterator();
+    doCallRealMethod().when(mockGroup).leave(any(Person.class));
+    doCallRealMethod().when(mockGroup).leave(any(Predicate.class));
 
     assertThat(mockGroup).containsExactlyInAnyOrder(jonDoe, janeDoe);
     assertThat(mockGroup.leave(Person.newPerson("Jack", "Handy"))).isFalse();
@@ -390,11 +392,14 @@ public class GroupTests {
 
     Person jonDoe = Person.newPerson("Jon", "Doe");
 
+    List<Person> people = Collections.singletonList(jonDoe);
+
     Group mockGroup = mock(Group.class);
 
-    when(mockGroup.iterator()).thenAnswer(invocation -> asIterator(jonDoe));
-    when(mockGroup.leave(any(Person.class))).thenCallRealMethod();
-    when(mockGroup.leave(any(Predicate.class))).thenCallRealMethod();
+    doAnswer(invocation -> people.iterator()).when(mockGroup).iterator();
+    doAnswer(invocation -> people.spliterator()).when(mockGroup).spliterator();
+    doCallRealMethod().when(mockGroup).leave(any(Person.class));
+    doCallRealMethod().when(mockGroup).leave(any(Predicate.class));
 
     assertThat(mockGroup).containsExactlyInAnyOrder(jonDoe);
     assertThat(mockGroup.leave((Person) null)).isFalse();
@@ -407,9 +412,9 @@ public class GroupTests {
 
     Group mockGroup = mock(Group.class);
 
-    when(mockGroup.iterator()).thenAnswer(invocation -> Collections.emptyIterator());
-    when(mockGroup.leave(any(Person.class))).thenCallRealMethod();
-    when(mockGroup.leave(any(Predicate.class))).thenCallRealMethod();
+    doAnswer(invocation -> Collections.emptyIterator()).when(mockGroup).iterator();
+    doCallRealMethod().when(mockGroup).leave(any(Person.class));
+    doCallRealMethod().when(mockGroup).leave(any(Predicate.class));
 
     assertThat(mockGroup).isEmpty();
     assertThat(mockGroup.leave(Person.newPerson("Jack", "Handy"))).isFalse();
@@ -428,8 +433,9 @@ public class GroupTests {
 
     Group mockGroup = mock(Group.class);
 
-    when(mockGroup.iterator()).thenAnswer(invocation -> people.iterator());
-    when(mockGroup.leave(any(Predicate.class))).thenCallRealMethod();
+    doAnswer(invocation -> people.iterator()).when(mockGroup).iterator();
+    doAnswer(invocation -> people.spliterator()).when(mockGroup).spliterator();
+    doCallRealMethod().when(mockGroup).leave(any(Predicate.class));
 
     assertThat(mockGroup).containsExactlyInAnyOrder(jonDoe, janeDoe, pieDoe);
     assertThat(mockGroup.leave(person -> true)).isTrue();
@@ -449,8 +455,9 @@ public class GroupTests {
 
     Group mockGroup = mock(Group.class);
 
-    when(mockGroup.iterator()).thenAnswer(invocation -> people.iterator());
-    when(mockGroup.leave(any(Predicate.class))).thenCallRealMethod();
+    doAnswer(invocation -> people.iterator()).when(mockGroup).iterator();
+    doAnswer(invocation -> people.spliterator()).when(mockGroup).spliterator();
+    doCallRealMethod().when(mockGroup).leave(any(Predicate.class));
 
     assertThat(mockGroup).containsExactlyInAnyOrder(jonDoe, janeDoe, jackHandy);
     assertThat(mockGroup.leave(personInGroup -> "Doe".equalsIgnoreCase(personInGroup.getLastName()))).isTrue();
