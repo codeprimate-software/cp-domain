@@ -15,7 +15,7 @@
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>cp-domain</name>
+  <name>Domain</name>
   <description>
     'Codeprimate Domain' (a.k.a. cp-domain) is a Java class library containing application domain object types
     used in the construction and development of software applications model, process and maintain state.
