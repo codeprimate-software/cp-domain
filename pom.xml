@@ -72,7 +72,7 @@
   </issueManagement>
 
   <properties>
-    <java-module-name>org.codeprimate.domain</java-module-name>
+    <java-module-name>codeprimate.domain</java-module-name>
     <cp-elements.version>1.0.0-M7</cp-elements.version>
   </properties>
 
