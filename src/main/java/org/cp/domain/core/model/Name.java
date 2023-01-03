@@ -18,6 +18,7 @@ package org.cp.domain.core.model;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
@@ -26,13 +27,20 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.Dsl;
+import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.Immutable;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.concurrent.ThreadSafe;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
- * Abstract Data Type (ADT) modeling a full name containing first name, last name and middle name (or initial(s)).
+ * Abstract Data Type (ADT) modeling the {@link String full name} of a person, consisting of
+ * a {@link String first name}, {@link String last name} and {@link String middle name or middle initial(s)}.
  *
- * This type is non-extensible and immutable.
+ * This type is immutable, non-extensible and Thread-safe.
  *
  * @author John Blum
  * @see java.io.Serializable
@@ -40,142 +48,166 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see java.lang.Comparable
  * @see org.cp.elements.lang.Nameable
  * @see org.cp.elements.lang.Visitable
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @see org.cp.elements.lang.annotation.Immutable
+ * @see org.cp.elements.lang.concurrent.ThreadSafe
  * @since 1.0.0
  */
+@FluentApi
 @Immutable
+@ThreadSafe
 public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, Serializable, Visitable {
 
-  public static final String NAME_PART_SEPARATOR = StringUtils.SINGLE_SPACE;
-  public static final String NAME_PART_SEPARATOR_PATTERN = "\\s+";
+  public static final String DOT_SEPARATOR_REGEX = "\\.";
+  public static final String NAME_COMPONENT_SEPARATOR = StringUtils.SINGLE_SPACE;
+  public static final String NAME_COMPONENT_SEPARATOR_PATTERN = "\\s+";
 
+  @SuppressWarnings("all")
   protected static final String DEFAULT_MIDDLE_NAME = null;
+
+  @SuppressWarnings("all")
+  protected static final String COMPARABLE_MIDDLE_NAME = String.valueOf(DEFAULT_MIDDLE_NAME);
 
   private static final long serialVersionUID = 83448823861933031L;
 
-  private final String firstName;
-  private final String lastName;
-  private final String middleName;
-
   /**
-   * Factory method used to construct a new instance of {@link Name} by copying (or cloning) the existing {@link Name}.
+   * Factory method used to construct a new instance of {@link Name} by copying (or cloning)
+   * the existing, required {@link Name}.
    *
-   * @param name {@link Name} to copy.
-   * @return a new instance of {@link Name} initialized from the given {@link Name}.
+   * @param name {@link Name} to copy; must not be {@literal null}.
+   * @return a {@link Name} initialized from the given, required {@link Name}.
    * @throws IllegalArgumentException if {@link Name} is {@literal null}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #of(String, String, String)
-   * @see org.cp.domain.core.model.Name
    */
-  public static Name of(Name name) {
+  @Dsl
+  public static @NotNull Name of(@NotNull Name name) {
 
-    return Optional.ofNullable(name)
-      .map(it -> of(it.getFirstName(), it.getMiddleName().orElse(DEFAULT_MIDDLE_NAME), it.getLastName()))
-      .orElseThrow(() -> newIllegalArgumentException("Name is required"));
+    Assert.notNull(name, "Name to copy is required");
+
+    return of(name.getFirstName(), name.getMiddleName().orElse(DEFAULT_MIDDLE_NAME), name.getLastName());
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Name} for the given {@link Nameable}.
+   * Factory method used to construct a new instance of {@link Name} for the given, required {@link Nameable} object.
    *
-   * @param nameable {@link Nameable} object used to construct a {@link Name}.
-   * @return a new instance of {@link Name} initialized with the given {@link Nameable} object.
+   * @param nameable {@link Nameable} object used to construct a {@link Name}; must not be {@literal null}.
+   * @return a new {@link Name} initialized with the given, required {@link Nameable} object.
    * @throws IllegalArgumentException if {@link Nameable} is {@literal null}.
    * @see org.cp.elements.lang.Nameable#getName()
-   * @see org.cp.domain.core.model.Name
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #of(Name)
    */
-  public static Name of(Nameable<Name> nameable) {
+  @Dsl
+  public static @NotNull Name of(@NotNull Nameable<Name> nameable) {
 
-    return Optional.ofNullable(nameable)
-      .map(Nameable::getName)
-      .map(Name::of)
-      .orElseThrow(() -> newIllegalArgumentException("Nameable of Name is required"));
+    Assert.notNull(nameable, "Nameable of Name is required");
+
+    return of(nameable.getName());
   }
 
   /**
-   * Factory method used to parse the given {@link String} into the individual component parts of a name
-   * and then construct a new instance of {@link Name} initialized with the individual name components.
+   * Factory method used to parse the given, required {@link String} into the individual components of a {@literal name}
+   * and then construct a new instance of {@link Name} initialized with the individual {@literal name} components.
    *
-   * @param name {@link String} containing the name to parse.
-   * @return a new instance of {@link Name} initialized with the given {@link String name}
-   * parsed into individual name components (i.e. first name, last name and middle name or initial(s)).
-   * @throws IllegalArgumentException if either first or last name are not specified.
+   * @param name {@link String} containing the {@literal name} to parse;
+   * must not be {@literal null} or {@literal empty}.
+   * @return a new {@link Name} initialized with the given, required {@link String name} parsed into individual
+   * name components: {@link String first name}, {@link String last name}
+   * and {@link String middle name or middle initial(s)}.
+   * @throws IllegalArgumentException if either {@link String first} or {@link String last name}
+   * are {@literal null} or {@literal empty}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #of(String, String, String)
    * @see #of(String, String)
    * @see #parseName(String)
    */
-  public static Name of(String name) {
+  @Dsl
+  public static @NotNull Name of(@NotNull String name) {
 
     String[] parts = parseName(name);
 
-    return (parts.length < 3 ? of(parts[0], parts[1]) : of(parts[0], parts[1], parts[2]));
+    return parts.length < 3
+      ? of(parts[0], parts[1])
+      : of(parts[0], parts[1], parts[2]);
   }
 
   /**
    * Factory method used to construct a new instance of {@link Name} initialized with
-   * the given {@link String first name} and {@link String last name}.
+   * the given, required {@link String first} and {@link String last name}.
    *
-   * @param firstName {@link String} containing the first name.
-   * @param lastName {@link String} containing the last name.
-   * @return a new instance of {@link Name} initialized to the given {@link String first name}
-   * and {@link String last name}.
-   * @throws IllegalArgumentException if {@link String first} or {@link String last} name are not specified.
+   * @param firstName {@link String} containing the {@literal first name};
+   * must not be {@literal null} or {@literal empty}.
+   * @param lastName {@link String} containing the {@literal last name};
+   * must not be {@literal null} or {@literal empty}.
+   * @return a new {@link Name} initialized with the given, required {@link String first} and {@link String last name}.
+   * @throws IllegalArgumentException if either the {@link String first} or {@link String last name}
+   * are {@literal null} or {@literal empty}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #of(String, String, String)
    */
-  public static Name of(String firstName, String lastName) {
+  @Dsl
+  public static @NotNull Name of(@NotNull String firstName, @NotNull String lastName) {
     return of(firstName, DEFAULT_MIDDLE_NAME, lastName);
   }
 
   /**
    * Factory method used to construct a new instance of {@link Name} initialized with
-   * the given {@link String first name}, {@link String middle name} and {@link String last name}.
+   * the given, required {@link String first name}, an optional {@link String middle name or middle initial(s)}
+   * and a required {@link String last name}.
    *
-   * @param firstName {@link String} containing the first name.
-   * @param middleName {@link String} containing the middle name; May just be the initial(s) or even {@literal null}.
-   * @param lastName {@link String} containing the last name.
-   * @return a new instance of {@link Name} initialized to the given {@link String first name},
-   * {@link String middle name} and {@link String last name}.
-   * @throws IllegalArgumentException if {@link String first name} or {@link String last name} are not specified.
+   * @param firstName {@link String} containing the {@literal first name};
+   * must not be {@literal null} or {@literal empty}.
+   * @param middleName {@link String} containing an optional {@literal middle name} or {@literal middle initial(s)}.
+   * @param lastName {@link String} containing the {@literal last name};
+   * must not be {@literal null} or {@literal empty}.
+   * @return a new {@link Name} initialized to the given {@link String first name}, {@link String middle name}
+   * and {@link String last name}.
+   * @throws IllegalArgumentException if either the {@link String first} or {@link String last name}
+   * are {@literal null} or {@literal empty}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #Name(String, String, String)
    */
-  public static Name of(String firstName, String middleName, String lastName) {
+  @Dsl
+  public static @NotNull Name of(@NotNull String firstName, @Nullable String middleName, @NotNull String lastName) {
     return new Name(firstName, middleName, lastName);
   }
 
   /**
-   * Parses the given {@link String} representing a name.
+   * Parses the given {@link String} containing and representing a person's {@literal name}.
    *
-   * @param name {@link String} containing the name to parse.
-   * @return an array of {@link String Strings} containing the component parts of a name.
-   * @throws IllegalArgumentException if {@code name} is {@literal null}
-   * or does not minimally consist of both a first and last name.
+   * @param name {@link String} containing the {@literal name} to parse;
+   * must not be {@literal null} or {@literal empty}.
+   * @return an array of {@link String Strings} containing the components of the given {@literal name},
+   * such as {@link String first name} and {@link String last name}.
+   * @throws IllegalArgumentException if {@link String name} is {@literal null}, {@literal empty}
+   * or minimally, does not consist of both a {@link String first} and {@link String last name}.
    * @see #stripSuffix(String)
    * @see #stripTitle(String)
    */
-  private static String[] parseName(String name) {
+  private static String[] parseName(@NotNull String name) {
 
     return Optional.ofNullable(name)
       .filter(StringUtils::hasText)
       .map(StringUtils::trim)
       .map(Name::stripSuffix)
       .map(Name::stripTitle)
-      .map(it -> it.split(NAME_PART_SEPARATOR_PATTERN))
+      .map(it -> it.split(NAME_COMPONENT_SEPARATOR_PATTERN))
       .filter(nameParts -> nameParts.length >= 2)
       .orElseThrow(() -> newIllegalArgumentException("First and last name are required; was [%s]", name));
   }
 
   /**
-   * Strips any {@link Suffix suffixes} from the given {@link String name}.
+   * Strips any {@link Suffix suffixes} from the given, required {@link String name}.
    *
-   * @param name {@link String} containing the name to evaluate
+   * @param name {@link String} containing the {@literal name} to evaluate
    * @return the {@link String name} stripped of any {@link Suffix suffixes}.
    * @see org.cp.domain.core.model.Name.Suffix
    */
-  private static String stripSuffix(String name) {
+  private static @NotNull String stripSuffix(@NotNull String name) {
 
     for (Suffix suffix : Suffix.values()) {
-
       int index = name.toLowerCase().indexOf(suffix.name().toLowerCase());
-
       name = index > -1 ? name.substring(0, index).trim() : name;
     }
 
@@ -183,76 +215,76 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Strips any {@link Title titles} from the given {@link String name}.
+   * Strips any {@link Title titles} from the given, required {@link String name}.
    *
-   * @param name {@link String} containing the name to evaluate
+   * @param name {@link String} containing the {@literal name} to evaluate
    * @return the {@link String name} stripped of any {@link Title titles}.
    * @see org.cp.domain.core.model.Name.Title
    */
-  private static String stripTitle(String name) {
+  private static @NotNull String stripTitle(@NotNull String name) {
 
-    name = name.replaceAll("\\.", "");
+    name = name.replaceAll(DOT_SEPARATOR_REGEX, StringUtils.EMPTY_STRING);
 
     for (Title title : Title.values()) {
-
       int index = name.toLowerCase().indexOf(title.name().toLowerCase());
-
       name = index > -1 ? name.substring(index + title.name().length()).trim() : name;
     }
 
     return name;
   }
 
+  private final String firstName;
+  private final String lastName;
+  private final String middleName;
+
   /**
-   * Constructs a new instance of {@link Name} initialized with the given {@link String first name},
-   * {@link String middle name} (or initial(s), or even {@literal null}) and {@link String last name}.
+   * Constructs a new instance of {@link Name} initialized with the given, required {@link String first name},
+   * an optional {@link String middle name or middle initial(s)} and required {@link String last name}.
    *
-   * @param firstName {@link String} containing the first name.
-   * @param middleName {@link String} containing the middle name; May just be the initial(s) or even {@literal null}.
-   * @param lastName {@link String} containing the last name.
+   * @param firstName {@link String} containing the {@literal first name};
+   * must not be {@literal null} of {@literal empty}.
+   * @param middleName {@link String} containing an optional {@link String middle name}
+   * or {@link String middle initial(s)}.
+   * @param lastName {@link String} containing the {@literal last name};
+   * must not be {@literal null} of {@literal empty}.
    * @throws IllegalArgumentException if {@link String first name} or {@link String last name} are not specified.
    */
-  Name(String firstName, String middleName, String lastName) {
+  Name(@NotNull String firstName, @NotNull String middleName, @NotNull String lastName) {
 
-    Assert.hasText(firstName, "First name is required");
-    Assert.hasText(lastName, "Last name is required");
-
-    this.firstName = firstName;
-    this.lastName = lastName;
+    this.firstName = StringUtils.requireText(firstName, "First name is required");
+    this.lastName = StringUtils.requireText(lastName, "Last name is required");
     this.middleName = StringUtils.hasText(middleName) ? middleName : DEFAULT_MIDDLE_NAME;
   }
 
   /**
    * Return the {@link String first name}.
    *
-   * @return a {@link String} containing the first name.
-   * @see java.lang.String
+   * @return a {@link String} containing the {@literal first name}.
    */
-  public String getFirstName() {
+  public @NotNull String getFirstName() {
     return this.firstName;
   }
 
   /**
    * Return the {@link String last name}.
    *
-   * @return a {@link String} containing the last name.
-   * @see java.lang.String
+   * @return a {@link String} containing the {@literal last name}.
    */
-  public String getLastName() {
+  public @NotNull String getLastName() {
     return this.lastName;
   }
 
   /**
    * Return an {@link Optional} {@link String middle name}.
    *
-   * May just be the initial(s).
+   * May just be the {@literal middle initial(s)}.
    *
-   * @return an {@link Optional} containing the {@link String middle name}.
+   * @return an {@link Optional} containing the {@link String middle name or middle initial(s)}.
    * @see java.util.Optional
-   * @see java.lang.String
    */
   public Optional<String> getMiddleName() {
-    return Optional.ofNullable(this.middleName).filter(StringUtils::hasText);
+    return Optional.ofNullable(this.middleName)
+      .filter(StringUtils::hasText);
   }
 
   /**
@@ -262,105 +294,109 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
    * @see org.cp.elements.lang.Nameable#getName()
    */
   @Override
-  public Name getName() {
+  public @NotNull Name getName() {
     return this;
   }
 
   /**
-   * Accepts a {@link Visitor} to visit this {@link Name}.
+   * Accepts the given {@link Visitor} to visit this {@link Name}.
    *
-   * @param visitor {@link Visitor} accepted to visit this {@link Name}.
+   * @param visitor {@link Visitor} used to visit this {@link Name}.
    * @see org.cp.elements.lang.Visitable#accept(Visitor)
    * @see org.cp.elements.lang.Visitor
    */
   @Override
-  public void accept(Visitor visitor) {
+  public void accept(@NotNull Visitor visitor) {
     visitor.visit(this);
   }
 
   /**
-   * Builder method used to change the {@link String last name}.
+   * Builder method used to change a person's {@link String last name}.
    *
    * This method returns a new instance of {@link Name} initialized with this {@link Name Name's}
-   * {@link #getFirstName() first name}, {@link #getMiddleName() middle name} and the given,
-   * new {@link String last name}.
+   * {@link #getFirstName() first name}, {@link #getMiddleName() middle name} and the given, new
+   * and required {@link String last name}.
    *
-   * @param lastName {@link String} containing the new last name.
-   * @return a new instance of {@link Name} with the new {@link String last name}.
-   * @throws IllegalArgumentException if the given, new {@link String last name} is not specified.
+   * @param lastName {@link String} containing the new {@literal last name};
+   * must not be {@literal null} or {@literal empty}.
+   * @return a new {@link Name} from this {@link Name} with the new {@link String last name}.
+   * @throws IllegalArgumentException if the new {@link String last name} is {@literal null} or {@literal empty}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #of(String, String, String)
-   * @see #getFirstName()
    * @see #getMiddleName()
+   * @see #getFirstName()
    */
-  public Name change(String lastName) {
+  @Dsl
+  public @NotNull Name change(@NotNull String lastName) {
     return of(this.getFirstName(), this.getMiddleName().orElse(DEFAULT_MIDDLE_NAME), lastName);
   }
 
   /**
-   * Determines whether the given {@link Name} and this {@link Name} are alike in anyway.
+   * Determines whether the given {@link Name} and this {@link Name} are alike.
    *
-   * Technically, the {@link Name names} are considered alike if they match on either {@link #getFirstName() first name}
-   * or {@link #getLastName() last name}.
+   * Technically, the {@link Name names} are considered {@literal alike} if they match
+   * on either {@link #getFirstName() first name} or {@link #getLastName() last name}.
    *
    * @param name {@link Name} to compare.
-   * @return a boolean value indicating whether the given {@link Name} and this {@link Name} are alike in anyway.
+   * @return a boolean value indicating whether the given {@link Name} and this {@link Name} are alike.
+   * @see #getFirstName()
+   * @see #getLastName()
    */
-  public boolean like(Name name) {
+  @NullSafe
+  public boolean like(@Nullable Name name) {
 
-    return Optional.ofNullable(name)
-      .map(it ->
-        ObjectUtils.equals(this.getFirstName(), it.getFirstName())
-          || ObjectUtils.equals(this.getLastName(), it.getLastName()))
-      .orElse(false);
+    return Objects.nonNull(name)
+      && (ObjectUtils.equals(this.getFirstName(), name.getFirstName())
+      || ObjectUtils.equals(this.getLastName(), name.getLastName()));
   }
 
   /**
    * Clones this {@link Name}.
    *
    * @return a clone (copy) of this {@link Name}.
-   * @see #of(String, String, String)
    * @see java.lang.Object#clone()
+   * @see #of(Name)
    */
   @Override
   @SuppressWarnings("all")
-  public Object clone() {
+  public @NotNull Object clone() {
     return of(this);
   }
 
   /**
-   * Compares this {@link Name} with the given {@link Name} to determine the natural ordering (sort order)
+   * Compares this {@link Name} with the given, required {@link Name} to determine the natural ordering (sort order)
    * of the {@link Name names}.
    *
-   * The natural order of {@link Name names} as determined by this method is last name, first name
-   * and then middle name (or initial(s)) in ascending order.
+   * The natural order of {@link Name names} as determined by this method is {@link #getLastName() last name} first,
+   * {@link #getFirstName() first name} last, and then {@link #getMiddleName() middle name or middle initial(s)}
+   * used in a tiebreak, in ascending order.
    *
-   * @param other {@link Name} being compared with this {@link Name}.
-   * @return a integer value indicating the natural order of this {@link Name} relative to the given {@link Name}.
-   * A &lt; {@literal 0} indicates this {@link Name} comes before the given {@link Name}. A &gt; {@literal 0}
-   * indicates this {@link Name} comes after the given {@link Name} and {@literal 0} indicates both {@link Name names}
-   * are equal.
+   * @param other {@link Name} to compare with this {@link Name}; must not be {@literal null}.
+   * @return a {@link Integer value} indicating the natural order of this {@link Name} relative to
+   * the given {@link Name}. A &lt; {@literal 0} value indicates this {@link Name} comes before the given {@link Name}.
+   * A &gt; {@literal 0} value indicates this {@link Name} comes after the given {@link Name}. And, {@literal 0}
+   * indicates both {@link Name names} are equal.
    * @see org.cp.elements.util.ComparatorResultBuilder
-   * @see java.lang.Comparable#compareTo(Object)
    */
   @Override
-  public int compareTo(Name other) {
+  public int compareTo(@NotNull Name other) {
 
     return ComparatorResultBuilder.<String>create()
       .doCompare(this.getLastName(), other.getLastName())
       .doCompare(this.getFirstName(), other.getFirstName())
-      .doCompare(this.getMiddleName().orElse("null"), other.getMiddleName().orElse("null"))
+      .doCompare(this.getMiddleName().orElse(COMPARABLE_MIDDLE_NAME),
+        other.getMiddleName().orElse(COMPARABLE_MIDDLE_NAME))
       .build();
   }
 
   /**
    * Determines whether this {@link Name} is equal to the given {@link Object}.
    *
-   * @param obj {@link Object} being evaluated for equality with this {@link Name}.
+   * @param obj {@link Object} to evaluate for equality with this {@link Name}.
    * @return a boolean value indicating whether this {@link Name} is equal to the given {@link Object}.
-   * @see java.lang.Object#equals(Object)
    */
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(@Nullable Object obj) {
 
     if (this == obj) {
       return true;
@@ -373,52 +409,45 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
     Name that = (Name) obj;
 
     return ObjectUtils.equals(this.getFirstName(), that.getFirstName())
-      && ObjectUtils.equalsIgnoreNull(this.getMiddleName().orElse(null), that.getMiddleName().orElse(null))
+      && ObjectUtils.equalsIgnoreNull(this.getMiddleName().orElse(DEFAULT_MIDDLE_NAME),
+        that.getMiddleName().orElse(DEFAULT_MIDDLE_NAME))
       && ObjectUtils.equals(this.getLastName(), that.getLastName());
   }
 
   /**
-   * Computes the hash code of this {@link Name}.
+   * Computes the {@link Integer hash code} of this {@link Name}.
    *
-   * @return the computed hash code of this {@link Name} as an {@link Integer}.
-   * @see java.lang.Object#hashCode()
+   * @return the computed {@link Integer hash code} of this {@link Name}.
    */
   @Override
   public int hashCode() {
-
-    int hashValue = 17;
-
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getFirstName());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getMiddleName().orElse(null));
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getLastName());
-
-    return hashValue;
+    return ObjectUtils.hashCodeOf(getFirstName(), getMiddleName().orElse(DEFAULT_MIDDLE_NAME), getLastName());
   }
 
   /**
    * Returns a {@link String} representation of this {@link Name}.
    *
    * @return a {@link String} containing the current state of this {@link Name}.
-   * @see java.lang.Object#toString()
-   * @see java.lang.String
    */
   @Override
-  public String toString() {
+  public @NotNull String toString() {
 
     StringBuilder name = new StringBuilder(getFirstName());
 
-    getMiddleName().ifPresent(middleName -> name.append(NAME_PART_SEPARATOR).append(middleName));
+    getMiddleName().ifPresent(middleName ->
+      name.append(NAME_COMPONENT_SEPARATOR).append(middleName));
 
-    name.append(NAME_PART_SEPARATOR);
+    name.append(NAME_COMPONENT_SEPARATOR);
     name.append(getLastName());
 
     return name.toString();
   }
 
   /**
-   * Enumeration of {@link Name} suffixes.
+   * {@link Enum Enumeration} of {@link Name} suffixes.
+   *
+   * @see java.lang.Enum
    */
-  @SuppressWarnings("unused")
   public enum Suffix {
 
     JR,
@@ -426,16 +455,17 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
 
     @Override
     public String toString() {
-      return StringUtils.capitalize(name().toLowerCase()).concat(StringUtils.DOT_SEPARATOR);
+      return StringUtils.capitalize(name().toLowerCase())
+        .concat(StringUtils.DOT_SEPARATOR);
     }
   }
 
   /**
-   * Enumeration of {@link Name} titles (prefix).
+   * {@link Enum Enumeration} of {@link Name} titles (prefixes).
    *
+   * @see java.lang.Enum
    * @see <a href="https://en.wikipedia.org/wiki/English_honorifics">English Honorifics</a>
    */
-  @SuppressWarnings("unused")
   public enum Title {
 
     DR,
