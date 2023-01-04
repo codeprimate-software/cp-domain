@@ -15,26 +15,30 @@
  */
 package org.cp.domain.core.model;
 
-import static org.cp.elements.lang.Constants.UNKNOWN;
-import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Renderable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.Dsl;
+import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.Id;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.support.AbstractVersionedObject;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
@@ -44,103 +48,126 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see java.io.Serializable
  * @see java.lang.Cloneable
  * @see java.lang.Comparable
+ * @see java.time.LocalDate
  * @see java.time.LocalDateTime
+ * @see java.util.UUID
  * @see org.cp.elements.enums.Gender
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Nameable
  * @see org.cp.elements.lang.Renderable
  * @see org.cp.elements.lang.Visitable
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @see org.cp.elements.lang.annotation.Id
+ * @see org.cp.elements.lang.support.AbstractVersionedObject
  * @since 1.0.0
  */
-public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>, Nameable<Name>,
-    Renderable, Serializable, Visitable {
+@FluentApi
+public class Person extends AbstractVersionedObject<Person, UUID>
+    implements Cloneable, Comparable<Person>, Identifiable<Long>, Nameable<Name>, Renderable, Serializable, Visitable {
 
-  private static final long serialVersionUID = -1532809025522184045L;
+  private static final long serialVersionUID = -8623980477296948648L;
 
   protected static final String BIRTH_DATE_PATTERN = "yyyy-MM-dd";
   protected static final String BIRTH_DATE_TIME_PATTERN = "yyyy-MM-dd hh:mm a";
   protected static final String DATE_OF_DEATH_PATTERN = BIRTH_DATE_PATTERN;
   protected static final String DATE_TIME_OF_DEATH_PATTERN = BIRTH_DATE_TIME_PATTERN;
+
+  // JSON String representation
   protected static final String PERSON_TO_STRING =
-    "{ @type = %1$s, firstName = %2$s, middleName = %3$s, lastName = %4$s, birthDate = %5$s, dateOfDeath = %6$s, gender = %7$s }";
+    "{ @type = %1$s, firstName = %2$s, middleName = %3$s, lastName = %4$s,"
+      + " birthDate = %5$s, dateOfDeath = %6$s, gender = %7$s }";
 
   /**
    * Factory method used to construct a new instance of {@link Person} copied from and initialized with
    * the given {@link Person}.
    *
-   * @param person {@link Person} to copy.
-   * @return a new instance of {@link Person} copied from and initialized with the given {@link Person}.
+   * @param person {@link Person} to copy; must not be {@literal null}.
+   * @return a new {@link Person} copied from and initialized with the given {@link Person}.
    * @throws IllegalArgumentException if {@link Person} is {@literal null}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #newPerson(Name, LocalDateTime)
    * @see #as(Gender)
    */
-  public static Person from(Person person) {
+  @Dsl
+  public static @NotNull Person from(@NotNull Person person) {
 
-    return Optional.ofNullable(person)
-      .map(it -> newPerson(it.getName(), it.getBirthDate().orElse(null)).as(it.getGender().orElse(null)))
-      .orElseThrow(() -> newIllegalArgumentException("Person is required"));
+    Assert.notNull(person, "Person to copy is required");
+
+    return newPerson(person.getName(), person.getBirthDate().orElse(null))
+      .as(person.getGender().orElse(null));
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Person} initialized with the given {@link Name}.
+   * Factory method used to construct a new instance of {@link Person} initialized with the given,
+   * required {@link Name}.
    *
-   * @param name {@link Name} of the {@link Person}.
-   * @return a new instance of {@link Person} initialized with the given {@link Name}.
+   * @param name {@link Name} of the {@link Person}; must not be {@literal null}.
+   * @return a new {@link Person} initialized with the given {@link Name}.
    * @throws IllegalArgumentException if {@link Name} is {@literal null}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.domain.core.model.Name
    * @see #Person(Name)
    */
-  public static Person newPerson(Name name) {
+  @Dsl
+  public static @NotNull Person newPerson(@NotNull Name name) {
     return new Person(name);
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Person} initialized with the given {@link Name}
-   * and {@link LocalDateTime date of birth}.
+   * Factory method used to construct a new instance of {@link Person} initialized with the given,
+   * required {@link Name} and {@link LocalDateTime date of birth}.
    *
-   * @param name {@link Name} of the {@link Person}.
-   * @param birthDate {@link LocalDateTime} specifying the {@link Person person's} date of birth.
-   * @return a new instance of {@link Person} initialized with the given {@link Name}
+   * @param name {@link Name} of the {@link Person}; must not be {@literal null}.
+   * @param birthDate {@link LocalDateTime} specifying the {@link Person person's} {@literal date of birth}.
+   * @return a new {@link Person} initialized with the given, required {@link Name}
    * and {@link LocalDateTime date of birth}.
    * @throws IllegalArgumentException if {@link Name} is {@literal null}.
-   * @see java.time.LocalDateTime
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.domain.core.model.Name
    * @see #Person(Name, LocalDateTime)
+   * @see java.time.LocalDateTime
    */
-  public static Person newPerson(Name name, LocalDateTime birthDate) {
+  @Dsl
+  public static @NotNull Person newPerson(@NotNull Name name, @Nullable LocalDateTime birthDate) {
     return new Person(name, birthDate);
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Person} initialized with the given {@link String name}.
+   * Factory method used to construct a new instance of {@link Person} initialized with the given,
+   * required {@link String name}.
    *
-   * @param name {@link String} containing the name of the {@link Person}.
-   * @return a new instance of {@link Person} initialized with the given {@link String name}.
-   * @throws IllegalArgumentException if either {@link String first name} or {@link String last name} are not specified.
+   * @param name {@link String} containing the {@literal name} of the {@link Person};
+   * must not be {@literal null} or {@literal empty}.
+   * @return a new {@link Person} initialized with the given, required {@link String name}.
+   * @throws IllegalArgumentException if either the {@link String first name} or {@link String last name}
+   * of the person were not given.
    * @see org.cp.domain.core.model.Name#of(String)
-   * @see java.lang.String
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #newPerson(Name)
    */
-  public static Person newPerson(String name) {
+  @Dsl
+  public static @NotNull Person newPerson(@NotNull String name) {
     return newPerson(Name.of(name));
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Person} initialized with the given {@link String name}
-   * and {@link LocalDateTime date of birth}.
+   * Factory method used to construct a new instance of {@link Person} initialized with the given,
+   * required {@link String name} and {@link LocalDateTime date of birth}.
    *
-   * @param name {@link String} containing the name of the {@link Person}.
-   * @param birthDate {@link LocalDateTime} specifying the {@link Person person's} date of birth.
-   * @return a new instance of {@link Person} initialized with the given {@link String name}
+   * @param name {@link String} containing the {@literal name} of the {@link Person};
+   * must not be {@literal null} or {@literal empty}.
+   * @param birthDate {@link LocalDateTime} declaring the {@link Person person's} {@literal date of birth}.
+   * @return a new {@link Person} initialized with the given, required {@link String name}
    * and {@link LocalDateTime date of birth}.
-   * @throws IllegalArgumentException if either {@link String first name} or {@link String last name} are not specified.
+   * @throws IllegalArgumentException if either the {@link String first name} or {@link String last name}
+   * of the person were not given.
    * @see org.cp.domain.core.model.Name#of(String)
-   * @see java.lang.String
-   * @see java.time.LocalDateTime
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #newPerson(Name, LocalDateTime)
+   * @see java.time.LocalDateTime
    */
-  public static Person newPerson(String name, LocalDateTime birthDate) {
+  @Dsl
+  public static @NotNull Person newPerson(@NotNull String name, @Nullable LocalDateTime birthDate) {
     return newPerson(Name.of(name), birthDate);
   }
 
@@ -148,35 +175,45 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    * Factory method used to construct a new instance of {@link Person} initialized with
    * the given {@link String first name} and {@link String last name}.
    *
-   * @param firstName {@link String} containing the {@link Person person's} first name.
-   * @param lastName {@link String} containing the {@link Person person's} last name.
-   * @return a new instance of {@link Person} initialized with the given {@link String first name}
+   * @param firstName {@link String} containing the {@link Person person's} {@literal first name};
+   * must not be {@literal null} or {@literal empty}.
+   * @param lastName {@link String} containing the {@link Person person's} {@literal last name};
+   * must not be {@literal null} or {@literal empty}.
+   * @return a new {@link Person} initialized with the given, required {@link String first name}
    * and {@link String last name}.
-   * @throws IllegalArgumentException if either {@link String first name} or {@link String last name} are not specified.
+   * @throws IllegalArgumentException if either the {@link String first name} or {@link String last name}
+   * of the person were not given.
    * @see org.cp.domain.core.model.Name#of(String, String)
-   * @see java.lang.String
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #newPerson(Name)
    */
-  public static Person newPerson(String firstName, String lastName) {
+  @Dsl
+  public static @NotNull Person newPerson(@NotNull String firstName, @NotNull String lastName) {
     return newPerson(Name.of(firstName, lastName));
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Person} initialized with
-   * the given {@link String first name} and {@link String last name} as well as {@link LocalDateTime date of birth}.
+   * Factory method used to construct a new instance of {@link Person} initialized with the given,
+   * required {@link String first name} and {@link String last name} as well as {@link LocalDateTime date of birth}.
    *
-   * @param firstName {@link String} containing the {@link Person person's} first name.
-   * @param lastName {@link String} containing the {@link Person person's} last name.
+   * @param firstName {@link String} containing the {@link Person person's} {@literal first name};
+   * must not be {@literal null} or {@literal empty}.
+   * @param lastName {@link String} containing the {@link Person person's} {@literal last name};
+   * must not be {@literal null} or {@literal empty}.
    * @param birthDate {@link LocalDateTime} specifying the {@link Person person's} date of birth.
-   * @return a new instance of {@link Person} initialized with the given {@link String first name}
-   * and {@link String last name) as well as {@link LocalDateTime date of birth}.
-   * @throws IllegalArgumentException if either {@link String first name} or {@link String last name} are not specified.
+   * @return a new {@link Person} initialized with the given, required {@link String first name}
+   * and {@link String last name} as well as {@link LocalDateTime date of birth}.
+   * @throws IllegalArgumentException if either the {@link String first name} or {@link String last name}
+   * of the person were not given.
    * @see org.cp.domain.core.model.Name#of(String, String)
-   * @see java.lang.String
-   * @see java.time.LocalDateTime
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #newPerson(Name, LocalDateTime)
+   * @see java.time.LocalDateTime
    */
-  public static Person newPerson(String firstName, String lastName, LocalDateTime birthDate) {
+  @Dsl
+  public static @NotNull Person newPerson(@NotNull String firstName, @NotNull String lastName,
+      @Nullable LocalDateTime birthDate) {
+
     return newPerson(Name.of(firstName, lastName), birthDate);
   }
 
@@ -188,35 +225,34 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
   @Id
   private Long id;
 
-  private Name name;
+  private final Name name;
 
   /**
-   * Constructs a new instance of {@link Person} initialized with the given {@link Name}.
+   * Constructs a new instance of {@link Person} initialized with the given, required {@link Name}
+   * and no {@link LocalDateTime date of birth}.
    *
-   * @param name {@link Name} of the {@link Person}.
+   * @param name {@link Name} of the {@link Person}; must not be {@literal null}.
    * @throws IllegalArgumentException if {@link Name} is {@literal null}.
    * @see org.cp.domain.core.model.Name
    * @see #Person(Name, LocalDateTime)
    */
-  public Person(Name name) {
+  public Person(@NotNull Name name) {
     this(name, null);
   }
 
   /**
-   * Constructs a new instance of {@link Person} initialized with the given {@link Name}
+   * Constructs a new instance of {@link Person} initialized with the given, required {@link Name}
    * and {@link LocalDateTime date of birth}.
    *
-   * @param name {@link Name} of the {@link Person}.
+   * @param name {@link Name} of the {@link Person}; must not be {@literal null}.
    * @param birthDate {@link LocalDateTime birth date} of the {@link Person}.
    * @throws IllegalArgumentException if {@link Name} is {@literal null}.
    * @see org.cp.domain.core.model.Name
    * @see java.time.LocalDateTime
    */
-  public Person(Name name, LocalDateTime birthDate) {
+  public Person(@NotNull Name name, @Nullable LocalDateTime birthDate) {
 
-    Assert.notNull(name, "Name is required");
-
-    this.name = name;
+    this.name = ObjectUtils.requireObject(name, "Name is required");
     this.birthDate = birthDate;
   }
 
@@ -231,12 +267,13 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
   }
 
   /**
-   * Determines whether this {@link Person} has been born.
+   * Determines whether this {@link Person} has been born yet.
    *
-   * This {@link Person} may have a {@link #getBirthDate() birth date} in the future, which represents an expected
-   * {@link LocalDateTime date of birth} for a new, unborn.
+   * This {@link Person} may have a {@link #getBirthDate() birth date} in the future representing an expected
+   * {@link LocalDateTime date of birth} for an unborn child.
    *
-   * @return a boolean value indicating whether this {@link Person} has been born.
+   * @return a boolean value indicating whether this {@link Person} has been born yet.
+   * @see java.time.LocalDateTime#now()
    * @see #getBirthDate()
    */
   public boolean isBorn() {
@@ -275,6 +312,20 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
   }
 
   /**
+   * Determines whether this {@link Person} identifies as {@link Gender#NON_BINARY}.
+   *
+   * @return a boolean value indicating whether this {@link Person} identifies as {@link Gender#NON_BINARY}.
+   * @see org.cp.elements.enums.Gender#NON_BINARY
+   * @see #getGender()
+   */
+  public boolean isNonBinary() {
+
+    return getGender()
+      .filter(Gender.NON_BINARY::equals)
+      .isPresent();
+  }
+
+  /**
    * Sets the {@link Long identifier} uniquely identifying this {@link Person}.
    *
    * @param id {@link Long identifier} uniquely identifying this {@link Person}.
@@ -282,7 +333,7 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    * @see java.lang.Long
    */
   @Override
-  public void setId(Long id) {
+  public void setId(@Nullable Long id) {
     this.id = id;
   }
 
@@ -294,7 +345,7 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    * @see java.lang.Long
    */
   @Override
-  public Long getId() {
+  public @Nullable Long getId() {
     return this.id;
   }
 
@@ -302,10 +353,11 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    * Given this {@link Person person's} {@link #getBirthDate() date of birth},
    * determine this {@link Person person's} age.
    *
-   * @return the age of this {@link Person} based on his/her {@link #getBirthDate() date of birth}.
-   * @see java.time.LocalDate#now()
+   * @return the {@link Integer age} of this {@link Person} based on his or her {@link #getBirthDate() date of birth}.
    * @see java.time.Period#between(LocalDate, LocalDate)
    * @see java.time.Period#getYears()
+   * @see java.time.LocalDate#now()
+   * @see #getDateOfDeath()
    * @see #getBirthDate()
    */
   public Optional<Integer> getAge() {
@@ -318,19 +370,25 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
           .orElseGet(LocalDate::now);
 
         return Period.between(birthDate.toLocalDate(), endDate);
+
       })
-      .map(Period::getYears);
+      .map(Period::getYears)
+      .map(years -> Math.max(years, 0));
   }
 
   /**
    * Sets this {@link Person person's} {@link LocalDateTime date of birth}.
    *
-   * @param birthDate {@link LocalDateTime} indicating this {@link Person person's} date of birth;
-   * may be {@literal null}.
-   * @throws IllegalArgumentException if {@link LocalDateTime birth date} is in the future.
+   * A {@link Person person's} {@link LocalDateTime date of birth} represents
+   * the {@link LocalDateTime actual date of birth}, and not the {@link LocalDateTime expected date of birth}.
+   * Therefore, a {@link Person} cannot be {@link #isBorn() born} before {@link LocalDateTime#now() today}.
+   *
+   * @param birthDate {@link LocalDateTime} declaring this {@link Person person's} {@literal date of birth}.
+   * @throws IllegalArgumentException if the {@link LocalDateTime birth date} is in the future.
    * @see java.time.LocalDateTime
+   * @see #isBorn()
    */
-  public void setBirthDate(LocalDateTime birthDate) {
+  public void setBirthDate(@Nullable LocalDateTime birthDate) {
 
     if (birthDate != null) {
 
@@ -338,12 +396,10 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
 
       Assert.isFalse(birthDate.isAfter(now), () -> {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(BIRTH_DATE_PATTERN);
+        DateTimeFormatter birthDateFormatter = DateTimeFormatter.ofPattern(BIRTH_DATE_PATTERN);
 
-        String INVALID_BIRTH_DATE_MESSAGE = "Birth date [%1$s] must be on or before today [%2$s]";
-
-        return String.format(INVALID_BIRTH_DATE_MESSAGE,
-          formatter.format(birthDate.toLocalDate()), formatter.format(now.toLocalDate()));
+        return String.format("Birth date [%1$s] must be on or before today [%2$s]",
+          birthDateFormatter.format(birthDate.toLocalDate()), birthDateFormatter.format(now.toLocalDate()));
       });
     }
 
@@ -353,7 +409,11 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
   /**
    * Returns this {@link Person person's} {@link LocalDateTime date of birth}.
    *
-   * @return an {@link Optional} with this {@link Person person's} {@link LocalDateTime date of birth}.
+   * A {@link Person person's} {@link LocalDateTime date of birth} represents
+   * the {@link LocalDateTime actual date of birth}, and not the {@link LocalDateTime expected date of birth}.
+   * Therefore, a {@link Person} cannot be {@link #isBorn() born} before {@link LocalDateTime#now() today}.
+   *
+   * @return an {@link Optional} containing this {@link Person person's} {@link LocalDateTime date of birth}.
    * @see java.time.LocalDateTime
    * @see java.util.Optional
    */
@@ -364,13 +424,14 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
   /**
    * Set's the {@link Person person's} {@link LocalDateTime date of death}.
    *
-   * @param dateOfDeath {@link LocalDateTime} indicating this {@link Person person's} date of death;
-   * may be {@literal null}.
-   * @throws IllegalArgumentException if {@link LocalDateTime date of death} is before the
-   * {@link #getBirthDate() date of birth} or in the future.
+   * @param dateOfDeath {@link LocalDateTime} declaring this {@link Person person's} {@literal date of death}.
+   * @throws IllegalArgumentException if the {@link LocalDateTime date of death} is before
+   * the {@link #getBirthDate() date of birth} or is in the future.
+   * @see java.time.LocalDateTime#now()
    * @see java.time.LocalDateTime
+   * @see #getBirthDate()
    */
-  public void setDateOfDeath(LocalDateTime dateOfDeath) {
+  public void setDateOfDeath(@Nullable LocalDateTime dateOfDeath) {
 
     if (dateOfDeath != null) {
 
@@ -393,7 +454,7 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
   /**
    * Returns this {@link Person person's} {@link LocalDateTime date of death}.
    *
-   * @return an {@link Optional} with this {@link Person person's} {@link LocalDateTime date of death}.
+   * @return an {@link Optional} containing this {@link Person person's} {@link LocalDateTime date of death}.
    * @see java.time.LocalDateTime
    * @see java.util.Optional
    */
@@ -404,17 +465,17 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
   /**
    * Sets this {@link Person person's} {@link Gender}.
    *
-   * @param gender {@link Gender} of this {@link Person}; may be {@literal null}.
+   * @param gender {@link Gender} of this {@link Person}.
    * @see org.cp.elements.enums.Gender
    */
-  public void setGender(Gender gender) {
+  public void setGender(@Nullable Gender gender) {
     this.gender = gender;
   }
 
   /**
    * Returns this {@link Person person's} {@link Gender}.
    *
-   * @return an {@link Optional} with this {@link Person person's} {@link Gender}.
+   * @return an {@link Optional} containing this {@link Person person's} {@link Gender}.
    * @see org.cp.elements.enums.Gender
    * @see java.util.Optional
    */
@@ -425,45 +486,42 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
   /**
    * Returns the {@link Name full name} of this {@link Person person}.
    *
-   * @return a {@link Name} object containing the full name of this {@link Person person}; never {@literal null}.
+   * @return the {@link Name} of this {@link Person person}; never {@literal null}.
    * @see org.cp.domain.core.model.Name
    */
   @NullSafe
   @Override
-  public Name getName() {
+  public @NotNull Name getName() {
     return this.name;
   }
 
   /**
    * Returns this {@link Person person's} {@link String first name}.
    *
-   * @return a {@link String} containing this {@link Person person's} first name.
+   * @return a {@link String} containing this {@link Person person's} {@literal first name}.
    * @see org.cp.domain.core.model.Name#getFirstName()
-   * @see java.lang.String
    * @see #getName()
    */
-  public String getFirstName() {
+  public @NotNull String getFirstName() {
     return getName().getFirstName();
   }
 
   /**
    * Returns this {@link Person person's} {@link String last name}.
    *
-   * @return a {@link String} containing this {@link Person person's} last name.
+   * @return a {@link String} containing this {@link Person person's} {@literal last name}.
    * @see org.cp.domain.core.model.Name#getLastName()
-   * @see java.lang.String
    * @see #getName()
    */
-  public String getLastName() {
+  public @NotNull String getLastName() {
     return getName().getLastName();
   }
 
   /**
    * Returns this {@link Person person's} {@link String middle name}.
    *
-   * @return an {@link Optional} containing this {@link Person person's} middle name.
+   * @return an {@link Optional} containing this {@link Person person's} {@literal middle name or initial(s)}.
    * @see org.cp.domain.core.model.Name#getMiddleName()
-   * @see java.lang.String
    * @see java.util.Optional
    * @see #getName()
    */
@@ -473,17 +531,19 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
 
   /**
    * Builder method used to estimate and set this {@link Person person's}
-   * {@link #setBirthDate(LocalDateTime) date of birth} based on his or her age.
+   * {@link #setBirthDate(LocalDateTime) date of birth} based on his or her {@link Integer age}.
    *
    * Additionally, this {@link Person person's} {@link LocalDateTime date of birth} is set to
-   * the current month, day, hour, minute and second.
+   * the current {@literal month}, {@literal day}, {@literal hour}, {@literal minute} and {@literal second}.
    *
-   * @param age {@link Integer#TYPE} value specifying this {@link Person person's} age.
+   * @param age {@link Integer} value specifying this {@link Person person's} age.
    * @return this {@link Person}.
-   * @throws IllegalArgumentException if {@link Integer#TYPE age} is less than {@literal 0}.
+   * @throws IllegalArgumentException if {@link Integer age} is less than {@literal 0}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #born(LocalDateTime)
    */
-  public Person age(int age) {
+  @Dsl
+  public @NotNull Person age(int age) {
 
     Assert.isTrue(age >= 0, "Age [%s] must be greater than equal to 0", age);
 
@@ -495,10 +555,12 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    *
    * @param gender {@link Gender} of this {@link Person}.
    * @return this {@link Person}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.elements.enums.Gender
    * @see #setGender(Gender)
    */
-  public Person as(Gender gender) {
+  @Dsl
+  public @NotNull Person as(@Nullable Gender gender) {
     setGender(gender);
     return this;
   }
@@ -507,10 +569,12 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    * Builder method used to identify this {@link Person} as a {@link Gender#FEMALE}.
    *
    * @return this {@link Person}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.elements.enums.Gender#FEMALE
    * @see #as(Gender)
    */
-  public Person asFemale() {
+  @Dsl
+  public @NotNull Person asFemale() {
     as(Gender.FEMALE);
     return this;
   }
@@ -519,11 +583,27 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    * Builder method used to identify this {@link Person} as a {@link Gender#MALE}.
    *
    * @return this {@link Person}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.elements.enums.Gender#MALE
    * @see #as(Gender)
    */
-  public Person asMale() {
+  @Dsl
+  public @NotNull Person asMale() {
     as(Gender.MALE);
+    return this;
+  }
+
+  /**
+   * Builder method used to identify this {@link Person} as a {@link Gender#NON_BINARY} individual.
+   *
+   * @return this {@link Person}.
+   * @see org.cp.elements.enums.Gender#NON_BINARY
+   * @see org.cp.elements.lang.annotation.Dsl
+   * @see #as(Gender)
+   */
+  @Dsl
+  public @NotNull Person asNonBinary() {
+    as(Gender.NON_BINARY);
     return this;
   }
 
@@ -533,10 +613,12 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    * @param birthDate {@link LocalDateTime} specifying this {@link Person person's} date of birth.
    * @return this {@link Person}.
    * @throws IllegalArgumentException if {@link LocalDateTime birth date} is in the future.
-   * @see java.time.LocalDateTime
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #setBirthDate(LocalDateTime)
+   * @see java.time.LocalDateTime
    */
-  public Person born(LocalDateTime birthDate) {
+  @Dsl
+  public @NotNull Person born(@Nullable LocalDateTime birthDate) {
     setBirthDate(birthDate);
     return this;
   }
@@ -547,96 +629,100 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    * @param name new {@link Name} for this {@link Person}.
    * @return this {@link Person}.
    * @throws IllegalArgumentException if {@link Name} is {@literal null}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.domain.core.model.Name
+   * @see #newPerson(Name)
    */
-  public Person change(Name name) {
-
-    Assert.notNull(name, "Name is required");
-
-    this.name = name;
-
-    return this;
+  @Dsl
+  public @NotNull Person change(@NotNull Name name) {
+    return newPerson(ObjectUtils.requireObject(name, "Name is required"));
   }
 
   /**
    * Builder method used to change this {@link Person person's} {@link String last name}.
    *
-   * @param lastName {@link String} containing this {@link Person person's} new last name.
+   * @param lastName {@link String} containing this {@link Person person's} new {@literal last name};
+   * must not be {@literal null} or {@literal empty}.
    * @return this {@link Person}.
    * @see org.cp.domain.core.model.Name#change(String)
-   * @see java.lang.String
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #change(Name)
    * @see #getName()
    */
-  public Person change(String lastName) {
+  @Dsl
+  public @NotNull Person change(@NotNull String lastName) {
     return change(getName().change(lastName));
   }
 
   /**
    * Builder method used to set this {@link Person person's} {@link LocalDateTime date of death}.
    *
-   * @param dateOfDeath {@link LocalDateTime} indicating this {@link Person's} date of death; may be {@literal null}.
+   * @param dateOfDeath {@link LocalDateTime} indicating this {@link Person's} date of death.
    * @return this {@link Person}.
+   * @throws IllegalArgumentException if the {@link LocalDateTime date of death} is in the future
+   * or is before the {@link #getBirthDate() date of birth}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #setDateOfDeath(LocalDateTime)
    * @see java.time.LocalDateTime
    */
-  public Person died(LocalDateTime dateOfDeath) {
+  @Dsl
+  public @NotNull Person died(@Nullable LocalDateTime dateOfDeath) {
     setDateOfDeath(dateOfDeath);
     return this;
   }
 
   /**
    * Accepts the given {@link Visitor} visiting this {@link Person} to perform whatever data access operations
-   * are required on this {@link Person} by the application.
+   * are required on this {@link Person} by the application at time of visitation.
    *
-   * @param visitor {@link Visitor} visiting this {@link Person}.
+   * @param visitor {@link Visitor} visiting this {@link Person}; must not be {@literal null}.
    * @see org.cp.elements.lang.Visitable#accept(Visitor)
    * @see org.cp.elements.lang.Visitor
    */
   @Override
-  public void accept(Visitor visitor) {
+  public void accept(@NotNull Visitor visitor) {
     visitor.visit(this);
   }
 
   /**
    * Clones this {@link Person}.
    *
-   * Copies the {@link Person person's} {@link Name}, {@link LocalDateTime birth date} and {@link Gender}.
+   * Copies the {@link Person person's} {@link Name}, {@link LocalDateTime date of birth} and {@link Gender}.
    *
    * @return a new {@link Person} cloned from this {@link Person}.
-   * @throws CloneNotSupportedException if the clone operation is not supported.
+   * @throws CloneNotSupportedException if the {@literal clone} operation is not supported.
    * @see #from(Person)
    */
   @Override
   @SuppressWarnings("all")
-  public Object clone() throws CloneNotSupportedException {
+  public @NotNull Object clone() throws CloneNotSupportedException {
     return from(this);
   }
 
   /**
    * Compares this {@link Person} to another {@link Person} in order to determine the natural ordering (sort order)
-   * for a list of {@link Person people}.
+   * in a list of {@link Person people}.
    *
-   * This method determines the natural ordering (sort order) for a list of {@link Person people} using last name,
-   * first name, middle name (or initial(s) if present) and date of birth, in ascending order.
+   * This method determines the natural ordering (sort order) for a list of {@link Person people}
+   * using {@link #getLastName()}  last name}, {@link #getFirstName() first name}, {@link #getMiddleName() middle name},
+   * or the person's initial(s) if present, and {@link #getBirthDate() date of birth}, in ascending order.
    *
-   * @param other {@link Person} being compared relative to this {@link Person}.
+   * @param that {@link Person} being compared with the given {@link Person}; must not be {@literal null}.
    * @return an {@link Integer#TYPE} value indicating the natural order of this {@link Person} relative to
-   * the other {@link Person}. Less than {@literal 0} indicates this {@link Person} comes before
-   * the other {@link Person}, Greater than {@literal 0} indicates this {@link Person} comes after
-   * the other {@link Person}, and {@literal 0} represents that both {@link Person people} are equal.
+   * the other {@link Person}. A value less than {@literal 0} indicates this {@link Person} comes before
+   * the other {@link Person}. A value greater than {@literal 0} indicates this {@link Person} comes after
+   * the other {@link Person}. And, {@literal 0} represents that both {@link Person people} are equal.
    * @see org.cp.elements.util.ComparatorResultBuilder
-   * @see java.lang.Comparable#compareTo(Object)
-   * @see #getName()
    * @see #getBirthDate()
+   * @see #getName()
    */
   @Override
-  @SuppressWarnings("all")
-  public int compareTo(Person other) {
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public int compareTo(@NotNull Person that) {
 
     return ComparatorResultBuilder.<Comparable>create()
-      .doCompare(this.getName(), other.getName())
-      .doCompare(this.getBirthDate().orElse(null), other.getBirthDate().orElse(null))
+      .doCompare(this.getName(), that.getName())
+      .doCompare(this.getBirthDate().orElse(null), that.getBirthDate().orElse(null))
       .build();
   }
 
@@ -645,22 +731,28 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    *
    * Equality for {@link Person people} is determined based on the natural identifier of a {@link Person}.
    *
-   * A {@link Person} can usually be uniquely identified by his/her {@link #getBirthDate() date of birth},
-   * {@link #getFirstName() first name}, optionally {@link #getMiddleName() middle name} or initial(s)
+   * A {@link Person} can usually be uniquely identified by his or her {@link #getBirthDate() date of birth},
+   * {@link #getFirstName() first name}, optionally {@link #getMiddleName() middle name or initial(s)}
    * and {@link #getLastName() last name}.
    *
    * A {@link Person} cannot be identified by his or her {@link Name} only since multiple {@link Person people}
-   * can have the same {@link Name}.  Additionally, more than 1 {@link Person} can also have the same
-   * {@link LocalDateTime date of birth}.  Therefore, both {@link Name} and {@link LocalDateTime date of brith}
+   * can have the same {@link Name}. Additionally, more than 1 {@link Person} can also have the same
+   * {@link LocalDateTime date of birth}. Therefore, both {@link Name} and {@link LocalDateTime date of birth}
    * are needed to properly identify a {@link Person}.
    *
-   * @param obj {@link Object} being evaluated for equality with this {@link Person}.
+   * It is possible that 2 or more {@link Person people} can have the same {@link Name}
+   * and {@link LocalDateTime date of birth}. However, the likely-hood of such occurrences should be rather small
+   * in the general population covered by the application. If it is possible that the application will process
+   * {@link Person people} that have the same {@link Name} and {@link LocalDateTime date of birth}, then the user
+   * should override the {@literal equals} method.
+   *
+   * @param obj {@link Object} to evaluated for equality with this {@link Person}.
    * @return a boolean value indicating whether this {@link Person} is equal to the given {@link Object}.
-   * @see java.lang.Object#equals(Object)
-   * @see java.lang.Boolean#TYPE
+   * @see #getBirthDate()
+   * @see #getName()
    */
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(@Nullable Object obj) {
 
     if (this == obj) {
       return true;
@@ -682,45 +774,37 @@ public class Person implements Cloneable, Comparable<Person>, Identifiable<Long>
    * Like the {@link #equals(Object)} method, the {@link Integer hash code} is determined from
    * the {@link Person person's} {@link #getBirthDate() date of birth} and {@link #getName() name}.
    *
-   * @return the computed hash code of this {@link Person} as an {@link Integer}.
-   * @see java.lang.Object#hashCode()
-   * @see java.lang.Integer
+   * @return the computed {@link Integer hash code} of this {@link Person}.
+   * @see #getBirthDate()
+   * @see #getName()
    */
   @Override
   public int hashCode() {
-
-    int hashValue = 17;
-
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getBirthDate());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getName());
-
-    return hashValue;
+    return ObjectUtils.hashCodeOf(getBirthDate(), getName());
   }
 
   /**
    * Returns a {@link String} representation of this {@link Person}.
    *
    * @return a {@link String} containing the current state of this {@link Person}.
-   * @see java.lang.Object#toString()
-   * @see java.lang.String
    * @see #getBirthDate()
    * @see #getDateOfDeath()
    * @see #getGender()
    * @see #getName()
    */
   @Override
-  public String toString() {
+  public @NotNull String toString() {
 
     String birthDateAsString = getBirthDate()
       .map(birthDate -> DateTimeFormatter.ofPattern(BIRTH_DATE_TIME_PATTERN).format(birthDate))
-      .orElse(UNKNOWN);
+      .orElse(Constants.UNKNOWN);
 
     String dateOfDeathAsString = getDateOfDeath()
       .map(dateOfDeath -> DateTimeFormatter.ofPattern(DATE_TIME_OF_DEATH_PATTERN).format(dateOfDeath))
-      .orElse(UNKNOWN);
+      .orElse(Constants.UNKNOWN);
 
     return String.format(PERSON_TO_STRING, getClass().getName(),
-      getFirstName(), getMiddleName().orElse(UNKNOWN), getLastName(), birthDateAsString, dateOfDeathAsString,
-        getGender().map(Gender::toString).orElse(UNKNOWN));
+      getFirstName(), getMiddleName().orElse(Constants.UNKNOWN), getLastName(), birthDateAsString, dateOfDeathAsString,
+        getGender().map(Gender::toString).orElse(Constants.UNKNOWN));
   }
 }
