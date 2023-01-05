@@ -15,11 +15,11 @@
  */
 package org.cp.domain.core.model;
 
-import static java.util.stream.StreamSupport.stream;
-
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -28,48 +28,54 @@ import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.stream.StreamUtils;
 
 /**
- * {@link Group} is an Abstract Data Type (ADT) defining a collection of {@link Person people}
- * that form a relationship.
+ * Abstract Data Type (ADT) defining a {@link Iterable collection} of {@link Person people} that form a relationship.
  *
  * @author John Blum
  * @see java.lang.Iterable
- * @see java.util.Iterator
+ * @see java.util.UUID
  * @see org.cp.domain.core.model.Person
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Nameable
  * @see org.cp.elements.lang.Visitable
  * @since 1.0.0
  */
-public interface Group extends Identifiable<String>, Iterable<Person>, Nameable<String>, Visitable {
+public interface Group extends Identifiable<UUID>, Iterable<Person>, Nameable<String>, Visitable {
 
   /**
-   * Accepts the given {@link Visitor} to visit each {@link Person} in this {@link Group}.
+   * Accepts the given {@link Visitor} used to visit each {@link Person} in this {@link Group}.
    *
-   * @param visitor {@link Visitor} used to visit each {@link Person} in this {@link Group}.
+   * @param visitor {@link Visitor} used to visit each {@link Person} in this {@link Group};
+   * must not be {@literal null}.
    * @see org.cp.elements.lang.Visitable#accept(Visitor)
    * @see org.cp.elements.lang.Visitor#visit(Visitable)
    */
   @Override
-  default void accept(Visitor visitor) {
-    stream(this.spliterator(), false).forEach(person -> person.accept(visitor));
+  default void accept(@NotNull Visitor visitor) {
+    StreamUtils.stream(this).forEach(person -> person.accept(visitor));
   }
 
   /**
-   * Counts the number of {@link Person people} in this {@link Group} matching the given {@link Predicate}.
+   * Counts the number of {@link Person people} in this {@link Group} matching the given, required {@link Predicate}.
    *
-   * @param predicate {@link Predicate} used to match {@link Person people} in this {@link Group}.
-   * @return a {@link Integer#TYPE count} of the number of {@link Person people} in this {@link Group}
+   * @param predicate {@link Predicate} used to match {@link Person people} in this {@link Group} to count;
+   * must not be {@literal null}.
+   * @return a {@link Integer count} of the number of {@link Person people} in this {@link Group}
    * matching the given {@link Predicate}.
    * @throws IllegalArgumentException if the {@link Predicate} is {@literal null}.
    * @see java.util.function.Predicate
+   * @see #isEmpty()
    */
-  default int count(Predicate<Person> predicate) {
+  default int count(@NotNull Predicate<Person> predicate) {
 
     Assert.notNull(predicate, "Predicate is required");
 
-    long count = stream(this.spliterator(), false)
+    long count = StreamUtils.stream(this)
       .filter(predicate)
       .count();
 
@@ -77,45 +83,47 @@ public interface Group extends Identifiable<String>, Iterable<Person>, Nameable<
   }
 
   /**
-   * Finds all {@link Person people} in this {@link Group} that match the criteria of the given {@link Predicate}.
+   * Finds all {@link Person people} in this {@link Group} matching the given, required {@link Predicate}.
    *
-   * @param predicate {@link Predicate} defining the query filter criteria used to find/match {@link Person people}
-   * of interests in this {@link Group}; must not be {@literal null}.
-   * @return all {@link Person people} in this {@link Group} matching the query filter criteria
-   * defined by the given {@link Predicate}.  Returns an empty {@link Set} if no {@link Person people}
-   * in this {@link Group} were found matching the query filter criteria of the given {@link Predicate}.
+   * @param predicate {@link Predicate} defining query criteria used to find and match {@link Person people}
+   * in this {@link Group}; must not be {@literal null}.
+   * @return all {@link Person people} in this {@link Group} matching the query criteria defined by
+   * the given {@link Predicate}. Returns an {@link Set#isEmpty() empty Set} if no {@link Person people}
+   * in this {@link Group} were found matching the query criteria defined by the given {@link Predicate}.
    * @throws IllegalArgumentException if the {@link Predicate} is {@literal null}.
    * @see org.cp.domain.core.model.Person
    * @see java.util.function.Predicate
    * @see #findOne(Predicate)
+   * @see java.util.Set
    */
-  default Set<Person> findBy(Predicate<Person> predicate) {
+  default Set<Person> findBy(@NotNull Predicate<Person> predicate) {
 
     Assert.notNull(predicate, "Predicate is required");
 
-    return stream(this.spliterator(), false)
+    return StreamUtils.stream(this)
       .filter(predicate)
       .collect(Collectors.toSet());
   }
 
   /**
-   * Finds the first {@link Person} in this {@link Group} matching the query filter criteria
-   * defined by the given {@link Predicate}.
+   * Finds the first {@link Person} in this {@link Group} matching the query criteria defined by
+   * the given, required {@link Predicate}.
    *
-   * @param predicate {@link Predicate} defining the query filter criteria to match a {@link Person}
-   * in this {@link Group}.
-   * @return the first {@link Person} in this {@link Group} matching the query filter criteria
-   * defined by the {@link Predicate}.
+   * @param predicate {@link Predicate} defining query criteria used to fina and match a single {@link Person}
+   * in this {@link Group}; must not be {@literal null}.
+   * @return the first {@link Person} in this {@link Group} matching the query criteria defined by
+   * the given {@link Predicate}.
    * @throws IllegalArgumentException if the {@link Predicate} is {@literal null}.
    * @see org.cp.domain.core.model.Person
    * @see java.util.function.Predicate
+   * @see java.util.Optional
    * @see #findBy(Predicate)
    */
-  default Optional<Person> findOne(Predicate<Person> predicate) {
+  default Optional<Person> findOne(@NotNull Predicate<Person> predicate) {
 
     Assert.notNull(predicate, "Predicate is required");
 
-    return stream(this.spliterator(), false)
+    return StreamUtils.stream(this)
       .filter(predicate)
       .findFirst();
   }
@@ -131,12 +139,11 @@ public interface Group extends Identifiable<String>, Iterable<Person>, Nameable<
   }
 
   /**
-   * Adds the given {@link Person} to this {@link Group} iff the given {@link Person} is not {@literal null}
+   * Adds the given {@link Person} to this {@link Group} only if the given {@link Person} is not {@literal null}
    * and is not already a member of this {@link Group}.
    *
    * @param person {@link Person} to add; must not be {@literal null}.
-   * @return a boolean value indicating whether the given {@link Person} was successfully added
-   * to this {@link Group}.
+   * @return a boolean value indicating whether the given {@link Person} was successfully added to this {@link Group}.
    * @see org.cp.domain.core.model.Person
    * @see #leave(Person)
    */
@@ -146,28 +153,32 @@ public interface Group extends Identifiable<String>, Iterable<Person>, Nameable<
    * Removes the given {@link Person} from this {@link Group}.
    *
    * @param person {@link Person} to remove.
-   * @return a boolean value indicating whether the {@link Person} was a member of this {@link Group}
-   * and was successfully removed.
+   * @return a boolean value indicating whether the given {@link Person} was a member of this {@link Group}
+   * and was removed successfully.
    * @see org.cp.domain.core.model.Person
    * @see #leave(Predicate)
    * @see #join(Person)
    */
-  default boolean leave(Person person) {
+  @NullSafe
+  default boolean leave(@Nullable Person person) {
     return leave(personInGroup -> personInGroup.equals(person));
   }
 
   /**
-   * Removes all {@link Person people} in this {@link Group} matching the query filter criteria
-   * defined by the given {@link Predicate}.
+   * Removes all {@link Person people} in this {@link Group} matching the query criteria defined by
+   * the given, required {@link Predicate}.
    *
-   * @param predicate {@link Predicate} used to match the {@link Person people} in this {@link Group} to remove.
+   * @param predicate {@link Predicate} defining the query criteria used to find and match {@link Person people}
+   * in this {@link Group} to remove; must not be {@literal null}.
    * @return a boolean value indicating whether this {@link Group} was modified as a result of invoking this operation.
    * @throws IllegalArgumentException if the {@link Predicate} is {@literal null}.
+   * @throws ConcurrentModificationException if this {@link Group} is concurrently modified by another {@link Thread}
+   * while this method is executing.
    * @see org.cp.domain.core.model.Person
    * @see java.util.function.Predicate
    * @see #leave(Person)
    */
-  default boolean leave(Predicate<Person> predicate) {
+  default boolean leave(@NotNull Predicate<Person> predicate) {
 
     Assert.notNull(predicate, "Predicate is required");
 
@@ -184,12 +195,14 @@ public interface Group extends Identifiable<String>, Iterable<Person>, Nameable<
   }
 
   /**
-   * Returns the {@link Integer#TYPE number} of {@link Person people} in this {@link Group}.
+   * Returns the {@link Integer number} of {@link Person people} in this {@link Group}.
    *
-   * @return the {@link Integer#TYPE number} of {@link Person people} in this {@link Group}.
+   * @return the {@link Integer number} of {@link Person people} in this {@link Group}.
+   * @see #count(Predicate)
    * @see #isEmpty()
    */
   default int size() {
-    return Long.valueOf(stream(this.spliterator(), false).count()).intValue();
+    long count = StreamUtils.stream(this).count();
+    return Long.valueOf(count).intValue();
   }
 }

@@ -16,29 +16,33 @@
 package org.cp.domain.core.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.util.ArrayUtils.asIterator;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.junit.Test;
+
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Visitor;
-import org.junit.Test;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.CollectionUtils;
 
 /**
  * Unit Tests for {@link Group}.
@@ -47,9 +51,20 @@ import org.junit.Test;
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.core.model.Group
+ * @see org.cp.domain.core.model.Person
  * @since 1.0.0
  */
-public class GroupTests {
+public class GroupUnitTests {
+
+  private Group mockGroup(Person... people) {
+
+    Group mockGroup = mock(Group.class);
+
+    doAnswer(invocation -> ArrayUtils.asIterator(people)).when(mockGroup).iterator();
+    doCallRealMethod().when(mockGroup).spliterator();
+
+    return mockGroup;
+  }
 
   @Test
   public void acceptsVisitor() {
@@ -59,32 +74,40 @@ public class GroupTests {
     Person mockPersonOne = mock(Person.class);
     Person mockPersonTwo = mock(Person.class);
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup(mockPersonOne, mockPersonTwo);
 
     doCallRealMethod().when(mockGroup).accept(any(Visitor.class));
-    doAnswer(invocation -> asIterator(mockPersonOne, mockPersonTwo)).when(mockGroup).iterator();
-    doCallRealMethod().when(mockGroup).spliterator();
 
     mockGroup.accept(mockVisitor);
 
+    verify(mockGroup, times(1)).accept(eq(mockVisitor));
     verify(mockPersonOne, times(1)).accept(eq(mockVisitor));
     verify(mockPersonTwo, times(1)).accept(eq(mockVisitor));
+    verifyNoMoreInteractions(mockPersonOne, mockPersonTwo);
+    verifyNoInteractions(mockVisitor);
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void countsAll() {
 
+    Predicate<Person> mockPredicate = mock(Predicate.class);
+
     Person mockPersonOne = mock(Person.class);
     Person mockPersonTwo = mock(Person.class);
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup(mockPersonOne, mockPersonTwo);
 
+    doReturn(true).when(mockPredicate).test(any(Person.class));
     doCallRealMethod().when(mockGroup).count(any(Predicate.class));
-    doAnswer(invocation -> asIterator(mockPersonOne, mockPersonTwo)).when(mockGroup).iterator();
-    doCallRealMethod().when(mockGroup).spliterator();
 
-    assertThat(mockGroup.count(person -> true)).isEqualTo(2);
+    assertThat(mockGroup.count(mockPredicate)).isEqualTo(2);
+
+    verify(mockGroup, times(1)).count(eq(mockPredicate));
+    verify(mockPredicate, times(1)).test(eq(mockPersonOne));
+    verify(mockPredicate, times(1)).test(eq(mockPersonTwo));
+    verifyNoInteractions(mockPersonOne, mockPersonTwo);
+    verifyNoMoreInteractions(mockPredicate);
   }
 
   @Test
@@ -94,13 +117,14 @@ public class GroupTests {
     Person mockPersonOne = mock(Person.class);
     Person mockPersonTwo = mock(Person.class);
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup(mockPersonOne, mockPersonTwo);
 
     doCallRealMethod().when(mockGroup).count(any(Predicate.class));
-    doAnswer(invocation -> asIterator(mockPersonOne, mockPersonTwo)).when(mockGroup).iterator();
-    doCallRealMethod().when(mockGroup).spliterator();
 
-    assertThat(mockGroup.count(person -> false)).isEqualTo(0);
+    assertThat(mockGroup.count(person -> false)).isZero();
+
+    verify(mockGroup, times(1)).count(isA(Predicate.class));
+    verifyNoInteractions(mockPersonOne, mockPersonTwo);
   }
 
   @Test
@@ -113,18 +137,35 @@ public class GroupTests {
     Person mockPersonTwo = mock(Person.class);
     Person mockPersonThree = mock(Person.class);
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup(mockPersonOne, mockPersonTwo, mockPersonThree);
 
+    doReturn(true, false).when(mockPredicate).test(any());
     doCallRealMethod().when(mockGroup).count(any(Predicate.class));
-    doAnswer(invocation -> asIterator(mockPersonOne, mockPersonTwo, mockPersonThree)).when(mockGroup).iterator();
-    doCallRealMethod().when(mockGroup).spliterator();
-    when(mockPredicate.test(any(Person.class))).thenReturn(true).thenReturn(false);
 
-    assertThat(mockGroup.count(mockPredicate)).isEqualTo(1);
+    assertThat(mockGroup.count(mockPredicate)).isOne();
 
+    verify(mockGroup, times(1)).count(eq(mockPredicate));
     verify(mockPredicate, times(1)).test(eq(mockPersonOne));
     verify(mockPredicate, times(1)).test(eq(mockPersonTwo));
     verify(mockPredicate, times(1)).test(eq(mockPersonThree));
+    verifyNoInteractions(mockPersonOne, mockPersonTwo, mockPersonThree);
+    verifyNoMoreInteractions(mockPredicate);
+  }
+
+  @Test
+  public void countWithNullPredicate() {
+
+    Group mockGroup = mockGroup();
+
+    doCallRealMethod().when(mockGroup).count(any());
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> mockGroup.count(null))
+      .withMessage("Predicate is required")
+      .withNoCause();
+
+    verify(mockGroup, times(1)).count(isNull());
+    verifyNoMoreInteractions(mockGroup);
   }
 
   @Test
@@ -135,43 +176,43 @@ public class GroupTests {
     Person janeDoe = Person.newPerson("Jane", "Doe");
     Person jackHandy = Person.newPerson("Jack", "Handy");
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup(jonDoe, janeDoe, jackHandy);
 
-    when(mockGroup.findBy(any(Predicate.class))).thenCallRealMethod();
-    when(mockGroup.iterator()).thenReturn(asIterator(jonDoe, janeDoe, jackHandy));
-    when(mockGroup.spliterator()).thenCallRealMethod();
+    doCallRealMethod().when(mockGroup).findBy(any(Predicate.class));
 
     Set<Person> matches = mockGroup.findBy(person -> "Doe".equals(person.getLastName()));
 
     assertThat(matches).isNotNull();
     assertThat(matches).hasSize(2);
     assertThat(matches).containsExactlyInAnyOrder(jonDoe, janeDoe);
+
+    verify(mockGroup, times(1)).findBy(isA(Predicate.class));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void findByFindsNoPeopleMatchingPredicate() {
 
-    Predicate<Person> predicate = spy(new PersonGreaterThanAgePredicate(50));
+    Predicate<Person> predicate = spy(new PersonGreaterThanAgePredicate(49));
 
     Person jonDoe = Person.newPerson("Jon", "Doe").age(21);
     Person janeDoe = Person.newPerson("Jane", "Doe").age(16);
     Person jackHandy = Person.newPerson("Jack", "Handy").age(40);
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup(jonDoe, janeDoe, jackHandy);
 
-    when(mockGroup.findBy(any(Predicate.class))).thenCallRealMethod();
-    when(mockGroup.iterator()).thenReturn(asIterator(jonDoe, janeDoe, jackHandy));
-    when(mockGroup.spliterator()).thenCallRealMethod();
+    doCallRealMethod().when(mockGroup).findBy(any(Predicate.class));
 
     Set<Person> matches = mockGroup.findBy(predicate);
 
     assertThat(matches).isNotNull();
     assertThat(matches).isEmpty();
 
+    verify(mockGroup, times(1)).findBy(eq(predicate));
     verify(predicate, times(1)).test(eq(jonDoe));
     verify(predicate, times(1)).test(eq(janeDoe));
     verify(predicate, times(1)).test(eq(jackHandy));
+    verifyNoMoreInteractions(predicate);
   }
 
   @Test
@@ -182,41 +223,33 @@ public class GroupTests {
     Person janeDoe = Person.newPerson("Jane", "Doe").asFemale();
     Person jackHandy = Person.newPerson("Jack", "Handy").asMale();
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup(jonDoe, janeDoe, jackHandy);
 
-    when(mockGroup.findBy(any(Predicate.class))).thenCallRealMethod();
-    when(mockGroup.iterator()).thenReturn(asIterator(jonDoe, janeDoe, jackHandy));
-    when(mockGroup.spliterator()).thenCallRealMethod();
+    doCallRealMethod().when(mockGroup).findBy(any(Predicate.class));
 
     Set<Person> matches = mockGroup.findBy(person -> Gender.FEMALE.equals(person.getGender().orElse(null)));
 
     assertThat(matches).isNotNull();
     assertThat(matches).hasSize(1);
     assertThat(matches).containsExactlyInAnyOrder(janeDoe);
+
+    verify(mockGroup, times(1)).findBy(isA(Predicate.class));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void findByWithNullPredicateThrowsIllegalArgumentException() {
+  @Test
+  public void findByWithNullPredicate() {
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup();
 
-    when(mockGroup.findBy(any())).thenCallRealMethod();
+    doCallRealMethod().when(mockGroup).findBy(any());
 
-    try {
-      mockGroup.findBy(null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> mockGroup.findBy(null))
+      .withMessage("Predicate is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Predicate is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-
-      verify(mockGroup, times(1)).findBy(eq(null));
-      verifyNoMoreInteractions(mockGroup);
-    }
+    verify(mockGroup, times(1)).findBy(isNull());
+    verifyNoMoreInteractions(mockGroup);
   }
 
   @Test
@@ -226,37 +259,17 @@ public class GroupTests {
     Person jonDoe = Person.newPerson("Jon", "Doe");
     Person janeDoe = Person.newPerson("Jane", "Doe");
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup(jonDoe, janeDoe);
 
-    when(mockGroup.findOne(any(Predicate.class))).thenCallRealMethod();
-    when(mockGroup.iterator()).thenReturn(asIterator(jonDoe, janeDoe));
-    when(mockGroup.spliterator()).thenCallRealMethod();
+    doCallRealMethod().when(mockGroup).findOne(any(Predicate.class));
 
     Optional<Person> optionalPerson = mockGroup.findOne(person -> "Doe".equals(person.getLastName()));
 
     assertThat(optionalPerson).isNotNull();
-    assertThat(optionalPerson.isPresent()).isTrue();
+    assertThat(optionalPerson).isPresent();
     assertThat(optionalPerson.orElse(null)).isEqualTo(jonDoe);
-  }
 
-  @Test
-  @SuppressWarnings("unchecked")
-  public void findOneFindsOnlyPersonMatchingPredicate() {
-
-    Person jonDoe = Person.newPerson("Jon", "Doe").asMale();
-
-    Group mockGroup = mock(Group.class);
-
-    when(mockGroup.findOne(any(Predicate.class))).thenCallRealMethod();
-    when(mockGroup.iterator()).thenReturn(asIterator(jonDoe));
-    when(mockGroup.spliterator()).thenCallRealMethod();
-
-    Optional<Person> optionalPerson = mockGroup.findOne(person ->
-      Gender.MALE.equals(person.getGender().orElse(null)));
-
-    assertThat(optionalPerson).isNotNull();
-    assertThat(optionalPerson.isPresent()).isTrue();
-    assertThat(optionalPerson.orElse(null)).isEqualTo(jonDoe);
+    verify(mockGroup, times(1)).findOne(isA(Predicate.class));
   }
 
   @Test
@@ -268,80 +281,87 @@ public class GroupTests {
     Person jonDoe = Person.newPerson("Jon", "Doe").age(20);
     Person janeDoe = Person.newPerson("Jane", "Doe").age(16);
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup(jonDoe, janeDoe);
 
-    when(mockGroup.findOne(any(Predicate.class))).thenCallRealMethod();
-    when(mockGroup.iterator()).thenReturn(asIterator(jonDoe, janeDoe));
-    when(mockGroup.spliterator()).thenCallRealMethod();
+    doCallRealMethod().when(mockGroup).findOne(any(Predicate.class));
 
     Optional<Person> optionalPerson = mockGroup.findOne(predicate);
 
     assertThat(optionalPerson).isNotNull();
-    assertThat(optionalPerson.isPresent()).isFalse();
+    assertThat(optionalPerson).isNotPresent();
 
+    verify(mockGroup, times(1)).findOne(eq(predicate));
     verify(predicate, times(1)).test(eq(jonDoe));
     verify(predicate, times(1)).test(eq(janeDoe));
+    verifyNoMoreInteractions(predicate);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void findOneWithNullPredicateThrowsIllegalArgumentException() {
+  @Test
+  @SuppressWarnings("unchecked")
+  public void findOneFindsOnlyPersonMatchingPredicate() {
 
-    Group mockGroup = mock(Group.class);
+    Person jonDoe = Person.newPerson("Jon", "Doe").asMale();
 
-    when(mockGroup.findOne(any())).thenCallRealMethod();
+    Group mockGroup = mockGroup(jonDoe);
 
-    try {
-      mockGroup.findOne(null);
-    }
-    catch (IllegalArgumentException expected) {
+    doCallRealMethod().when(mockGroup).findOne(any(Predicate.class));
 
-      assertThat(expected).hasMessage("Predicate is required");
-      assertThat(expected).hasNoCause();
+    Optional<Person> optionalPerson = mockGroup.findOne(person ->
+      Gender.MALE.equals(person.getGender().orElse(null)));
 
-      throw expected;
-    }
-    finally {
-      verify(mockGroup, times(1)).findOne(eq(null));
-    }
+    assertThat(optionalPerson).isNotNull();
+    assertThat(optionalPerson).isPresent();
+    assertThat(optionalPerson.orElse(null)).isEqualTo(jonDoe);
+
+    verify(mockGroup, times(1)).findOne(isA(Predicate.class));
+  }
+
+  @Test
+  public void findOneWithNullPredicate() {
+
+    Group mockGroup = mockGroup();
+
+    doCallRealMethod().when(mockGroup).findOne(any());
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> mockGroup.findOne(null))
+      .withMessage("Predicate is required")
+      .withNoCause();
+
+    verify(mockGroup, times(1)).findOne(isNull());
+    verifyNoMoreInteractions(mockGroup);
   }
 
   @Test
   public void isEmptyWhenSizeIsGreaterThanZeroReturnsFalse() {
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup();
 
-    when(mockGroup.size()).thenReturn(1);
-    when(mockGroup.isEmpty()).thenCallRealMethod();
+    doReturn(1).when(mockGroup).size();
+    doCallRealMethod().when(mockGroup).isEmpty();
 
     assertThat(mockGroup.isEmpty()).isFalse();
 
+    verify(mockGroup, times(1)).isEmpty();
     verify(mockGroup, times(1)).size();
+    verifyNoMoreInteractions(mockGroup);
   }
 
   @Test
-  public void isEmptyWhenSizeIsLessThanZeroReturnsTrue() {
+  public void isEmptyWhenSizeIsLessThanOneReturnsTrue() {
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup();
 
-    when(mockGroup.size()).thenReturn(-1);
-    when(mockGroup.isEmpty()).thenCallRealMethod();
-
-    assertThat(mockGroup.isEmpty()).isTrue();
-
-    verify(mockGroup, times(1)).size();
-  }
-
-  @Test
-  public void isEmptyWhenSizeIsZeroReturnsTrue() {
-
-    Group mockGroup = mock(Group.class);
-
-    when(mockGroup.size()).thenReturn(0);
-    when(mockGroup.isEmpty()).thenCallRealMethod();
+    doReturn(0, -1, -2).when(mockGroup).size();
+    doCallRealMethod().when(mockGroup).isEmpty();
 
     assertThat(mockGroup.isEmpty()).isTrue();
+    assertThat(mockGroup.isEmpty()).isTrue();
+    assertThat(mockGroup.isEmpty()).isTrue();
 
-    verify(mockGroup, times(1)).size();
+    verify(mockGroup, times(3)).isEmpty();
+    verify(mockGroup, times(3)).size();
+    verifyNoMoreInteractions(mockGroup);
   }
 
   @Test
@@ -351,7 +371,7 @@ public class GroupTests {
     Person jonDoe = Person.newPerson("Jon", "Doe");
     Person janeDoe = Person.newPerson("Jane", "Doe");
 
-    List<Person> people = new ArrayList<>(Arrays.asList(jonDoe, janeDoe));
+    Set<Person> people = CollectionUtils.asSet(jonDoe, janeDoe);
 
     Group mockGroup = mock(Group.class);
 
@@ -363,6 +383,8 @@ public class GroupTests {
     assertThat(mockGroup).containsExactlyInAnyOrder(jonDoe, janeDoe);
     assertThat(mockGroup.leave(janeDoe)).isTrue();
     assertThat(mockGroup).containsExactlyInAnyOrder(jonDoe);
+
+    verify(mockGroup, times(1)).leave(janeDoe);
   }
 
   @Test
@@ -372,7 +394,7 @@ public class GroupTests {
     Person jonDoe = Person.newPerson("Jon", "Doe");
     Person janeDoe = Person.newPerson("Jane", "Doe");
 
-    List<Person> people = new ArrayList<>(Arrays.asList(jonDoe, janeDoe));
+    Set<Person> people = CollectionUtils.asSet(jonDoe, janeDoe);
 
     Group mockGroup = mock(Group.class);
 
@@ -382,17 +404,19 @@ public class GroupTests {
     doCallRealMethod().when(mockGroup).leave(any(Predicate.class));
 
     assertThat(mockGroup).containsExactlyInAnyOrder(jonDoe, janeDoe);
-    assertThat(mockGroup.leave(Person.newPerson("Jack", "Handy"))).isFalse();
+    assertThat(mockGroup.leave(Person.newPerson("Pie", "Doe"))).isFalse();
     assertThat(mockGroup).containsExactlyInAnyOrder(jonDoe, janeDoe);
+
+    verify(mockGroup, times(1)).leave(isA(Person.class));
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void leaveWithNullPersonReturnsFalse() {
+  public void leaveWithNullPersonIsNullSafeReturnsFalse() {
 
     Person jonDoe = Person.newPerson("Jon", "Doe");
 
-    List<Person> people = Collections.singletonList(jonDoe);
+    Set<Person> people = Collections.singleton(jonDoe);
 
     Group mockGroup = mock(Group.class);
 
@@ -404,21 +428,26 @@ public class GroupTests {
     assertThat(mockGroup).containsExactlyInAnyOrder(jonDoe);
     assertThat(mockGroup.leave((Person) null)).isFalse();
     assertThat(mockGroup).containsExactlyInAnyOrder(jonDoe);
+
+    verify(mockGroup, times(1)).leave(isNull(Person.class));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void leaveEmptyGroupReturnsFalse() {
 
-    Group mockGroup = mock(Group.class);
+    Person jackHandy = Person.newPerson("Jack", "Handy");
 
-    doAnswer(invocation -> Collections.emptyIterator()).when(mockGroup).iterator();
+    Group mockGroup = mockGroup();
+
     doCallRealMethod().when(mockGroup).leave(any(Person.class));
     doCallRealMethod().when(mockGroup).leave(any(Predicate.class));
 
     assertThat(mockGroup).isEmpty();
-    assertThat(mockGroup.leave(Person.newPerson("Jack", "Handy"))).isFalse();
+    assertThat(mockGroup.leave(jackHandy)).isFalse();
     assertThat(mockGroup).isEmpty();
+
+    verify(mockGroup, times(1)).leave(eq(jackHandy));
   }
 
   @Test
@@ -429,7 +458,7 @@ public class GroupTests {
     Person janeDoe = Person.newPerson("Jane", "Doe");
     Person pieDoe = Person.newPerson("Pie", "Doe");
 
-    List<Person> people = new ArrayList<>(Arrays.asList(jonDoe, janeDoe, pieDoe));
+    Set<Person> people = CollectionUtils.asSet(jonDoe, janeDoe, pieDoe);
 
     Group mockGroup = mock(Group.class);
 
@@ -441,6 +470,8 @@ public class GroupTests {
     assertThat(mockGroup.leave(person -> true)).isTrue();
     assertThat(mockGroup).isEmpty();
     assertThat(people).isEmpty();
+
+    verify(mockGroup, times(1)).leave(isA(Predicate.class));
   }
 
   @Test
@@ -451,7 +482,7 @@ public class GroupTests {
     Person janeDoe = Person.newPerson("Jane", "Doe");
     Person jackHandy = Person.newPerson("Jack", "Handy");
 
-    List<Person> people = new ArrayList<>(Arrays.asList(jonDoe, janeDoe, jackHandy));
+    Set<Person> people = CollectionUtils.asSet(jonDoe, janeDoe, jackHandy);
 
     Group mockGroup = mock(Group.class);
 
@@ -463,6 +494,8 @@ public class GroupTests {
     assertThat(mockGroup.leave(personInGroup -> "Doe".equalsIgnoreCase(personInGroup.getLastName()))).isTrue();
     assertThat(mockGroup).containsExactlyInAnyOrder(jackHandy);
     assertThat(people).containsExactlyInAnyOrder(jackHandy);
+
+    verify(mockGroup, times(1)).leave(isA(Predicate.class));
   }
 
   @Test
@@ -471,13 +504,13 @@ public class GroupTests {
     Person jonDoe = Person.newPerson("Jon", "Doe");
     Person janeDoe = Person.newPerson("Jane", "Doe");
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup(jonDoe, janeDoe);
 
-    when(mockGroup.iterator()).thenAnswer(invocation -> asIterator(jonDoe, janeDoe));
-    when(mockGroup.spliterator()).thenCallRealMethod();
-    when(mockGroup.size()).thenCallRealMethod();
+    doCallRealMethod().when(mockGroup).size();
 
     assertThat(mockGroup.size()).isEqualTo(2);
+
+    verify(mockGroup, times(1)).size();
   }
 
   @Test
@@ -485,25 +518,25 @@ public class GroupTests {
 
     Person jonDoe = Person.newPerson("Jon", "Doe");
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup(jonDoe);
 
-    when(mockGroup.iterator()).thenAnswer(invocation -> asIterator(jonDoe));
-    when(mockGroup.spliterator()).thenCallRealMethod();
-    when(mockGroup.size()).thenCallRealMethod();
+    doCallRealMethod().when(mockGroup).size();
 
-    assertThat(mockGroup.size()).isEqualTo(1);
+    assertThat(mockGroup.size()).isOne();
+
+    verify(mockGroup, times(1)).size();
   }
 
   @Test
   public void sizeOfEmptyGroupReturnsZero() {
 
-    Group mockGroup = mock(Group.class);
+    Group mockGroup = mockGroup();
 
-    when(mockGroup.iterator()).thenAnswer(invocation -> Collections.emptyIterator());
-    when(mockGroup.spliterator()).thenCallRealMethod();
-    when(mockGroup.size()).thenCallRealMethod();
+    doCallRealMethod().when(mockGroup).size();
 
-    assertThat(mockGroup.size()).isEqualTo(0);
+    assertThat(mockGroup.size()).isZero();
+
+    verify(mockGroup, times(1)).size();
   }
 
   private static class PersonGreaterThanAgePredicate implements Predicate<Person> {
@@ -515,7 +548,7 @@ public class GroupTests {
     }
 
     @Override
-    public boolean test(Person person) {
+    public boolean test(@NotNull Person person) {
       return person.getAge().orElse(0) > this.age;
     }
   }
