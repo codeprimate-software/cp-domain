@@ -13,27 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.Arrays;
 
 import org.junit.Test;
 
+import org.cp.elements.lang.StringUtils;
+
 /**
- * Unit tests for {@link Address.Type}.
+ * Unit Tests for {@link Address.Type}.
  *
  * @author John Blum
  * @see org.junit.Test
  * @see org.cp.domain.geo.model.Address.Type
  * @since 1.0.0
  */
-public class AddressTypeTests {
+public class AddressTypeUnitTests {
 
   @Test
-  public void addressTypeAbbreviations() {
+  public void addressTypeAbbreviation() {
 
     assertThat(Address.Type.BILLING.getAbbreviation()).isEqualTo("BA");
     assertThat(Address.Type.HOME.getAbbreviation()).isEqualTo("HA");
@@ -45,7 +47,7 @@ public class AddressTypeTests {
   }
 
   @Test
-  public void addressTypeDescriptions() {
+  public void addressTypeDescription() {
 
     assertThat(Address.Type.BILLING.getDescription()).isEqualTo("Billing");
     assertThat(Address.Type.HOME.getDescription()).isEqualTo("Home");
@@ -64,9 +66,22 @@ public class AddressTypeTests {
   }
 
   @Test
-  public void addressTypeValueOfAbbreviationIsCorrect() {
+  public void fromAbbreviationToAddressType() {
 
-    Arrays.stream(Address.Type.values()).forEach(addressType ->
-      assertThat(Address.Type.valueOfAbbreviation(addressType.getAbbreviation())).isSameAs(addressType));
+    Arrays.stream(Address.Type.values()).forEach(addressType -> {
+      assertThat(Address.Type.from(addressType.getAbbreviation())).isSameAs(addressType);
+      assertThat(Address.Type.from(addressType.getAbbreviation().toLowerCase())).isEqualTo(addressType);
+      assertThat(Address.Type.from(StringUtils.capitalize(addressType.getAbbreviation().toLowerCase())))
+        .isEqualTo(addressType);
+    });
+  }
+
+  @Test
+  public void fromUnknownAbbreviation() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Address.Type.from("unknown"))
+      .withMessage("Address.Type for abbreviation [unknown] was not found")
+      .withNoCause();
   }
 }
