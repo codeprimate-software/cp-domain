@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.model;
+
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
 import java.util.Optional;
 
 /**
- * The {@link Locatable} interface defines a contract for implementing application domain objects
- * that can be geographically positioned on a map.
+ * Interface to defining a contract for application domain objects that can be geographically positioned on a map,
+ * or are capable of being located.
  *
  * @author John Blum
  * @see org.cp.domain.geo.model.Coordinates
@@ -30,19 +31,31 @@ import java.util.Optional;
 public interface Locatable {
 
   /**
-   * Returns the geographic {@link Coordinates} associated with this object.
+   * Return geographic {@link Coordinates}, such as {@literal latitude}, {@literal longitude} and {@literal altitude},
+   * associated with this {@link Locatable object}.
    *
-   * @return the geographic {@link Coordinates} associated with this object.
+   * Returns {@link Optional#empty()} by default.
+   *
+   * @return geographic {@link Coordinates} associated with this {@link Locatable object}.
+   * Returns {@link Optional#empty()} by default.
    * @see org.cp.domain.geo.model.Coordinates
    */
-  Optional<Coordinates> getCoordinates();
+  default Optional<Coordinates> getCoordinates() {
+    return Optional.empty();
+  }
 
   /**
-   * Sets the geographic {@link Coordinates} to associate with this object.
+   * Sets geographic {@link Coordinates}, such as {@literal latitude}, {@literal longitude} and {@literal altitude},
+   * for this {@link Locatable object}.
    *
-   * @param coordinates geographic {@link Coordinates} to associate with this object.
+   * Most goecoding, or geomapping, services adjust geographic coordinates at a particular location,
+   * such as an address, overtime, hence the reason {@link Coordinates} can be mutated.
+   *
+   * @param coordinates geographic {@link Coordinates} to set for this {@link Locatable object}.
    * @see org.cp.domain.geo.model.Coordinates
    */
-  void setCoordinates(Coordinates coordinates);
-
+  default void setCoordinates(Coordinates coordinates) {
+    throw newUnsupportedOperationException("Setting Coordinates on a Locatable object of type [%s] is not supported",
+      getClass().getName());
+  }
 }
