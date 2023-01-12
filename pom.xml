@@ -73,7 +73,7 @@
 
   <properties>
     <java-module-name>codeprimate.domain</java-module-name>
-    <cp-elements.version>1.0.0</cp-elements.version>
+    <cp-elements.version>1.0.1-SNAPSHOT</cp-elements.version>
   </properties>
 
   <dependencies>
