@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.model;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
-import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -25,24 +24,32 @@ import java.util.Locale;
 import java.util.Optional;
 
 import org.cp.domain.geo.enums.Country;
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.lang.Verifyable;
+import org.cp.elements.lang.Verifiable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.Dsl;
+import org.cp.elements.lang.annotation.FluentApi;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
- * The {@link Address} interface is an Abstract Data Type (ADT) defining a contract for a postal address.
+ * Abstract Data Type (ADT) modeling a physical, postal address.
  *
- * This interface models a universally accepted address format across the world.
+ * This interface defines a universally portable address format that can be used around the world.
  *
- * This {@link Address} is also {@link Locatable} by geographic coordinates on a map.
+ * This {@link Address} is also {@link Locatable} by geographic coordinates as defined on a map
+ * as encoded or decoded by geocoding services.
  *
  * @author John Blum
  * @see java.io.Serializable
  * @see java.lang.Cloneable
  * @see java.lang.Comparable
+ * @see java.util.Locale
  * @see org.cp.domain.geo.enums.Country
  * @see org.cp.domain.geo.model.AbstractAddress
  * @see org.cp.domain.geo.model.Address.Type
@@ -54,38 +61,135 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.domain.geo.model.Street
  * @see org.cp.domain.geo.model.Unit
  * @see org.cp.elements.lang.Identifiable
- * @see org.cp.elements.lang.Verifyable
+ * @see org.cp.elements.lang.Verifiable
  * @see org.cp.elements.lang.Visitable
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @since 1.0.0
  */
+@FluentApi
 @SuppressWarnings("unused")
-public interface Address extends Cloneable, Comparable<Address>, Serializable,
-    Identifiable<Long>, Locatable, Verifyable<Address>, Visitable {
+public interface Address extends Cloneable, Comparable<Address>, Identifiable<Long>, Locatable, Serializable,
+    Verifiable<Address>, Visitable {
 
   /**
-   * Returns the {@link Street} (e.g. 100 Main St.) for this {@link Address}.
+   * Factory method used to construct a new {@link Address} from an existing {@link Address}.
    *
-   * @return the {@link Street} (e.g. 100 Main St.) for this {@link Address}.
+   * @param address {@link Address} to copy; must not be {@literal null}.
+   * @return a new {@link Address} copied from the existing {@link Address}.
+   * @throws IllegalArgumentException if the given {@link Address} is {@literal null}.
+   * @see #from(Street, City, PostalCode, Country)
+   * @see org.cp.domain.geo.model.Address
+   */
+  static @NotNull Address from(@NotNull Address address) {
+
+    Assert.notNull(address, "Address to copy is required");
+
+    return from(address.getStreet(), address.getCity(), address.getPostalCode(), address.getCountry());
+  }
+
+  /**
+   * Factory method used to construct a new {@link Address} from the given, required {@link Street}, {@link City}
+   * and {@link PostalCode}, defaulting the {@link Country} based on the {@link Locale}.
+   *
+   * @param street {@link Street} of the {@link Address}; must not be {@literal null}.
+   * @param city {@link City} of the {@link Address}; must not be {@literal null}.
+   * @param postalCode {@link PostalCode} of the {@link Address}; must not be {@literal null}.
+   * @return a new {@link Address} constructed from the given, required {@link Street}, {@link City}
+   * and {@link PostalCode}.
+   * @throws IllegalArgumentException if {@link Street}, {@link City} or {@link PostalCode} are {@literal null}.
+   * @see #from(Street, City, PostalCode, Country)
+   * @see org.cp.domain.geo.model.Street
+   * @see org.cp.domain.geo.model.City
+   * @see org.cp.domain.geo.model.PostalCode
+   * @see org.cp.domain.geo.enums.Country#localCountry()
+   */
+  static @NotNull Address from(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode) {
+    return from(street, city, postalCode, Country.localCountry());
+  }
+
+  /**
+   * Factory method used to construct a new {@link Address} from the given, minimally required components of
+   * an {@link Address} that can locate the {@link Address} anywhere in the world.
+   *
+   * @param street {@link Street} of the {@link Address}; must not be {@literal null}.
+   * @param city {@link City} of the {@link Address}; must not be {@literal null}.
+   * @param postalCode {@link PostalCode} of the {@link Address}; must not be {@literal null}.
+   * @param country {@link Country} of the {@link Address}; must not be {@literal null}.
+   * @return a new {@link Address} constructed from the given, required {@link Street},
+   * {@link City}, {@link PostalCode} and {@link Country}.
+   * @throws IllegalArgumentException if {@link Street}, {@link City}, {@link PostalCode} or {@link Country}
+   * are {@literal null}.
+   * @see org.cp.domain.geo.model.Street
+   * @see org.cp.domain.geo.model.City
+   * @see org.cp.domain.geo.model.PostalCode
+   * @see org.cp.domain.geo.enums.Country
+   */
+  static @NotNull Address from(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode,
+      @NotNull Country country) {
+
+    Assert.notNull(street, "Street is required");
+    Assert.notNull(city, "City is required");
+    Assert.notNull(postalCode, "Postal Code is required");
+    Assert.notNull(country, "Country is required");
+
+    return new Address() {
+
+      @Override
+      public @Nullable Long getId() {
+        return null;
+      }
+
+      @Override
+      public @NotNull Street getStreet() {
+        return street;
+      }
+
+      @Override
+      public @NotNull City getCity() {
+        return city;
+      }
+
+      @Override
+      public @NotNull PostalCode getPostalCode() {
+        return postalCode;
+      }
+
+      @Override
+      public @NotNull Country getCountry() {
+        return country;
+      }
+    };
+  }
+
+  /**
+   * Factory method used to construct a new {@link Builder} used to build and construct a new {@link Address}.
+   *
+   * @return a new {@link Builder} used to build and construct a new {@link Address}.
+   * @see org.cp.domain.geo.model.Address.Builder
+   */
+  static @NotNull Builder newBuilder() {
+    return new Builder();
+  }
+
+  /**
+   * Returns the {@link Street} of this {@link Address}.
+   *
+   * For example: {@literal 100 Main St.}
+   *
+   * @return the {@link Street} of this {@link Address}.
    * @see org.cp.domain.geo.model.Street
    */
   Street getStreet();
 
   /**
-   * Sets the {@link Street} (e.g. 100 Main St.) for this {@link Address}.
+   * Returns an {@link Optional} {@link Unit} on the {@link Street} at this {@link Address}.
    *
-   * @param street {@link Street} (e.g. 100 Main St.) for this {@link Address}.
-   * @see org.cp.domain.geo.model.Street
-   */
-  void setStreet(Street street);
-
-  /**
-   * Returns an {@link Optional} {@link Unit} for this {@link Address}.
-   *
-   * The {@link Unit} may represent an apartment number, an office or a suite number.
+   * The {@link Unit} may represent an {@literal apartment number}, an {@literal office number}
+   * a {@literal suite number}, or any similar {@literal unit number}.
    *
    * Defaults to {@link Optional#empty()}.
    *
-   * @return the {@link Optional} {@link Unit} for this {@link Address}.
+   * @return an {@link Optional} {@link Unit} on the {@link Street} at this {@link Address}.
    * @see org.cp.domain.geo.model.Unit
    * @see java.util.Optional
    */
@@ -94,73 +198,37 @@ public interface Address extends Cloneable, Comparable<Address>, Serializable,
   }
 
   /**
-   * Sets the {@link Optional} {@link Unit} for this {@link Address}.
+   * Returns the {@link City} of this {@link Address}.
    *
-   * The {@link Unit} may represent an apartment number, an office or a suite number.
-   *
-   * The default method implementation is a no-op.
-   *
-   * @param unit {@link Unit} for this {@link Address}; may be {@literal null}.
-   * @see org.cp.domain.geo.model.Unit
-   */
-  default void setUnit(Unit unit) {
-  }
-
-  /**
-   * Returns the {@link City} for this {@link Address}.
-   *
-   * @return the {@link City} for this {@link Address}.
+   * @return the {@link City} of this {@link Address}.
    * @see org.cp.domain.geo.model.City
    */
   City getCity();
 
   /**
-   * Set the {@link City} for this {@link Address}.
+   * Returns the {@link PostalCode} of this {@link Address}.
    *
-   * @param city {@link City} for this {@link Address}.
-   * @see org.cp.domain.geo.model.City
-   */
-  void setCity(City city);
-
-  /**
-   * Returns the {@link PostalCode} for this {@link Address}.
-   *
-   * @return the {@link PostalCode} for this {@link Address}.
+   * @return the {@link PostalCode} of this {@link Address}.
    * @see org.cp.domain.geo.model.PostalCode
    */
   PostalCode getPostalCode();
 
   /**
-   * Sets the {@link PostalCode} for this {@link Address}.
+   * Returns the {@link Country} of this {@link Address}.
    *
-   * @param postalCode {@link PostalCode} for this {@link Address}.
-   * @see org.cp.domain.geo.model.PostalCode
-   */
-  void setPostalCode(PostalCode postalCode);
-
-  /**
-   * Returns the {@link Country} for this {@link Address}.
-   *
-   * @return the {@link Country} for this {@link Address}.
+   * @return the {@link Country} of this {@link Address}.
    * @see org.cp.domain.geo.enums.Country
    */
   Country getCountry();
 
   /**
-   * Sets the {@link Country} for this {@link Address}.
-   *
-   * @param country {@link Country} for this {@link Address}.
-   * @see org.cp.domain.geo.enums.Country
-   */
-  void setCountry(Country country);
-
-  /**
-   * Returns an {@link Optional} {@link Type type} of this {@link Address}, such as {@link Type#BILLING},
-   * {@link Type#HOME}, {@link Type#MAILING}, {@link Type#OFFICE}, and so on.
+   * Returns an {@link Optional} {@link Type type} to describe the use of this {@link Address},
+   * such as {@link Type#BILLING}, {@link Type#HOME}, {@link Type#MAILING}, {@link Type#OFFICE},
+   * and so on.
    *
    * Defaults to {@link Type#UNKNOWN}.
    *
-   * @return the {@link Optional} {@link Type type} of this {@link Address}; defaults to {@link Type#UNKNOWN}.
+   * @return an {@link Optional} {@link Type type} for this {@link Address}; defaults to {@link Type#UNKNOWN}.
    * @see org.cp.domain.geo.model.Address.Type
    * @see java.util.Optional
    */
@@ -169,15 +237,16 @@ public interface Address extends Cloneable, Comparable<Address>, Serializable,
   }
 
   /**
-   * Sets the {@link Address} {@link Type type}, such as {@link Type#BILLING}, {@link Type#HOME}, {@link Type#MAILING},
-   * {@link Type#OFFICE}, and so on.
+   * Sets the {@link Address} {@link Type type} describing the use of this {@link Address},
+   * such as {@link Type#BILLING}, {@link Type#HOME}, {@link Type#MAILING}, {@link Type#OFFICE}, and so on.
    *
-   * The default method implementation is a no-op.
-   *
-   * @param type {@link Type type} of this {@link Address}.
+   * @param type {@link Type type} for this {@link Address}.
+   * @throws UnsupportedOperationException by default.
    * @see org.cp.domain.geo.model.Address.Type
    */
   default void setType(Type type) {
+    throw newUnsupportedOperationException("Setting the Address.Type for an Address of type [%s] is not supported",
+      getClass().getName());
   }
 
   /**
@@ -248,73 +317,81 @@ public interface Address extends Cloneable, Comparable<Address>, Serializable,
 
   /**
    * Accepts a {@link Visitor} visiting this {@link Address} in order to perform any type of data access operation
-   * required by this application.
+   * required by the application.
    *
-   * @param visitor {@link Visitor} visiting this {@link Address}.
+   * @param visitor {@link Visitor} visiting this {@link Address};
+   * must not be {@literal null}.
    * @see org.cp.elements.lang.Visitable#accept(Visitor)
    * @see org.cp.elements.lang.Visitor#visit(Visitable)
    */
   @Override
-  default void accept(Visitor visitor) {
+  default void accept(@NotNull Visitor visitor) {
     visitor.visit(this);
   }
 
   /**
-   * Clones this {@link Address}.
+   * Compares this {@link Address} to the given {@link Address} to determine relative ordering (sort) when used in
+   * an ordered data structure.
    *
-   * @return a clone of this {@link Address}.
-   * @throws CloneNotSupportedException if the {@link Object#clone()} is not supported.
-   */
-  Object clone() throws CloneNotSupportedException;
-
-  /**
-   * Compares this {@link Address} to the given {@link Address} to determine relative ordering in a sort.
-   *
-   * @param address {@link Address} to compare with this {@link Address}.
-   * @return a {@link Integer} value indicating the order of this {@link Address} relative to the given {@link Address}
-   * in a sort.
-   * Returns a negative number to indicate this {@link Address} comes before the given {@link Address} in the sort order.
-   * Returns a positive number to indicate this {@link Address} comes after the given {@link Address} in the sort order.
-   * Returns {@literal 0} if this {@link Address} is equal to the given {@link Address}.
+   * @param that {@link Address} to compare with this {@link Address}; must not be {@literal null}.
+   * @return a {@link Integer} value indicating the order of this {@link Address} relative to
+   * the given {@link Address}.
+   * Returns a {@link Integer negative number} to indicate this {@link Address} comes before the given {@link Address}.
+   * Returns a {@link Integer positive number} to indicate this {@link Address} comes after the given {@link Address}.
+   * And, returns {@literal 0} if this {@link Address} is equal to the given {@link Address}.
    * @see java.lang.Comparable#compareTo(Object)
    */
   @Override
-  @SuppressWarnings("unchecked")
-  default int compareTo(Address address) {
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  default int compareTo(@NotNull Address that) {
 
     return ComparatorResultBuilder.<Comparable>create()
-      .doCompare(this.getCountry().name(), address.getCountry().name())
-      .doCompare(this.getCity(), address.getCity())
-      .doCompare(this.getPostalCode(), address.getPostalCode())
-      .doCompare(this.getStreet(), address.getStreet())
-      .doCompare(this.getUnit().orElse(Unit.EMPTY), address.getUnit().orElse(Unit.EMPTY))
+      .doCompare(this.getCountry().name(), that.getCountry().name())
+      .doCompare(this.getCity(), that.getCity())
+      .doCompare(this.getPostalCode(), that.getPostalCode())
+      .doCompare(this.getStreet(), that.getStreet())
+      .doCompare(this.getUnit().orElse(Unit.EMPTY), that.getUnit().orElse(Unit.EMPTY))
       .build();
   }
 
   /**
-   * Validates that this {@link Address} is valid.
+   * Validates this {@link Address}.
    *
-   * The {@link Address} is considered valid iff the {@link #getStreet() street}, {@link #getCity() city}
-   * {@link #getPostalCode() postal code} and {@link #getCountry() country} are set, i.e. are not {@literal null}.
+   * The {@link Address} is considered valid only if the {@link #getStreet() street}, {@link #getCity() city}
+   * {@link #getPostalCode() postal code} and {@link #getCountry() country} are set, that is are not {@literal null}.
    *
    * @return this {@link Address}.
    * @throws IllegalStateException if {@link #getStreet() street}, {@link #getCity() city},
    * {@link #getPostalCode() postal code} or {@link #getCountry() country} are not set.
-   * @see org.cp.elements.lang.Verifyable#validate()
+   * @see org.cp.elements.lang.Verifiable#validate()
    */
   @Override
-  default Address validate() {
+  default @NotNull Address validate() {
 
-    Optional.ofNullable(getStreet()).orElseThrow(() -> newIllegalStateException("Street is required"));
-    Optional.ofNullable(getCity()).orElseThrow(() -> newIllegalStateException("City is required"));
-    Optional.ofNullable(getPostalCode()).orElseThrow(() -> newIllegalStateException("Postal Code is required"));
-    Optional.ofNullable(getCountry()).orElseThrow(() -> newIllegalStateException("Country is required"));
+    ObjectUtils.requireState(getStreet(), "Street is required");
+    ObjectUtils.requireState(getCity(), "City is required");
+    ObjectUtils.requireState(getPostalCode(), "Postal Code is required");
+    ObjectUtils.requireState(getCountry(), "Country is required");
 
     return this;
   }
 
+  /**
+   * Builder method used to set the {@link Type} for this {@link Address}.
+   *
+   * The {@link Type} serves to identify the purpose or use for this {@link Address},
+   * such as for {@link Type#MAILING} purposes.
+   *
+   * @param <T> concrete {@link Class subtype} of this {@link Address}.
+   * @param type {@link Type} of this {@link Address}.
+   * @return this {@link Address}.
+   * @see org.cp.domain.geo.model.Address.Type
+   * @see org.cp.elements.lang.annotation.Dsl
+   * @see #setType(Type)
+   */
+  @Dsl
   @SuppressWarnings("unchecked")
-  default <T extends Address> T as(Type type) {
+  default @NotNull <T extends Address> T as(@Nullable Type type) {
     setType(type);
     return (T) this;
   }
@@ -322,180 +399,253 @@ public interface Address extends Cloneable, Comparable<Address>, Serializable,
   /**
    * Sets the {@link Address.Type type} of this {@link Address} to {@link Type#BILLING}.
    *
-   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @param <T> concrete {@link Class subtype} of this {@link Address}.
    * @return this {@link Address}.
    * @see org.cp.domain.geo.model.Address.Type#BILLING
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  default <T extends Address> T asBilling() {
+  @Dsl
+  default @NotNull <T extends Address> T asBilling() {
     return as(Type.BILLING);
   }
 
   /**
    * Sets the {@link Address.Type type} of this {@link Address} to {@link Type#HOME}.
    *
-   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @param <T> concrete {@link Class subtype} of this {@link Address}.
    * @return this {@link Address}.
    * @see org.cp.domain.geo.model.Address.Type#HOME
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  default <T extends Address> T asHome() {
+  @Dsl
+  default @NotNull <T extends Address> T asHome() {
     return as(Type.HOME);
   }
 
   /**
    * Sets the {@link Address.Type type} of this {@link Address} to {@link Type#MAILING}.
    *
-   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @param <T> concrete {@link Class subtype} of this {@link Address}.
    * @return this {@link Address}.
    * @see org.cp.domain.geo.model.Address.Type#MAILING
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  default <T extends Address> T asMailing() {
+  @Dsl
+  default @NotNull <T extends Address> T asMailing() {
     return as(Type.MAILING);
   }
 
   /**
    * Sets the {@link Address.Type type} of this {@link Address} to {@link Type#OFFICE}.
    *
-   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @param <T> concrete {@link Class subtype} of this {@link Address}.
    * @return this {@link Address}.
    * @see org.cp.domain.geo.model.Address.Type#OFFICE
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  default <T extends Address> T asOffice() {
+  @Dsl
+  default @NotNull <T extends Address> T asOffice() {
     return as(Type.OFFICE);
   }
 
   /**
    * Sets the {@link Address.Type type} of this {@link Address} to {@link Type#PO_BOX}.
    *
-   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @param <T> concrete {@link Class subtype} of this {@link Address}.
    * @return this {@link Address}.
    * @see org.cp.domain.geo.model.Address.Type#PO_BOX
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  default <T extends Address> T asPoBox() {
+  @Dsl
+  default @NotNull <T extends Address> T asPoBox() {
     return as(Type.PO_BOX);
   }
 
   /**
    * Sets the {@link Address.Type type} of this {@link Address} to {@link Type#WORK}.
    *
-   * @param <T> {@link Class sub-type} of this {@link Address}.
+   * @param <T> concrete {@link Class subtype} of this {@link Address}.
    * @return this {@link Address}.
    * @see org.cp.domain.geo.model.Address.Type#WORK
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  default <T extends Address> T asWork() {
+  @Dsl
+  default @NotNull <T extends Address> T asWork() {
     return as(Type.WORK);
   }
 
   /**
-   * Builder method to set the {@link Street} of this {@link Address}.
+   * An Elements {@link Builder} used to construct a new {@link Address} using a {@link FluentApi} and {@link Dsl}.
    *
-   * @param <T> {@link Class sub-type} of this {@link Address}.
-   * @param street {@link Street} to set.
-   * @return this {@link Address}
-   * @see org.cp.domain.geo.model.Street
-   * @see #setStreet(Street)
+   * @see org.cp.elements.lang.Builder
    */
-  @SuppressWarnings("unchecked")
-  default <T extends Address> T on(Street street) {
-    setStreet(street);
-    return (T) this;
+  @FluentApi
+  class Builder implements org.cp.elements.lang.Builder<Address> {
+
+    private Street street;
+    private City city;
+    private PostalCode postalCode;
+    private Country country;
+    private Coordinates coordinates;
+
+    /**
+     * Builder method used to build and construct a new {@link Address} from an existing, required {@link Address}.
+     *
+     * @param address {@link Address} to copy; must not be {@literal null}.
+     * @return this {@link Builder}.
+     * @throws IllegalArgumentException if the given {@link Address} is {@literal null}.
+     * @see org.cp.domain.geo.model.Address
+     * @see #on(Street)
+     * @see #in(City)
+     * @see #in(PostalCode)
+     * @see #in(Country)
+     * @see #at(Coordinates)
+     */
+    public @NotNull Builder from(@NotNull Address address) {
+
+      Assert.notNull(address, "Address to copy is required");
+
+      return on(address.getStreet())
+        .in(address.getCity())
+        .in(address.getPostalCode())
+        .in(address.getCountry())
+        .at(address.getCoordinates().orElse(null));
+    }
+
+    /**
+     * Builder method used to set the {@link Street} of the {@link Address}.
+     *
+     * @param street {@link Street} of the {@link Address}; must not be {@literal null}.
+     * @return this {@link Builder}.
+     * @see org.cp.elements.lang.annotation.Dsl
+     * @see org.cp.domain.geo.model.Street
+     * @see Address#getStreet()
+     */
+    @Dsl
+    public @NotNull Builder on(@NotNull Street street) {
+      this.street = street;
+      return this;
+    }
+
+    /**
+     * Builder method used to set the {@link City} of the {@link Address}.
+     *
+     * @param city {@link City} of the {@link Address}; must not be {@literal null}.
+     * @return this {@link Builder}.
+     * @see org.cp.elements.lang.annotation.Dsl
+     * @see org.cp.domain.geo.model.City
+     * @see Address#getCity()
+     */
+    @Dsl
+    public @NotNull Builder in(@NotNull City city) {
+      this.city = city;
+      return this;
+    }
+
+    /**
+     * Builder method used to set the {@link PostalCode} of the {@link Address}.
+     *
+     * @param postalCode {@link PostalCode} of the {@link Address}; must not be {@literal null}.
+     * @return this {@link Builder}.
+     * @see org.cp.elements.lang.annotation.Dsl
+     * @see org.cp.domain.geo.model.PostalCode
+     * @see Address#getPostalCode()
+     */
+    @Dsl
+    public @NotNull Builder in(@NotNull PostalCode postalCode) {
+      this.postalCode = postalCode;
+      return this;
+    }
+
+    /**
+     * Builder method used to set the {@link Country} of the {@link Address}.
+     *
+     * @param country {@link Country} of the {@link Address}; must not be {@literal null}.
+     * @return this {@link Builder}.
+     * @see org.cp.elements.lang.annotation.Dsl
+     * @see org.cp.domain.geo.enums.Country
+     * @see Address#getCountry()
+     */
+    @Dsl
+    public @NotNull Builder in(@NotNull Country country) {
+      this.country = country;
+      return this;
+    }
+
+    /**
+     * Builder method used to set the {@link Country} of the {@link Address} based on {@link Locale}.
+     *
+     * @return this {@link Builder}.
+     * @see org.cp.elements.lang.annotation.Dsl
+     * @see org.cp.domain.geo.enums.Country
+     * @see Address#getCountry()
+     * @see #in(Country)
+     */
+    @Dsl
+    public @NotNull Builder inLocalCountry() {
+      return in(Country.localCountry());
+    }
+
+    /**
+     * Builder method used to set the geographic {@link Coordinates} of the {@link Address}.
+     *
+     * @param coordinates {@link Coordinates} of the {@link Address}.
+     * @return this {@link Builder}.
+     * @see org.cp.elements.lang.annotation.Dsl
+     * @see org.cp.domain.geo.model.Coordinates
+     * @see Address#getCoordinates()
+     */
+    @Dsl
+    public @NotNull Builder at(@Nullable Coordinates coordinates) {
+      this.coordinates = coordinates;
+      return this;
+    }
+
+    private Optional<Coordinates> getCoordinates() {
+      return Optional.ofNullable(this.coordinates);
+    }
+
+    private Optional<Country> getCountry() {
+      return Optional.ofNullable(this.country);
+    }
+
+    /**
+     * Builds a new {@link Address} from the components of an {@link Address}, minimally including, but not limited to,
+     * the {@link Street}, {@link City}, {@link PostalCode} and {@link Country}.
+     *
+     * May also include the {@link Coordinates} at the {@link Address}.
+     *
+     * @return a new {@link Address}.
+     * @throws IllegalArgumentException if the {@link Street}, {@link City}, {@link PostalCode} or {@link Country}
+     * are {@literal null}.
+     * @see #from(Street, City, PostalCode, Country)
+     * @see org.cp.domain.geo.model.Address#from(Street, City, PostalCode, Country)
+     * @see org.cp.domain.geo.model.Address#from(Street, City, PostalCode)
+     */
+    @Dsl
+    @Override
+    public @NotNull Address build() {
+
+      Address address = getCountry()
+        .map(country -> Address.from(this.street, this.city, this.postalCode, country))
+        .orElseGet(() -> Address.from(this.street, this.city, this.postalCode));
+
+      getCoordinates().ifPresent(address::setCoordinates);
+
+      return address;
+    }
   }
 
   /**
-   * Builder method to set the {@link Unit} of this {@link Address}.
+   * {@link Enum Enumeration} of different {@link Address} types.
    *
-   * @param <T> {@link Class sub-type} of this {@link Address}.
-   * @param unit  {@link Unit} to set.
-   * @return this {@link Address}
-   * @see org.cp.domain.geo.model.Unit
-   * @see #setUnit(Unit)
-   */
-  @SuppressWarnings("unchecked")
-  default <T extends Address> T in(Unit unit) {
-    setUnit(unit);
-    return (T) this;
-  }
-
-  /**
-   * Builder method to set the {@link City} of this {@link Address}.
-   *
-   * @param <T> {@link Class sub-type} of this {@link Address}.
-   * @param city  {@link City} to set.
-   * @return this {@link Address}
-   * @see org.cp.domain.geo.model.City
-   * @see #setCity(City)
-   */
-  @SuppressWarnings("unchecked")
-  default <T extends Address> T in(City city) {
-    setCity(city);
-    return (T) this;
-  }
-
-  /**
-   * Builder method to set the {@link PostalCode} of this {@link Address}.
-   *
-   * @param <T> {@link Class sub-type} of this {@link Address}.
-   * @param postalCode {@link PostalCode} to set.
-   * @return this {@link Address}
-   * @see org.cp.domain.geo.model.PostalCode
-   * @see #setPostalCode(PostalCode)
-   */
-  @SuppressWarnings("unchecked")
-  default <T extends Address> T in(PostalCode postalCode) {
-    setPostalCode(postalCode);
-    return (T) this;
-  }
-
-  /**
-   * Builder method to set the {@link Country} of this {@link Address}.
-   *
-   * @param <T> {@link Class sub-type} of this {@link Address}.
-   * @param country {@link Country} to set.
-   * @return this {@link Address}
-   * @see org.cp.domain.geo.enums.Country
-   * @see #setCountry(Country)
-   */
-  @SuppressWarnings("unchecked")
-  default <T extends Address> T in(Country country) {
-    setCountry(country);
-    return (T) this;
-  }
-
-  /**
-   * Builder method to set the {@link Country} of this {@link Address}
-   * to this {@link Locale Locale's} {@link Country}.
-   *
-   * @param <T> {@link Class sub-type} of this {@link Address}.
-   * @return this {@link Address}
-   * @see org.cp.domain.geo.enums.Country#localCountry()
-   * @see #in(Country)
-   */
-  default <T extends Address> T inLocalCountry() {
-    return in(Country.localCountry());
-  }
-
-  /**
-   * Builder method to set the {@link Coordinates} of this {@link Address}.
-   *
-   * @param <T> {@link Class sub-type} of this {@link Address}.
-   * @param coordinates {@link Coordinates} to set.
-   * @return this {@link Address}
-   * @see org.cp.domain.geo.model.Coordinates
-   * @see #setCoordinates(Coordinates)
-   */
-  @SuppressWarnings("unchecked")
-  default <T extends Address> T with(Coordinates coordinates) {
-    setCoordinates(coordinates);
-    return (T) this;
-  }
-
-  /**
-   * The {@link Type} enum is an enumeration of different {@link Address} types.
+   * @see java.lang.Enum
    */
   enum Type {
 
@@ -508,61 +658,66 @@ public interface Address extends Cloneable, Comparable<Address>, Serializable,
     UNKNOWN("??", "Unknown");
 
     /**
-     * Factory method used to search for an appropriate {@link Address} {@link Type}
-     * based on its {@link String abbreviation}.
+     * Factory method used to search for an appropriate {@link Address.Type} based on its {@link String abbreviation}.
      *
      * This method performs a case-insensitive, ignoring whitespace search.
      *
-     * @param abbreviation {@link String} containing the abbreviation used to identify
-     * the desired {@link Address} {@link Type}.
-     * @return the {@link Address} {@link Type} for the given {@link String abbreviation}.
-     * @throws IllegalArgumentException if no {@link Address} {@link Type} could be found
-     * for the given {@link String abbreviation}
+     * @param abbreviation {@link String} containing the {@literal abbreviation} used to identify
+     * the desired {@link Address.Type}.
+     * @return the {@link Address.Type} for the given {@link String abbreviation}.
+     * @throws IllegalArgumentException if no {@link Address.Type} could be found
+     * for the given {@link String abbreviation}.
+     * @see #values()
      */
-    public static Type valueOfAbbreviation(String abbreviation) {
+    public static @NotNull Type from(@Nullable String abbreviation) {
 
       return Arrays.stream(values())
         .filter(type -> type.getAbbreviation().equalsIgnoreCase(StringUtils.trim(abbreviation)))
-        .findFirst().orElseThrow(() ->
-          newIllegalArgumentException("Type for abbreviation [%s] was not found", abbreviation));
+        .findFirst()
+        .orElseThrow(() -> newIllegalArgumentException("Address.Type for abbreviation [%s] was not found",
+          abbreviation));
     }
 
     private final String abbreviation;
     private final String description;
 
-    /* (non-Javadoc) */
-    Type(String abbreviation, String description) {
-      this.abbreviation = abbreviation;
-      this.description = description;
+    Type(@NotNull String abbreviation, @NotNull String description) {
+
+      this.abbreviation = StringUtils.requireText(abbreviation,
+        "An abbreviation for this Address.Type is required");
+
+      this.description = StringUtils.requireText(description,
+        "A description of this Address.Type is required");
     }
 
     /**
-     * Returns an {@link String abbreviation} for this {@link Address} {@link Type}.
+     * Returns an {@link String abbreviation} for this {@link Address.Type}.
      *
-     * @return an {@link String abbreviation} for this {@link Address} {@link Type}.
+     * @return an {@link String abbreviation} for this {@link Address.Type}.
+     * @see #getDescription()
      */
-    public String getAbbreviation() {
+    public @NotNull String getAbbreviation() {
       return this.abbreviation;
     }
 
     /**
-     * Returns a {@link String description} of this {@link Address} {@link Type}.
+     * Returns a {@link String description} of this {@link Address.Type}.
      *
-     * @return a {@link String} describing this {@link Address} {@link Type}.
+     * @return a {@link String} describing this {@link Address.Type}.
+     * @see #getAbbreviation()
      */
-    public String getDescription() {
+    public @NotNull String getDescription() {
       return this.description;
     }
 
     /**
-     * Returns a {@link String} representation of this {@link Address} {@link Type}.
+     * Returns a {@link String} representation for this {@link Address.Type}.
      *
-     * @return a {@link String} describing this {@link Address} {@link Type}.
-     * @see java.lang.Object#toString()
-     * @see java.lang.String
+     * @return a {@link String} describing this {@link Address.Type}.
+     * @see #getDescription()
      */
     @Override
-    public String toString() {
+    public @NotNull String toString() {
       return getDescription();
     }
   }
