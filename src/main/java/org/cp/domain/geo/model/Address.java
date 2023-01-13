@@ -56,6 +56,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.domain.geo.model.Addressable
  * @see org.cp.domain.geo.model.City
  * @see org.cp.domain.geo.model.Coordinates
+ * @see org.cp.domain.geo.model.Elevation
  * @see org.cp.domain.geo.model.Locatable
  * @see org.cp.domain.geo.model.PostalCode
  * @see org.cp.domain.geo.model.Street
@@ -78,8 +79,10 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @return a new {@link Address} copied from the existing {@link Address}.
    * @throws IllegalArgumentException if the given {@link Address} is {@literal null}.
    * @see #from(Street, City, PostalCode, Country)
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.domain.geo.model.Address
    */
+  @Dsl
   static @NotNull Address from(@NotNull Address address) {
 
     Assert.notNull(address, "Address to copy is required");
@@ -102,7 +105,9 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @see org.cp.domain.geo.model.City
    * @see org.cp.domain.geo.model.PostalCode
    * @see org.cp.domain.geo.enums.Country#localCountry()
+   * @see org.cp.elements.lang.annotation.Dsl
    */
+  @Dsl
   static @NotNull Address from(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode) {
     return from(street, city, postalCode, Country.localCountry());
   }
@@ -123,7 +128,9 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @see org.cp.domain.geo.model.City
    * @see org.cp.domain.geo.model.PostalCode
    * @see org.cp.domain.geo.enums.Country
+   * @see org.cp.elements.lang.annotation.Dsl
    */
+  @Dsl
   static @NotNull Address from(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode,
       @NotNull Country country) {
 
@@ -166,7 +173,9 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    *
    * @return a new {@link Builder} used to build and construct a new {@link Address}.
    * @see org.cp.domain.geo.model.Address.Builder
+   * @see org.cp.elements.lang.annotation.Dsl
    */
+  @Dsl
   static @NotNull Builder newBuilder() {
     return new Builder();
   }
