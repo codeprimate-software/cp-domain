@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.model;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
@@ -24,118 +23,133 @@ import java.util.Optional;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.Dsl;
+import org.cp.elements.lang.annotation.FluentApi;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
- * The {@link Street} class is an Abstract Data Type (ADT) modeling the street in a postal {@link Address}.
+ * Abstract Data Type (ADT) modeling a {@literal street} in a postal {@link Address}.
  *
  * @author John Blum
  * @see java.io.Serializable
  * @see java.lang.Cloneable
  * @see java.lang.Comparable
  * @see org.cp.domain.geo.model.Address
- * @since 1.0.0
+ * @see org.cp.elements.lang.Nameable
+ * @see org.cp.elements.lang.annotation.FluentApi
+ * @since 0.1.0
  */
-@SuppressWarnings("unused")
-public class Street implements Cloneable, Comparable<Street>, Serializable {
+@FluentApi
+public class Street implements Cloneable, Comparable<Street>, Nameable<String>, Serializable {
+
+  protected static final String STREET_TO_STRING = "%1$d %2$s%3$s";
 
   /**
-   * Factory method used to construct a new instance of {@link Street} initialized with
-   * the given {@link Integer number} and {@link String name}.
-   *
-   * @param number {@link Integer} containing the {@link Street} number.
-   * @param name {@link String} containing the {@link Street} name.
-   * @return a new {@link Street} initialized with the given {@link Integer number} and {@link String name}.
-   * @throws IllegalArgumentException if either {@link Integer number} or {@link String name} is {@literal null}
-   * or {@link String name} is {@link String#isEmpty() empty}.
-   * @see org.cp.domain.geo.model.Street
-   * @see #Street(Integer, String)
-   */
-  public static Street of(Integer number, String name) {
-    return new Street(number, name);
-  }
-
-  /**
-   * Factory method used to construct a new instance of {@link Street} copied from the given {@link Street}.
+   * Factory method used to construct a new instance of {@link Street} initialized from
+   * an existing, required {@link Street}.
    *
    * @param street {@link Street} to copy; must not be {@literal null}.
    * @return a new {@link Street} copied from the given {@link Street}.
    * @throws IllegalArgumentException if the {@link Street} to copy is {@literal null}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.domain.geo.model.Street
    * @see #of(Integer, String)
    */
-  public static Street from(Street street) {
+  @Dsl
+  public static @NotNull Street from(@NotNull Street street) {
 
-    Assert.notNull(street, "The Street to copy is required");
+    Assert.notNull(street, "Street to copy is required");
 
     return of(street.getNumber(), street.getName()).as(street.getType().orElse(null));
   }
 
-  private Integer number;
+  /**
+   * Factory method used to construct a new instance of {@link Street} initialized with the given,
+   * required {@link Integer number} and {@link String name}.
+   *
+   * @param number {@link Integer} containing the {@literal building number} on the {@link Street}.
+   * @param name {@link String} containing the {@literal name} of the {@link Street}.
+   * @return a new {@link Street} initialized with the given, required {@link Integer number} and {@link String name}.
+   * @throws IllegalArgumentException if either {@link Integer number} or {@link String name} are {@literal null}
+   * or the {@link String name} is {@link String#isEmpty() empty}.
+   * @see org.cp.elements.lang.annotation.Dsl
+   * @see org.cp.domain.geo.model.Street
+   * @see #Street(Integer, String)
+   */
+  @Dsl
+  public static @NotNull Street of(@NotNull Integer number, @NotNull String name) {
+    return new Street(number, name);
+  }
 
-  private String name;
+  private final Integer number;
+
+  private final String name;
 
   private Type type;
 
   /**
-   * Constructs a new instance of {@link Street} initialized with the given {@link Integer number}
+   * Constructs a new instance of {@link Street} initialized with the given, required {@link Integer number}
    * and {@link String name}.
    *
-   * @param number {@link Integer} containing the {@link Street} number.
-   * @param name {@link String} containing the {@link Street} name.
-   * @throws IllegalArgumentException if either {@link Integer number} or {@link String name} is {@literal null}
-   * or {@link String name} is {@link String#isEmpty() empty}.
+   * @param number {@link Integer} containing the {@literal building number} on the {@link Street}.
+   * @param name {@link String} containing the {@literal name} of the {@link Street}.
+   * @throws IllegalArgumentException if either {@link Integer number} or {@link String name} are {@literal null}
+   * or the {@link String name} is {@link String#isEmpty() empty}.
    */
-  public Street(Integer number, String name) {
+  public Street(@NotNull Integer number, @NotNull String name) {
 
-    Assert.notNull(number, "Street number is required");
-    Assert.hasText(name, "Street name [%s] is required", name);
-
-    this.number = number;
-    this.name = name;
+    this.number = ObjectUtils.requireObject(number, "Street number is required");
+    this.name = StringUtils.requireText(name, "Street name [%s] is required");
   }
 
   /**
    * Returns the {@link String name} of this {@link Street}.
    *
    * @return the {@link String name} of this {@link Street}.
-   * @see java.lang.String
    */
-  public String getName() {
+  public @NotNull String getName() {
     return this.name;
   }
 
   /**
-   * Returns the {@link Integer number} on this {@link Street}.
+   * Returns the {@link Integer number} of the building on this {@link Street}.
    *
-   * @return the {@link Integer number} on this {@link Street}.
-   * @see java.lang.Integer
+   * @return the {@link Integer number} of the building on this {@link Street}.
    */
-  public Integer getNumber() {
+  public @NotNull Integer getNumber() {
     return this.number;
   }
 
   /**
-   * Returns an {@link Optional} {@link Type} of this {@link Street}.
+   * Returns an {@link Optional} {@link Type} for this {@link Street}.
    *
-   * @return an {@link Optional} {@link Type} of this {@link Street}.
+   * For example, the {@link Type} of {@link Street} may be a {@link Street.Type#ROAD} or {@link Street.Type#HIGHWAY}.
+   *
+   * @return an {@link Optional} {@link Type} for this {@link Street}.
    * @see org.cp.domain.geo.model.Street.Type
    * @see java.util.Optional
+   * @see #as(Type)
    */
-  public Optional<Type> getType() {
+  public Optional<Street.Type> getType() {
     return Optional.ofNullable(this.type);
   }
 
   /**
-   * Builder method used to set the {@link Type} of this {@link Street}.
+   * Builder method used to set the {@link Type} for this {@link Street}.
    *
-   * @param type {@link Type} of this {@link Street}.
+   * @param type {@link Type} of {@link Street}.
    * @return this {@link Street}.
    * @see org.cp.domain.geo.model.Street.Type
+   * @see org.cp.elements.lang.annotation.Dsl
+   * @see #getType()
    */
-  public Street as(Type type) {
+  @Dsl
+  public @NotNull Street as(@Nullable Street.Type type) {
     this.type = type;
     return this;
   }
@@ -145,10 +159,12 @@ public class Street implements Cloneable, Comparable<Street>, Serializable {
    *
    * @return this {@link Street}.
    * @see org.cp.domain.geo.model.Street.Type#AVENUE
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  public Street asAvenue() {
-    return as(Type.AVENUE);
+  @Dsl
+  public @NotNull Street asAvenue() {
+    return as(Street.Type.AVENUE);
   }
 
   /**
@@ -156,10 +172,12 @@ public class Street implements Cloneable, Comparable<Street>, Serializable {
    *
    * @return this {@link Street}.
    * @see org.cp.domain.geo.model.Street.Type#BOULEVARD
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  public Street asBoulevard() {
-    return as(Type.BOULEVARD);
+  @Dsl
+  public @NotNull Street asBoulevard() {
+    return as(Street.Type.BOULEVARD);
   }
 
   /**
@@ -167,10 +185,25 @@ public class Street implements Cloneable, Comparable<Street>, Serializable {
    *
    * @return this {@link Street}.
    * @see org.cp.domain.geo.model.Street.Type#DRIVE
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  public Street asDrive() {
-    return as(Type.DRIVE);
+  @Dsl
+  public @NotNull Street asDrive() {
+    return as(Street.Type.DRIVE);
+  }
+
+  /**
+   * Sets the {@link Type} of this {@link Street} to {@link Street.Type#FREEWAY}.
+   *
+   * @return this {@link Street}.
+   * @see org.cp.domain.geo.model.Street.Type#FREEWAY
+   * @see org.cp.elements.lang.annotation.Dsl
+   * @see #as(Type)
+   */
+  @Dsl
+  public @NotNull Street asFreeway() {
+    return as(Street.Type.FREEWAY);
   }
 
   /**
@@ -178,10 +211,12 @@ public class Street implements Cloneable, Comparable<Street>, Serializable {
    *
    * @return this {@link Street}.
    * @see org.cp.domain.geo.model.Street.Type#HIGHWAY
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  public Street asHighway() {
-    return as(Type.HIGHWAY);
+  @Dsl
+  public @NotNull Street asHighway() {
+    return as(Street.Type.HIGHWAY);
   }
 
   /**
@@ -189,10 +224,12 @@ public class Street implements Cloneable, Comparable<Street>, Serializable {
    *
    * @return this {@link Street}.
    * @see org.cp.domain.geo.model.Street.Type#LANE
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  public Street asLane() {
-    return as(Type.LANE);
+  @Dsl
+  public @NotNull Street asLane() {
+    return as(Street.Type.LANE);
   }
 
   /**
@@ -200,10 +237,12 @@ public class Street implements Cloneable, Comparable<Street>, Serializable {
    *
    * @return this {@link Street}.
    * @see org.cp.domain.geo.model.Street.Type#ROAD
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  public Street asRoad() {
-    return as(Type.ROAD);
+  @Dsl
+  public @NotNull Street asRoad() {
+    return as(Street.Type.ROAD);
   }
 
   /**
@@ -211,10 +250,12 @@ public class Street implements Cloneable, Comparable<Street>, Serializable {
    *
    * @return this {@link Street}.
    * @see org.cp.domain.geo.model.Street.Type#ROUTE
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  public Street asRoute() {
-    return as(Type.ROUTE);
+  @Dsl
+  public @NotNull Street asRoute() {
+    return as(Street.Type.ROUTE);
   }
 
   /**
@@ -222,10 +263,12 @@ public class Street implements Cloneable, Comparable<Street>, Serializable {
    *
    * @return this {@link Street}.
    * @see org.cp.domain.geo.model.Street.Type#STREET
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  public Street asStreet() {
-    return as(Type.STREET);
+  @Dsl
+  public @NotNull Street asStreet() {
+    return as(Street.Type.STREET);
   }
 
   /**
@@ -233,22 +276,24 @@ public class Street implements Cloneable, Comparable<Street>, Serializable {
    *
    * @return this {@link Street}.
    * @see org.cp.domain.geo.model.Street.Type#WAY
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
-  public Street asWay() {
-    return as(Type.WAY);
+  @Dsl
+  public @NotNull Street asWay() {
+    return as(Street.Type.WAY);
   }
 
   /**
    * Clones this {@link Street}.
    *
-   * @return a clone of this {@link Street}.
+   * @return a clone (copy) of this {@link Street}.
    * @see java.lang.Object#clone()
    * @see #from(Street)
    */
   @Override
   @SuppressWarnings("all")
-  public Object clone() throws CloneNotSupportedException {
+  public @NotNull Object clone() throws CloneNotSupportedException {
     return from(this);
   }
 
@@ -264,12 +309,12 @@ public class Street implements Cloneable, Comparable<Street>, Serializable {
    * @see java.lang.Comparable#compareTo(Object)
    */
   @Override
-  @SuppressWarnings("unchecked")
-  public int compareTo(Street street) {
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public int compareTo(@NotNull Street street) {
 
     return ComparatorResultBuilder.<Comparable>create()
       .doCompare(this.getName(), street.getName())
-      .doCompare(this.getType().orElse(Type.UNKNOWN), street.getType().orElse(Type.UNKNOWN))
+      .doCompare(this.getType().orElse(Street.Type.UNKNOWN), street.getType().orElse(Street.Type.UNKNOWN))
       .doCompare(this.getNumber(), street.getNumber())
       .build();
   }
@@ -282,7 +327,7 @@ public class Street implements Cloneable, Comparable<Street>, Serializable {
    * @see java.lang.Object#equals(Object)
    */
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(@Nullable Object obj) {
 
     if (this == obj) {
       return true;
@@ -307,14 +352,7 @@ public class Street implements Cloneable, Comparable<Street>, Serializable {
    */
   @Override
   public int hashCode() {
-
-    int hashValue = 17;
-
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getName());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getNumber());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getType());
-
-    return hashValue;
+    return ObjectUtils.hashCodeOf(getName(), getNumber(), getType().orElse(Street.Type.UNKNOWN));
   }
 
   /**
@@ -322,113 +360,146 @@ public class Street implements Cloneable, Comparable<Street>, Serializable {
    *
    * @return a {@link String} describing this {@link Street}.
    * @see java.lang.Object#toString()
-   * @see java.lang.String
    */
   @Override
-  public String toString() {
+  public @NotNull String toString() {
 
-    return String.format("%1$d %2$s%3$s", getNumber(), getName(),
-      getType().map(type -> StringUtils.SINGLE_SPACE.concat(type.getAbbreviation())).orElse(StringUtils.EMPTY_STRING));
+    return String.format(STREET_TO_STRING, getNumber(), getName(), getType()
+      .map(type -> StringUtils.SINGLE_SPACE.concat(type.getAbbreviation()))
+      .orElse(StringUtils.EMPTY_STRING));
   }
 
   /**
-   * The {@link Type} {@link Class#isEnum()} enum is a enumeration of {@link Street} suffixes
-   * recognized around the World.
+   * {@link Enum Enumeration} of {@link Street} suffixes recognized around the world.
    *
-   * NOTE: not every {@link Country} may recognize all {@link Street} suffixes nor is this a complete list,
-   * only representing some of the more common types.
+   * NOTE: Not every {@link Country} may recognize all {@link Street} suffixes defined by this {@link Enum enumeration}
+   * nor is this {@link Enum enumeration} complete. This {@link Enum enumeration} only represents some of the more
+   * common {@link Street} types.
    *
+   * @see java.lang.Enum
    * @see <a href="https://en.wikipedia.org/wiki/Street_suffix">Street Suffixes</a>
    */
-  enum Type {
+  public enum Type {
 
-    ALLEY("ALY", "Alley"),
+    ALLEY("ALLY", "Alley"),
     AVENUE("AVE", "Avenue"),
+    BEND("BND", "Bend"),
     BOULEVARD("BLVD", "Boulevard"),
+    BYPASS("BYP", "Bypass"),
+    CAUSEWAY("CSWY", "Causeway"),
+    CENTER("CTR", "Center"),
     CIRCLE("CRCL", "Circle"),
+    CORNER("CNR", "Corner"),
     COURT("CT", "Court"),
+    CROSSING("XING", "Crossing"),
+    CROSSROAD("XRD", "Crossroad"),
+    CURVE("CURV", "Curve"),
     DRIVE("DR", "Drive"),
+    EXPRESSWAY("EXP", "Expressway"),
+    FERRY("FRY", "Ferry"),
+    FORK("FRK", "Fork"),
+    FREEWAY("FWY", "Freeway"),
+    GATEWAY("GTWY", "Gateway"),
     HIGHWAY("HWY", "Highway"),
     JUNCTION("JCT", "Junction"),
     LANE("LN", "Lane"),
     LOOP("LP", "Loop"),
-    PLAZA("PL", "Plaza"),
+    MOTORWAY("MTWY", "Motorway"),
+    OVERPASS("OPAS", "Overpass"),
+    PARKWAY("PKWY", "Parkway"),
+    PLACE("PL", "Place"),
+    PLAZA("PLZ", "Plaza"),
     ROAD("RD", "Road"),
-    ROUTE("RT", "Route"),
+    ROUTE("RTE", "Route"),
+    SKYWAY("SKWY", "Skyway"),
+    SQUARE("SQR", "Square"),
     STREET("ST", "Street"),
-    WAY("WY", "Way"),
-    UNKNOWN("UKN", "Unknown");
+    TURNPIKE("TPKE", "Turnpike"),
+    UNDERPASS("UPAS", "Underpass"),
+    UNKNOWN("UKN", "Unknown"),
+    VIADUCT("VIA", "Viaduct"),
+    WAY("WY", "Way");
 
     /**
-     * Factory method used to search for an appropriate {@link Street} {@link Type}
-     * based on its {@link String abbreviation}.
+     * Factory method used to search for a {@link Street.Type} given an {@link String abbreviation}.
      *
-     * @param abbreviation {@link String} containing the abbreviation of the desired {@link Street} {@link Type}.
-     * @return the {@link Street} {@link Type} for the given {@link String abbreviation}.
-     * @throws IllegalArgumentException if no {@link Street} {@link Type} for the given {@link String abbreviation}
-     * could be found.
+     * @param abbreviation {@link String} containing an {@literal abbreviation} for the desired {@link Street.Type},
+     * such as {@literal HWY} for {@literal highway}.
+     * @return a {@link Street.Type} for the given {@link String abbreviation}.
+     * @throws IllegalArgumentException if a {@link Street.Type} for the given {@link String abbreviation}
+     * could not be found.
+     * @see #fromDescription(String)
+     * @see #getAbbreviation()
+     * @see #values()
      */
-    public static Type valueOfAbbreviation(String abbreviation) {
+    public static @NotNull Street.Type fromAbbreviation(@Nullable String abbreviation) {
 
       return Arrays.stream(values())
-        .filter(type -> type.getAbbreviation().equalsIgnoreCase(StringUtils.trim(abbreviation)))
+        .filter(streetType -> streetType.getAbbreviation().equalsIgnoreCase(StringUtils.trim(abbreviation)))
         .findFirst()
-        .orElseThrow(() -> newIllegalArgumentException("No Street Type was found for abbreviation [%s]", abbreviation));
+        .orElseThrow(() -> newIllegalArgumentException("Street.Type for abbreviation [%s] was not found",
+          abbreviation));
     }
 
     /**
-     * Factory method used to search for an appropriate {@link Street} {@link Type}
-     * based on its {@link String name}.
+     * Factory method used to search for a {@link Street.Type} given a {@link String description}.
      *
-     * @param name  {@link String} containing the name of the desired {@link Street} {@link Type}.
-     * @return the {@link Street} {@link Type} for the given {@link String name}.
-     * @throws IllegalArgumentException if no {@link Street} {@link Type} for the given {@link String name}
-     * could be found.
+     * @param description {@link String} containing a {@literal description} of the desired {@link Street.Type},
+     * such as {@literal highway}.
+     * @return a {@link Street.Type} for the given {@link String description}.
+     * @throws IllegalArgumentException if a {@link Street.Type} for the given {@link String description}
+     * could not be found.
+     * @see #fromAbbreviation(String)
+     * @see #getDescription()
+     * @see #values()
      */
-    public static Type valueOfName(String name) {
+    public static @NotNull Street.Type fromDescription(@Nullable String description) {
 
       return Arrays.stream(values())
-        .filter(it -> it.getName().equalsIgnoreCase(StringUtils.trim(name)))
+        .filter(streetType -> streetType.getDescription().equalsIgnoreCase(StringUtils.trim(description)))
         .findFirst()
-        .orElseThrow(() -> newIllegalArgumentException("No Street Type was found for name [%s]", name));
+        .orElseThrow(() -> newIllegalArgumentException("Street.Type for description [%s] was not found", description));
     }
 
     private final String abbreviation;
-    private final String name;
+    private final String description;
 
-    /* (non-Javadoc) */
-    Type(String abbreviation, String name) {
-      this.abbreviation = abbreviation;
-      this.name = name;
+    Type(String abbreviation, String description) {
+
+      this.abbreviation = StringUtils.requireText(abbreviation, "Abbreviation [%s] is required");
+      this.description = StringUtils.requireText(description, "Description [%s] is required");
     }
 
     /**
-     * Returns the {@link String abbreviation} for this {@link Street} {@link Type}.
+     * Returns the {@link String abbreviation} for this {@link Street.Type}.
      *
-     * @return the {@link String abbreviation} for this {@link Street} {@link Type}.
+     * @return the {@link String abbreviation} for this {@link Street.Type}.
+     * @see #getDescription()
      */
-    public String getAbbreviation() {
+    public @NotNull String getAbbreviation() {
       return this.abbreviation;
     }
 
     /**
-     * Returns the {@link String name} for this {@link Street} {@link Type}.
+     * Returns the {@link String description} of this {@link Street.Type}.
      *
-     * @return the {@link String name} for this {@link Street} {@link Type}.
+     * @return the {@link String description} of this {@link Street.Type}.
+     * @see #getAbbreviation()
      */
-    public String getName() {
-      return this.name;
+    public @NotNull String getDescription() {
+      return this.description;
     }
 
     /**
-     * Returns a {@link String} representation of this {@link Street} {@link Type}.
+     * Returns a {@link String} representation of this {@link Street.Type}.
      *
-     * @return a {@link String} describing this {@link Street} {@link Type}.
+     * @return a {@link String} describing this {@link Street.Type}.
      * @see java.lang.Object#toString()
+     * @see #getDescription()
      */
     @Override
-    public String toString() {
-      return getName();
+    public @NotNull String toString() {
+      return getDescription();
     }
   }
 }
