@@ -652,7 +652,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
   }
 
   /**
-   * {@link Enum Enumeration} of different {@link Address} types.
+   * {@link Enum Enumeration} of {@link Address} types.
    *
    * @see java.lang.Enum
    */
@@ -678,7 +678,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
      * for the given {@link String abbreviation}.
      * @see #values()
      */
-    public static @NotNull Type from(@Nullable String abbreviation) {
+    public static @NotNull Address.Type from(@Nullable String abbreviation) {
 
       return Arrays.stream(values())
         .filter(type -> type.getAbbreviation().equalsIgnoreCase(StringUtils.trim(abbreviation)))
