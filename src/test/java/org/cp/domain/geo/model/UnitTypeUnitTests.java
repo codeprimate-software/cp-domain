@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,15 +21,17 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import org.cp.elements.lang.StringUtils;
+
 /**
- * Unit tests for {@link Unit.Type}.
+ * Unit Tests for {@link Unit.Type}.
  *
  * @author John Blum
  * @see org.junit.Test
  * @see org.cp.domain.geo.model.Unit.Type
- * @since 1.0.0
+ * @since 0.1.0
  */
-public class UnitTypeTests {
+public class UnitTypeUnitTests {
 
   @Test
   public void unitTypeAbbreviations() {
@@ -44,34 +45,30 @@ public class UnitTypeTests {
   }
 
   @Test
-  public void unitTypeNames() {
+  public void unitTypeDescriptions() {
 
-    assertThat(Unit.Type.APARTMENT.getName()).isEqualTo("Apartment");
-    assertThat(Unit.Type.OFFICE.getName()).isEqualTo("Office");
-    assertThat(Unit.Type.ROOM.getName()).isEqualTo("Room");
-    assertThat(Unit.Type.SUITE.getName()).isEqualTo("Suite");
-    assertThat(Unit.Type.UNIT.getName()).isEqualTo("Unit");
-    assertThat(Unit.Type.UNKNOWN.getName()).isEqualTo("Unknown");
+    Arrays.stream(Unit.Type.values()).forEach(unitType ->
+      assertThat(unitType.getDescription()).isEqualTo(StringUtils.capitalize(unitType.name().toLowerCase())));
   }
 
   @Test
-  public void unitTypeToStringIsSameAsUnitTypeName() {
+  public void fromAbbreviation() {
 
     Arrays.stream(Unit.Type.values()).forEach(unitType ->
-      assertThat(unitType.toString()).isEqualTo(unitType.getName()));
+      assertThat(Unit.Type.fromAbbreviation(unitType.getAbbreviation())).isEqualTo(unitType));
   }
 
   @Test
-  public void valueOfAbbreviationIsCorrect() {
+  public void fromDescription() {
 
     Arrays.stream(Unit.Type.values()).forEach(unitType ->
-      assertThat(Unit.Type.valueOfAbbreviation(unitType.getAbbreviation())).isEqualTo(unitType));
+      assertThat(Unit.Type.fromDescription(unitType.getDescription())).isEqualTo(unitType));
   }
 
   @Test
-  public void valueOfNameIsCorrect() {
+  public void toStringIsSameAsUnitTypeDescription() {
 
     Arrays.stream(Unit.Type.values()).forEach(unitType ->
-      assertThat(Unit.Type.valueOfName(unitType.getName())).isEqualTo(unitType));
+      assertThat(unitType.toString()).isEqualTo(unitType.getDescription()));
   }
 }
