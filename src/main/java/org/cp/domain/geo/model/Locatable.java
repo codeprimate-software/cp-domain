@@ -20,15 +20,25 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperat
 import java.util.Optional;
 
 /**
- * Interface to defining a contract for application domain objects that can be geographically positioned on a map,
+ * Interface defining a contract for application domain objects that can be geographically positioned on a map,
  * or are capable of being located.
  *
  * @author John Blum
  * @see org.cp.domain.geo.model.Coordinates
- * @since 1.0.0
+ * @since 0.1.0
  */
 @SuppressWarnings("unused")
 public interface Locatable {
+
+  /**
+   * Determines whether this {@link Object} has been geographically located.
+   *
+   * @return a {@link Boolean value} indicating whether this {@link Object} has been geographically located.
+   * @see #getCoordinates()
+   */
+  default boolean isLocated() {
+    return getCoordinates().isPresent();
+  }
 
   /**
    * Return geographic {@link Coordinates}, such as {@literal latitude}, {@literal longitude} and {@literal altitude},

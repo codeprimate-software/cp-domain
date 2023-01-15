@@ -20,6 +20,7 @@ import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOper
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -43,6 +44,37 @@ import org.cp.elements.lang.ThrowableOperation;
  * @since 0.1.0
  */
 public class LocatableUnitTests {
+
+  @Test
+  public void isLocatedWithCoordinatesReturnsTrue() {
+
+    Coordinates mockCoordinates = mock(Coordinates.class);
+
+    Locatable locatable = mock(Locatable.class);
+
+    doReturn(Optional.of(mockCoordinates)).when(locatable).getCoordinates();
+    doCallRealMethod().when(locatable).isLocated();
+
+    assertThat(locatable.isLocated()).isTrue();
+
+    verify(locatable, times(1)).isLocated();
+    verify(locatable, times(1)).getCoordinates();
+    verifyNoInteractions(mockCoordinates);
+  }
+
+  @Test
+  public void isLocatedWithNoCoordinatesReturnsFalse() {
+
+    Locatable locatable = mock(Locatable.class);
+
+    doReturn(Optional.empty()).when(locatable).getCoordinates();
+    doCallRealMethod().when(locatable).isLocated();
+
+    assertThat(locatable.isLocated()).isFalse();
+
+    verify(locatable, times(1)).isLocated();
+    verify(locatable, times(1)).getCoordinates();
+  }
 
   @Test
   public void getCoordinatesIsEmpty() {
