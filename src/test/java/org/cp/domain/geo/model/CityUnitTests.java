@@ -118,7 +118,6 @@ public class CityUnitTests {
     City cityOne = City.of("Portland");
     City cityTwo = City.of("Portland");
 
-    assertThat(cityOne).isNotNull();
     assertThat(cityOne).isNotSameAs(cityTwo);
     assertThat(cityOne).isEqualTo(cityTwo);
     assertThat(cityOne.compareTo(cityTwo)).isZero();
@@ -140,12 +139,22 @@ public class CityUnitTests {
     City portland = City.of("Portland");
     City seattle = City.of("Seattle");
 
-    assertThat(portland).isNotNull();
-    assertThat(seattle).isNotNull();
     assertThat(portland).isNotSameAs(seattle);
     assertThat(portland).isNotEqualTo(seattle);
     assertThat(portland.compareTo(seattle)).isLessThan(0);
     assertThat(seattle.compareTo(portland)).isGreaterThan(0);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void equalsNullIsNullSafeReturnsFalse() {
+    assertThat(City.of("Seattle").equals(null)).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void equalsObjectReturnsFalse() {
+    assertThat(City.of("Seattle").equals("Seattle")).isFalse();
   }
 
   @Test
@@ -154,7 +163,6 @@ public class CityUnitTests {
     City cityOne = City.of("Portland");
     City cityTwo = City.of("Portland");
 
-    assertThat(cityOne).isNotNull();
     assertThat(cityOne).isNotSameAs(cityTwo);
     assertThat(cityOne).isEqualTo(cityTwo);
     assertThat(cityOne.equals(cityTwo)).isTrue();
@@ -174,22 +182,9 @@ public class CityUnitTests {
     City portland = City.of("Portland");
     City seattle = City.of("Seattle");
 
-    assertThat(portland).isNotNull();
     assertThat(portland).isNotSameAs(seattle);
     assertThat(portland).isNotEqualTo(seattle);
     assertThat(portland.equals(seattle)).isFalse();
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void equalsNullIsNullSafeReturnsFalse() {
-    assertThat(City.of("Seattle").equals(null)).isFalse();
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void equalsObjectReturnsFalse() {
-    assertThat(City.of("Seattle").equals("Seattle")).isFalse();
   }
 
   @Test

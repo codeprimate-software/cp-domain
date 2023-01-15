@@ -125,7 +125,6 @@ public class PostalCodeUnitTests {
     PostalCode postalCodeOne = PostalCode.of("12345");
     PostalCode postalCodeTwo = PostalCode.of("12345");
 
-    assertThat(postalCodeOne).isNotNull();
     assertThat(postalCodeOne).isNotSameAs(postalCodeTwo);
     assertThat(postalCodeOne).isEqualTo(postalCodeTwo);
     assertThat(postalCodeOne.compareTo(postalCodeTwo)).isZero();
@@ -138,7 +137,6 @@ public class PostalCodeUnitTests {
 
     PostalCode postalCode = PostalCode.of("12345");
 
-    assertThat(postalCode).isNotNull();
     assertThat(postalCode.compareTo(postalCode)).isZero();
   }
 
@@ -148,8 +146,6 @@ public class PostalCodeUnitTests {
     PostalCode postalCodeOne = PostalCode.of("52003");
     PostalCode postalCodeTwo = PostalCode.of("97213");
 
-    assertThat(postalCodeOne).isNotNull();
-    assertThat(postalCodeTwo).isNotNull();
     assertThat(postalCodeOne).isNotSameAs(postalCodeTwo);
     assertThat(postalCodeOne).isNotEqualTo(postalCodeTwo);
     assertThat(postalCodeOne.compareTo(postalCodeTwo)).isLessThan(0);

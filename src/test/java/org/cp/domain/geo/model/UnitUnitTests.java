@@ -195,9 +195,8 @@ public class UnitUnitTests {
     Unit unitOne = Unit.suite("16");
     Unit unitTwo = Unit.suite("16");
 
-    assertThat(unitOne).isNotNull();
-    assertThat(unitOne).isNotSameAs(unitTwo);
     assertThat(unitOne).isEqualTo(unitTwo);
+    assertThat(unitOne).isNotSameAs(unitTwo);
     assertThat(unitOne.compareTo(unitTwo)).isZero();
     assertThat(unitTwo.compareTo(unitOne)).isZero();
   }
@@ -217,48 +216,10 @@ public class UnitUnitTests {
     Unit unitOne = Unit.apartment("A100");
     Unit unitTwo = Unit.suite("16");
 
-    assertThat(unitOne).isNotNull();
-    assertThat(unitTwo).isNotNull();
-    assertThat(unitOne).isNotSameAs(unitTwo);
     assertThat(unitOne).isNotEqualTo(unitTwo);
+    assertThat(unitOne).isNotSameAs(unitTwo);
     assertThat(unitOne.compareTo(unitTwo)).isGreaterThan(0);
     assertThat(unitTwo.compareTo(unitOne)).isLessThan(0);
-  }
-
-  @Test
-  public void equalUnitsAreEqual() {
-
-    Unit unitOne = Unit.suite("16");
-    Unit unitTwo = Unit.suite("16");
-
-    assertThat(unitOne).isNotNull();
-    assertThat(unitOne).isEqualTo(unitTwo);
-    assertThat(unitOne).isNotSameAs(unitTwo);
-    assertThat(unitOne.equals(unitTwo)).isTrue();
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void identicalUnitsAreEqual() {
-
-    Unit unit = Unit.apartment("A100");
-
-    assertThat(unit).isNotNull();
-    assertThat(unit).isEqualTo(unit);
-    assertThat(unit.equals(unit)).isTrue();
-  }
-
-  @Test
-  public void unequalUnitsAreNotEqual() {
-
-    Unit unitOne = Unit.apartment("A100");
-    Unit unitTwo = Unit.suite("16");
-
-    assertThat(unitOne).isNotNull();
-    assertThat(unitTwo).isNotNull();
-    assertThat(unitOne).isNotSameAs(unitTwo);
-    assertThat(unitOne).isNotEqualTo(unitTwo);
-    assertThat(unitOne.equals(unitTwo)).isFalse();
   }
 
   @Test
@@ -271,6 +232,36 @@ public class UnitUnitTests {
   @SuppressWarnings("all")
   public void equalsObjectReturnsFalse() {
     assertThat(Unit.suite("16").equals("sweet 16")).isFalse();
+  }
+
+  @Test
+  public void equalUnitsAreEqual() {
+
+    Unit unitOne = Unit.suite("16");
+    Unit unitTwo = Unit.suite("16");
+
+    assertThat(unitOne).isNotSameAs(unitTwo);
+    assertThat(unitOne).isEqualTo(unitTwo);
+    assertThat(unitOne.equals(unitTwo)).isTrue();
+  }
+
+  @Test
+  public void identicalUnitsAreEqual() {
+
+    Unit unit = Unit.apartment("A100");
+
+    assertThat(unit).isEqualTo(unit);
+  }
+
+  @Test
+  public void unequalUnitsAreNotEqual() {
+
+    Unit unitOne = Unit.apartment("A100");
+    Unit unitTwo = Unit.suite("16");
+
+    assertThat(unitOne).isNotSameAs(unitTwo);
+    assertThat(unitOne).isNotEqualTo(unitTwo);
+    assertThat(unitOne.equals(unitTwo)).isFalse();
   }
 
   @Test

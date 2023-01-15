@@ -215,6 +215,7 @@ public class StreetUnitTests {
     assertThat(streetOne).isNotSameAs(streetTwo);
     assertThat(streetOne).isEqualTo(streetTwo);
     assertThat(streetOne.compareTo(streetTwo)).isZero();
+    assertThat(streetTwo.compareTo(streetOne)).isZero();
   }
 
   @Test
@@ -239,6 +240,18 @@ public class StreetUnitTests {
   }
 
   @Test
+  @SuppressWarnings("all")
+  public void equalsNullIsNullSafeReturnsFalse() {
+    assertThat(Street.of(100, "Main").asStreet().equals(null)).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void equalsObjectReturnsFalse() {
+    assertThat(Street.of(100, "Main").asStreet().equals("100 Main St.")).isFalse();
+  }
+
+  @Test
   public void equalStreetsAreEqual() {
 
     Street streetOne = Street.of(100, "Main").asStreet();
@@ -246,6 +259,7 @@ public class StreetUnitTests {
 
     assertThat(streetOne).isNotSameAs(streetTwo);
     assertThat(streetOne).isEqualTo(streetTwo);
+    assertThat(streetOne.equals(streetTwo)).isTrue();
   }
 
   @Test
@@ -264,18 +278,7 @@ public class StreetUnitTests {
 
     assertThat(streetOne).isNotSameAs(streetTwo);
     assertThat(streetOne).isNotEqualTo(streetTwo);
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void equalsNullIsNullSafeReturnsFalse() {
-    assertThat(Street.of(100, "Main").asStreet().equals(null)).isFalse();
-  }
-
-  @Test
-  @SuppressWarnings("all")
-  public void equalsObjectReturnsFalse() {
-    assertThat(Street.of(100, "Main").asStreet().equals("100 Main St.")).isFalse();
+    assertThat(streetOne.equals(streetTwo)).isFalse();
   }
 
   @Test
