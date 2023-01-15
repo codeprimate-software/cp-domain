@@ -13,32 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.model;
 
+import java.util.Objects;
+
 /**
- * The {@link Addressable} interface defines a contract for implementing application domain objects that physically
- * have an {@link Address}, such as a household or store, etc.
+ * Interface defining a contract for application domain objects that have a postal {@link Address},
+ * such as a {@literal household} or a {@literal store}.
  *
  * @author John Blum
  * @see org.cp.domain.geo.model.Address
- * @since 1.0.0
+ * @since 0.1.0
  */
 @SuppressWarnings("unused")
 public interface Addressable {
 
   /**
-   * Returns the {@link Address} associated with this object.
+   * Determines whether this {@link Object} has an {@link Address}.
    *
-   * @return the {@link Address} associated with this object.
+   * @return a {@link Boolean} value indicating whether this {@link Object} has an {@link Address}.
+   * @see #getAddress()
+   */
+  default boolean isAddressPresent() {
+    return Objects.nonNull(getAddress());
+  }
+
+  /**
+   * Returns the postal {@link Address} locating this {@link Object}.
+   *
+   * @return the postal {@link Address} locating this {@link Object}.
    * @see org.cp.domain.geo.model.Address
    */
   Address getAddress();
 
   /**
-   * Sets the {@link Address} to associate with this object.
+   * Set the postal {@link Address} locating this {@link Object}.
    *
-   * @param address {@link Address} to associate with this object.
+   * @param address postal {@link Address} locating this {@link Object}.
    * @see org.cp.domain.geo.model.Address
    */
   void setAddress(Address address);
