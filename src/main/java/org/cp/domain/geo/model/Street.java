@@ -481,9 +481,9 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
     }
 
     /**
-     * Returns the {@link String description} of this {@link Street.Type}.
+     * Returns a {@link String description} of this {@link Street.Type}.
      *
-     * @return the {@link String description} of this {@link Street.Type}.
+     * @return a {@link String description} of this {@link Street.Type}.
      * @see #getAbbreviation()
      */
     public @NotNull String getDescription() {
