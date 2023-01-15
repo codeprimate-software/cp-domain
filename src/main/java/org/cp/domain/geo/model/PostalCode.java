@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.model;
 
 import java.io.Serializable;
@@ -22,12 +21,15 @@ import java.util.Optional;
 import org.cp.domain.geo.enums.Country;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.Immutable;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.concurrent.ThreadSafe;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
- * The {@link PostalCode} class is an Abstract Data Type (ADT) used to model and represent postal codes
- * used throughout the World in different Countries.
+ * Abstract Data Type (ADT) used to model postal codes used throughout the world in different countries.
  *
  * @author John Blum
  * @see java.io.Serializable
@@ -35,62 +37,65 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see java.lang.Comparable
  * @see org.cp.domain.geo.enums.Country
  * @see org.cp.elements.lang.annotation.Immutable
- * @since 1.0.0
+ * @see org.cp.elements.lang.concurrent.ThreadSafe
+ * @since 0.1.0
  */
 @Immutable
-@SuppressWarnings("unused")
+@ThreadSafe
 public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializable {
-
-  private final String number;
-
-  /**
-   * Factory method used to construct a new instance of {@link PostalCode} initialized with
-   * the given {@link String number}.
-   *
-   * @param number {@link String} containing the number for the {@link PostalCode}.
-   * @return a new {@link PostalCode} initialized with the given {@link String number}.
-   * @throws IllegalArgumentException if the {@link String number} is {@literal null} or empty.
-   * @see #PostalCode(String)
-   */
-  public static PostalCode of(String number) {
-    return new PostalCode(number);
-  }
 
   /**
    * Factory method used to construct a new instance of {@link PostalCode} copied from the given,
-   * existing {@link PostalCode}.
+   * required {@link PostalCode}.
    *
    * @param postalCode {@link PostalCode} to copy; must not be {@literal null}.
-   * @return a new {@link PostalCode} copied from the given {@link PostalCode}.
+   * @return a new {@link PostalCode} copied from the given, required {@link PostalCode}.
    * @throws IllegalArgumentException if the {@link PostalCode} to copy is {@literal null}.
    * @see org.cp.domain.geo.model.PostalCode#getNumber()
    * @see org.cp.domain.geo.model.PostalCode
    * @see #of(String)
    */
-  public static PostalCode from(PostalCode postalCode) {
+  public static @NotNull PostalCode from(@NotNull PostalCode postalCode) {
 
-    Assert.notNull(postalCode, "Postal Code is required");
+    Assert.notNull(postalCode, "PostalCode to copy is required");
 
     return of(postalCode.getNumber());
   }
 
   /**
-   * Constructs a new instance of {@link PostalCode} initialized with the given {@link String number}.
+   * Factory method used to construct a new instance of {@link PostalCode} initialized with the given,
+   * required {@link String number}.
    *
-   * @param number {@link String} containing the {@link PostalCode} number.
-   * @throws IllegalArgumentException if the {@link String number} is {@literal null} or empty.
+   * @param number {@link String} containing the {@literal number} of the {@link PostalCode};
+   * must not be {@literal null} or {@literal empty}.
+   * @return a new {@link PostalCode} initialized with the given, required {@link String number}.
+   * @throws IllegalArgumentException if {@link String number} is {@literal null} or {@literal empty}.
+   * @see #PostalCode(String)
    */
-  public PostalCode(String number) {
+  public static @NotNull PostalCode of(@NotNull String number) {
+    return new PostalCode(number);
+  }
 
-    Assert.hasText(number, "Postal Code number [%s] is required", number);
+  private final String number;
 
-    this.number = number;
+  /**
+   * Constructs a new instance of {@link PostalCode} initialized with the given, required {@link String number}.
+   *
+   * @param number {@link String} containing the {@literal number} for the {@link PostalCode};
+   * must not be {@literal null} or {@literal empty}.
+   * @throws IllegalArgumentException if the {@link String number} for the {@link PostalCode}
+   * is {@literal null} or {@literal empty}.
+   */
+  public PostalCode(@NotNull String number) {
+    this.number = StringUtils.requireText(number, "Number [%s] is required");
   }
 
   /**
-   * Returns an {@link Optional} {@link Country} to which this {@link PostalCode} belongs.
+   * Returns an {@link Optional} {@link Country} in which this {@link PostalCode} has been assigned.
    *
-   * @return an {@link Optional} {@link Country} to which this {@link PostalCode} belongs.
+   * Returns {@link Optional#empty()} by default.
+   *
+   * @return an {@link Optional} {@link Country} in which this {@link PostalCode} has been assigned.
    * @see org.cp.domain.geo.enums.Country
    * @see java.util.Optional
    */
@@ -102,44 +107,43 @@ public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializab
    * Returns the {@link String number} of this {@link PostalCode}.
    *
    * @return the {@link String number} of this {@link PostalCode}.
-   * @see java.lang.String
    */
-  public String getNumber() {
+  public @NotNull String getNumber() {
     return this.number;
   }
 
   /**
    * Clone this {@link PostalCode}.
    *
-   * @return a clone of this {@link PostalCode}.
+   * @return a clone (copy) of this {@link PostalCode}.
    * @see java.lang.Object#clone()
    * @see #from(PostalCode)
    */
   @Override
   @SuppressWarnings("all")
-  public Object clone() throws CloneNotSupportedException {
+  public @NotNull Object clone() throws CloneNotSupportedException {
     return from(this);
   }
 
   /**
-   * Compares this {@link PostalCode} with the given {@link PostalCode} to determine the sort order.
+   * Compares this {@link PostalCode} to the given, required {@link PostalCode} to determine
+   * the relative order in a sort.
    *
-   * @param postalCode {@link PostalCode} being compared to this {@link PostalCode}
-   * to determine the relative sort order.
-   * @return a {@link Integer#TYPE int} value indicating the sort order of this {@link PostalCode}
-   * relative to the given {@link PostalCode}.
-   * Returns a negative number to indicate this {@link PostalCode} comes before the given {@link PostalCode}
-   * in the sort order.
-   * Returns a positive number to indicate this {@link PostalCode} comes after the given {@link PostalCode}
-   * in the sort order.
-   * Returns {@literal 0} if this {@link PostalCode} is equal to the given {@link PostalCode}.
+   * @param postalCode {@link PostalCode} being compared to this {@link PostalCode}; must not be {@literal null}.
+   * @return a {@link Integer value} indicating the order of this {@link PostalCode} relative to the given,
+   * required {@link PostalCode}.
+   * Returns a {@link Integer number} if this {@link PostalCode} comes before the given {@link PostalCode}.
+   * Returns a {@link Integer positive number} if this {@link PostalCode} comes after the given {@link PostalCode}.
+   * Returns {@link Integer 0} if this {@link PostalCode} is equal to the given {@link PostalCode}.
    * @see java.lang.Comparable#compareTo(Object)
    */
   @Override
-  public int compareTo(PostalCode postalCode) {
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public int compareTo(@NotNull PostalCode postalCode) {
 
-    return ComparatorResultBuilder.<String>create()
-      .doCompare(this.toString(), postalCode.toString())
+    return ComparatorResultBuilder.<Comparable>create()
+      .doCompare(this.getCountry().orElse(Country.UNKNOWN), postalCode.getCountry().orElse(Country.UNKNOWN))
+      .doCompare(this.getNumber(), postalCode.getNumber())
       .build();
   }
 
@@ -151,7 +155,7 @@ public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializab
    * @see java.lang.Object#equals(Object)
    */
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(@Nullable Object obj) {
 
     if (this == obj) {
       return true;
@@ -163,23 +167,19 @@ public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializab
 
     PostalCode that = (PostalCode) obj;
 
-    return ObjectUtils.equals(this.getNumber(), that.getNumber());
+    return ObjectUtils.equals(this.getNumber(), that.getNumber())
+      && ObjectUtils.equals(this.getCountry().orElse(Country.UNKNOWN), that.getCountry().orElse(Country.UNKNOWN));
   }
 
   /**
-   * Computes the hash code of this {@link PostalCode}.
+   * Computes the {@link Integer hash code} of this {@link PostalCode}.
    *
-   * @return the computed hash code of this {@link PostalCode}.
+   * @return the computed {@link Integer hash code} of this {@link PostalCode}.
    * @see java.lang.Object#hashCode()
    */
   @Override
   public int hashCode() {
-
-    int hashValue = 17;
-
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getNumber());
-
-    return hashValue;
+    return ObjectUtils.hashCodeOf(getNumber(), getCountry().orElse(Country.UNKNOWN));
   }
 
   /**
@@ -187,9 +187,10 @@ public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializab
    *
    * @return a {@link String} describing this {@link PostalCode}.
    * @see java.lang.Object#toString()
+   * @see #getNumber()
    */
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return getNumber();
   }
 }
