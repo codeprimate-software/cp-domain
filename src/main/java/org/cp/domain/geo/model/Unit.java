@@ -24,6 +24,8 @@ import java.util.Optional;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.Dsl;
+import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ComparatorResultBuilder;
@@ -37,8 +39,10 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see java.lang.Cloneable
  * @see java.lang.Comparable
  * @see org.cp.domain.geo.model.Address
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @since 0.1.0
  */
+@FluentApi
 public class Unit implements Cloneable, Comparable<Unit>, Serializable {
 
   public static final String UNIT_TO_STRING = "%1$s%2$s";
@@ -54,9 +58,11 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
    * @return a new {@link Unit.Type#APARTMENT} {@link Unit} initialized with the given,
    * required {@link String number}.
    * @see org.cp.domain.geo.model.Unit.Type#APARTMENT
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #asApartment()
    * @see #Unit(String)
    */
+  @Dsl
   public static @NotNull Unit apartment(@NotNull String number) {
     return new Unit(number).asApartment();
   }
@@ -70,9 +76,11 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
    * @return a new {@link Unit.Type#OFFICE} {@link Unit} initialized with the given,
    * required {@link String number}.
    * @see org.cp.domain.geo.model.Unit.Type#OFFICE
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #Unit(String)
    * @see #asOffice()
    */
+  @Dsl
   public static @NotNull Unit office(@NotNull String number) {
     return new Unit(number).asOffice();
   }
@@ -86,9 +94,11 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
    * @return a new {@link Unit.Type#ROOM} {@link Unit} initialized with the given,
    * required {@link String number}.
    * @see org.cp.domain.geo.model.Unit.Type#ROOM
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #Unit(String)
    * @see #asRoom()
    */
+  @Dsl
   public static @NotNull Unit room(@NotNull String number) {
     return new Unit(number).asRoom();
   }
@@ -102,9 +112,11 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
    * @return a new {@link Unit.Type#SUITE} {@link Unit} initialized with the given,
    * required {@link String number}.
    * @see org.cp.domain.geo.model.Unit.Type#SUITE
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #Unit(String)
    * @see #asSuite()
    */
+  @Dsl
   public static @NotNull Unit suite(@NotNull String number) {
     return new Unit(number).asSuite();
   }
@@ -115,10 +127,12 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
    * @param unit {@link Unit} to copy; must not be {@literal null}.
    * @return a new {@link Unit} copied from the given {@link Unit}.
    * @throws IllegalArgumentException if {@link Unit} is {@literal null}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.domain.geo.model.Unit
    * @see #of(String)
    * @see #as(Type)
    */
+  @Dsl
   public static @NotNull Unit from(@NotNull Unit unit) {
 
     Assert.notNull(unit, "Unit to copy is required");
@@ -135,9 +149,11 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
    * @return a new {@link Unit} initialized with the given, required {@link String number}.
    * @throws IllegalArgumentException if {@link String number} is {@literal null} or {@literal empty}.
    * @see org.cp.domain.geo.model.Unit.Type#UNKNOWN
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #Unit(String)
    * @see #as(Type)
    */
+  @Dsl
   public static @NotNull Unit of(@NotNull String number) {
     return new Unit(number).as(Unit.Type.UNKNOWN);
   }
@@ -182,8 +198,10 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
    *
    * @param type {@link Type} to assign to this {@link Unit}.
    * @return this {@link Unit}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.domain.geo.model.Unit.Type
    */
+  @Dsl
   public @NotNull Unit as(@Nullable Unit.Type type) {
     this.type = type;
     return this;
@@ -194,8 +212,10 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
    *
    * @return this {@link Unit}.
    * @see org.cp.domain.geo.model.Unit.Type#APARTMENT
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
+  @Dsl
   public @NotNull Unit asApartment() {
     return as(Unit.Type.APARTMENT);
   }
@@ -205,8 +225,10 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
    *
    * @return this {@link Unit}.
    * @see org.cp.domain.geo.model.Unit.Type#OFFICE
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
+  @Dsl
   public @NotNull Unit asOffice() {
     return as(Unit.Type.OFFICE);
   }
@@ -216,8 +238,10 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
    *
    * @return this {@link Unit}.
    * @see org.cp.domain.geo.model.Unit.Type#ROOM
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
+  @Dsl
   public @NotNull Unit asRoom() {
     return as(Unit.Type.ROOM);
   }
@@ -227,8 +251,10 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
    *
    * @return this {@link Unit}.
    * @see org.cp.domain.geo.model.Unit.Type#SUITE
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Type)
    */
+  @Dsl
   public @NotNull Unit asSuite() {
     return as(Unit.Type.SUITE);
   }
