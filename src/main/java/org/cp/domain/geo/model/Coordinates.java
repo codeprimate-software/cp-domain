@@ -43,7 +43,15 @@ import org.cp.elements.lang.annotation.Nullable;
 @FluentApi
 public class Coordinates implements Serializable {
 
+  /**
+   * Null Island is the point on Earth's surface at zero degrees latitude and zero degrees longitude ( 0°N 0°E),
+   * that is, where the prime meridian and the Equator intersect. Null Island is located in international waters
+   * in the Atlantic Ocean, roughly 600 km off the coast of West Africa, in the Gulf of Guinea.
+   */
+  public static final Coordinates NULL_ISLAND = Coordinates.at(0.0d, 0.0d).at(Elevation.atSeaLevel());
+
   protected static final String COORDINATES_TO_STRING = "[latitude: %1$s, longitude: %2$s, altitude: %3$s]";
+
 
   /**
    * Factory method used to construct a new instance of {@link Coordinates} initialized with
