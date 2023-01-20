@@ -540,6 +540,48 @@ public class AbstractAddressUnitTests {
       address.getCountry(), address.getType().orElse(null));
   }
 
+  @Test
+  public void buildAbstractAddress() {
+
+    Street mockStreet = mock(Street.class);
+    Unit mockUnit = mock(Unit.class);
+    City mockCity = mock(City.class);
+    PostalCode mockPostalCode = mock(PostalCode.class);
+    Country usa = Country.UNITED_STATES_OF_AMERICA;
+    Coordinates mockCoordinates = mock(Coordinates.class);
+
+    AbstractAddress address = new TestAddress.TestBuilder(usa)
+      .on(mockStreet)
+      .in(mockCity)
+      .in(mockPostalCode)
+      .in(mockUnit)
+      .at(mockCoordinates)
+      .build()
+      .asPoBox();
+
+    assertThat(address.getStreet()).isEqualTo(mockStreet);
+    assertThat(address.getCity()).isEqualTo(mockCity);
+    assertThat(address.getPostalCode()).isEqualTo(mockPostalCode);
+    assertThat(address.getCountry()).isEqualTo(usa);
+    assertThat(address.getCoordinates()).isPresent();
+    assertThat(address.getCoordinates().orElse(Coordinates.NULL_ISLAND)).isEqualTo(mockCoordinates);
+    assertThat(address.getType()).isPresent();
+    assertThat(address.getType().orElse(Address.Type.UNKNOWN)).isEqualTo(Address.Type.PO_BOX);
+    assertThat(address.getUnit()).isPresent();
+    assertThat(address.getUnit().orElse(Unit.EMPTY)).isEqualTo(mockUnit);
+
+    verifyNoInteractions(mockStreet, mockUnit, mockCity, mockPostalCode, mockCoordinates);
+  }
+
+  @Test
+  public void buildAbstractAddressWithNullCountry() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new TestAddress.TestBuilder(null))
+      .withMessage("Country is required")
+      .withNoCause();
+  }
+
   protected static class TestAddress extends AbstractAddress {
 
     protected TestAddress(Street street, City city, PostalCode postalCode) {
@@ -548,6 +590,18 @@ public class AbstractAddressUnitTests {
 
     protected TestAddress(Street street, City city, PostalCode postalCode, Country country) {
       super(street, city, postalCode, country);
+    }
+
+    protected static class TestBuilder extends AbstractAddress.Builder<TestAddress> {
+
+      protected TestBuilder(Country country) {
+        super(country);
+      }
+
+      @Override
+      protected TestAddress doBuild() {
+        return new TestAddress(getStreet(), getCity(), getPostalCode(), getCountry());
+      }
     }
   }
 }
