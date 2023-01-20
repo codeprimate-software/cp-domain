@@ -582,5 +582,24 @@ public abstract class AbstractAddress implements Address {
       this.coordinates = coordinates;
       return (S) this;
     }
+
+    @Override
+    public final T build() {
+
+      T address = doBuild();
+
+      getUnit().ifPresent(address::setUnit);
+      getCoordinates().ifPresent(address::setCoordinates);
+
+      return address;
+    }
+
+    /**
+     * Builder method to construct a concrete {@link AbstractAddress}.
+     *
+     * @return a new, concrete instance of {@link AbstractAddress}.
+     */
+    protected abstract T doBuild();
+
   }
 }
