@@ -409,7 +409,7 @@ public abstract class AbstractAddress implements Address {
 
   /**
    * An Elements {@link org.cp.elements.lang.Builder} implementation used to build and construct
-   * a concrete{@link AbstractAddress} fron the components of an {@link Address}.
+   * a concrete{@link AbstractAddress} from the components of an {@link Address}.
    *
    * @param <T> concrete {@link AbstractAddress} {@link Class type} based on the {@link Country} of origin
    * determined by the current, default {@link Locale}.
