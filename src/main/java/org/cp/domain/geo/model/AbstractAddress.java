@@ -415,7 +415,7 @@ public abstract class AbstractAddress implements Address {
    * determined by the current, default {@link Locale}.
    * @see org.cp.elements.lang.Builder
    */
-  protected static abstract class Builder<T extends AbstractAddress> implements org.cp.elements.lang.Builder<T> {
+  public static abstract class Builder<T extends AbstractAddress> implements org.cp.elements.lang.Builder<T> {
 
     private Street street;
     private Unit unit;
