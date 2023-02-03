@@ -26,7 +26,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Qualifier;
 
 /**
- * {@link Address} implementation modeling physical, postal addresses all around the world,
+ * {@link Address} implementation modeling {@literal physical, postal addresses} all around the world,
  * regardless of {@link Country}.
  *
  * @author John Blum
@@ -71,8 +71,8 @@ public class GenericAddress extends AbstractAddress {
   }
 
   /**
-   * Constructs a new instance of {@link GenericAddress} initialized with the given, required {@link Street},
-   * {@link City} and {@link PostalCode}.
+   * Constructs a new {@link GenericAddress} initialized with the given, required {@link Street}, {@link City}
+   * and {@link PostalCode}.
    *
    * @param street {@link Street} of the {@link Address}; must not be {@literal null}.
    * @param city {@link City} of the {@link Address}; must not be {@literal null}.
