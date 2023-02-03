@@ -23,12 +23,14 @@ import org.cp.domain.geo.model.PostalCode;
 import org.cp.domain.geo.model.Street;
 import org.cp.elements.lang.annotation.Alias;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Qualifier;
 
 /**
  * {@link Address} implementation modeling physical, postal addresses all around the world,
  * regardless of {@link Country}.
  *
  * @author John Blum
+ * @see org.cp.elements.lang.annotation.Qualifier
  * @see org.cp.domain.geo.model.AbstractAddress
  * @see org.cp.domain.geo.model.Address
  * @see org.cp.domain.geo.model.Street
@@ -38,6 +40,7 @@ import org.cp.elements.lang.annotation.NotNull;
  * @see org.cp.domain.geo.enums.Country
  * @since 0.1.0
  */
+@Qualifier(name = "generic")
 public class GenericAddress extends AbstractAddress {
 
   /**
