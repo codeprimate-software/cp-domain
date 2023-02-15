@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.model.usa;
 
-import java.util.Optional;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.enums.State;
@@ -25,203 +24,147 @@ import org.cp.domain.geo.model.Address;
 import org.cp.domain.geo.model.City;
 import org.cp.domain.geo.model.PostalCode;
 import org.cp.domain.geo.model.Street;
+import org.cp.domain.geo.model.usa.support.StateZipCodesRepository;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.Alias;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.annotation.Qualifier;
+import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
- * The {@link UnitedStatesAddress} class is an implementation of {@link Address} that models and represents an
- * {@link Address} of the {@link Country#UNITED_STATES_OF_AMERICA Unite States of America}.
+ * {@link Address} implementation modeling a {@literal physical, postal address}
+ * in the {@link Country#UNITED_STATES_OF_AMERICA United States of America}.
  *
  * @author John Blum
- * @see org.cp.domain.geo.enums.Country
+ * @see org.cp.elements.lang.annotation.Qualifier
  * @see org.cp.domain.geo.model.AbstractAddress
  * @see org.cp.domain.geo.model.Address
- * @see org.cp.domain.geo.model.City
- * @see org.cp.domain.geo.model.PostalCode
  * @see org.cp.domain.geo.model.Street
  * @see org.cp.domain.geo.model.Unit
+ * @see org.cp.domain.geo.model.City
+ * @see org.cp.domain.geo.model.PostalCode
  * @see org.cp.domain.geo.model.usa.ZIP
- * @see State
- * @since 1.0.0
+ * @see org.cp.domain.geo.enums.Country
+ * @see org.cp.domain.geo.enums.State
+ * @since 0.1.0
  */
-@SuppressWarnings("unused")
+@Qualifier(name = "usa")
 public class UnitedStatesAddress extends AbstractAddress {
 
   protected static final String UNITED_STATES_ADDRESS_TO_STRING =
     "{ @type = %1$s, street = %2$s, unit = %3$s, city = %4$s, state = %5$s, zip = %6$s, country = %7$s, type = %8$s }";
 
   /**
-   * Factory method used to construct a new, uninitialized instance of {@link UnitedStatesAddress}.
+   * Factory method used to construct a new instance of {@link UnitedStatesAddress.Builder} to build
+   * an {@link UnitedStatesAddress}.
    *
-   * @return a new, uninitialized instance of {@link UnitedStatesAddress}.
-   * @see org.cp.domain.geo.enums.Country#UNITED_STATES_OF_AMERICA
-   * @see #in(Country)
+   * @return a new {@link UnitedStatesAddress.Builder} used to build, construct and initialize
+   * an {@link UnitedStatesAddress}.
+   * @see org.cp.domain.geo.model.usa.UnitedStatesAddress.Builder
    */
-  public static UnitedStatesAddress newUnitedStatesAddress() {
-    return new UnitedStatesAddress().in(Country.UNITED_STATES_OF_AMERICA);
+  public static @NotNull UnitedStatesAddress.Builder newUnitedStatesAddress() {
+    return new UnitedStatesAddress.Builder();
   }
 
+  private final State state;
+
   /**
-   * Constructs a new instance of {@link UnitedStatesAddress} initialized with the given {@link Street},
-   * {@link City}, {@link State} and {@link ZIP}.
+   * Constructs a new {@link UnitedStatesAddress} initialized with the given, required {@link Street}, {@link City},
+   * {@link State} and {@link ZIP} code uniquely identifying a {@literal physical, postal address}
+   * in the {@link Country#UNITED_STATES_OF_AMERICA United States of America}.
    *
-   * @param street {@link Street} of the new {@link UnitedStatesAddress}.
-   * @param city {@link City} of the new {@link UnitedStatesAddress}.
-   * @param state {@link State} of the new {@link UnitedStatesAddress}.
-   * @param zip (@link ZIP} of the new {@link UnitedStatesAddress}.
-   * @return a new {@link UnitedStatesAddress} initialized with the given {@link Street}, {@link City},
-   * {@link State} and {@link ZIP}.
-   * @throws IllegalArgumentException if {@link Street}, {@link City}, {@link State} or {@link ZIP}
+   * @param street {@link Street} of this {@link Address}; must not be {@literal null}.
+   * @param city {@link City} of this {@link Address}; must not be {@literal null}.
+   * @param state {@link State} of this {@link Address}; must not be {@literal null}.
+   * @param zip {@link ZIP}, or {@link PostalCode}, of this {@link Address}; must not be {@literal null}.
+   * @throws IllegalArgumentException if the {@link Street}, {@link City}, {@link State} or {@link ZIP}
    * are {@literal null}.
+   * @see org.cp.domain.geo.enums.Country#UNITED_STATES_OF_AMERICA
    * @see org.cp.domain.geo.model.Street
    * @see org.cp.domain.geo.model.City
+   * @see org.cp.domain.geo.enums.State
    * @see org.cp.domain.geo.model.usa.ZIP
-   * @see State
-   * @see #newUnitedStatesAddress()
-   * @see #on(Street)
-   * @see #in(City)
-   * @see #in(State)
-   * @see #in(ZIP)
    */
-  public static UnitedStatesAddress of(Street street, City city, State state, ZIP zip) {
-    return newUnitedStatesAddress().in(zip).in(state).in(city).on(street);
+  protected UnitedStatesAddress(@NotNull Street street, @NotNull City city, @NotNull State state, @NotNull ZIP zip) {
+
+    super(street, city, zip, Country.UNITED_STATES_OF_AMERICA);
+
+    this.state = ObjectUtils.requireObject(state, "State is required");
   }
 
   /**
-   * Factory method used to contruct a new instance of {@link UnitedStatesAddress} copied from
-   * the given {@link Address}.
+   * Returns the {@link City} of this {@link UnitedStatesAddress} as a {@link UnitedStatesCity}.
    *
-   * @param address {@link Address} to copy.
-   * @return a new {@link UnitedStatesAddress} copied from the given {@link Address}.
-   * @throws IllegalArgumentException if {@link Address} is {@literal null}.
-   * @see org.cp.domain.geo.model.Address
-   * @see #newUnitedStatesAddress()
+   * @return the {@link City} of this {@link UnitedStatesAddress} as a {@link UnitedStatesCity}.
+   * @see org.cp.domain.geo.model.usa.UnitedStatesCity
+   * @see org.cp.domain.geo.model.City
+   * @see #getCity()
    */
-  public static UnitedStatesAddress from(Address address) {
-
-    Assert.notNull(address, "Address to copy is required");
-
-    UnitedStatesAddress unitedStatesAddress = newUnitedStatesAddress()
-      .as(address.getType().orElse(null))
-      .on(address.getStreet())
-      .in(address.getUnit().orElse(null))
-      .in(address.getCity())
-      .in(address.getPostalCode())
-      .with(address.getCoordinates().orElse(null));
-
-    Optional.of(address)
-      .filter(it -> it instanceof UnitedStatesAddress)
-      .map(it -> ((UnitedStatesAddress) it).getState())
-      .ifPresent(unitedStatesAddress::in);
-
-    Optional.of(address)
-      .filter(it -> it instanceof UnitedStatesAddress)
-      .map(it -> ((UnitedStatesAddress) it).getZip())
-      .ifPresent(unitedStatesAddress::in);
-
-    return unitedStatesAddress;
-  }
-
-  private State state;
-
-  private ZIP zip;
-
-  /**
-   * Sets the {@link State} of this {@link UnitedStatesAddress}.
-   *
-   * @param state {@link State} to set for this {@link UnitedStatesAddress}.
-   * @throws IllegalArgumentException if {@link State} is {@literal null}.
-   * @see State
-   */
-  public void setState(State state) {
-
-    Assert.notNull(state,"State is required");
-
-    this.state = state;
+  @Override
+  public @NotNull City getCity() {
+    return UnitedStatesCity.from(super.getCity(), getState());
   }
 
   /**
    * Returns the {@link State} of this {@link UnitedStatesAddress}.
    *
    * @return the {@link State} of this {@link UnitedStatesAddress}.
-   * @see State
+   * @see org.cp.domain.geo.enums.State
    */
-  public State getState() {
+  public @NotNull State getState() {
     return this.state;
   }
 
   /**
-   * Sets the {@link ZIP Zip Code} for this {@link UnitedStatesAddress}.
+   * Returns the {@link ZIP} code of this {@link UnitedStatesAddress}.
    *
-   * @param zip {@link ZIP Zip Code} to set for this {@link UnitedStatesAddress}.
-   * @throws IllegalArgumentException if {@link ZIP} is {@literal null}.
-   * @see org.cp.domain.geo.model.usa.ZIP
-   * @see #setPostalCode(PostalCode)
-   */
-  public void setZip(ZIP zip) {
-
-    Assert.notNull(zip,"Zip is required");
-
-    this.zip = zip;
-    setPostalCode(zip);
-  }
-
-  /**
-   * Returns the {@link ZIP Zip Code} for this {@link UnitedStatesAddress}.
+   * {@literal ZIP} code is an alias for {@link #getPostalCode() postal code}.
    *
-   * @return the {@link ZIP Zip Code} for this {@link UnitedStatesAddress}.
+   * @return the {@link ZIP} code of this {@link UnitedStatesAddress}.
    * @see org.cp.domain.geo.model.PostalCode
    * @see org.cp.domain.geo.model.usa.ZIP
    * @see #getPostalCode()
    */
-  public ZIP getZip() {
-
-    return Optional.ofNullable(this.zip)
-      .orElseGet(() ->
-        Optional.ofNullable(getPostalCode())
-          .map(it -> ZIP.of(it.getNumber()))
-          .orElse(null));
+  @Alias(forMember = "AbstractAddress.getPostalCode()")
+  public @NotNull ZIP getZip() {
+    return ZIP.from(getPostalCode());
   }
 
   /**
-   * Builder method to set the {@link State} of this {@link UnitedStatesAddress}.
+   * Compares this {@link UnitedStatesAddress} with the given, required {@link Address} to determine relative ordering
+   * (sort order) in an ordered data structure, such as a {@link java.util.List} or an array.
    *
-   * @param state {@link State} to set for this {@link UnitedStatesAddress}.
-   * @return this {@link UnitedStatesAddress}.
-   * @throws IllegalArgumentException if {@link State} is {@literal null}.
-   * @see State
-   * @see #setState(State)
+   * @param that {@link Address} to compare with this {@link Address}; must not be {@literal null}.
+   * @return an {@link Integer value} determining the order (sort) of this {@link UnitedStatesAddress}
+   * relative to the given, required {@link Address}.
+   * @throws org.cp.elements.lang.IllegalTypeException if the given {@link Address} is not an instance of
+   * {@link UnitedStatesAddress}.
+   * @see java.lang.Comparable#compareTo(Object)
+   * @see org.cp.domain.geo.model.Address
    */
-  public UnitedStatesAddress in(State state) {
-    setState(state);
-    return this;
-  }
+  @Override
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public int compareTo(@NotNull Address that) {
 
-  /**
-   * Builder method to set the {@link ZIP Zip Code} for this {@link UnitedStatesAddress}.
-   *
-   * @param zipCode {@link ZIP Zip Code} to set for this {@link UnitedStatesAddress}.
-   * @return this {@link UnitedStatesAddress}.
-   * @throws IllegalArgumentException if {@link ZIP} is {@literal null}.
-   * @see org.cp.domain.geo.model.usa.ZIP
-   * @see #setZip(ZIP)
-   */
-  public UnitedStatesAddress in(ZIP zipCode) {
-    setZip(zipCode);
-    return this;
+    Assert.isInstanceOf(that, UnitedStatesAddress.class);
+
+    return ComparatorResultBuilder.<Comparable>create()
+      .doCompare(this.getState(), ((UnitedStatesAddress) that).getState())
+      .getResult(() -> super.compareTo(that));
   }
 
   /**
    * Determines whether this {@link UnitedStatesAddress} is equal to the given {@link Object}.
    *
    * @param obj {@link Object} to evaluate for equality with this {@link Address}.
-   * @return a boolean value indicating whether this {@link UnitedStatesAddress} is equal to
-   * the given {@link Object}.
+   * @return a boolean value indicating whether this {@link UnitedStatesAddress} is equal to the given {@link Object}.
    * @see org.cp.domain.geo.model.AbstractAddress#equals(Object)
    * @see java.lang.Object#equals(Object)
    */
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(@Nullable Object obj) {
 
     if (this == obj) {
       return true;
@@ -233,9 +176,7 @@ public class UnitedStatesAddress extends AbstractAddress {
 
     UnitedStatesAddress that = (UnitedStatesAddress) obj;
 
-    return super.equals(obj)
-      && ObjectUtils.equals(this.getState(), that.getState())
-      && ObjectUtils.equals(this.getZip(), that.getZip());
+    return super.equals(obj) && ObjectUtils.equals(this.getState(), that.getState());
   }
 
   /**
@@ -247,25 +188,82 @@ public class UnitedStatesAddress extends AbstractAddress {
    */
   @Override
   public int hashCode() {
-
-    int hashValue = super.hashCode();
-
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getState());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getZip());
-
-    return hashValue;
+    return ObjectUtils.hashCodeOf(super.hashCode(), getState());
   }
 
   /**
    * Returns a {@link String} representation of this {@link UnitedStatesAddress}.
    *
-   * @return a {@link String} representation of this {@link UnitedStatesAddress}.
+   * @return a {@link String} describing this {@link UnitedStatesAddress}.
    * @see java.lang.Object#toString()
    */
   @Override
-  public String toString() {
+  public @NotNull String toString() {
 
-    return String.format(UNITED_STATES_ADDRESS_TO_STRING,
-      getClass().getName(), getStreet(), getUnit(), getCity(), getState(), getZip(), getCountry(), getType());
+    return String.format(UNITED_STATES_ADDRESS_TO_STRING, getClass().getName(),
+      getStreet(), getUnit().orElse(null), getCity(), getState(), getZip(), getCountry(),
+      getType().orElse(Address.Type.UNKNOWN));
+  }
+
+  /**
+   * {@link org.cp.elements.lang.Builder} implementation used to build an {@link UnitedStatesAddress}.
+   *
+   * @see org.cp.domain.geo.model.AbstractAddress.Builder
+   * @see org.cp.domain.geo.model.usa.UnitedStatesAddress
+   */
+  public static class Builder extends AbstractAddress.Builder<UnitedStatesAddress> {
+
+    private State state;
+
+    /**
+     * Constructs a new instance of {@link UnitedStatesAddress.Builder} used to build an {@link UnitedStatesAddress}
+     * residing in the {@link Country#UNITED_STATES_OF_AMERICA}.
+     *
+     * @see org.cp.domain.geo.enums.Country#UNITED_STATES_OF_AMERICA
+     */
+    public Builder() {
+      super(Country.UNITED_STATES_OF_AMERICA);
+    }
+
+    protected @NotNull State getState() {
+
+      try {
+
+        State state = resolveState(this.state);
+
+        return ObjectUtils.requireState(state, "State was not initialized");
+      }
+      catch (IllegalArgumentException cause) {
+        throw newIllegalStateException(cause, "State was not initialized");
+      }
+    }
+
+    private @NotNull State resolveState(@Nullable State state) {
+      return state != null ? state : StateZipCodesRepository.getInstance().findBy(getZip());
+    }
+
+    @Alias(forMember = "AbstractAddress.Builder.getPostalCode()")
+    protected @NotNull ZIP getZip() {
+      return ZIP.from(getPostalCode());
+    }
+
+    /**
+     * Builder method used to set the {@link State} of the {@link UnitedStatesAddress}.
+     *
+     * @param state {@link State} of the {@link UnitedStatesAddress}; must not be {@literal null}.
+     * @return this {@link UnitedStatesAddress.Builder}.
+     * @throws IllegalArgumentException if {@link State} is {@literal null}.
+     * @see org.cp.domain.geo.enums.State
+     * @see #getState()
+     */
+    public @NotNull Builder in(@NotNull State state) {
+      this.state = ObjectUtils.requireObject(state, "State is required");
+      return this;
+    }
+
+    @Override
+    protected @NotNull UnitedStatesAddress doBuild() {
+      return new UnitedStatesAddress(getStreet(), getCity(), getState(), getZip());
+    }
   }
 }
