@@ -130,7 +130,7 @@ public class GenericAddress extends AbstractAddress {
 
     @Override
     @Alias(forMember = "AbstractAddress.Builder.getCountry()")
-    protected Country getCountry() {
+    protected @NotNull Country getCountry() {
       return super.getCountry();
     }
 
