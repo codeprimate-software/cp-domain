@@ -137,7 +137,7 @@ public class UnitedStatesAddressUnitTests {
     assertThat(address.getStreet()).isEqualTo(Street.of(100, "Main").asStreet());
     assertThat(address.getUnit()).isNotPresent();
     assertThat(address.getCity()).isEqualTo(city);
-    assertThat(address.getPostalCode()).isEqualTo(PostalCode.of("12345"));
+    assertThat(address.getPostalCode()).isEqualTo(ZIP.of("12345"));
     assertThat(address.getState()).isEqualTo(State.OREGON);
     assertThat(address.getZip()).isEqualTo(ZIP.of("12345"));
     assertThat(address.getCountry()).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
@@ -158,7 +158,7 @@ public class UnitedStatesAddressUnitTests {
     assertThat(address.getStreet()).isEqualTo(Street.of(2, "One").asWay());
     assertThat(address.getUnit()).isNotPresent();
     assertThat(address.getCity()).isEqualTo(city);
-    assertThat(address.getPostalCode()).isEqualTo(PostalCode.of("97205"));
+    assertThat(address.getPostalCode()).isEqualTo(ZIP.of("97205"));
     assertThat(address.getState()).isEqualTo(State.OREGON);
     assertThat(address.getZip()).isEqualTo(ZIP.of("97205"));
     assertThat(address.getCountry()).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
