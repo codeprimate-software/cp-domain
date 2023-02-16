@@ -168,10 +168,6 @@ public class City implements Cloneable, Comparable<City>, Nameable<String>, Seri
       && ObjectUtils.equals(getCountry(this), getCountry(that));
   }
 
-  private @NotNull Country getCountry(@NotNull City city) {
-    return city.getCountry().orElse(Country.UNKNOWN);
-  }
-
   /**
    * Computes the {@link Integer hash code} of this {@link City}.
    *
@@ -180,7 +176,11 @@ public class City implements Cloneable, Comparable<City>, Nameable<String>, Seri
    */
   @Override
   public int hashCode() {
-    return ObjectUtils.hashCodeOf(getName(), getCountry().orElse(Country.UNKNOWN));
+    return ObjectUtils.hashCodeOf(getName(), getCountry(this));
+  }
+
+  private @NotNull Country getCountry(@NotNull City city) {
+    return city.getCountry().orElse(Country.UNKNOWN);
   }
 
   /**
