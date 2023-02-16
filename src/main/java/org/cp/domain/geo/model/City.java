@@ -165,7 +165,11 @@ public class City implements Cloneable, Comparable<City>, Nameable<String>, Seri
     City that = (City) obj;
 
     return ObjectUtils.equals(this.getName(), that.getName())
-      && ObjectUtils.equals(this.getCountry().orElse(Country.UNKNOWN), that.getCountry().orElse(Country.UNKNOWN));
+      && ObjectUtils.equals(getCountry(this), getCountry(that));
+  }
+
+  private @NotNull Country getCountry(@NotNull City city) {
+    return city.getCountry().orElse(Country.UNKNOWN);
   }
 
   /**
