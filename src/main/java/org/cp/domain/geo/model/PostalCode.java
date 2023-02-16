@@ -142,7 +142,7 @@ public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializab
   public int compareTo(@NotNull PostalCode postalCode) {
 
     return ComparatorResultBuilder.<Comparable>create()
-      .doCompare(this.getCountry().orElse(Country.UNKNOWN), postalCode.getCountry().orElse(Country.UNKNOWN))
+      .doCompare(getCountry(this), getCountry(postalCode))
       .doCompare(this.getNumber(), postalCode.getNumber())
       .build();
   }
@@ -168,7 +168,7 @@ public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializab
     PostalCode that = (PostalCode) obj;
 
     return ObjectUtils.equals(this.getNumber(), that.getNumber())
-      && ObjectUtils.equals(this.getCountry().orElse(Country.UNKNOWN), that.getCountry().orElse(Country.UNKNOWN));
+      && ObjectUtils.equals(getCountry(this), getCountry(that));
   }
 
   /**
@@ -179,7 +179,11 @@ public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializab
    */
   @Override
   public int hashCode() {
-    return ObjectUtils.hashCodeOf(getNumber(), getCountry().orElse(Country.UNKNOWN));
+    return ObjectUtils.hashCodeOf(getNumber(), getCountry(this));
+  }
+
+  private @NotNull Country getCountry(@NotNull PostalCode postalCode) {
+    return postalCode.getCountry().orElse(Country.UNKNOWN);
   }
 
   /**
