@@ -17,6 +17,7 @@ package org.cp.domain.geo.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -59,12 +60,23 @@ public class AbstractAddressUnitTests {
 
     assertThat(address).isNotNull();
     assertThat(address.getStreet()).isEqualTo(street);
-    assertThat(City.from(address.getCity())).isEqualTo(city);
+    assertThat(fromCity(address.getCity())).isEqualTo(city);
     assertThat(address.getPostalCode()).isEqualTo(postalCode);
     assertThat(address.getCountry()).isEqualTo(country);
     assertThat(address.getCoordinates()).isNotPresent();
     assertThat(address.getType()).isNotPresent();
     assertThat(address.getUnit()).isNotPresent();
+  }
+
+  private City fromCity(City city) {
+
+    return new City(city.getName()) {
+
+      @Override
+      public Optional<Country> getCountry() {
+        return city.getCountry();
+      }
+    };
   }
 
   @SuppressWarnings("unused")
@@ -89,6 +101,7 @@ public class AbstractAddressUnitTests {
     City mockCity = mock(City.class);
 
     doReturn(name).when(mockCity).getName();
+    doReturn(Optional.of(Country.localCountry())).when(mockCity).getCountry();
 
     return mockCity;
   }
@@ -98,6 +111,7 @@ public class AbstractAddressUnitTests {
     PostalCode mockPostalCode = mock(PostalCode.class);
 
     doReturn(number).when(mockPostalCode).getNumber();
+    doReturn(Optional.of(Country.localCountry())).when(mockPostalCode).getCountry();
 
     return mockPostalCode;
   }
@@ -105,8 +119,15 @@ public class AbstractAddressUnitTests {
   private void verifyCityInteractions(City mockCity) {
 
     verify(mockCity, times(2)).getName();
-    verify(mockCity, times(1)).getCountry();
+    verify(mockCity, atLeastOnce()).getCountry();
     verifyNoMoreInteractions(mockCity);
+  }
+
+  private void verifyPostalCodeInteractions(PostalCode mockPostalCode) {
+
+    verify(mockPostalCode, atLeastOnce()).getNumber();
+    verify(mockPostalCode, times(1)).getCountry();
+    verifyNoMoreInteractions(mockPostalCode);
   }
 
   @Test
@@ -275,6 +296,7 @@ public class AbstractAddressUnitTests {
     assertAddress(address, mockStreet, mockCity, mockPostalCode);
 
     verifyCityInteractions(mockCity);
+    verifyPostalCodeInteractions(mockPostalCode);
     verifyNoInteractions(mockStreet);
   }
 
