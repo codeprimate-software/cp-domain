@@ -54,7 +54,7 @@ public class UnitedStatesAddressUnitTests {
   @Test
   public void constructUnitedStatesAddress() {
 
-    UnitedStatesCity city = UnitedStatesCity.from("MockCity", State.OREGON);
+    UnitedStatesCity city = UnitedStatesCity.newUnitedStatesCity("MockCity").in(State.OREGON);
 
     Street mockStreet = mock(Street.class);
     ZIP mockZip = mock(ZIP.class);
@@ -124,7 +124,7 @@ public class UnitedStatesAddressUnitTests {
   @Test
   public void unitedSatesAddressBuiltWithBuilder() {
 
-    UnitedStatesCity city = UnitedStatesCity.from("Portland", State.OREGON);
+    UnitedStatesCity city = UnitedStatesCity.newUnitedStatesCity("Portland").in(State.OREGON);
 
     UnitedStatesAddress address = UnitedStatesAddress.newUnitedStatesAddress()
       .in(State.OREGON)
@@ -146,7 +146,7 @@ public class UnitedStatesAddressUnitTests {
   @Test
   public void unitedStatesAddressBuilderWithStateDeterminedByZip() {
 
-    UnitedStatesCity city = UnitedStatesCity.from("Portland", State.OREGON);
+    UnitedStatesCity city = UnitedStatesCity.newUnitedStatesCity("Portland").in(State.OREGON);
 
     UnitedStatesAddress address = UnitedStatesAddress.newUnitedStatesAddress()
       .on(Street.of(2, "One").asWay())
