@@ -139,7 +139,7 @@ public class City implements Cloneable, Comparable<City>, Nameable<String>, Seri
   public int compareTo(@NotNull City city) {
 
     return ComparatorResultBuilder.<Comparable>create()
-      .doCompare(this.getCountry().orElse(Country.UNKNOWN), city.getCountry().orElse(Country.UNKNOWN))
+      .doCompare(getCountry(this), getCountry(city))
       .doCompare(this.getName(), city.getName())
       .build();
   }
