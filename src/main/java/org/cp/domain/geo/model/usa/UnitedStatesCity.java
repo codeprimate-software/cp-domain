@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.model.usa;
-
-import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 
 import java.util.Optional;
 
@@ -25,98 +22,192 @@ import org.cp.domain.geo.enums.State;
 import org.cp.domain.geo.model.City;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
- * The UnitedStatesCity class...
+ * {@link City} in the {@link Country#UNITED_STATES_OF_AMERICA United States of America}.
  *
  * @author John Blum
- * @since 1.0.0
+ * @see org.cp.domain.geo.enums.Country
+ * @see org.cp.domain.geo.enums.State
+ * @see org.cp.domain.geo.model.City
+ * @since 0.1.0
  */
 @SuppressWarnings("unused")
 public class UnitedStatesCity extends City {
 
-  private State state;
-
-  public static UnitedStatesCity newUnitedStatesCity(String name) {
+  /**
+   * Factory method used to construct a new instance of {@link UnitedStatesCity} initialized with the given,
+   * required {@link String name}.
+   *
+   * @param name {@link String} containing the {@literal name} of the {@link City};
+   * must not be {@literal null} or {@literal empty}.
+   * @return a new {@link UnitedStatesCity} with the given {@link String name}.
+   * @throws IllegalArgumentException if the given {@link String name} is {@literal null} or {@literal empty}.
+   */
+  public static @NotNull UnitedStatesCity newUnitedStatesCity(@NotNull String name) {
     return new UnitedStatesCity(name);
   }
 
-  public static UnitedStatesCity of(String name, State state) {
-    return newUnitedStatesCity(name).in(state);
+  /**
+   * Factory method used to construct a new instance of {@link UnitedStatesCity} copied from the existing,
+   * required {@link City}.
+   *
+   * @param city {@link City} to copy; must not be {@literal null}.
+   * @return a new {@link UnitedStatesCity} copied from the existing {@link City}
+   * @throws IllegalArgumentException if the given {@link City} is {@literal null}.
+   * @see org.cp.domain.geo.model.City
+   * @see #newUnitedStatesCity(String)
+   */
+  public static @NotNull UnitedStatesCity from(@NotNull City city) {
+
+    Assert.notNull(city, "City is required");
+
+    UnitedStatesCity usCity = newUnitedStatesCity(city.getName());
+
+    Optional.of(city)
+      .filter(UnitedStatesCity.class::isInstance)
+      .map(UnitedStatesCity.class::cast)
+      .map(UnitedStatesCity::getState)
+      .ifPresent(usCity::in);
+
+    return usCity;
   }
 
-  public static UnitedStatesCity from(City city) {
+  private State state;
 
-    Assert.notNull(city, "City must not be null");
-
-    return newUnitedStatesCity(city.getName());
-  }
-
-  public UnitedStatesCity(String name) {
+  /**
+   * Constructs a new instance of {@link UnitedStatesCity} initialized with the given, required {@link String name}.
+   *
+   * @param name {@link String} containing the {@literal name} of the {@link City};
+   * must not be {@literal null} or {@literal empty}.
+   * @throws IllegalArgumentException if the given {@link String name} is {@literal null} or {@literal empty}.
+   */
+  public UnitedStatesCity(@NotNull String name) {
     super(name);
   }
 
+  /**
+   * Determines whether this {@link City} is the {@literal capital} of
+   * the {@link Country#UNITED_STATES_OF_AMERICA United States}
+   * or the {@literal capital} of the containing {@link State}.
+   *
+   * Returns {@literal false} by default.
+   *
+   * @return a boolean value indicating whether this {@link City} is the {@literal capital} of
+   * the {@link Country#UNITED_STATES_OF_AMERICA United States} or the {@literal capital} of
+   * the containing {@link State}.
+   */
   public boolean isCapital() {
     return false;
   }
 
+  /**
+   * Returns the {@link Country#UNITED_STATES_OF_AMERICA}.
+   *
+   * @return the {@link Country#UNITED_STATES_OF_AMERICA}.
+   * @see org.cp.domain.geo.enums.Country#UNITED_STATES_OF_AMERICA
+   * @see java.util.Optional
+   */
   @Override
   public final Optional<Country> getCountry() {
     return Optional.of(Country.UNITED_STATES_OF_AMERICA);
   }
 
-  public void setState(State state) {
-    this.state = Optional.ofNullable(state)
-      .orElseThrow(() -> newIllegalArgumentException("State is required"));
+  /**
+   * Configures the {@link State} in which this {@link City} is located.
+   *
+   * @param state {@link State} in which this {@link City} is located; must not be {@literal null}.
+   * @throws IllegalArgumentException if the given {@link State} is {@literal null}.
+   * @see org.cp.domain.geo.enums.State
+   * @see #getState()
+   * @see #in(State)
+   */
+  public void setState(@NotNull State state) {
+    this.state = ObjectUtils.requireObject(state, "State is required");
   }
 
-  public State getState() {
+  /**
+   * Returns the configured {@link State} in which this {@link City} is located.
+   *
+   * @return the configured {@link State} in which this {@link City} is located.
+   * @see org.cp.domain.geo.enums.State
+   * @see #setState(State)
+   */
+  public @Nullable State getState() {
     return this.state;
   }
 
-  public UnitedStatesCity in(State state) {
+  /**
+   * Builder method used to configure the {@link State} in which this {@link City} is located.
+   *
+   * @param state {@link State} in which this {@link City} is located; must not be {@literal null}.
+   * @return this {@link UnitedStatesCity}.
+   * @throws IllegalArgumentException if the given {@link State} is {@literal null}.
+   * @see #setState(State)
+   */
+  public @NotNull UnitedStatesCity in(@NotNull State state) {
     setState(state);
     return this;
   }
 
   @Override
-  @SuppressWarnings("unchecked")
-  public int compareTo(City city) {
-    ComparatorResultBuilder builder = ComparatorResultBuilder.<Comparable>create()
-      .doCompare(this.getCountry().orElse(null), city.getCountry().orElse(null));
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public int compareTo(@NotNull City city) {
+
+    ComparatorResultBuilder builder = ComparatorResultBuilder.<Comparable>create();
+
+    builder.doCompare(resolveCountry(this), resolveCountry(city));
 
     Optional.of(city)
-      .filter(localCity-> localCity instanceof UnitedStatesCity)
-      .ifPresent(localCity -> builder.doCompare(this.getState(), ((UnitedStatesCity) localCity).getState()));
+      .filter(UnitedStatesCity.class::isInstance)
+      .map(UnitedStatesCity.class::cast)
+      .ifPresent(it -> builder.doCompare(this.getState(), it.getState()));
 
-    return builder.doCompare(this.getName(), city.getName()).build();
+    builder.doCompare(this.getName(), city.getName());
+
+    return builder.build();
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(@Nullable Object obj) {
 
     if (this == obj) {
       return true;
     }
 
-    if (!(obj instanceof UnitedStatesCity)) {
+    if (!(obj instanceof City)) {
       return false;
     }
 
-    UnitedStatesCity that = (UnitedStatesCity) obj;
+    City that = (City) obj;
 
-    return ObjectUtils.equals(this.getState(), that.getState());
+    return isUnitedStatesCity(that)
+      && super.equals(obj)
+      && ObjectUtils.equalsIgnoreNull(this.getState(), resolveState(that));
+  }
+
+  @NullSafe
+  private boolean isUnitedStatesCity(@Nullable City city) {
+    return city instanceof UnitedStatesCity
+      || Country.UNITED_STATES_OF_AMERICA.equals(resolveCountry(city));
+  }
+
+  @NullSafe
+  private @Nullable Country resolveCountry(@Nullable City city) {
+    return city != null ? city.getCountry().orElse(null) : null;
+  }
+
+  @NullSafe
+  private @Nullable State resolveState(@Nullable City city) {
+    return city instanceof UnitedStatesCity ? ((UnitedStatesCity) city).getState() : null;
   }
 
   @Override
   public int hashCode() {
-
-    int hashValue = super.hashCode();
-
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getState());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getCountry());
-
-    return hashValue;
+    return ObjectUtils.hashCodeOf(super.hashCode(), getState());
   }
 }
