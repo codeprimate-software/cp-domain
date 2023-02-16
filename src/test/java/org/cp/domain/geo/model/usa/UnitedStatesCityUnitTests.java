@@ -69,8 +69,8 @@ public class UnitedStatesCityUnitTests {
 
     assertThat(city).isNotNull();
     assertThat(city.getName()).isEqualTo("TestCity");
-    assertThat(city.getCountry().orElse(null)).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
     assertThat(city.getState()).isNull();
+    assertThat(city.getCountry().orElse(null)).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
   }
 
   @Test
@@ -107,11 +107,25 @@ public class UnitedStatesCityUnitTests {
     assertThat(city).isNotNull();
     assertThat(city).isNotSameAs(mockCity);
     assertThat(city.getName()).isEqualTo("MockCity");
-    assertThat(city.getCountry().orElse(null)).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
     assertThat(city.getState()).isNull();
+    assertThat(city.getCountry().orElse(null)).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
 
     verify(mockCity, times(1)).getName();
     verifyNoMoreInteractions(mockCity);
+  }
+
+  @Test
+  public void fromCityInCountryAndState() {
+
+    UnitedStatesCity city = UnitedStatesCity.newUnitedStatesCity("NonMockCity").in(State.CALIFORNIA);
+    UnitedStatesCity copy = UnitedStatesCity.from(city);
+
+    assertThat(copy).isNotNull();
+    assertThat(copy).isNotSameAs(city);
+    assertThat(copy).isEqualTo(city);
+    assertThat(copy.getName()).isEqualTo("NonMockCity");
+    assertThat(copy.getState()).isEqualTo(State.CALIFORNIA);
+    assertThat(copy.getCountry().orElse(null)).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
   }
 
   @Test
