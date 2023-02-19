@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,29 @@
  */
 package org.cp.domain.geo.model.usa.cities;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
+
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.enums.State;
-import org.cp.domain.geo.model.usa.ImmutableUnitedStatesCity;
-import org.cp.elements.lang.annotation.Immutable;
 
 /**
- * {@link ImmutableUnitedStatesCity} modeling the city of {@literal Dubuque} {@link State#IOWA},
- * {@link Country#UNITED_STATES_OF_AMERICA USA}.
+ * Unit Tests for {@link DubuqueIowa}.
  *
  * @author John Blum
- * @see org.cp.domain.geo.enums.Country
- * @see org.cp.domain.geo.enums.State
- * @see org.cp.domain.geo.model.usa.ImmutableUnitedStatesCity
- * @see org.cp.elements.lang.annotation.Immutable
+ * @see org.junit.Test
+ * @see org.cp.domain.geo.model.usa.cities.DubuqueIowa
  * @since 0.1.0
  */
-@Immutable
-public final class DubuqueIowa extends ImmutableUnitedStatesCity {
+public class DubuqueIowaUnitTests {
 
-  public static final DubuqueIowa INSTANCE = new DubuqueIowa();
+  @Test
+  public void dubuqueIowaPropertiesAreCorrect() {
 
-  private DubuqueIowa() {
-    super("Dubuque");
-  }
-
-  @Override
-  public State getState() {
-    return State.IOWA;
+    assertThat(DubuqueIowa.INSTANCE.getName()).isEqualTo("Dubuque");
+    assertThat(DubuqueIowa.INSTANCE.getCountry().orElse(null)).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
+    assertThat(DubuqueIowa.INSTANCE.getState()).isEqualTo(State.IOWA);
+    assertThat(DubuqueIowa.INSTANCE.isCapital()).isFalse();
   }
 }
