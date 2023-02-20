@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.model.usa.cities;
 
-import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
-
+import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.enums.State;
-import org.cp.domain.geo.model.usa.UnitedStatesCity;
+import org.cp.domain.geo.model.usa.ImmutableUnitedStatesCity;
+import org.cp.elements.lang.annotation.Immutable;
 
 /**
- * The OlympiaWashington class...
+ * {@link ImmutableUnitedStatesCity} modeling the city of {@literal Olympia} {@link State#WASHINGTON},
+ * {@link Country#UNITED_STATES_OF_AMERICA USA}.
  *
  * @author John Blum
- * @since 1.0.0
+ * @see org.cp.domain.geo.enums.Country
+ * @see org.cp.domain.geo.enums.State
+ * @see org.cp.domain.geo.model.usa.ImmutableUnitedStatesCity
+ * @see org.cp.elements.lang.annotation.Immutable
+ * @since 0.1.0
  */
-@SuppressWarnings("unused")
-public final class OlympiaWashington extends UnitedStatesCity {
+@Immutable
+public final class OlympiaWashington extends ImmutableUnitedStatesCity {
 
   public static final OlympiaWashington INSTANCE = new OlympiaWashington();
 
@@ -37,17 +41,12 @@ public final class OlympiaWashington extends UnitedStatesCity {
   }
 
   @Override
-  public final boolean isCapital() {
+  public boolean isCapital() {
     return true;
   }
 
   @Override
-  public final State getState() {
+  public State getState() {
     return State.WASHINGTON;
-  }
-
-  @Override
-  public final void setState(State state) {
-    throw newUnsupportedOperationException("State cannot be changed");
   }
 }
