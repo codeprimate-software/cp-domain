@@ -605,20 +605,20 @@ public class Distance implements Comparable<Distance> {
       return feetToYards(inchesToFeet(measurement));
     }
 
-    protected static double milesToYards(double measurement) {
-      return feetToYards(milesToFeet(measurement));
-    }
-
-    protected static double milesToKilometers(double measurement) {
-      return feetToKilometers(milesToFeet(measurement));
-    }
-
     protected static double metersToMiles(double measurement) {
       return feetToMiles(metersToFeet(measurement));
     }
 
     protected static double metersToYards(double measurement) {
       return feetToYards(metersToFeet(measurement));
+    }
+
+    protected static double milesToKilometers(double measurement) {
+      return feetToKilometers(milesToFeet(measurement));
+    }
+
+    protected static double milesToYards(double measurement) {
+      return feetToYards(milesToFeet(measurement));
     }
 
     protected static double yardsToKilometers(double measurement) {
