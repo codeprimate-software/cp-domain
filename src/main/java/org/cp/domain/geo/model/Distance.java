@@ -701,7 +701,8 @@ public class Distance implements Comparable<Distance> {
       }
     };
 
-    private static boolean isInInches(Distance distance) {
+    @NullSafe
+    private static boolean isInInches(@Nullable Distance distance) {
       return distance != null && LengthUnit.INCH.equals(distance.getLengthUnit());
     }
   }
