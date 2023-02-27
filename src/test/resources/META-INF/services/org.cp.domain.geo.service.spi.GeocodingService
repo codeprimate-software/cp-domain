@@ -1,0 +1,2 @@
+org.cp.domain.geo.service.provider.TestGeocodingService
+org.cp.domain.geo.service.provider.MockGeocodingService
