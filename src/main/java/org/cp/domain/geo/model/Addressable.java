@@ -30,8 +30,8 @@ import org.cp.elements.lang.Constants;
  * @see org.cp.domain.geo.model.Address
  * @since 0.1.0
  */
-@SuppressWarnings("unused")
 @FunctionalInterface
+@SuppressWarnings("unused")
 public interface Addressable {
 
   /**
