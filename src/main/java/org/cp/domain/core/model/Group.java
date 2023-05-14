@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Nameable;
+import org.cp.elements.lang.Renderable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.NotNull;
@@ -42,10 +43,11 @@ import org.cp.elements.util.stream.StreamUtils;
  * @see org.cp.domain.core.model.Person
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Nameable
+ * @see org.cp.elements.lang.Renderable
  * @see org.cp.elements.lang.Visitable
  * @since 1.0.0
  */
-public interface Group extends Identifiable<UUID>, Iterable<Person>, Nameable<String>, Visitable {
+public interface Group extends Identifiable<UUID>, Iterable<Person>, Nameable<String>, Renderable, Visitable {
 
   /**
    * Accepts the given {@link Visitor} used to visit each {@link Person} in this {@link Group}.
