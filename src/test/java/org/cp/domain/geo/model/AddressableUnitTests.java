@@ -16,14 +16,21 @@
 package org.cp.domain.geo.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.Test;
+
+import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.ThrowableOperation;
 
 /**
  * Unit Tests for {@link Addressable}.
@@ -41,29 +48,50 @@ public class AddressableUnitTests {
 
     Address mockAddress = mock(Address.class);
 
-    Addressable addressable = mock(Addressable.class);
+    Addressable mockAddressable = mock(Addressable.class);
 
-    doReturn(mockAddress).when(addressable).getAddress();
-    doCallRealMethod().when(addressable).isAddressPresent();
+    doReturn(mockAddress).when(mockAddressable).getAddress();
+    doCallRealMethod().when(mockAddressable).isAddressPresent();
 
-    assertThat(addressable.isAddressPresent()).isTrue();
+    assertThat(mockAddressable.isAddressPresent()).isTrue();
 
-    verify(addressable, times(1)).isAddressPresent();
-    verify(addressable, times(1)).getAddress();
+    verify(mockAddressable, times(1)).isAddressPresent();
+    verify(mockAddressable, times(1)).getAddress();
+    verifyNoMoreInteractions(mockAddressable);
     verifyNoInteractions(mockAddress);
   }
 
   @Test
   public void isAddressPresentWhenAddressIsNotSetReturnsFalse() {
 
-    Addressable addressable = mock(Addressable.class);
+    Addressable mockAddressable = mock(Addressable.class);
 
-    doReturn(null).when(addressable).getAddress();
-    doCallRealMethod().when(addressable).isAddressPresent();
+    doReturn(null).when(mockAddressable).getAddress();
+    doCallRealMethod().when(mockAddressable).isAddressPresent();
 
-    assertThat(addressable.isAddressPresent()).isFalse();
+    assertThat(mockAddressable.isAddressPresent()).isFalse();
 
-    verify(addressable, times(1)).isAddressPresent();
-    verify(addressable, times(1)).getAddress();
+    verify(mockAddressable, times(1)).isAddressPresent();
+    verify(mockAddressable, times(1)).getAddress();
+    verifyNoMoreInteractions(mockAddressable);
+  }
+
+  @Test
+  public void setAddressThrowsUnsupportedOperationExceptionByDefault() {
+
+    Address mockAddress = mock(Address.class);
+
+    Addressable mockAddressable = mock(Addressable.class);
+
+    doCallRealMethod().when(mockAddressable).setAddress(any(Address.class));
+
+    assertThatUnsupportedOperationException()
+      .isThrownBy(ThrowableOperation.fromRunnable(() -> mockAddressable.setAddress(mockAddress)))
+      .havingMessage(Constants.NOT_IMPLEMENTED)
+      .withNoCause();
+
+    verify(mockAddressable, times(1)).setAddress(eq(mockAddress));
+    verifyNoMoreInteractions(mockAddressable);
+    verifyNoInteractions(mockAddress);
   }
 }

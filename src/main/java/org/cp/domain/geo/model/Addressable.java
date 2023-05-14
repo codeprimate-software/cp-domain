@@ -15,17 +15,23 @@
  */
 package org.cp.domain.geo.model;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
+
 import java.util.Objects;
+
+import org.cp.elements.lang.Constants;
 
 /**
  * Interface defining a contract for application domain objects that have a postal {@link Address},
  * such as a {@literal household} or a {@literal store}.
  *
  * @author John Blum
+ * @see java.lang.FunctionalInterface
  * @see org.cp.domain.geo.model.Address
  * @since 0.1.0
  */
 @SuppressWarnings("unused")
+@FunctionalInterface
 public interface Addressable {
 
   /**
@@ -50,8 +56,10 @@ public interface Addressable {
    * Set the postal {@link Address} locating this {@link Object}.
    *
    * @param address postal {@link Address} locating this {@link Object}.
+   * @throws UnsupportedOperationException by default.
    * @see org.cp.domain.geo.model.Address
    */
-  void setAddress(Address address);
-
+  default void setAddress(Address address) {
+    throw newUnsupportedOperationException(Constants.NOT_IMPLEMENTED);
+  }
 }
