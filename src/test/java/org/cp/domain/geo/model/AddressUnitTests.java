@@ -386,7 +386,7 @@ public class AddressUnitTests {
 
     assertThatUnsupportedOperationException()
       .isThrownBy(ThrowableOperation.fromRunnable(() -> mockAddress.setType(Address.Type.HOME)))
-      .havingMessage("Setting the Address.Type for an Address of type [%s] is not supported",
+      .havingMessage("Setting Address.Type for an Address of type [%s] is not supported",
         mockAddress.getClass().getName())
       .withNoCause();
 

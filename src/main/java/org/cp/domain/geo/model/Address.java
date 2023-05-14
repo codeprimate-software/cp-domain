@@ -27,6 +27,7 @@ import org.cp.domain.geo.enums.Country;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.Renderable;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Verifiable;
 import org.cp.elements.lang.Visitable;
@@ -62,6 +63,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.domain.geo.model.Street
  * @see org.cp.domain.geo.model.Unit
  * @see org.cp.elements.lang.Identifiable
+ * @see org.cp.elements.lang.Renderable
  * @see org.cp.elements.lang.Verifiable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.annotation.FluentApi
@@ -69,8 +71,8 @@ import org.cp.elements.util.ComparatorResultBuilder;
  */
 @FluentApi
 @SuppressWarnings("unused")
-public interface Address extends Cloneable, Comparable<Address>, Identifiable<Long>, Locatable, Serializable,
-    Verifiable<Address>, Visitable {
+public interface Address extends Cloneable, Comparable<Address>, Identifiable<Long>, Locatable, Renderable,
+    Serializable, Verifiable<Address>, Visitable {
 
   /**
    * Factory method used to construct a new {@link Address} from an existing {@link Address}.
@@ -254,7 +256,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @see org.cp.domain.geo.model.Address.Type
    */
   default void setType(Type type) {
-    throw newUnsupportedOperationException("Setting the Address.Type for an Address of type [%s] is not supported",
+    throw newUnsupportedOperationException("Setting Address.Type for an Address of type [%s] is not supported",
       getClass().getName());
   }
 
