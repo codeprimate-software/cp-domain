@@ -31,9 +31,9 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract Data Type (ADT) and implementation of the {@link Address} interface modeling a physical, postal address
- * defined by a {@link Street}, an {@link Optional} {@link Unit}, {@link City}, {@link PostalCode} and {@link Country}
- * of origin along with {@link Optional} geographic {@link Coordinates}.
+ * Abstract Data Type (ADT) and implementation of the {@link Address} interface modeling a {@literal physical,
+ * postal address} defined by a {@link Street}, an {@link Optional} {@link Unit}, {@link City}, {@link PostalCode}
+ * and {@link Country} of origin along with {@link Optional} geographic {@link Coordinates}.
  *
  * An {@link Address} can also have a {@link Type} to indicate what kind of postal address this {@link Address}
  * represents. The {@link Address.Type} can be used to define the {@link Address Address's} use or purpose.
