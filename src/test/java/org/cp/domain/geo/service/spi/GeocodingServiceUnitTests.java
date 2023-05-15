@@ -58,7 +58,7 @@ public class GeocodingServiceUnitTests {
       .distanceBetween(Coordinates.at(210.0d, 012.0d),
         Coordinates.at(404.5d, 202.0d))) .isEqualTo(Distance.inMeters(100.0d));
 
-    assertThat(geocodingService.geocode(Address.from(Street.of(100, "One").asWay(),
+    assertThat(geocodingService.geocode(Address.of(Street.of(100, "One").asWay(),
       City.of("Portland"), PostalCode.of("97205")))).isEqualTo(Coordinates.NULL_ISLAND);
 
     Address actual = geocodingService.reverseGeocode(Coordinates.at(123.0d, 321.0d));

@@ -80,7 +80,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @param address {@link Address} to copy; must not be {@literal null}.
    * @return a new {@link Address} copied from the existing {@link Address}.
    * @throws IllegalArgumentException if the given {@link Address} is {@literal null}.
-   * @see #from(Street, City, PostalCode, Country)
+   * @see #of(Street, City, PostalCode, Country)
    * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.domain.geo.model.Address
    */
@@ -89,7 +89,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
 
     Assert.notNull(address, "Address to copy is required");
 
-    return from(address.getStreet(), address.getCity(), address.getPostalCode(), address.getCountry());
+    return of(address.getStreet(), address.getCity(), address.getPostalCode(), address.getCountry());
   }
 
   /**
@@ -102,7 +102,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @return a new {@link Address} constructed from the given, required {@link Street}, {@link City}
    * and {@link PostalCode}.
    * @throws IllegalArgumentException if {@link Street}, {@link City} or {@link PostalCode} are {@literal null}.
-   * @see #from(Street, City, PostalCode, Country)
+   * @see #of(Street, City, PostalCode, Country)
    * @see org.cp.domain.geo.model.Street
    * @see org.cp.domain.geo.model.City
    * @see org.cp.domain.geo.model.PostalCode
@@ -110,8 +110,8 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
-  static @NotNull Address from(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode) {
-    return from(street, city, postalCode, Country.localCountry());
+  static @NotNull Address of(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode) {
+    return of(street, city, postalCode, Country.localCountry());
   }
 
   /**
@@ -133,7 +133,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
-  static @NotNull Address from(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode,
+  static @NotNull Address of(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode,
       @NotNull Country country) {
 
     Assert.notNull(street, "Street is required");
@@ -635,17 +635,16 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
      * @return a new {@link Address}.
      * @throws IllegalArgumentException if the {@link Street}, {@link City}, {@link PostalCode} or {@link Country}
      * are {@literal null}.
-     * @see #from(Street, City, PostalCode, Country)
-     * @see org.cp.domain.geo.model.Address#from(Street, City, PostalCode, Country)
-     * @see org.cp.domain.geo.model.Address#from(Street, City, PostalCode)
+     * @see org.cp.domain.geo.model.Address#of(Street, City, PostalCode, Country)
+     * @see org.cp.domain.geo.model.Address#of(Street, City, PostalCode)
      */
     @Dsl
     @Override
     public @NotNull Address build() {
 
       Address address = getCountry()
-        .map(country -> Address.from(this.street, this.city, this.postalCode, country))
-        .orElseGet(() -> Address.from(this.street, this.city, this.postalCode));
+        .map(country -> Address.of(this.street, this.city, this.postalCode, country))
+        .orElseGet(() -> Address.of(this.street, this.city, this.postalCode));
 
       getCoordinates().ifPresent(address::setCoordinates);
 

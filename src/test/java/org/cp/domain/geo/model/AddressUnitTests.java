@@ -116,13 +116,13 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void fromStreetCityAndPostalCode() {
+  public void ofStreetCityAndPostalCode() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
 
-    Address address = Address.from(mockStreet, mockCity, mockPostalCode);
+    Address address = Address.of(mockStreet, mockCity, mockPostalCode);
 
     assertThat(address).isNotNull();
     assertThat(address.getId()).isNull();
@@ -135,14 +135,14 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void fromStreetCityPostalCodeAndCountry() {
+  public void ofStreetCityPostalCodeAndCountry() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
     Country canada = Country.CANADA;
 
-    Address address = Address.from(mockStreet, mockCity, mockPostalCode, canada);
+    Address address = Address.of(mockStreet, mockCity, mockPostalCode, canada);
 
     assertThat(address).isNotNull();
     assertThat(address.getId()).isNull();
@@ -155,13 +155,13 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void fromNullStreet() {
+  public void ofNullStreet() {
 
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Address.from(null, mockCity, mockPostalCode))
+      .isThrownBy(() -> Address.of(null, mockCity, mockPostalCode))
       .withMessage("Street is required")
       .withNoCause();
 
@@ -169,13 +169,13 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void fromNullCity() {
+  public void ofNullCity() {
 
     Street mockStreet = mock(Street.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Address.from(mockStreet, null, mockPostalCode))
+      .isThrownBy(() -> Address.of(mockStreet, null, mockPostalCode))
       .withMessage("City is required")
       .withNoCause();
 
@@ -183,13 +183,13 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void fromNullPostalCode() {
+  public void ofNullPostalCode() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Address.from(mockStreet, mockCity, null))
+      .isThrownBy(() -> Address.of(mockStreet, mockCity, null))
       .withMessage("Postal Code is required")
       .withNoCause();
 
@@ -197,14 +197,14 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void fromNullCountry() {
+  public void ofNullCountry() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Address.from(mockStreet, mockCity, mockPostalCode, null))
+      .isThrownBy(() -> Address.of(mockStreet, mockCity, mockPostalCode, null))
       .withMessage("Country is required")
       .withNoCause();
 
