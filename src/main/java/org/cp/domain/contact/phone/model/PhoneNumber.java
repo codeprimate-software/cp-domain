@@ -137,6 +137,21 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
   }
 
   /**
+   * Determines whether the use of this {@link PhoneNumber} would occur outside the {@link Country} of origin.
+   *
+   * @return a boolean value indicating whether the use of this {@link PhoneNumber} would occur outside
+   * the {@link Country} of origin.
+   * @see org.cp.domain.geo.enums.Country
+   * @see #getCountry()
+   */
+  default boolean isRoaming() {
+
+    return getCountry()
+      .filter(Country.localCountry()::equals)
+      .isPresent();
+  }
+
+  /**
    * Gets the {@link String three-digit} {@link AreaCode} of this {@link PhoneNumber}.
    *
    * @return the {@link String three-digit} {@link AreaCode} of this {@link PhoneNumber}.
