@@ -26,7 +26,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.enums.State;
 
@@ -34,7 +34,7 @@ import org.cp.domain.geo.enums.State;
  * Unit Tests for {@link County}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.geo.model.usa.County
  * @since 0.1.0

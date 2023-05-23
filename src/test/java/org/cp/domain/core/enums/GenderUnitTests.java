@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.enums.Gender;
 
@@ -27,7 +27,7 @@ import org.cp.elements.enums.Gender;
  * Unit Tests for {@link Gender}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.core.enums.Gender
  * @since 0.1.0
  */

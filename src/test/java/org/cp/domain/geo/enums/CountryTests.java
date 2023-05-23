@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,15 +22,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.cp.elements.util.CollectionUtils;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import org.cp.elements.util.CollectionUtils;
 
 /**
- * Unit tests for {@link Country}.
+ * Unit Tests for {@link Country}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.enums.Continent
  * @see org.cp.domain.geo.enums.Country
  * @since 1.0.0

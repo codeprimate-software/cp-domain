@@ -22,8 +22,9 @@ import static org.cp.elements.lang.ThrowableAssertions.assertThatIllegalStateExc
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.enums.State;
 import org.cp.domain.geo.model.AbstractAddress;
@@ -34,13 +35,11 @@ import org.cp.domain.geo.model.Street;
 import org.cp.elements.lang.IllegalTypeException;
 import org.cp.elements.lang.ObjectUtils;
 
-import org.assertj.core.api.InstanceOfAssertFactories;
-
 /**
  * Unit Tests for {@link UnitedStatesAddress}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.geo.model.usa.UnitedStatesAddress
  * @since 0.1.0

@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.IOUtils;
 import org.cp.elements.lang.Nameable;
@@ -37,7 +37,7 @@ import org.cp.elements.lang.Visitor;
  * Unit Tests for {@link Name}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.core.model.Name
  * @see org.cp.elements.lang.Nameable

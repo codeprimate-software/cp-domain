@@ -22,7 +22,7 @@ import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOper
 import java.util.Arrays;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.enums.State;
 import org.cp.domain.geo.model.PostalCode;
@@ -32,7 +32,7 @@ import org.cp.domain.geo.model.usa.ZIP;
  * Unit Tests for {@link StateZipCodesRepository}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.enums.State
  * @see org.cp.domain.geo.model.PostalCode
  * @see org.cp.domain.geo.model.usa.ZIP

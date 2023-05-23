@@ -18,17 +18,16 @@ package org.cp.domain.geo.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withPrecision;
 
-import org.junit.Test;
-
-import org.cp.domain.geo.model.Distance.Conversions;
+import org.junit.jupiter.api.Test;
 
 import org.assertj.core.data.Offset;
+import org.cp.domain.geo.model.Distance.Conversions;
 
 /**
  * Unit Tests for {@link Distance.Conversions}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.model.Distance.Conversions
  * @since 0.1.0
  */

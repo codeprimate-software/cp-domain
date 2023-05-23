@@ -24,7 +24,7 @@ import org.cp.domain.geo.model.Unit.Type;
  * Unit Tests for {@link Apartment}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.model.Unit
  * @see org.cp.domain.geo.model.Unit.Type#APARTMENT
  * @see org.cp.domain.geo.model.support.units.Apartment

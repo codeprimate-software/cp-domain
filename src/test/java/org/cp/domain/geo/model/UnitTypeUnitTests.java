@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.StringUtils;
 
@@ -27,7 +27,7 @@ import org.cp.elements.lang.StringUtils;
  * Unit Tests for {@link Unit.Type}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.model.Unit.Type
  * @since 0.1.0
  */

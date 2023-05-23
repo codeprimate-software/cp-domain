@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.enums.Gender;
 import org.cp.elements.io.IOUtils;
@@ -50,7 +50,7 @@ import org.cp.elements.lang.Visitor;
  * @author John Blum
  * @see java.time.LocalDateTime
  * @see java.util.UUID
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.core.model.Person
  * @see org.cp.elements.enums.Gender

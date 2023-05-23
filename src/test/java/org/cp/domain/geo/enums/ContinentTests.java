@@ -20,14 +20,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
+
 import org.cp.elements.util.CollectionUtils;
-import org.junit.Test;
 
 /**
  * Unit tests for {@link Continent}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.enums.Continent
  * @see org.cp.domain.geo.enums.Country
  * @since 1.0.0

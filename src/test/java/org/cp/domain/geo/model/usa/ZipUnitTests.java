@@ -27,19 +27,18 @@ import static org.mockito.Mockito.withSettings;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.enums.State;
 import org.cp.domain.geo.model.PostalCode;
-
 import org.mockito.quality.Strictness;
 
 /**
  * Unit Tests for {@link ZIP}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.geo.model.PostalCode
  * @see org.cp.domain.geo.model.usa.ZIP

@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.model.Unit;
 
@@ -35,7 +35,7 @@ import org.cp.domain.geo.model.Unit;
  * Abstract base class used to test the concrete {@link Unit} types.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see java.util.function.Function
  * @see org.cp.domain.geo.model.Unit

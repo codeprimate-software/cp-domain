@@ -17,7 +17,7 @@ package org.cp.domain.geo.model.usa.cities;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.enums.State;
@@ -26,7 +26,7 @@ import org.cp.domain.geo.enums.State;
  * Unit Tests for {@link LasVegasNevada}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.model.usa.cities.LasVegasNevada
  * @since 0.1.0
  */

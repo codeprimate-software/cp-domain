@@ -21,13 +21,13 @@ import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link State}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.enums.State
  * @since 1.0.0
  */

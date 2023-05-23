@@ -36,12 +36,11 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.elements.lang.ThrowableOperation;
 import org.cp.elements.lang.Visitor;
-
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
@@ -49,7 +48,7 @@ import org.mockito.Mockito;
  * Unit Tests for {@link Address}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.geo.model.Address
  * @since 0.1.0

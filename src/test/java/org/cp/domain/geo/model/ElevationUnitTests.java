@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.enums.LengthUnit;
 import org.cp.elements.io.IOUtils;
@@ -31,7 +31,7 @@ import org.cp.elements.io.IOUtils;
  * Unit Tests for {@link Elevation}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.model.Elevation
  * @since 0.1.0
  */

@@ -28,7 +28,7 @@ import java.awt.Point;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.enums.LengthUnit;
 import org.cp.elements.io.IOUtils;
@@ -38,7 +38,7 @@ import org.cp.elements.io.IOUtils;
  *
  * @author John Blum
  * @see java.awt.Point
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.geo.model.Coordinates
  * @since 0.1.0

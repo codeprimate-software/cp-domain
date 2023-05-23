@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.ThrowableOperation;
@@ -36,7 +36,7 @@ import org.cp.elements.lang.ThrowableOperation;
  * Unit Tests for {@link Addressable}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.geo.model.Addressable
  * @since 0.1.0

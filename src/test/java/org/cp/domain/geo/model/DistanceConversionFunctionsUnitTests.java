@@ -19,17 +19,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.withPrecision;
 
-import org.junit.Test;
-
-import org.cp.elements.enums.LengthUnit;
+import org.junit.jupiter.api.Test;
 
 import org.assertj.core.data.Offset;
+import org.cp.elements.enums.LengthUnit;
 
 /**
  * Unit Tests for {@link Distance.ConversionFunctions}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.model.Distance.ConversionFunctions
  * @since 0.1.0
  */

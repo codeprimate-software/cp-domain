@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.model.City;
@@ -31,7 +31,7 @@ import org.cp.domain.geo.model.Street;
  * Unit Tests for {@link GenericAddress}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.geo.model.generic.GenericAddress
  * @since 0.1.0

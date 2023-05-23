@@ -36,7 +36,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Visitor;
@@ -48,7 +48,7 @@ import org.cp.elements.util.CollectionUtils;
  * Unit Tests for {@link Group}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.core.model.Group
  * @see org.cp.domain.core.model.Person

@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.ThrowableOperation;
 
@@ -37,7 +37,7 @@ import org.cp.elements.lang.ThrowableOperation;
  * Unit Tests for {@link Locatable}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.geo.model.Coordinates
  * @see org.cp.domain.geo.model.Locatable

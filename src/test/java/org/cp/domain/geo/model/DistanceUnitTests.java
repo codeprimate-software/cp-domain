@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.model.Distance.Conversions;
 import org.cp.elements.enums.LengthUnit;
@@ -35,7 +35,7 @@ import org.cp.elements.util.CollectionUtils;
  * Unit Tests for {@link Distance}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.model.Distance
  * @see org.cp.elements.enums.LengthUnit
  * @since 0.1.0

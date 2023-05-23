@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.elements.io.IOUtils;
@@ -30,7 +30,7 @@ import org.cp.elements.io.IOUtils;
  * Unit Tests for {@link City}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.model.City
  * @since 1.0.0
  */
