@@ -107,6 +107,8 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
 
     return new PhoneNumber() {
 
+      private Long id;
+
       @Override
       public @NotNull AreaCode getAreaCode() {
         return areaCode;
@@ -123,8 +125,13 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
       }
 
       @Override
-      public Long getId() {
-        return null;
+      public @Nullable Long getId() {
+        return this.id;
+      }
+
+      @Override
+      public void setId(@Nullable Long id) {
+        this.id = id;
       }
     };
   }
