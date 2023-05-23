@@ -308,11 +308,9 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
       return true;
     }
 
-    if (!(obj instanceof Unit)) {
+    if (!(obj instanceof Unit that)) {
       return false;
     }
-
-    Unit that = (Unit) obj;
 
     return ObjectUtils.equals(this.getNumber(), that.getNumber())
       && ObjectUtils.equals(this.getType().orElse(Unit.Type.UNKNOWN), that.getType().orElse(Unit.Type.UNKNOWN));

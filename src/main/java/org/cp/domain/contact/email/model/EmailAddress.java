@@ -212,11 +212,9 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
       return true;
     }
 
-    if (!(obj instanceof EmailAddress)) {
+    if (!(obj instanceof EmailAddress that)) {
       return false;
     }
-
-    EmailAddress that = (EmailAddress) obj;
 
     return ObjectUtils.equals(this.getUsername(), that.getUsername())
       && ObjectUtils.equals(this.getDomain(), that.getDomain());

@@ -15,6 +15,7 @@
  */
 package org.cp.domain.core.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -65,6 +66,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
 public class Person extends AbstractVersionedObject<Person, UUID>
     implements Cloneable, Comparable<Person>, Identifiable<Long>, Nameable<Name>, Renderable, Serializable, Visitable {
 
+  @Serial
   private static final long serialVersionUID = -8623980477296948648L;
 
   protected static final String BIRTH_DATE_PATTERN = "yyyy-MM-dd";
@@ -759,11 +761,9 @@ public class Person extends AbstractVersionedObject<Person, UUID>
       return true;
     }
 
-    if (!(obj instanceof Person)) {
+    if (!(obj instanceof Person that)) {
       return false;
     }
-
-    Person that = (Person) obj;
 
     return ObjectUtils.equals(this.getBirthDate(), that.getBirthDate())
       && ObjectUtils.equals(this.getName(), that.getName());

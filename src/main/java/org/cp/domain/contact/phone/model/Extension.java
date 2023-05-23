@@ -22,6 +22,7 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.Immutable;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * Abstract Data Type (ADT) modeling an {@link String extension} of a {@link PhoneNumber}.
@@ -104,17 +105,15 @@ public class Extension implements Cloneable, Comparable<Extension>, Serializable
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(@Nullable Object obj) {
 
     if (this == obj) {
       return true;
     }
 
-    if (!(obj instanceof Extension)) {
+    if (!(obj instanceof Extension that)) {
       return false;
     }
-
-    Extension that = (Extension) obj;
 
     return ObjectUtils.equals(this.getNumber(), that.getNumber());
   }

@@ -22,6 +22,7 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.Immutable;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * Abstract Data Type (ADT) modeling the {@literal 4-digit number} of a {@link PhoneNumber}.
@@ -108,17 +109,15 @@ public class FourDigitNumber implements Cloneable, Comparable<FourDigitNumber>, 
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(@Nullable Object obj) {
 
     if (this == obj) {
       return true;
     }
 
-    if (!(obj instanceof FourDigitNumber)) {
+    if (!(obj instanceof FourDigitNumber that)) {
       return false;
     }
-
-    FourDigitNumber that = (FourDigitNumber) obj;
 
     return ObjectUtils.equals(this.getNumber(), that.getNumber());
   }

@@ -179,11 +179,9 @@ public class UnitedStatesCity extends City {
       return true;
     }
 
-    if (!(obj instanceof City)) {
+    if (!(obj instanceof City that)) {
       return false;
     }
-
-    City that = (City) obj;
 
     return isUnitedStatesCity(that)
       && super.equals(obj)

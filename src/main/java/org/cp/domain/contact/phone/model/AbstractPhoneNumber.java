@@ -125,11 +125,9 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
       return true;
     }
 
-    if (!(obj instanceof PhoneNumber)) {
+    if (!(obj instanceof PhoneNumber that)) {
       return false;
     }
-
-    PhoneNumber that = (PhoneNumber) obj;
 
     return ObjectUtils.equals(this.getAreaCode(), that.getAreaCode())
       && ObjectUtils.equals(this.getExtension(), that.getExchangeCode())

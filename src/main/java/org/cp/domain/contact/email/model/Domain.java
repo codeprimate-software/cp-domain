@@ -209,11 +209,9 @@ public class Domain implements Cloneable, Comparable<Domain>, Serializable {
       return true;
     }
 
-    if (!(obj instanceof Domain)) {
+    if (!(obj instanceof Domain that)) {
       return false;
     }
-
-    Domain that = (Domain) obj;
 
     return ObjectUtils.equals(this.getName(), that.getName())
       && ObjectUtils.equals(this.getExtensionName(), that.getExtensionName());

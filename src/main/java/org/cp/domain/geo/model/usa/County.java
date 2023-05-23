@@ -144,11 +144,9 @@ public class County implements Cloneable, Comparable<County>, Nameable<String>, 
       return true;
     }
 
-    if (!(obj instanceof County)) {
+    if (!(obj instanceof County that)) {
       return false;
     }
-
-    County that = (County) obj;
 
     return ObjectUtils.equals(this.getName(), that.getName())
       && ObjectUtils.equalsIgnoreNull(resolveState(this), resolveState(that));

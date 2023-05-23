@@ -17,6 +17,7 @@ package org.cp.domain.core.model;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
@@ -68,6 +69,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   @SuppressWarnings("all")
   protected static final String COMPARABLE_MIDDLE_NAME = String.valueOf(DEFAULT_MIDDLE_NAME);
 
+  @Serial
   private static final long serialVersionUID = 83448823861933031L;
 
   /**
@@ -402,11 +404,9 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
       return true;
     }
 
-    if (!(obj instanceof Name)) {
+    if (!(obj instanceof Name that)) {
       return false;
     }
-
-    Name that = (Name) obj;
 
     return ObjectUtils.equals(this.getFirstName(), that.getFirstName())
       && ObjectUtils.equalsIgnoreNull(this.getMiddleName().orElse(DEFAULT_MIDDLE_NAME),

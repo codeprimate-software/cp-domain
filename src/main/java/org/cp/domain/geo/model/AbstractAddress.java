@@ -369,11 +369,9 @@ public abstract class AbstractAddress implements Address {
       return true;
     }
 
-    if (!(obj instanceof Address)) {
+    if (!(obj instanceof Address that)) {
       return false;
     }
-
-    Address that = (Address) obj;
 
     return ObjectUtils.equals(this.getStreet(), that.getStreet())
       && ObjectUtils.equals(this.getUnit().orElse(Unit.EMPTY), that.getUnit().orElse(Unit.EMPTY))

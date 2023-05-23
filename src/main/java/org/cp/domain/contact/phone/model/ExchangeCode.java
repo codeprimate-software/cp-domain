@@ -22,6 +22,7 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.Immutable;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * Abstract Data Type (ADT) modeling the {@literal 3-digit exchange code} of a {@link PhoneNumber}.
@@ -108,17 +109,15 @@ public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Serial
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(@Nullable Object obj) {
 
     if (this == obj) {
       return true;
     }
 
-    if (!(obj instanceof ExchangeCode)) {
+    if (!(obj instanceof ExchangeCode that)) {
       return false;
     }
-
-    ExchangeCode that = (ExchangeCode) obj;
 
     return ObjectUtils.equals(this.getThreeDigitNumber(), that.getThreeDigitNumber());
   }

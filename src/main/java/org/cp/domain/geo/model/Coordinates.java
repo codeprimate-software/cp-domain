@@ -252,11 +252,9 @@ public class Coordinates implements Serializable {
       return true;
     }
 
-    if (!(obj instanceof Coordinates)) {
+    if (!(obj instanceof Coordinates that)) {
       return false;
     }
-
-    Coordinates that = (Coordinates) obj;
 
     return this.getLatitude() == that.getLatitude()
       && this.getLongitude() == that.getLongitude();

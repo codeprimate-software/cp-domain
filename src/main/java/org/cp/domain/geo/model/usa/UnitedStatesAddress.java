@@ -170,11 +170,9 @@ public class UnitedStatesAddress extends AbstractAddress {
       return true;
     }
 
-    if (!(obj instanceof UnitedStatesAddress)) {
+    if (!(obj instanceof UnitedStatesAddress that)) {
       return false;
     }
-
-    UnitedStatesAddress that = (UnitedStatesAddress) obj;
 
     return super.equals(obj) && ObjectUtils.equals(this.getState(), that.getState());
   }

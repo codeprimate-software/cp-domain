@@ -333,11 +333,9 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
       return true;
     }
 
-    if (!(obj instanceof Street)) {
+    if (!(obj instanceof Street that)) {
       return false;
     }
-
-    Street that = (Street) obj;
 
     return ObjectUtils.equals(this.getName(), that.getName())
       && ObjectUtils.equals(this.getNumber(), that.getNumber())

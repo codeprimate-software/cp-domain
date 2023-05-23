@@ -430,11 +430,9 @@ public class Distance implements Comparable<Distance> {
       return true;
     }
 
-    if (!(obj instanceof Distance)) {
+    if (!(obj instanceof Distance that)) {
       return false;
     }
-
-    Distance that = (Distance) obj;
 
     return this.toMeters().getMeasurement() == that.toMeters().getMeasurement();
   }

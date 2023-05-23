@@ -161,11 +161,9 @@ public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializab
       return true;
     }
 
-    if (!(obj instanceof PostalCode)) {
+    if (!(obj instanceof PostalCode that)) {
       return false;
     }
-
-    PostalCode that = (PostalCode) obj;
 
     return ObjectUtils.equals(this.getNumber(), that.getNumber())
       && ObjectUtils.equals(getCountry(this), getCountry(that));

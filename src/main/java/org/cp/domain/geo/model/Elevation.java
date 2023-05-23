@@ -269,11 +269,9 @@ public class Elevation implements Comparable<Elevation>, Serializable {
       return true;
     }
 
-    if (!(obj instanceof Elevation)) {
+    if (!(obj instanceof Elevation that)) {
       return false;
     }
-
-    Elevation that = (Elevation) obj;
 
     return Integers.isZero(compareTo(that));
   }
