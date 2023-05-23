@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.util.CollectionUtils;
@@ -40,7 +40,7 @@ public class CountryTests {
 
   private Set<Country> testedCountries;
 
-  @Before
+  @BeforeEach
   public void setup() {
     this.testedCountries = new HashSet<>();
   }
