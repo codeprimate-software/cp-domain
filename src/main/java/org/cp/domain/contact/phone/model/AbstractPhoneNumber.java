@@ -17,6 +17,7 @@ package org.cp.domain.contact.phone.model;
 
 import java.util.Optional;
 
+import org.cp.domain.geo.enums.Country;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
@@ -24,7 +25,7 @@ import org.cp.elements.text.FormatUtils;
 
 /**
  * Abstract base class and implementation of the {@link PhoneNumber} interface encapsulating functionality
- * common to all {@link PhoneNumber} implementations.
+ * common to all {@link PhoneNumber} implementations in the {@literal North American Numbering Plan (NANP)}.
  *
  * @author John Blum
  * @see org.cp.domain.contact.phone.model.AreaCode
@@ -32,6 +33,7 @@ import org.cp.elements.text.FormatUtils;
  * @see org.cp.domain.contact.phone.model.Extension
  * @see org.cp.domain.contact.phone.model.FourDigitNumber
  * @see org.cp.domain.contact.phone.model.PhoneNumber
+ * @see org.cp.domain.geo.enums.Country
  * @since 0.1.0
  */
 @SuppressWarnings("unused")
@@ -41,6 +43,8 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
     "{ @type = %1$s, areaCode = %2$s, exchangeCode = %3$s, number = %4$s, extension = %5$s, country = %6$s }";
 
   private final AreaCode areaCode;
+
+  private Country country;
 
   private final ExchangeCode exchangeCode;
 
@@ -76,6 +80,16 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
   @Override
   public @NotNull AreaCode getAreaCode() {
     return this.areaCode;
+  }
+
+  @Override
+  public Optional<Country> getCountry() {
+    return Optional.ofNullable(country);
+  }
+
+  @Override
+  public void setCountry(@Nullable Country country) {
+    this.country = country;
   }
 
   @Override
