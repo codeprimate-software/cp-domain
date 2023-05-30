@@ -39,9 +39,7 @@ public interface CountryAware {
    *
    * @return the {@link Country} of origin for this {@literal domain type}.
    * @see org.cp.domain.geo.enums.Country
-   * @see org.cp.domain.geo.enums.Country
    * @see java.util.Optional
-   * @see #in(Country)
    */
   default Optional<Country> getCountry() {
     return Optional.empty();
@@ -52,6 +50,8 @@ public interface CountryAware {
    *
    * @param country {@link Country} of origin for this implementing {@literal domain type}.
    * @see org.cp.domain.geo.enums.Country
+   * @see #inLocalCountry()
+   * @see #in(Country)
    * @see #getCountry()
    */
   void setCountry(Country country);
@@ -62,11 +62,26 @@ public interface CountryAware {
    * @param <T> {@link Class type} of {@link Object domain object} implementing this interface.
    * @param country {@link Country} of origin for this implementing {@literal domain type}.
    * @return the instance of this {@literal domain type}.
+   * @see org.cp.domain.geo.enums.Country
+   * @see #setCountry(Country)
    */
   @Dsl
   @SuppressWarnings("unchecked")
   default @NotNull <T extends CountryAware> T in(Country country) {
     setCountry(country);
     return (T) this;
+  }
+
+  /**
+   * Builder method used to set the {@link Country} of origin for this implementing {@literal domain type}
+   * to the {@link Country#localCountry()}
+   *
+   * @param <T> {@link Class type} of {@link Object domain object} implementing this interface.
+   * @return the instance of this {@literal domain type}.
+   * @see #in(Country)
+   */
+  @Dsl
+  default @NotNull <T extends CountryAware> T inLocalCountry() {
+    return in(Country.localCountry());
   }
 }

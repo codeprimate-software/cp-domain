@@ -68,6 +68,22 @@ public class CountryAwareUnitTests {
   }
 
   @Test
+  public void inLocalCountryCallsSetCountry() {
+
+    CountryAware mockCountryAware = mock(CountryAware.class);
+
+    doCallRealMethod().when(mockCountryAware).in(any());
+    doCallRealMethod().when(mockCountryAware).inLocalCountry();
+
+    assertThat(mockCountryAware.<CountryAware>inLocalCountry()).isSameAs(mockCountryAware);
+
+    verify(mockCountryAware, times(1)).inLocalCountry();
+    verify(mockCountryAware, times(1)).in(eq(Country.localCountry()));
+    verify(mockCountryAware, times(1)).setCountry(eq(Country.localCountry()));
+    verifyNoMoreInteractions(mockCountryAware);
+  }
+
+  @Test
   public void inCountryWithNullCallsSetCountryIsNullSafe() {
 
     CountryAware mockCountryAware = mock(CountryAware.class);
