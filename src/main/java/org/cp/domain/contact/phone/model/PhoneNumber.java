@@ -37,7 +37,12 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
- * Abstract Data Type (ADT) modeling a {@literal phone number}.
+ * Abstract Data Type (ADT) modeling a {@literal phone number}, such as a {@literal cell phone number},
+ * {@literal land line} or a {@literal VOIP number}.
+ *
+ * Currently, the Codeprimate Domain {@link PhoneNumber} representation is limited to
+ * the {@literal North American Numbering Plan (NANP)}. Eventually, support may be added for numbers outside of
+ * North America and nations that do not participate in this numbering scheme.
  *
  * @author John Blum
  * @see java.lang.Cloneable
@@ -51,9 +56,10 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Renderable
  * @see org.cp.elements.lang.Visitable
- * @see org.cp.elements.lang.Visitor
- * @see org.cp.elements.lang.annotation.FluentApi
  * @see org.cp.elements.lang.annotation.Dsl
+ * @see org.cp.elements.lang.annotation.FluentApi
+ * @see <a href="https://en.wikipedia.org/wiki/National_conventions_for_writing_telephone_numbers">National conventions for writing telephone numbers</a>
+ * @see <a href="https://en.wikipedia.org/wiki/North_American_Numbering_Plan">North American Numbering Plan (NANP)</a>
  * @since 0.1.0
  */
 @FluentApi
@@ -69,8 +75,9 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
    * @return a new {@link PhoneNumber} copied from the existing, required {@link PhoneNumber}.
    * @throws IllegalArgumentException if the given {@link PhoneNumber} to copy is {@literal null}.
    * @see #of(AreaCode, ExchangeCode, FourDigitNumber)
-   * @see PhoneNumber
+   * @see org.cp.elements.lang.annotation.Dsl
    */
+  @Dsl
   static @NotNull PhoneNumber from(@NotNull PhoneNumber phoneNumber) {
 
     Assert.notNull(phoneNumber, "PhoneNumber to copy is required");
@@ -91,13 +98,16 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
    * @param exchangeCode {@link ExchangeCode} of the new {@link PhoneNumber}; must not be {@literal null}.
    * @param number {@link FourDigitNumber} of the new {@link PhoneNumber}; must not be {@literal null}.
    * @return a new {@link PhoneNumber} initialized from the given, required {@link AreaCode},
-   * {@link  ExchangeCode} and {@link FourDigitNumber}.
+   * {@link ExchangeCode} and {@link FourDigitNumber}.
    * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link FourDigitNumber}
    * are {@literal null}.
+   * @see org.cp.domain.contact.phone.model.AbstractPhoneNumber
    * @see org.cp.domain.contact.phone.model.AreaCode
    * @see org.cp.domain.contact.phone.model.ExchangeCode
    * @see org.cp.domain.contact.phone.model.FourDigitNumber
+   * @see org.cp.elements.lang.annotation.Dsl
    */
+  @Dsl
   static @NotNull PhoneNumber of(@NotNull AreaCode areaCode, @NotNull ExchangeCode exchangeCode,
       @NotNull FourDigitNumber number) {
 
@@ -105,35 +115,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
     Assert.notNull(exchangeCode, "ExchangeCode [%s] is required", exchangeCode);
     Assert.notNull(number, "FourDigitNumber [%s] is required", number);
 
-    return new PhoneNumber() {
-
-      private Long id;
-
-      @Override
-      public @NotNull AreaCode getAreaCode() {
-        return areaCode;
-      }
-
-      @Override
-      public @NotNull ExchangeCode getExchangeCode() {
-        return exchangeCode;
-      }
-
-      @Override
-      public @NotNull FourDigitNumber getFourDigitNumber() {
-        return number;
-      }
-
-      @Override
-      public @Nullable Long getId() {
-        return this.id;
-      }
-
-      @Override
-      public void setId(@Nullable Long id) {
-        this.id = id;
-      }
-    };
+    return new AbstractPhoneNumber(areaCode, exchangeCode, number) { };
   }
 
   /**
@@ -176,11 +158,11 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
   FourDigitNumber getFourDigitNumber();
 
   /**
-   * Gets an {@link Optional} {@link Country} in which this {@link PhoneNumber} resides.
+   * Gets an {@link Optional} {@link Country} in which this {@link PhoneNumber} originates.
    *
    * Returns {@link Optional#empty()} by default.
    *
-   * @return an {@link Optional} {@link Country} in which this {@link PhoneNumber} resides.
+   * @return an {@link Optional} {@link Country} in which this {@link PhoneNumber} originates.
    * @see org.cp.domain.geo.enums.Country
    * @see java.util.Optional
    */
@@ -189,7 +171,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
   }
 
   /**
-   * Gets an {@link Optional} {@link String extension} at this {@link PhoneNumber}.
+   * Gets the {@link Optional} {@link String extension} at this {@link PhoneNumber}.
    *
    * Returns {@link Optional#empty()} by default.
    *
@@ -209,12 +191,12 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
    * @see org.cp.domain.contact.phone.model.Extension
    */
   default void setExtension(@Nullable Extension extension) {
-    throw newUnsupportedOperationException("Setting Extension for a PhoneNumber of type [%s] is not supported",
+    throw newUnsupportedOperationException("Setting the Extension for a PhoneNumber of type [%s] is not supported",
       getClass().getName());
   }
 
   /**
-   * Get an {@link Optional} {@link PhoneNumber.Type} of this {@link PhoneNumber}.
+   * Get the {@link Optional} {@link PhoneNumber.Type} of this {@link PhoneNumber}.
    *
    * Returns {@link Optional#empty()} by default.
    *
@@ -234,8 +216,8 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Type
    */
   default void setType(@Nullable PhoneNumber.Type phoneNumberType) {
-    throw newUnsupportedOperationException("Setting PhoneNumber.Type for a PhoneNumber of type [%s] is not supported",
-      getClass().getName());
+    throw newUnsupportedOperationException("Setting the PhoneNumber.Type for a PhoneNumber of type [%s]"
+        + " is not supported", getClass().getName());
   }
 
   /**
@@ -244,23 +226,13 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
    * @param phoneNumberType {@link PhoneNumber.Type} of this {@link PhoneNumber}.
    * @return this {@link PhoneNumber}.
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Type
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #setType(PhoneNumber.Type)
    */
+  @Dsl
   default @NotNull PhoneNumber asType(@Nullable PhoneNumber.Type phoneNumberType) {
     setType(phoneNumberType);
     return this;
-  }
-
-  /**
-   * Builder method used to set the {@link PhoneNumber.Type} of this {@link PhoneNumber}
-   * to {@link PhoneNumber.Type#HOME}.
-   *
-   * @return this {@link PhoneNumber}.
-   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#HOME
-   * @see #asType(PhoneNumber.Type)
-   */
-  default @NotNull PhoneNumber asHome() {
-    return asType(PhoneNumber.Type.HOME);
   }
 
   /**
@@ -269,6 +241,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
    *
    * @return this {@link PhoneNumber}.
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#CELL
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #asType(PhoneNumber.Type)
    */
   @Dsl
@@ -278,10 +251,25 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
 
   /**
    * Builder method used to set the {@link PhoneNumber.Type} of this {@link PhoneNumber}
+   * to {@link PhoneNumber.Type#HOME}.
+   *
+   * @return this {@link PhoneNumber}.
+   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#HOME
+   * @see org.cp.elements.lang.annotation.Dsl
+   * @see #asType(PhoneNumber.Type)
+   */
+  @Dsl
+  default @NotNull PhoneNumber asHome() {
+    return asType(PhoneNumber.Type.HOME);
+  }
+
+  /**
+   * Builder method used to set the {@link PhoneNumber.Type} of this {@link PhoneNumber}
    * to {@link PhoneNumber.Type#VOIP}.
    *
    * @return this {@link PhoneNumber}.
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#VOIP
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #asType(PhoneNumber.Type)
    */
   @Dsl
@@ -295,22 +283,12 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
    *
    * @return this {@link PhoneNumber}.
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#WORK
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #asType(PhoneNumber.Type)
    */
   @Dsl
   default @NotNull PhoneNumber asWork() {
     return asType(PhoneNumber.Type.WORK);
-  }
-
-  /**
-   * Determines whether this is a {@link PhoneNumber.Type#HOME} {@link PhoneNumber}.
-   *
-   * @return a boolean value determining whether this is a {@link PhoneNumber.Type#HOME} {@link PhoneNumber}.
-   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#HOME
-   * @see #getType()
-   */
-  default boolean isHome() {
-    return PhoneNumber.Type.HOME.equals(getType().orElse(null));
   }
 
   /**
@@ -325,14 +303,14 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
   }
 
   /**
-   * Determines whether this is an {@link PhoneNumber.Type#VOIP} {@link PhoneNumber}.
+   * Determines whether this is a {@link PhoneNumber.Type#HOME} {@link PhoneNumber}.
    *
-   * @return a boolean value determining whether this is an {@link PhoneNumber.Type#VOIP} {@link PhoneNumber}.
-   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#VOIP
+   * @return a boolean value determining whether this is a {@link PhoneNumber.Type#HOME} {@link PhoneNumber}.
+   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#HOME
    * @see #getType()
    */
-  default boolean isVOIP() {
-    return PhoneNumber.Type.VOIP.equals(getType().orElse(null));
+  default boolean isHome() {
+    return PhoneNumber.Type.HOME.equals(getType().orElse(null));
   }
 
   /**
@@ -344,6 +322,17 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
    */
   default boolean isUnknown() {
     return PhoneNumber.Type.UNKNOWN.equals(getType().orElse(null));
+  }
+
+  /**
+   * Determines whether this is a {@link PhoneNumber.Type#VOIP} {@link PhoneNumber}.
+   *
+   * @return a boolean value determining whether this is an {@link PhoneNumber.Type#VOIP} {@link PhoneNumber}.
+   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#VOIP
+   * @see #getType()
+   */
+  default boolean isVOIP() {
+    return PhoneNumber.Type.VOIP.equals(getType().orElse(null));
   }
 
   /**
@@ -360,8 +349,8 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
   /**
    * Visits this {@link PhoneNumber}.
    *
-   * @param visitor {@link Visitor} used to {@link Visitor#visit(Visitable)} this {@link PhoneNumber};
-   * must not be {@literal null}.
+   * @param visitor {@link Visitor} used to {@link Visitor#visit(Visitable)} this {@link PhoneNumber}
+   * to perform an operation on this {@link PhoneNumber}; must not be {@literal null}.
    * @see org.cp.elements.lang.Visitor
    */
   @Override
@@ -370,7 +359,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
   }
 
   /**
-   * Compares this {@link PhoneNumber} to the give, required {@link PhoneNumber} for relative order (sorting).
+   * Compares this {@link PhoneNumber} to the given, required {@link PhoneNumber} for relative ordering (sorting).
    *
    * @param that {@link PhoneNumber} being compared for order with this {@link PhoneNumber};
    * must not be {@literal null}.
@@ -395,8 +384,10 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
    * @param extension {@link Extension} of this {@link PhoneNumber}.
    * @return this {@link PhoneNumber}.
    * @see org.cp.domain.contact.phone.model.Extension
+   * @see org.cp.elements.lang.annotation.Dsl
    */
-  default PhoneNumber withExtension(@Nullable Extension extension) {
+  @Dsl
+  default @NotNull PhoneNumber withExtension(@Nullable Extension extension) {
     setExtension(extension);
     return this;
   }
@@ -449,9 +440,9 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
     }
 
     /**
-     * Builder method used to set an optional {@link Country} of the new {@link PhoneNumber}.
+     * Builder method used to set an optional {@link Country} of origin for the new {@link PhoneNumber}.
      *
-     * @param country {@link Country} of the new {@link PhoneNumber}.
+     * @param country {@link Country} of origin for the new {@link PhoneNumber}.
      * @return this {@link Builder}.
      * @see org.cp.domain.geo.enums.Country
      */
@@ -466,6 +457,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
      *
      * @return this {@link Builder}.
      * @see org.cp.domain.geo.enums.Country#localCountry()
+     * @see #inCountry(Country)
      */
     @Dsl
     public @NotNull Builder inLocalCountry() {
@@ -489,7 +481,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
     /**
      * Builder method used to set an optional {@link Extension} of the new {@link PhoneNumber}.
      *
-     * @param extension {@link Extension} of the new {@link PhoneNumber}.
+     * @param extension optional {@link Extension} of the new {@link PhoneNumber}.
      * @return this {@link Builder}.
      * @see org.cp.domain.contact.phone.model.Extension
      */
@@ -517,27 +509,13 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
      * Builds a new {@link PhoneNumber}.
      *
      * @return a new {@link PhoneNumber}.
+     * @see org.cp.domain.contact.phone.model.AbstractPhoneNumber
      * @see org.cp.domain.contact.phone.model.PhoneNumber
      */
     @Override
     public @NotNull PhoneNumber build() {
 
-      return new PhoneNumber() {
-
-        @Override
-        public @NotNull AreaCode getAreaCode() {
-          return Builder.this.areaCode;
-        }
-
-        @Override
-        public Optional<Country> getCountry() {
-          return Optional.ofNullable(Builder.this.country);
-        }
-
-        @Override
-        public @NotNull ExchangeCode getExchangeCode() {
-          return Builder.this.exchangeCode;
-        }
+      return new AbstractPhoneNumber(this.areaCode, this.exchangeCode, this.number) {
 
         @Override
         public Optional<Extension> getExtension() {
@@ -545,13 +523,8 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
         }
 
         @Override
-        public @NotNull FourDigitNumber getFourDigitNumber() {
-          return Builder.this.number;
-        }
-
-        @Override
-        public @Nullable Long getId() {
-          return null;
+        public Optional<Country> getCountry() {
+          return Optional.ofNullable(Builder.this.country);
         }
       };
     }
@@ -564,18 +537,18 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
    */
   enum Type {
 
-    HOME("HM", "Home"),
     CELL("CLL", "Cellular"),
+    HOME("HM", "Home"),
     VOIP("VOIP", "Voice-Over-IP"),
     WORK("WRK", "Work"),
     UNKNOWN("??", "Unknown");
 
     /**
-     * Factory method used to search and lookup a {@link PhoneNumber.Type} from the given {@link String abbreviation},
-     * ignore case.
+     * Factory method used to search for and lookup a {@link PhoneNumber.Type} from the given
+     * {@link String abbreviation}, ignoring case.
      *
      * @param abbreviation {@link String} containing the {@literal abbreviation} of the {@link PhoneNumber.Type}
-     * to search and lookup.
+     * to search for and lookup.
      * @return a {@link PhoneNumber.Type} for the given {@link String abbreviation}.
      * @throws IllegalArgumentException if the {@link String abbreviation} does not map to a {@link PhoneNumber.Type}.
      * @see PhoneNumber.Type#getAbbreviation()
@@ -596,7 +569,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
      * Constructs a new instance of {@link PhoneNumber.Type} initialized with the given,
      * required {@link String abbreviation} and {@link String description}.
      *
-     * @param abbreviation {@link String abbreviation} of this {@link PhoneNumber.Type}.
+     * @param abbreviation {@link String abbreviation} for this {@link PhoneNumber.Type}.
      * @param description {@link String description} of this {@link PhoneNumber.Type}.
      */
     Type(@NotNull String abbreviation, @NotNull String description) {
@@ -605,9 +578,9 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
     }
 
     /**
-     * Gets the {@link String abbreviation} of this {@link PhoneNumber.Type}.
+     * Gets the {@link String abbreviation} for this {@link PhoneNumber.Type}.
      *
-     * @return the {@link String abbreviation} of this {@link PhoneNumber.Type}.
+     * @return the {@link String abbreviation} for this {@link PhoneNumber.Type}.
      */
     public @NotNull String getAbbreviation() {
       return this.abbreviation;
