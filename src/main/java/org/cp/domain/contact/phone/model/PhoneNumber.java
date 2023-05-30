@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import org.cp.domain.geo.enums.Country;
+import org.cp.domain.geo.support.CountryAware;
+import org.cp.elements.function.TriFunction;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
@@ -42,7 +44,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  *
  * Currently, the Codeprimate Domain {@link PhoneNumber} representation is limited to
  * the {@literal North American Numbering Plan (NANP)}. Eventually, support may be added for numbers outside of
- * North America and nations that do not participate in this numbering scheme.
+ * North America and nations that do not participate in the {@literal NANP} numbering scheme.
  *
  * @author John Blum
  * @see java.lang.Cloneable
@@ -53,6 +55,8 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.domain.contact.phone.model.Extension
  * @see org.cp.domain.contact.phone.model.FourDigitNumber
  * @see org.cp.domain.geo.enums.Country
+ * @see org.cp.domain.geo.support.CountryAware
+ * @see org.cp.elements.function.TriFunction
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Renderable
  * @see org.cp.elements.lang.Visitable
@@ -64,8 +68,13 @@ import org.cp.elements.util.ComparatorResultBuilder;
  */
 @FluentApi
 @SuppressWarnings("unused")
-public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
+public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, CountryAware,
     Identifiable<Long>, Renderable, Serializable, Visitable {
+
+  // Constructor Function used for the type of PhoneNumber constructed
+  // in the of(:AreaCode, :ExchangeCode, :FourDigitNumber) factory method.
+  TriFunction<AreaCode, ExchangeCode, FourDigitNumber, PhoneNumber> PHONE_NUMBER_CONSTRUCTOR =
+    (areaCode, exchangeCode, number) -> new AbstractPhoneNumber(areaCode, exchangeCode, number) { };
 
   /**
    * Factory method used to construct a new instance of {@link PhoneNumber} copied from an existing,
@@ -84,6 +93,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
 
     PhoneNumber copy = of(phoneNumber.getAreaCode(), phoneNumber.getExchangeCode(), phoneNumber.getFourDigitNumber());
 
+    phoneNumber.getCountry().ifPresent(copy::setCountry);
     phoneNumber.getExtension().ifPresent(copy::setExtension);
     phoneNumber.getType().ifPresent(copy::setType);
 
@@ -111,11 +121,11 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
   static @NotNull PhoneNumber of(@NotNull AreaCode areaCode, @NotNull ExchangeCode exchangeCode,
       @NotNull FourDigitNumber number) {
 
-    Assert.notNull(areaCode, "AreaCode [%s] is required", areaCode);
-    Assert.notNull(exchangeCode, "ExchangeCode [%s] is required", exchangeCode);
-    Assert.notNull(number, "FourDigitNumber [%s] is required", number);
+    Assert.notNull(areaCode, "AreaCode is required");
+    Assert.notNull(exchangeCode, "ExchangeCode is required");
+    Assert.notNull(number, "FourDigitNumber is required");
 
-    return new AbstractPhoneNumber(areaCode, exchangeCode, number) { };
+    return PHONE_NUMBER_CONSTRUCTOR.apply(areaCode, exchangeCode, number);
   }
 
   /**
@@ -158,16 +168,16 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>,
   FourDigitNumber getFourDigitNumber();
 
   /**
-   * Gets an {@link Optional} {@link Country} in which this {@link PhoneNumber} originates.
+   * Sets the {@link Country} of origin for this {@link PhoneNumber}.
    *
-   * Returns {@link Optional#empty()} by default.
-   *
-   * @return an {@link Optional} {@link Country} in which this {@link PhoneNumber} originates.
+   * @param country {@link Country} of origin for this {@link PhoneNumber}.
+   * @throws UnsupportedOperationException by default.
    * @see org.cp.domain.geo.enums.Country
-   * @see java.util.Optional
    */
-  default Optional<Country> getCountry() {
-    return Optional.empty();
+  @Override
+  default void setCountry(Country country) {
+    throw newUnsupportedOperationException("Setting the Country on a PhoneNumber of type [%s] is not supported",
+      getClass().getName());
   }
 
   /**
