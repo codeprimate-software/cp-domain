@@ -15,6 +15,8 @@
  */
 package org.cp.domain.contact.phone.model.usa;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
+
 import java.util.Optional;
 
 import org.cp.domain.contact.phone.model.AbstractPhoneNumber;
@@ -102,5 +104,10 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
   @Override
   public final Optional<Country> getCountry() {
     return Optional.of(Country.UNITED_STATES_OF_AMERICA);
+  }
+
+  @Override
+  public final void setCountry(Country country) {
+    throw newUnsupportedOperationException("Cannot set the Country for a UnitedStatesPhoneNumber");
   }
 }
