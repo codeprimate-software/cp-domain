@@ -44,9 +44,10 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
    * required {@link PhoneNumber}.
    *
    * @param phoneNumber {@link PhoneNumber} to copy; must not be {@literal null}.
-   * @return a new {@link org.cp.domain.geo.model.Unit} copied from the given, required {@link PhoneNumber}.
+   * @return a new {@link UnitedStatesPhoneNumber} copied from the given, required {@link PhoneNumber}.
    * @throws IllegalArgumentException if the given {@link PhoneNumber} to copy is {@literal null}.
    * @see org.cp.domain.contact.phone.model.PhoneNumber
+   * @see #of(AreaCode, ExchangeCode, FourDigitNumber)
    */
   public static @NotNull UnitedStatesPhoneNumber from(@NotNull PhoneNumber phoneNumber) {
 
@@ -71,6 +72,7 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
    * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link FourDigitNumber}
    * are {@literal null}.
    * @return a new {@link UnitedStatesPhoneNumber} initialized with the given, required {@link AreaCode},
+   * @see #UnitedStatesPhoneNumber(AreaCode, ExchangeCode, FourDigitNumber)
    * {@link ExchangeCode} and {@link FourDigitNumber}.
    * @see org.cp.domain.contact.phone.model.FourDigitNumber
    * @see org.cp.domain.contact.phone.model.ExchangeCode
