@@ -140,7 +140,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
 
     return getCountry()
       .filter(Country.localCountry()::equals)
-      .isPresent();
+      .isEmpty();
   }
 
   /**

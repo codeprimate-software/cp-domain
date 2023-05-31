@@ -18,11 +18,16 @@ package org.cp.domain.contact.phone.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -164,5 +169,39 @@ public class PhoneNumberUnitTests {
       .withNoCause();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode);
+  }
+
+  @Test
+  public void isRoamingInsideLocalCountryIsFalse() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).isRoaming();
+    doReturn(Optional.of(Country.localCountry())).when(mockPhoneNumber).getCountry();
+
+    assertThat(mockPhoneNumber.isRoaming()).isFalse();
+
+    verify(mockPhoneNumber, times(1)).isRoaming();
+    verify(mockPhoneNumber, times(1)).getCountry();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void isRoamingOutsideLocalCountryIsTrue() {
+
+    Optional<Country> country = Arrays.stream(Country.values())
+      .filter(it -> !Country.localCountry().equals(it))
+      .findFirst();
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).isRoaming();
+    doReturn(country).when(mockPhoneNumber).getCountry();
+
+    assertThat(mockPhoneNumber.isRoaming()).isTrue();
+
+    verify(mockPhoneNumber, times(1)).isRoaming();
+    verify(mockPhoneNumber, times(1)).getCountry();
+    verifyNoMoreInteractions(mockPhoneNumber);
   }
 }
