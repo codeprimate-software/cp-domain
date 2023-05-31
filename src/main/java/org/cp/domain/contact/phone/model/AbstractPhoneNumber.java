@@ -84,7 +84,7 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
 
   @Override
   public Optional<Country> getCountry() {
-    return Optional.ofNullable(country);
+    return Optional.ofNullable(this.country);
   }
 
   @Override
@@ -130,6 +130,12 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
   @Override
   public void setType(@Nullable PhoneNumber.Type phoneNumberType) {
     this.phoneNumberType = phoneNumberType;
+  }
+
+  @Override
+  @SuppressWarnings("all")
+  public Object clone() {
+    return PhoneNumber.from(this);
   }
 
   @Override
