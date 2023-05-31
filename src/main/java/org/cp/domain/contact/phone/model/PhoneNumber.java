@@ -40,7 +40,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
  * Abstract Data Type (ADT) modeling a {@literal phone number}, such as a {@literal cell phone number},
- * {@literal land line} or a {@literal VOIP number}.
+ * {@literal land line} or a {@literal Voice-Over-IP (VOIP) number}.
  *
  * Currently, the Codeprimate Domain {@link PhoneNumber} representation is limited to
  * the {@literal North American Numbering Plan (NANP)}. Eventually, support may be added for numbers outside of
@@ -176,7 +176,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    */
   @Override
   default void setCountry(Country country) {
-    throw newUnsupportedOperationException("Setting the Country on a PhoneNumber of type [%s] is not supported",
+    throw newUnsupportedOperationException("Cannot set Country for a PhoneNumber of type [%s] is not supported",
       getClass().getName());
   }
 
@@ -201,7 +201,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @see org.cp.domain.contact.phone.model.Extension
    */
   default void setExtension(@Nullable Extension extension) {
-    throw newUnsupportedOperationException("Setting the Extension for a PhoneNumber of type [%s] is not supported",
+    throw newUnsupportedOperationException("Cannot set Extension for a PhoneNumber of type [%s] is not supported",
       getClass().getName());
   }
 
@@ -226,7 +226,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Type
    */
   default void setType(@Nullable PhoneNumber.Type phoneNumberType) {
-    throw newUnsupportedOperationException("Setting the PhoneNumber.Type for a PhoneNumber of type [%s]"
+    throw newUnsupportedOperationException("Cannot set PhoneNumber.Type for a PhoneNumber of type [%s]"
         + " is not supported", getClass().getName());
   }
 

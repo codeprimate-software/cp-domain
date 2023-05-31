@@ -17,6 +17,7 @@ package org.cp.domain.contact.phone.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -34,6 +35,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.enums.Country;
+import org.cp.elements.lang.ThrowableOperation;
+import org.cp.elements.lang.Visitor;
 
 /**
  * Unit Tests for {@link PhoneNumber}.
@@ -477,5 +480,92 @@ public class PhoneNumberUnitTests {
     verify(mockPhoneNumber, times(callCount)).getType();
     verify(mockPhoneNumber, times(callCount)).isWork();
     verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void setCountryThrowsUnsupportedOperationException() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).setCountry(any());
+
+    assertThatUnsupportedOperationException()
+      .isThrownBy(ThrowableOperation.fromRunnable(() -> mockPhoneNumber.setCountry(Country.UNITED_STATES_OF_AMERICA)))
+      .havingMessage("Cannot set Country for a PhoneNumber of type [%s] is not supported",
+        mockPhoneNumber.getClass().getName())
+      .withNoCause();
+
+    verify(mockPhoneNumber, times(1)).setCountry(eq(Country.UNITED_STATES_OF_AMERICA));
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void setExtensionThrowsUnsupportedOperationException() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    Extension mockExtension = mock(Extension.class);
+
+    doCallRealMethod().when(mockPhoneNumber).setExtension(any());
+
+    assertThatUnsupportedOperationException()
+      .isThrownBy(ThrowableOperation.fromRunnable(() -> mockPhoneNumber.setExtension(mockExtension)))
+      .havingMessage("Cannot set Extension for a PhoneNumber of type [%s] is not supported",
+        mockPhoneNumber.getClass().getName())
+      .withNoCause();
+
+    verify(mockPhoneNumber, times(1)).setExtension(eq(mockExtension));
+    verifyNoMoreInteractions(mockPhoneNumber);
+    verifyNoInteractions(mockExtension);
+  }
+
+  @Test
+  public void setTypeThrowsUnsupportedOperationException() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).setType(any());
+
+    assertThatUnsupportedOperationException()
+      .isThrownBy(ThrowableOperation.fromRunnable(() -> mockPhoneNumber.setType(PhoneNumber.Type.CELL)))
+      .havingMessage("Cannot set PhoneNumber.Type for a PhoneNumber of type [%s] is not supported",
+        mockPhoneNumber.getClass().getName())
+      .withNoCause();
+
+    verify(mockPhoneNumber, times(1)).setType(eq(PhoneNumber.Type.CELL));
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void acceptVisitsPhoneNumber() {
+
+    Visitor mockVisitor = mock(Visitor.class);
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).accept(any(Visitor.class));
+
+    mockPhoneNumber.accept(mockVisitor);
+
+    verify(mockPhoneNumber, times(1)).accept(eq(mockVisitor));
+    verify(mockVisitor, times(1)).visit(eq(mockPhoneNumber));
+    verifyNoMoreInteractions(mockPhoneNumber, mockVisitor);
+  }
+
+  @Test
+  public void withExtensionCallsSetExtension() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    Extension mockExtension = mock(Extension.class);
+
+    doCallRealMethod().when(mockPhoneNumber).withExtension(any());
+
+    assertThat(mockPhoneNumber.withExtension(mockExtension)).isSameAs(mockPhoneNumber);
+
+    verify(mockPhoneNumber, times(1)).withExtension(eq(mockExtension));
+    verify(mockPhoneNumber, times(1)).setExtension(eq(mockExtension));
+    verifyNoMoreInteractions(mockPhoneNumber);
+    verifyNoInteractions(mockExtension);
   }
 }
