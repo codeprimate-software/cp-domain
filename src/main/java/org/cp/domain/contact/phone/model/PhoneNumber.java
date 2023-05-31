@@ -283,7 +283,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @see #asType(PhoneNumber.Type)
    */
   @Dsl
-  default @NotNull PhoneNumber asVOIP() {
+  default @NotNull PhoneNumber asVoip() {
     return asType(PhoneNumber.Type.VOIP);
   }
 
@@ -352,7 +352,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#VOIP
    * @see #getType()
    */
-  default boolean isVOIP() {
+  default boolean isVoip() {
 
     return getType()
       .filter(PhoneNumber.Type.VOIP::equals)

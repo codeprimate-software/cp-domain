@@ -18,6 +18,7 @@ package org.cp.domain.contact.phone.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -169,6 +170,84 @@ public class PhoneNumberUnitTests {
       .withNoCause();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode);
+  }
+
+  @Test
+  public void asTypeCallsSetType() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).asType(any());
+
+    assertThat(mockPhoneNumber.asType(PhoneNumber.Type.UNKNOWN)).isSameAs(mockPhoneNumber);
+
+    verify(mockPhoneNumber, times(1)).asType(eq(PhoneNumber.Type.UNKNOWN));
+    verify(mockPhoneNumber, times(1)).setType(eq(PhoneNumber.Type.UNKNOWN));
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void asCellPhoneNumberCallsSetTypeWithCellPhoneNumberType() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).asType(any());
+    doCallRealMethod().when(mockPhoneNumber).asCell();
+
+    assertThat(mockPhoneNumber.asCell()).isSameAs(mockPhoneNumber);
+
+    verify(mockPhoneNumber, times(1)).asCell();
+    verify(mockPhoneNumber, times(1)).asType(eq(PhoneNumber.Type.CELL));
+    verify(mockPhoneNumber, times(1)).setType(eq(PhoneNumber.Type.CELL));
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void asHomePhoneNumberCallsSetTypeWithHomePhoneNumberType() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).asType(any());
+    doCallRealMethod().when(mockPhoneNumber).asHome();
+
+    assertThat(mockPhoneNumber.asHome()).isSameAs(mockPhoneNumber);
+
+    verify(mockPhoneNumber, times(1)).asHome();
+    verify(mockPhoneNumber, times(1)).asType(eq(PhoneNumber.Type.HOME));
+    verify(mockPhoneNumber, times(1)).setType(eq(PhoneNumber.Type.HOME));
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void asVoipPhoneNumberCallsSetTypeWithVoipPhoneNumberType() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).asType(any());
+    doCallRealMethod().when(mockPhoneNumber).asVoip();
+
+    assertThat(mockPhoneNumber.asVoip()).isSameAs(mockPhoneNumber);
+
+    verify(mockPhoneNumber, times(1)).asVoip();
+    verify(mockPhoneNumber, times(1)).asType(eq(PhoneNumber.Type.VOIP));
+    verify(mockPhoneNumber, times(1)).setType(eq(PhoneNumber.Type.VOIP));
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void asWorkPhoneNumberCallsSetTypeWithWorkPhoneNumberType() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).asType(any());
+    doCallRealMethod().when(mockPhoneNumber).asWork();
+
+    assertThat(mockPhoneNumber.asWork()).isSameAs(mockPhoneNumber);
+
+    verify(mockPhoneNumber, times(1)).asWork();
+    verify(mockPhoneNumber, times(1)).asType(eq(PhoneNumber.Type.WORK));
+    verify(mockPhoneNumber, times(1)).setType(eq(PhoneNumber.Type.WORK));
+    verifyNoMoreInteractions(mockPhoneNumber);
   }
 
   @Test
@@ -334,12 +413,12 @@ public class PhoneNumberUnitTests {
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
     doReturn(Optional.of(PhoneNumber.Type.VOIP)).when(mockPhoneNumber).getType();
-    doCallRealMethod().when(mockPhoneNumber).isVOIP();
+    doCallRealMethod().when(mockPhoneNumber).isVoip();
 
-    assertThat(mockPhoneNumber.isVOIP()).isTrue();
+    assertThat(mockPhoneNumber.isVoip()).isTrue();
 
     verify(mockPhoneNumber, times(1)).getType();
-    verify(mockPhoneNumber, times(1)).isVOIP();
+    verify(mockPhoneNumber, times(1)).isVoip();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
 
@@ -348,19 +427,19 @@ public class PhoneNumberUnitTests {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
-    doCallRealMethod().when(mockPhoneNumber).isVOIP();
+    doCallRealMethod().when(mockPhoneNumber).isVoip();
 
     Arrays.stream(PhoneNumber.Type.values())
       .filter(phoneNumberType -> !PhoneNumber.Type.VOIP.equals(phoneNumberType))
       .forEach(phoneNumberType -> {
         doReturn(Optional.of(phoneNumberType)).when(mockPhoneNumber).getType();
-        assertThat(mockPhoneNumber.isVOIP()).isFalse();
+        assertThat(mockPhoneNumber.isVoip()).isFalse();
       });
 
     int callCount = PhoneNumber.Type.values().length - 1;
 
     verify(mockPhoneNumber, times(callCount)).getType();
-    verify(mockPhoneNumber, times(callCount)).isVOIP();
+    verify(mockPhoneNumber, times(callCount)).isVoip();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
 
