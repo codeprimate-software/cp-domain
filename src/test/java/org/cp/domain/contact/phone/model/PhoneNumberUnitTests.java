@@ -204,4 +204,199 @@ public class PhoneNumberUnitTests {
     verify(mockPhoneNumber, times(1)).getCountry();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
+
+  @Test
+  public void isCellPhoneNumberWhenCell() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doReturn(Optional.of(PhoneNumber.Type.CELL)).when(mockPhoneNumber).getType();
+    doCallRealMethod().when(mockPhoneNumber).isCell();
+
+    assertThat(mockPhoneNumber.isCell()).isTrue();
+
+    verify(mockPhoneNumber, times(1)).getType();
+    verify(mockPhoneNumber, times(1)).isCell();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void isCellPhoneNumberWhenNotCell() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).isCell();
+
+    Arrays.stream(PhoneNumber.Type.values())
+      .filter(phoneNumberType -> !PhoneNumber.Type.CELL.equals(phoneNumberType))
+      .forEach(phoneNumberType -> {
+        doReturn(Optional.of(phoneNumberType)).when(mockPhoneNumber).getType();
+        assertThat(mockPhoneNumber.isCell()).isFalse();
+      });
+
+    int callCount = PhoneNumber.Type.values().length - 1;
+
+    verify(mockPhoneNumber, times(callCount)).getType();
+    verify(mockPhoneNumber, times(callCount)).isCell();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void isHomePhoneNumberWhenHome() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doReturn(Optional.of(PhoneNumber.Type.HOME)).when(mockPhoneNumber).getType();
+    doCallRealMethod().when(mockPhoneNumber).isHome();
+
+    assertThat(mockPhoneNumber.isHome()).isTrue();
+
+    verify(mockPhoneNumber, times(1)).getType();
+    verify(mockPhoneNumber, times(1)).isHome();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void isHomePhoneNumberWhenNotHome() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).isHome();
+
+    Arrays.stream(PhoneNumber.Type.values())
+      .filter(phoneNumberType -> !PhoneNumber.Type.HOME.equals(phoneNumberType))
+      .forEach(phoneNumberType -> {
+        doReturn(Optional.of(phoneNumberType)).when(mockPhoneNumber).getType();
+        assertThat(mockPhoneNumber.isHome()).isFalse();
+      });
+
+    int callCount = PhoneNumber.Type.values().length - 1;
+
+    verify(mockPhoneNumber, times(callCount)).getType();
+    verify(mockPhoneNumber, times(callCount)).isHome();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void isUnknownPhoneNumberWhenKnown() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).isUnknown();
+
+    Arrays.stream(PhoneNumber.Type.values())
+      .filter(phoneNumberType -> !PhoneNumber.Type.UNKNOWN.equals(phoneNumberType))
+      .forEach(phoneNumberType -> {
+        doReturn(Optional.of(phoneNumberType)).when(mockPhoneNumber).getType();
+        assertThat(mockPhoneNumber.isUnknown()).isFalse();
+      });
+
+    int callCount = PhoneNumber.Type.values().length - 1;
+
+    verify(mockPhoneNumber, times(callCount)).getType();
+    verify(mockPhoneNumber, times(callCount)).isUnknown();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void isUnknownPhoneNumberWhenUnknown() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doReturn(Optional.of(PhoneNumber.Type.UNKNOWN)).when(mockPhoneNumber).getType();
+    doCallRealMethod().when(mockPhoneNumber).isUnknown();
+
+    assertThat(mockPhoneNumber.isUnknown()).isTrue();
+
+    verify(mockPhoneNumber, times(1)).getType();
+    verify(mockPhoneNumber, times(1)).isUnknown();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void isUnknownPhoneNumberWhenUnset() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doReturn(Optional.empty()).when(mockPhoneNumber).getType();
+    doCallRealMethod().when(mockPhoneNumber).isUnknown();
+
+    assertThat(mockPhoneNumber.isUnknown()).isTrue();
+
+    verify(mockPhoneNumber, times(1)).getType();
+    verify(mockPhoneNumber, times(1)).isUnknown();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void isVoipPhoneNumberWhenVoip() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doReturn(Optional.of(PhoneNumber.Type.VOIP)).when(mockPhoneNumber).getType();
+    doCallRealMethod().when(mockPhoneNumber).isVOIP();
+
+    assertThat(mockPhoneNumber.isVOIP()).isTrue();
+
+    verify(mockPhoneNumber, times(1)).getType();
+    verify(mockPhoneNumber, times(1)).isVOIP();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void isVoipPhoneNumberWhenNotVoip() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).isVOIP();
+
+    Arrays.stream(PhoneNumber.Type.values())
+      .filter(phoneNumberType -> !PhoneNumber.Type.VOIP.equals(phoneNumberType))
+      .forEach(phoneNumberType -> {
+        doReturn(Optional.of(phoneNumberType)).when(mockPhoneNumber).getType();
+        assertThat(mockPhoneNumber.isVOIP()).isFalse();
+      });
+
+    int callCount = PhoneNumber.Type.values().length - 1;
+
+    verify(mockPhoneNumber, times(callCount)).getType();
+    verify(mockPhoneNumber, times(callCount)).isVOIP();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void isWorkPhoneNumberWhenWork() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doReturn(Optional.of(PhoneNumber.Type.WORK)).when(mockPhoneNumber).getType();
+    doCallRealMethod().when(mockPhoneNumber).isWork();
+
+    assertThat(mockPhoneNumber.isWork()).isTrue();
+
+    verify(mockPhoneNumber, times(1)).getType();
+    verify(mockPhoneNumber, times(1)).isWork();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  public void isWorkPhoneNumberWhenNotWork() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).isWork();
+
+    Arrays.stream(PhoneNumber.Type.values())
+      .filter(phoneNumberType -> !PhoneNumber.Type.WORK.equals(phoneNumberType))
+      .forEach(phoneNumberType -> {
+        doReturn(Optional.of(phoneNumberType)).when(mockPhoneNumber).getType();
+        assertThat(mockPhoneNumber.isWork()).isFalse();
+      });
+
+    int callCount = PhoneNumber.Type.values().length - 1;
+
+    verify(mockPhoneNumber, times(callCount)).getType();
+    verify(mockPhoneNumber, times(callCount)).isWork();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
 }

@@ -309,7 +309,10 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @see #getType()
    */
   default boolean isCell() {
-    return PhoneNumber.Type.CELL.equals(getType().orElse(null));
+
+    return getType()
+      .filter(PhoneNumber.Type.CELL::equals)
+      .isPresent();
   }
 
   /**
@@ -320,7 +323,10 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @see #getType()
    */
   default boolean isHome() {
-    return PhoneNumber.Type.HOME.equals(getType().orElse(null));
+
+    return getType()
+      .filter(PhoneNumber.Type.HOME::equals)
+      .isPresent();
   }
 
   /**
@@ -331,7 +337,12 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @see #getType()
    */
   default boolean isUnknown() {
-    return PhoneNumber.Type.UNKNOWN.equals(getType().orElse(null));
+
+    Optional<PhoneNumber.Type> phoneNumberType = getType();
+
+    return phoneNumberType.isEmpty() || phoneNumberType
+      .filter(PhoneNumber.Type.UNKNOWN::equals)
+      .isPresent();
   }
 
   /**
@@ -342,7 +353,10 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @see #getType()
    */
   default boolean isVOIP() {
-    return PhoneNumber.Type.VOIP.equals(getType().orElse(null));
+
+    return getType()
+      .filter(PhoneNumber.Type.VOIP::equals)
+      .isPresent();
   }
 
   /**
@@ -353,7 +367,10 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @see #getType()
    */
   default boolean isWork() {
-    return PhoneNumber.Type.WORK.equals(getType().orElse(null));
+
+    return getType()
+      .filter(PhoneNumber.Type.WORK::equals)
+      .isPresent();
   }
 
   /**
