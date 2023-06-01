@@ -579,10 +579,10 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    */
   enum Type {
 
-    CELL("CLL", "Cellular"),
-    HOME("HM", "Home"),
+    CELL("CELL", "Cellular"),
+    HOME("HOME", "Home"),
     VOIP("VOIP", "Voice-Over-IP"),
-    WORK("WRK", "Work"),
+    WORK("WORK", "Work"),
     UNKNOWN("??", "Unknown");
 
     /**
