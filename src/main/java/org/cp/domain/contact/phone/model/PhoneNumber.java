@@ -77,6 +77,18 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
     (areaCode, exchangeCode, number) -> new AbstractPhoneNumber(areaCode, exchangeCode, number) { };
 
   /**
+   * Returns a new {@link PhoneNumber.Builder} used to construct and build a {@link PhoneNumber}.
+   *
+   * @return a new {@link PhoneNumber.Builder} used to construct and build a {@link PhoneNumber}.
+   * @see org.cp.elements.lang.annotation.Dsl
+   * @see PhoneNumber.Builder
+   */
+  @Dsl
+  static @NotNull PhoneNumber.Builder builder() {
+    return new PhoneNumber.Builder();
+  }
+
+  /**
    * Factory method used to construct a new instance of {@link PhoneNumber} copied from an existing,
    * required {@link PhoneNumber}.
    *
@@ -152,7 +164,10 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   AreaCode getAreaCode();
 
   /**
-   * Gets the {@link String three-digit} {@link ExchangeCode} of this {@link PhoneNumber}.
+   * Gets the {@literal 3 digit} {@link ExchangeCode} of this {@link PhoneNumber}.
+   *
+   * The {@literal Exchange Code}, also known as the {@literal Telephone Prefix} or {@literal Central Office Code}
+   * is the second 3 digits in the 10-digit phone number.
    *
    * @return the {@link String three-digit} {@link ExchangeCode} of this {@link PhoneNumber}.
    * @see org.cp.domain.contact.phone.model.ExchangeCode
