@@ -53,25 +53,25 @@ public class PhoneNumberUnitTests {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
-    FourDigitNumber mockFourDigitNumber = mock(FourDigitNumber.class);
+    LineNumber mockLineNumber = mock(LineNumber.class);
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
     doReturn(mockAreaCode).when(mockPhoneNumber).getAreaCode();
     doReturn(mockExchangeCode).when(mockPhoneNumber).getExchangeCode();
-    doReturn(mockFourDigitNumber).when(mockPhoneNumber).getFourDigitNumber();
+    doReturn(mockLineNumber).when(mockPhoneNumber).getLineNumber();
 
     PhoneNumber copy = PhoneNumber.from(mockPhoneNumber);
 
     assertThat(copy).isNotNull();
     assertThat(copy.getAreaCode()).isEqualTo(mockAreaCode);
     assertThat(copy.getExchangeCode()).isEqualTo(mockExchangeCode);
-    assertThat(copy.getFourDigitNumber()).isEqualTo(mockFourDigitNumber);
+    assertThat(copy.getLineNumber()).isEqualTo(mockLineNumber);
     assertThat(copy.getCountry()).isNotPresent();
     assertThat(copy.getExtension()).isNotPresent();
     assertThat(copy.getType()).isNotPresent();
 
-    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockFourDigitNumber);
+    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockLineNumber);
   }
 
   @Test
@@ -79,7 +79,7 @@ public class PhoneNumberUnitTests {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
-    FourDigitNumber mockFourDigitNumber = mock(FourDigitNumber.class);
+    LineNumber mockLineNumber = mock(LineNumber.class);
     Extension mockExtension = mock(Extension.class);
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
@@ -87,7 +87,7 @@ public class PhoneNumberUnitTests {
     doNothing().when(mockPhoneNumber).setCountry(any());
     doReturn(mockAreaCode).when(mockPhoneNumber).getAreaCode();
     doReturn(mockExchangeCode).when(mockPhoneNumber).getExchangeCode();
-    doReturn(mockFourDigitNumber).when(mockPhoneNumber).getFourDigitNumber();
+    doReturn(mockLineNumber).when(mockPhoneNumber).getLineNumber();
     doReturn(Optional.ofNullable(mockExtension)).when(mockPhoneNumber).getExtension();
     doReturn(Optional.of(Country.UNITED_STATES_OF_AMERICA)).when(mockPhoneNumber).getCountry();
 
@@ -96,12 +96,12 @@ public class PhoneNumberUnitTests {
     assertThat(copy).isNotNull();
     assertThat(copy.getAreaCode()).isEqualTo(mockAreaCode);
     assertThat(copy.getExchangeCode()).isEqualTo(mockExchangeCode);
-    assertThat(copy.getFourDigitNumber()).isEqualTo(mockFourDigitNumber);
+    assertThat(copy.getLineNumber()).isEqualTo(mockLineNumber);
     assertThat(copy.getExtension().orElse(null)).isEqualTo(mockExtension);
     assertThat(copy.getCountry().orElse(null)).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
     assertThat(copy.getType()).isNotPresent();
 
-    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockFourDigitNumber);
+    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockLineNumber);
   }
 
   @Test
@@ -114,62 +114,62 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void ofAreaCodeExchangeCodeAndFourDigitNumber() {
+  public void ofAreaCodeExchangeCodeAndLineNumber() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
-    FourDigitNumber mockFourDigitNumber = mock(FourDigitNumber.class);
+    LineNumber mockLineNumber = mock(LineNumber.class);
 
-    PhoneNumber phoneNumber = PhoneNumber.of(mockAreaCode, mockExchangeCode, mockFourDigitNumber);
+    PhoneNumber phoneNumber = PhoneNumber.of(mockAreaCode, mockExchangeCode, mockLineNumber);
 
     assertThat(phoneNumber).isNotNull();
     assertThat(phoneNumber.getAreaCode()).isEqualTo(mockAreaCode);
     assertThat(phoneNumber.getExchangeCode()).isEqualTo(mockExchangeCode);
-    assertThat(phoneNumber.getFourDigitNumber()).isEqualTo(mockFourDigitNumber);
+    assertThat(phoneNumber.getLineNumber()).isEqualTo(mockLineNumber);
     assertThat(phoneNumber.getCountry()).isNotPresent();
     assertThat(phoneNumber.getExtension()).isNotPresent();
     assertThat(phoneNumber.getType()).isNotPresent();
 
-    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockFourDigitNumber);
+    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockLineNumber);
   }
 
   @Test
   public void ofNullAreaCode() {
 
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
-    FourDigitNumber mockFourDigitNumber = mock(FourDigitNumber.class);
+    LineNumber mockLineNumber = mock(LineNumber.class);
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> PhoneNumber.of(null, mockExchangeCode, mockFourDigitNumber))
+      .isThrownBy(() -> PhoneNumber.of(null, mockExchangeCode, mockLineNumber))
       .withMessage("AreaCode is required")
       .withNoCause();
 
-    verifyNoInteractions(mockExchangeCode, mockFourDigitNumber);
+    verifyNoInteractions(mockExchangeCode, mockLineNumber);
   }
 
   @Test
   public void ofNullExchangeCode() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
-    FourDigitNumber mockFourDigitNumber = mock(FourDigitNumber.class);
+    LineNumber mockLineNumber = mock(LineNumber.class);
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> PhoneNumber.of(mockAreaCode, null, mockFourDigitNumber))
+      .isThrownBy(() -> PhoneNumber.of(mockAreaCode, null, mockLineNumber))
       .withMessage("ExchangeCode is required")
       .withNoCause();
 
-    verifyNoInteractions(mockAreaCode, mockFourDigitNumber);
+    verifyNoInteractions(mockAreaCode, mockLineNumber);
   }
 
   @Test
-  public void ofNullFourDigitNumber() {
+  public void ofNullLineNumber() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> PhoneNumber.of(mockAreaCode, mockExchangeCode, null))
-      .withMessage("FourDigitNumber is required")
+      .withMessage("LineNumber is required")
       .withNoCause();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode);

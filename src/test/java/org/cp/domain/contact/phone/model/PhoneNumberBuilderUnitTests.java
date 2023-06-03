@@ -40,12 +40,12 @@ public class PhoneNumberBuilderUnitTests {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
-    FourDigitNumber mockFourDigitNumber = mock(FourDigitNumber.class);
+    LineNumber mockLineNumber = mock(LineNumber.class);
 
     PhoneNumber phoneNumber = PhoneNumber.builder()
       .inAreaCode(mockAreaCode)
       .with(mockExchangeCode)
-      .with(mockFourDigitNumber)
+      .with(mockLineNumber)
       .build();
 
     assertThat(phoneNumber).isNotNull();
@@ -55,7 +55,7 @@ public class PhoneNumberBuilderUnitTests {
     assertThat(phoneNumber.getExtension()).isNotPresent();
     assertThat(phoneNumber.getType()).isNotPresent();
 
-    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockFourDigitNumber);
+    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockLineNumber);
   }
 
   @Test
@@ -64,14 +64,14 @@ public class PhoneNumberBuilderUnitTests {
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
     Extension mockExtension = mock(Extension.class);
-    FourDigitNumber mockFourDigitNumber = mock(FourDigitNumber.class);
+    LineNumber mockLineNumber = mock(LineNumber.class);
 
     PhoneNumber phoneNumber = PhoneNumber.builder()
       .inCountry(Country.CANADA)
       .inAreaCode(mockAreaCode)
       .with(mockExchangeCode)
       .with(mockExtension)
-      .with(mockFourDigitNumber)
+      .with(mockLineNumber)
       .build()
       .asCell();
 
@@ -82,7 +82,7 @@ public class PhoneNumberBuilderUnitTests {
     assertThat(phoneNumber.getExtension().orElse(null)).isEqualTo(mockExtension);
     assertThat(phoneNumber.getType().orElse(null)).isEqualTo(PhoneNumber.Type.CELL);
 
-    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockExtension, mockFourDigitNumber);
+    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockExtension, mockLineNumber);
   }
 
   @Test
@@ -91,14 +91,14 @@ public class PhoneNumberBuilderUnitTests {
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
     Extension mockExtension = mock(Extension.class);
-    FourDigitNumber mockFourDigitNumber = mock(FourDigitNumber.class);
+    LineNumber mockLineNumber = mock(LineNumber.class);
 
     PhoneNumber phoneNumber = PhoneNumber.builder()
       .inLocalCountry()
       .inAreaCode(mockAreaCode)
       .with(mockExchangeCode)
       .with(mockExtension)
-      .with(mockFourDigitNumber)
+      .with(mockLineNumber)
       .build()
       .asVoip();
 
@@ -109,7 +109,7 @@ public class PhoneNumberBuilderUnitTests {
     assertThat(phoneNumber.getExtension().orElse(null)).isEqualTo(mockExtension);
     assertThat(phoneNumber.getType().orElse(null)).isEqualTo(PhoneNumber.Type.VOIP);
 
-    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockExtension, mockFourDigitNumber);
+    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockExtension, mockLineNumber);
   }
 
   @Test
@@ -134,8 +134,8 @@ public class PhoneNumberBuilderUnitTests {
   public void buildPhoneNumberWithNullLineNumber() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> PhoneNumber.builder().with((FourDigitNumber) null).build())
-      .withMessage("FourDigitNumber is required")
+      .isThrownBy(() -> PhoneNumber.builder().with((LineNumber) null).build())
+      .withMessage("LineNumber is required")
       .withNoCause();
   }
 }

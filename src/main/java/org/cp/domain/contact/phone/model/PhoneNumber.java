@@ -53,7 +53,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.domain.contact.phone.model.AreaCode
  * @see org.cp.domain.contact.phone.model.ExchangeCode
  * @see org.cp.domain.contact.phone.model.Extension
- * @see org.cp.domain.contact.phone.model.FourDigitNumber
+ * @see org.cp.domain.contact.phone.model.LineNumber
  * @see org.cp.domain.geo.enums.Country
  * @see org.cp.domain.geo.support.CountryAware
  * @see org.cp.elements.function.TriFunction
@@ -72,8 +72,8 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
     Identifiable<Long>, Renderable, Serializable, Visitable {
 
   // Constructor Function used for the type of PhoneNumber constructed
-  // in the of(:AreaCode, :ExchangeCode, :FourDigitNumber) factory method.
-  TriFunction<AreaCode, ExchangeCode, FourDigitNumber, PhoneNumber> PHONE_NUMBER_CONSTRUCTOR =
+  // in the of(:AreaCode, :ExchangeCode, :LineNumber) factory method.
+  TriFunction<AreaCode, ExchangeCode, LineNumber, PhoneNumber> PHONE_NUMBER_CONSTRUCTOR =
     (areaCode, exchangeCode, number) -> new AbstractPhoneNumber(areaCode, exchangeCode, number) { };
 
   /**
@@ -95,7 +95,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @param phoneNumber {@link PhoneNumber} to copy; must not be {@literal null}.
    * @return a new {@link PhoneNumber} copied from the existing, required {@link PhoneNumber}.
    * @throws IllegalArgumentException if the given {@link PhoneNumber} to copy is {@literal null}.
-   * @see #of(AreaCode, ExchangeCode, FourDigitNumber)
+   * @see #of(AreaCode, ExchangeCode, LineNumber)
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
@@ -103,7 +103,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
 
     Assert.notNull(phoneNumber, "PhoneNumber to copy is required");
 
-    PhoneNumber copy = of(phoneNumber.getAreaCode(), phoneNumber.getExchangeCode(), phoneNumber.getFourDigitNumber());
+    PhoneNumber copy = of(phoneNumber.getAreaCode(), phoneNumber.getExchangeCode(), phoneNumber.getLineNumber());
 
     phoneNumber.getCountry().ifPresent(copy::setCountry);
     phoneNumber.getExtension().ifPresent(copy::setExtension);
@@ -114,28 +114,28 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
 
   /**
    * Factory method used to construct a new instance of {@link PhoneNumber} initialized with the given,
-   * required {@link AreaCode}, {@link  ExchangeCode} and {@link FourDigitNumber}.
+   * required {@link AreaCode}, {@link  ExchangeCode} and {@link LineNumber}.
    *
    * @param areaCode {@link AreaCode} of the new {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of the new {@link PhoneNumber}; must not be {@literal null}.
-   * @param number {@link FourDigitNumber} of the new {@link PhoneNumber}; must not be {@literal null}.
+   * @param number {@link LineNumber} of the new {@link PhoneNumber}; must not be {@literal null}.
    * @return a new {@link PhoneNumber} initialized from the given, required {@link AreaCode},
-   * {@link ExchangeCode} and {@link FourDigitNumber}.
-   * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link FourDigitNumber}
+   * {@link ExchangeCode} and {@link LineNumber}.
+   * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link LineNumber}
    * are {@literal null}.
    * @see org.cp.domain.contact.phone.model.AbstractPhoneNumber
    * @see org.cp.domain.contact.phone.model.AreaCode
    * @see org.cp.domain.contact.phone.model.ExchangeCode
-   * @see org.cp.domain.contact.phone.model.FourDigitNumber
+   * @see org.cp.domain.contact.phone.model.LineNumber
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
   static @NotNull PhoneNumber of(@NotNull AreaCode areaCode, @NotNull ExchangeCode exchangeCode,
-      @NotNull FourDigitNumber number) {
+      @NotNull LineNumber number) {
 
     Assert.notNull(areaCode, "AreaCode is required");
     Assert.notNull(exchangeCode, "ExchangeCode is required");
-    Assert.notNull(number, "FourDigitNumber is required");
+    Assert.notNull(number, "LineNumber is required");
 
     return PHONE_NUMBER_CONSTRUCTOR.apply(areaCode, exchangeCode, number);
   }
@@ -186,12 +186,12 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   ExchangeCode getExchangeCode();
 
   /**
-   * Gets the {@link FourDigitNumber} of this {@link PhoneNumber}.
+   * Gets the {@link LineNumber} of this {@link PhoneNumber}.
    *
-   * @return the {@link FourDigitNumber} of this {@link PhoneNumber}.
-   * @see org.cp.domain.contact.phone.model.FourDigitNumber
+   * @return the {@link LineNumber} of this {@link PhoneNumber}.
+   * @see org.cp.domain.contact.phone.model.LineNumber
    */
-  FourDigitNumber getFourDigitNumber();
+  LineNumber getLineNumber();
 
   /**
    * Sets the {@link Country} of origin for this {@link PhoneNumber}.
@@ -426,7 +426,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
     return ComparatorResultBuilder.<Comparable>create()
       .doCompare(this.getAreaCode(), that.getAreaCode())
       .doCompare(this.getExchangeCode(), that.getExchangeCode())
-      .doCompare(this.getFourDigitNumber(), that.getFourDigitNumber())
+      .doCompare(this.getLineNumber(), that.getLineNumber())
       .doCompare(this.getExtension().orElse(null), that.getExtension().orElse(null))
       .build();
   }
@@ -458,7 +458,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
     private Country country;
     private ExchangeCode exchangeCode;
     private Extension extension;
-    private FourDigitNumber number;
+    private LineNumber lineNumber;
 
     /**
      * Builds a new {@link PhoneNumber} from an existing, required {@link PhoneNumber}.
@@ -475,7 +475,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
         .inCountry(phoneNumber.getCountry().orElseGet(Country::localCountry))
         .with(phoneNumber.getExchangeCode())
         .with(phoneNumber.getExtension().orElse(null))
-        .with(phoneNumber.getFourDigitNumber());
+        .with(phoneNumber.getLineNumber());
     }
 
     /**
@@ -545,16 +545,16 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
     }
 
     /**
-     * Builder method used to set the given, required {@link FourDigitNumber} of the new {@link PhoneNumber}.
+     * Builder method used to set the given, required {@link LineNumber} of the new {@link PhoneNumber}.
      *
-     * @param number {@link FourDigitNumber} of the new {@link PhoneNumber}; must not be {@literal null}.
+     * @param number {@link LineNumber} of the new {@link PhoneNumber}; must not be {@literal null}.
      * @return this {@link Builder}.
-     * @throws IllegalArgumentException if the given {@link FourDigitNumber} is {@literal null}.
-     * @see org.cp.domain.contact.phone.model.FourDigitNumber
+     * @throws IllegalArgumentException if the given {@link LineNumber} is {@literal null}.
+     * @see org.cp.domain.contact.phone.model.LineNumber
      */
     @Dsl
-    public @NotNull Builder with(@NotNull FourDigitNumber number) {
-      this.number = ObjectUtils.requireObject(number, "FourDigitNumber is required");
+    public @NotNull Builder with(@NotNull LineNumber number) {
+      this.lineNumber = ObjectUtils.requireObject(number, "LineNumber is required");
       return this;
     }
 
@@ -568,7 +568,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
     @Override
     public @NotNull PhoneNumber build() {
 
-      return new AbstractPhoneNumber(this.areaCode, this.exchangeCode, this.number) {
+      return new AbstractPhoneNumber(this.areaCode, this.exchangeCode, this.lineNumber) {
 
         @Override
         public Optional<Extension> getExtension() {

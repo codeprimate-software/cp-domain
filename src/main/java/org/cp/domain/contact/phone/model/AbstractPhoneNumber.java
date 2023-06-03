@@ -31,7 +31,7 @@ import org.cp.elements.text.FormatUtils;
  * @see org.cp.domain.contact.phone.model.AreaCode
  * @see org.cp.domain.contact.phone.model.ExchangeCode
  * @see org.cp.domain.contact.phone.model.Extension
- * @see org.cp.domain.contact.phone.model.FourDigitNumber
+ * @see org.cp.domain.contact.phone.model.LineNumber
  * @see org.cp.domain.contact.phone.model.PhoneNumber
  * @see org.cp.domain.geo.enums.Country
  * @since 0.1.0
@@ -50,7 +50,7 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
 
   private Extension extension;
 
-  private final FourDigitNumber number;
+  private final LineNumber number;
 
   private Long id;
 
@@ -58,19 +58,19 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
 
   /**
    * Constructs a new instance of {@link AbstractPhoneNumber} initialized with the given,
-   * required {@link AreaCode}, {@link ExchangeCode} and {@link FourDigitNumber}.
+   * required {@link AreaCode}, {@link ExchangeCode} and {@link LineNumber}.
    *
    * @param areaCode {@link AreaCode} of this {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of this {@link PhoneNumber}; must not be {@literal null}.
-   * @param number {@link FourDigitNumber} of this {@link PhoneNumber}; must not be {@literal null}.
-   * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link FourDigitNumber}
+   * @param number {@link LineNumber} of this {@link PhoneNumber}; must not be {@literal null}.
+   * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link LineNumber}
    * are {@literal null}.
    * @see org.cp.domain.contact.phone.model.AreaCode
    * @see org.cp.domain.contact.phone.model.ExchangeCode
-   * @see org.cp.domain.contact.phone.model.FourDigitNumber
+   * @see org.cp.domain.contact.phone.model.LineNumber
    */
   public AbstractPhoneNumber(@NotNull AreaCode areaCode, @NotNull ExchangeCode exchangeCode,
-      @NotNull FourDigitNumber number) {
+      @NotNull LineNumber number) {
 
     this.areaCode = ObjectUtils.requireObject(areaCode, "AreaCode is required");
     this.exchangeCode = ObjectUtils.requireObject(exchangeCode, "ExchangeCode is required");
@@ -108,7 +108,7 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
   }
 
   @Override
-  public @NotNull FourDigitNumber getFourDigitNumber() {
+  public @NotNull LineNumber getLineNumber() {
     return this.number;
   }
 
@@ -150,15 +150,15 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
     }
 
     return ObjectUtils.equals(this.getAreaCode(), that.getAreaCode())
-      && ObjectUtils.equals(this.getExtension(), that.getExchangeCode())
-      && ObjectUtils.equals(this.getFourDigitNumber(), that.getFourDigitNumber())
+      && ObjectUtils.equals(this.getExchangeCode(), that.getExchangeCode())
+      && ObjectUtils.equals(this.getLineNumber(), that.getLineNumber())
       && ObjectUtils.equalsIgnoreNull(this.getExtension().orElse(null), that.getExtension().orElse(null))
       && ObjectUtils.equalsIgnoreNull(this.getCountry().orElse(null), that.getCountry().orElse(null));
   }
 
   @Override
   public int hashCode() {
-    return ObjectUtils.hashCodeOf(getAreaCode(), getExchangeCode(), getFourDigitNumber(),
+    return ObjectUtils.hashCodeOf(getAreaCode(), getExchangeCode(), getLineNumber(),
       getExtension().orElse(null), getCountry().orElse(null));
   }
 
@@ -166,7 +166,7 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
   public @NotNull String toString() {
 
     return FormatUtils.format(PHONE_NUMBER_TO_STRING, getClass().getName(),
-      getAreaCode(), getExchangeCode(), getFourDigitNumber(),
+      getAreaCode(), getExchangeCode(), getLineNumber(),
       getExtension().map(ext -> "x".concat(ext.toString())).orElse(null),
       getCountry().orElse(null));
   }

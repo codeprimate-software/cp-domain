@@ -25,7 +25,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract Data Type (ADT) modeling the {@literal 4-digit number} of a {@link PhoneNumber}.
+ * Abstract Data Type (ADT) modeling the {@literal line number} of a {@link PhoneNumber}.
  *
  * @author John Blum
  * @see java.lang.Cloneable
@@ -36,65 +36,70 @@ import org.cp.elements.lang.annotation.Nullable;
  * @since 0.1.0
  */
 @Immutable
-public class FourDigitNumber implements Cloneable, Comparable<FourDigitNumber>, Serializable {
+public class LineNumber implements Cloneable, Comparable<LineNumber>, Serializable {
 
   private static final int REQUIRED_NUMBER_LENGTH = 4;
 
   /**
-   * Factory method used to construct a new instance of {@link FourDigitNumber} copied from the existing,
-   * required {@link FourDigitNumber}.
+   * Factory method used to construct a new instance of {@link LineNumber} copied from the existing,
+   * required {@link LineNumber}.
    *
-   * @param number {@link FourDigitNumber} to copy; must not be {@literal null}.
-   * @return a new {@link FourDigitNumber} copied from the existing, required {@link FourDigitNumber}.
-   * @throws IllegalArgumentException if the {@link FourDigitNumber} to copy is {@literal null}.
+   * @param number {@link LineNumber} to copy; must not be {@literal null}.
+   * @return a new {@link LineNumber} copied from the existing, required {@link LineNumber}.
+   * @throws IllegalArgumentException if the {@link LineNumber} to copy is {@literal null}.
    */
-  public static @NotNull FourDigitNumber from(@NotNull FourDigitNumber number) {
+  public static @NotNull LineNumber from(@NotNull LineNumber number) {
 
-    Assert.notNull(number, "FourDigitNumber to copy is required");
+    Assert.notNull(number, "LineNumber to copy is required");
 
-    return new FourDigitNumber(number.getNumber());
+    return new LineNumber(number.getNumber());
   }
 
   /**
-   * Factory method used to construct a new instance of {@link FourDigitNumber} from the given,
+   * Factory method used to construct a new instance of {@link LineNumber} from the given,
    * required {@link String 4-digit number}.
    *
-   * @param number {@link String} containing the {@literal 4-digit number} of this {@link FourDigitNumber};
+   * @param number {@link String} containing the {@literal 4-digit number} of this {@link LineNumber};
    * must not be {@literal null} or {@literal empty}; must be {@literal 4-digits}.
    * @throws IllegalArgumentException if the {@link String 4-digit number} is {@literal null}, {@literal empty}
    * or is not (only) {@literal 4-digits}.
-   * @return a new {@link FourDigitNumber} initialized with the given, required {@link String 4-digit number}.
+   * @return a new {@link LineNumber} initialized with the given, required {@link String 4-digit number}.
    */
-  public static @NotNull FourDigitNumber of(@NotNull String number) {
-    return new FourDigitNumber(number);
+  public static @NotNull LineNumber of(@NotNull String number) {
+    return new LineNumber(number);
   }
 
   private final String number;
 
   /**
-   * Constructs a new instance of {@link FourDigitNumber} initialized with the given,
-   * required {@link String 4-digit number}.
+   * Constructs a new {@link LineNumber} initialized with the given, required {@link String number}.
    *
-   * @param number {@link String} containing the {@literal 4-digit number} of this {@link FourDigitNumber};
-   * must not be {@literal null} or {@literal empty}; must be {@literal 4-digits}.
-   * @throws IllegalArgumentException if the {@link String 4-digit number} is {@literal null}, {@literal empty}
-   * or is not (only) {@literal 4-digits}.
+   * @param number {@link String} containing the {@literal number} for this {@link LineNumber};
+   * must not be {@literal null} or {@literal empty}.
+   * @throws IllegalArgumentException if the {@link String line number} is {@literal null}, {@literal empty}
+   * or is not of the {@link #getRequiredNumberLength() required length}.
    */
-  public FourDigitNumber(@NotNull String number) {
+  public LineNumber(@NotNull String number) {
 
-    Assert.isTrue(StringUtils.getDigits(number).length() == REQUIRED_NUMBER_LENGTH,
-      "Number [%s] must be a %d-digit number", number, REQUIRED_NUMBER_LENGTH);
+    int requiredNumberLength = getRequiredNumberLength();
+
+    Assert.isTrue(StringUtils.getDigits(number).length() == requiredNumberLength,
+      "Number [%s] must be a %d-digit number", number, requiredNumberLength);
 
     this.number = number;
   }
 
   /**
-   * Gets the {@link String 4-digit number} of this {@link FourDigitNumber}.
+   * Gets the {@link String 4-digit number} of this {@link LineNumber}.
    *
-   * @return the {@link String 4-digit number} of this {@link FourDigitNumber}.
+   * @return the {@link String 4-digit number} of this {@link LineNumber}.
    */
   public @NotNull String getNumber() {
     return this.number;
+  }
+
+  protected int getRequiredNumberLength() {
+    return REQUIRED_NUMBER_LENGTH;
   }
 
   @Override
@@ -104,7 +109,7 @@ public class FourDigitNumber implements Cloneable, Comparable<FourDigitNumber>, 
   }
 
   @Override
-  public int compareTo(@NotNull FourDigitNumber that) {
+  public int compareTo(@NotNull LineNumber that) {
     return this.getNumber().compareTo(that.getNumber());
   }
 
@@ -115,7 +120,7 @@ public class FourDigitNumber implements Cloneable, Comparable<FourDigitNumber>, 
       return true;
     }
 
-    if (!(obj instanceof FourDigitNumber that)) {
+    if (!(obj instanceof LineNumber that)) {
       return false;
     }
 

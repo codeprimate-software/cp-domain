@@ -22,7 +22,7 @@ import java.util.Optional;
 import org.cp.domain.contact.phone.model.AbstractPhoneNumber;
 import org.cp.domain.contact.phone.model.AreaCode;
 import org.cp.domain.contact.phone.model.ExchangeCode;
-import org.cp.domain.contact.phone.model.FourDigitNumber;
+import org.cp.domain.contact.phone.model.LineNumber;
 import org.cp.domain.contact.phone.model.PhoneNumber;
 import org.cp.domain.geo.enums.Country;
 import org.cp.elements.lang.Assert;
@@ -47,14 +47,14 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
    * @return a new {@link UnitedStatesPhoneNumber} copied from the given, required {@link PhoneNumber}.
    * @throws IllegalArgumentException if the given {@link PhoneNumber} to copy is {@literal null}.
    * @see org.cp.domain.contact.phone.model.PhoneNumber
-   * @see #of(AreaCode, ExchangeCode, FourDigitNumber)
+   * @see #of(AreaCode, ExchangeCode, LineNumber)
    */
   public static @NotNull UnitedStatesPhoneNumber from(@NotNull PhoneNumber phoneNumber) {
 
     Assert.notNull(phoneNumber, "PhoneNumber to copy is required");
 
     UnitedStatesPhoneNumber usPhoneNumber =
-      of(phoneNumber.getAreaCode(), phoneNumber.getExchangeCode(), phoneNumber.getFourDigitNumber());
+      of(phoneNumber.getAreaCode(), phoneNumber.getExchangeCode(), phoneNumber.getLineNumber());
 
     phoneNumber.getExtension().ifPresent(usPhoneNumber::setExtension);
     phoneNumber.getType().ifPresent(usPhoneNumber::setType);
@@ -64,41 +64,41 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
 
   /**
    * Factory method used to construct a new instance of {@link UnitedStatesPhoneNumber} initialized with the given,
-   * required {@link AreaCode}, {@link ExchangeCode} and {@link FourDigitNumber}.
+   * required {@link AreaCode}, {@link ExchangeCode} and {@link LineNumber}.
    *
    * @param areaCode {@link AreaCode} of this {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of this {@link PhoneNumber}; must not be {@literal null}.
-   * @param number {@link FourDigitNumber} of this {@link PhoneNumber}; must not be {@literal null}.
-   * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link FourDigitNumber}
+   * @param number {@link LineNumber} of this {@link PhoneNumber}; must not be {@literal null}.
+   * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link LineNumber}
    * are {@literal null}.
    * @return a new {@link UnitedStatesPhoneNumber} initialized with the given, required {@link AreaCode},
-   * @see #UnitedStatesPhoneNumber(AreaCode, ExchangeCode, FourDigitNumber)
-   * {@link ExchangeCode} and {@link FourDigitNumber}.
-   * @see org.cp.domain.contact.phone.model.FourDigitNumber
+   * @see #UnitedStatesPhoneNumber(AreaCode, ExchangeCode, LineNumber)
+   * {@link ExchangeCode} and {@link LineNumber}.
+   * @see org.cp.domain.contact.phone.model.LineNumber
    * @see org.cp.domain.contact.phone.model.ExchangeCode
    * @see org.cp.domain.contact.phone.model.AreaCode
    */
   public static @NotNull UnitedStatesPhoneNumber of(@NotNull AreaCode areaCode, @NotNull ExchangeCode exchangeCode,
-      @NotNull FourDigitNumber number) {
+      @NotNull LineNumber number) {
 
     return new UnitedStatesPhoneNumber(areaCode, exchangeCode, number);
   }
 
   /**
    * Constructs a new instance of {@link UnitedStatesPhoneNumber} initialized with the given,
-   * required {@link AreaCode}, {@link ExchangeCode} and {@link FourDigitNumber}.
+   * required {@link AreaCode}, {@link ExchangeCode} and {@link LineNumber}.
    *
    * @param areaCode {@link AreaCode} of this {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of this {@link PhoneNumber}; must not be {@literal null}.
-   * @param number {@link FourDigitNumber} of this {@link PhoneNumber}; must not be {@literal null}.
-   * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link FourDigitNumber}
+   * @param number {@link LineNumber} of this {@link PhoneNumber}; must not be {@literal null}.
+   * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link LineNumber}
    * are {@literal null}.
-   * @see org.cp.domain.contact.phone.model.FourDigitNumber
+   * @see org.cp.domain.contact.phone.model.LineNumber
    * @see org.cp.domain.contact.phone.model.ExchangeCode
    * @see org.cp.domain.contact.phone.model.AreaCode
    */
   public UnitedStatesPhoneNumber(@NotNull AreaCode areaCode, @NotNull ExchangeCode exchangeCode,
-      @NotNull FourDigitNumber number) {
+      @NotNull LineNumber number) {
 
     super(areaCode, exchangeCode, number);
   }
