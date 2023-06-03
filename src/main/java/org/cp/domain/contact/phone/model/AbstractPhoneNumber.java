@@ -42,6 +42,8 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
   private static final String PHONE_NUMBER_TO_STRING =
     "{ @type = %1$s, areaCode = %2$s, exchangeCode = %3$s, number = %4$s, extension = %5$s, country = %6$s }";
 
+  private Boolean textEnabled;
+
   private final AreaCode areaCode;
 
   private Country country;
@@ -50,7 +52,7 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
 
   private Extension extension;
 
-  private final LineNumber number;
+  private final LineNumber lineNumber;
 
   private Long id;
 
@@ -62,7 +64,7 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
    *
    * @param areaCode {@link AreaCode} of this {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of this {@link PhoneNumber}; must not be {@literal null}.
-   * @param number {@link LineNumber} of this {@link PhoneNumber}; must not be {@literal null}.
+   * @param lineNumber {@link LineNumber} of this {@link PhoneNumber}; must not be {@literal null}.
    * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link LineNumber}
    * are {@literal null}.
    * @see org.cp.domain.contact.phone.model.AreaCode
@@ -70,11 +72,11 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
    * @see org.cp.domain.contact.phone.model.LineNumber
    */
   public AbstractPhoneNumber(@NotNull AreaCode areaCode, @NotNull ExchangeCode exchangeCode,
-      @NotNull LineNumber number) {
+      @NotNull LineNumber lineNumber) {
 
     this.areaCode = ObjectUtils.requireObject(areaCode, "AreaCode is required");
     this.exchangeCode = ObjectUtils.requireObject(exchangeCode, "ExchangeCode is required");
-    this.number = ObjectUtils.requireObject(number, "Number is required");
+    this.lineNumber = ObjectUtils.requireObject(lineNumber, "LineNumber is required");
   }
 
   @Override
@@ -109,7 +111,7 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
 
   @Override
   public @NotNull LineNumber getLineNumber() {
-    return this.number;
+    return this.lineNumber;
   }
 
   @Override
@@ -120,6 +122,15 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
   @Override
   public void setId(@Nullable Long id) {
     this.id = id;
+  }
+
+  @Override
+  public boolean isTextEnabled() {
+    return Boolean.TRUE.equals(this.textEnabled);
+  }
+
+  public void setTextEnabled(@Nullable Boolean textEnabled) {
+    this.textEnabled = textEnabled;
   }
 
   @Override
@@ -169,5 +180,12 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
       getAreaCode(), getExchangeCode(), getLineNumber(),
       getExtension().map(ext -> "x".concat(ext.toString())).orElse(null),
       getCountry().orElse(null));
+  }
+
+  static final class GenericPhoneNumber extends AbstractPhoneNumber {
+
+    GenericPhoneNumber(@NotNull AreaCode areaCode, @NotNull ExchangeCode exchangeCode, @NotNull LineNumber lineNumber) {
+      super(areaCode, exchangeCode, lineNumber);
+    }
   }
 }
