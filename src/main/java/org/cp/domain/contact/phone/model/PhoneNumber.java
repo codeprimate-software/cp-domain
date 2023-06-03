@@ -141,32 +141,6 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   }
 
   /**
-   * Determines whether the use of this {@link PhoneNumber} would occur outside the {@link Country} of origin.
-   *
-   * @return a boolean value indicating whether the use of this {@link PhoneNumber} would occur outside
-   * the {@link Country} of origin.
-   * @see org.cp.domain.geo.enums.Country
-   * @see #getCountry()
-   */
-  default boolean isRoaming() {
-
-    return getCountry()
-      .filter(Country.localCountry()::equals)
-      .isEmpty();
-  }
-
-  /**
-   * Determines whether this {@link PhoneNumber} supports {@literal texting}.
-   *
-   * Returns {@literal false} by default.
-   *
-   * @return a boolean value indicating whether this {@link PhoneNumber} supports {@literal texting}.
-   */
-  default boolean isTextEnabled() {
-    return false;
-  }
-
-  /**
    * Gets the {@link String three-digit} {@link AreaCode} of this {@link PhoneNumber}.
    *
    * @return the {@link String three-digit} {@link AreaCode} of this {@link PhoneNumber}.
@@ -194,6 +168,32 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   LineNumber getLineNumber();
 
   /**
+   * Determines whether the use of this {@link PhoneNumber} would occur outside the {@link Country} of origin.
+   *
+   * @return a boolean value indicating whether the use of this {@link PhoneNumber} would occur outside
+   * the {@link Country} of origin.
+   * @see org.cp.domain.geo.enums.Country
+   * @see #getCountry()
+   */
+  default boolean isRoaming() {
+
+    return getCountry()
+      .filter(Country.localCountry()::equals)
+      .isEmpty();
+  }
+
+  /**
+   * Determines whether this {@link PhoneNumber} supports {@literal texting}.
+   *
+   * Returns {@literal false} by default.
+   *
+   * @return a boolean value indicating whether this {@link PhoneNumber} supports {@literal texting}.
+   */
+  default boolean isTextEnabled() {
+    return false;
+  }
+
+  /**
    * Sets the {@link Country} of origin for this {@link PhoneNumber}.
    *
    * @param country {@link Country} of origin for this {@link PhoneNumber}.
@@ -202,7 +202,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    */
   @Override
   default void setCountry(Country country) {
-    throw newUnsupportedOperationException("Cannot set Country for a PhoneNumber of type [%s] is not supported",
+    throw newUnsupportedOperationException("Cannot set Country for a PhoneNumber of type [%s]",
       getClass().getName());
   }
 
@@ -227,7 +227,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @see org.cp.domain.contact.phone.model.Extension
    */
   default void setExtension(@Nullable Extension extension) {
-    throw newUnsupportedOperationException("Cannot set Extension for a PhoneNumber of type [%s] is not supported",
+    throw newUnsupportedOperationException("Cannot set Extension for a PhoneNumber of type [%s]",
       getClass().getName());
   }
 

@@ -504,7 +504,7 @@ public class PhoneNumberUnitTests {
 
     assertThatUnsupportedOperationException()
       .isThrownBy(ThrowableOperation.fromRunnable(() -> mockPhoneNumber.setCountry(Country.UNITED_STATES_OF_AMERICA)))
-      .havingMessage("Cannot set Country for a PhoneNumber of type [%s] is not supported",
+      .havingMessage("Cannot set Country for a PhoneNumber of type [%s]",
         mockPhoneNumber.getClass().getName())
       .withNoCause();
 
@@ -523,7 +523,7 @@ public class PhoneNumberUnitTests {
 
     assertThatUnsupportedOperationException()
       .isThrownBy(ThrowableOperation.fromRunnable(() -> mockPhoneNumber.setExtension(mockExtension)))
-      .havingMessage("Cannot set Extension for a PhoneNumber of type [%s] is not supported",
+      .havingMessage("Cannot set Extension for a PhoneNumber of type [%s]",
         mockPhoneNumber.getClass().getName())
       .withNoCause();
 
