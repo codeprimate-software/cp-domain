@@ -218,7 +218,7 @@ public class AddressUnitTests {
     PostalCode mockPostalCode = mock(PostalCode.class);
     Country egypt = Country.EGYPT;
 
-    Address.Builder addressBuilder = Address.newBuilder();
+    Address.Builder addressBuilder = Address.builder();
 
     assertThat(addressBuilder).isNotNull();
 
@@ -246,7 +246,7 @@ public class AddressUnitTests {
     PostalCode mockPostalCode = mock(PostalCode.class);
 
     Address mockAddress = mockAddress(mockStreet, mockCity, mockPostalCode);
-    Address addressCopy = Address.newBuilder().from(mockAddress).build();
+    Address addressCopy = Address.builder().from(mockAddress).build();
 
     assertThat(addressCopy).isNotNull();
     assertThat(addressCopy).isNotSameAs(mockAddress);
@@ -269,7 +269,7 @@ public class AddressUnitTests {
   public void constructAddressUsingBuilderFromNullAddress() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Address.newBuilder().from(null))
+      .isThrownBy(() -> Address.builder().from(null))
       .withMessage("Address to copy is required")
       .withNoCause();
   }
