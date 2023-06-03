@@ -287,16 +287,30 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
 
   /**
    * Builder method used to set the {@link PhoneNumber.Type} of this {@link PhoneNumber}
-   * to {@link PhoneNumber.Type#HOME}.
+   * to {@link PhoneNumber.Type#LANDLINE}.
    *
    * @return this {@link PhoneNumber}.
-   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#HOME
+   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#LANDLINE
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #asType(PhoneNumber.Type)
    */
   @Dsl
-  default @NotNull PhoneNumber asHome() {
-    return asType(PhoneNumber.Type.HOME);
+  default @NotNull PhoneNumber asLandline() {
+    return asType(PhoneNumber.Type.LANDLINE);
+  }
+
+  /**
+   * Builder method used to set the {@link PhoneNumber.Type} of this {@link PhoneNumber}
+   * to {@link PhoneNumber.Type#SATELLITE}.
+   *
+   * @return this {@link PhoneNumber}.
+   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#SATELLITE
+   * @see org.cp.elements.lang.annotation.Dsl
+   * @see #asType(PhoneNumber.Type)
+   */
+  @Dsl
+  default @NotNull PhoneNumber asSatellite() {
+    return asType(PhoneNumber.Type.SATELLITE);
   }
 
   /**
@@ -314,20 +328,6 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   }
 
   /**
-   * Builder method used to set the {@link PhoneNumber.Type} of this {@link PhoneNumber}
-   * to {@link PhoneNumber.Type#WORK}.
-   *
-   * @return this {@link PhoneNumber}.
-   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#WORK
-   * @see org.cp.elements.lang.annotation.Dsl
-   * @see #asType(PhoneNumber.Type)
-   */
-  @Dsl
-  default @NotNull PhoneNumber asWork() {
-    return asType(PhoneNumber.Type.WORK);
-  }
-
-  /**
    * Determines whether this is a {@link PhoneNumber.Type#CELL} {@link PhoneNumber}.
    *
    * @return a boolean value determining whether this is a {@link PhoneNumber.Type#CELL} {@link PhoneNumber}.
@@ -342,16 +342,30 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   }
 
   /**
-   * Determines whether this is a {@link PhoneNumber.Type#HOME} {@link PhoneNumber}.
+   * Determines whether this is a {@link PhoneNumber.Type#LANDLINE} {@link PhoneNumber}.
    *
-   * @return a boolean value determining whether this is a {@link PhoneNumber.Type#HOME} {@link PhoneNumber}.
-   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#HOME
+   * @return a boolean value determining whether this is a {@link PhoneNumber.Type#LANDLINE} {@link PhoneNumber}.
+   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#LANDLINE
    * @see #getType()
    */
-  default boolean isHome() {
+  default boolean isLandline() {
 
     return getType()
-      .filter(PhoneNumber.Type.HOME::equals)
+      .filter(PhoneNumber.Type.LANDLINE::equals)
+      .isPresent();
+  }
+
+  /**
+   * Determines whether this is a {@link PhoneNumber.Type#SATELLITE} {@link PhoneNumber}.
+   *
+   * @return a boolean value determining whether this is a {@link PhoneNumber.Type#SATELLITE} {@link PhoneNumber}.
+   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#SATELLITE
+   * @see #getType()
+   */
+  default boolean isSatellite() {
+
+    return getType()
+      .filter(PhoneNumber.Type.SATELLITE::equals)
       .isPresent();
   }
 
@@ -382,20 +396,6 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
 
     return getType()
       .filter(PhoneNumber.Type.VOIP::equals)
-      .isPresent();
-  }
-
-  /**
-   * Determines whether this is a {@link PhoneNumber.Type#WORK} {@link PhoneNumber}.
-   *
-   * @return a boolean value determining whether this is a {@link PhoneNumber.Type#WORK} {@link PhoneNumber}.
-   * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#WORK
-   * @see #getType()
-   */
-  default boolean isWork() {
-
-    return getType()
-      .filter(PhoneNumber.Type.WORK::equals)
       .isPresent();
   }
 
@@ -591,9 +591,9 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   enum Type {
 
     CELL("CELL", "Cellular"),
-    HOME("HOME", "Home"),
+    LANDLINE("LAND", "Landline"),
+    SATELLITE("SAT", "Satellite"),
     VOIP("VOIP", "Voice-Over-IP"),
-    WORK("WORK", "Work"),
     UNKNOWN("??", "Unknown");
 
     /**
