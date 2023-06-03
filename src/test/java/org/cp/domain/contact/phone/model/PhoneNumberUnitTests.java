@@ -288,6 +288,19 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
+  public void isTextEnabled() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).isTextEnabled();
+
+    assertThat(mockPhoneNumber.isTextEnabled()).isFalse();
+
+    verify(mockPhoneNumber, times(1)).isTextEnabled();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
   public void isCellPhoneNumberWhenCell() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);

@@ -156,6 +156,17 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   }
 
   /**
+   * Determines whether this {@link PhoneNumber} supports {@literal texting}.
+   *
+   * Returns {@literal false} by default.
+   *
+   * @return a boolean value indicating whether this {@link PhoneNumber} supports {@literal texting}.
+   */
+  default boolean isTextEnabled() {
+    return false;
+  }
+
+  /**
    * Gets the {@link String three-digit} {@link AreaCode} of this {@link PhoneNumber}.
    *
    * @return the {@link String three-digit} {@link AreaCode} of this {@link PhoneNumber}.
