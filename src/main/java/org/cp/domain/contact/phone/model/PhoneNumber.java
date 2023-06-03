@@ -194,19 +194,6 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   }
 
   /**
-   * Sets the {@link Country} of origin for this {@link PhoneNumber}.
-   *
-   * @param country {@link Country} of origin for this {@link PhoneNumber}.
-   * @throws UnsupportedOperationException by default.
-   * @see org.cp.domain.geo.enums.Country
-   */
-  @Override
-  default void setCountry(Country country) {
-    throw newUnsupportedOperationException("Cannot set Country for a PhoneNumber of type [%s]",
-      getClass().getName());
-  }
-
-  /**
    * Gets the {@link Optional} {@link String extension} at this {@link PhoneNumber}.
    *
    * Returns {@link Optional#empty()} by default.

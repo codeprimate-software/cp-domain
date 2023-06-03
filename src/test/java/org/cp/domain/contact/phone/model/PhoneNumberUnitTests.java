@@ -496,23 +496,6 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void setCountryThrowsUnsupportedOperationException() {
-
-    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
-
-    doCallRealMethod().when(mockPhoneNumber).setCountry(any());
-
-    assertThatUnsupportedOperationException()
-      .isThrownBy(ThrowableOperation.fromRunnable(() -> mockPhoneNumber.setCountry(Country.UNITED_STATES_OF_AMERICA)))
-      .havingMessage("Cannot set Country for a PhoneNumber of type [%s]",
-        mockPhoneNumber.getClass().getName())
-      .withNoCause();
-
-    verify(mockPhoneNumber, times(1)).setCountry(eq(Country.UNITED_STATES_OF_AMERICA));
-    verifyNoMoreInteractions(mockPhoneNumber);
-  }
-
-  @Test
   public void setExtensionThrowsUnsupportedOperationException() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
