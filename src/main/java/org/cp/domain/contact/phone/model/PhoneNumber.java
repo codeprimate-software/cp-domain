@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Optional;
 
+import org.cp.domain.contact.phone.model.AbstractPhoneNumber.GenericPhoneNumber;
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.support.CountryAware;
 import org.cp.elements.function.TriFunction;
@@ -73,8 +74,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
 
   // Constructor Function used for the type of PhoneNumber constructed
   // in the of(:AreaCode, :ExchangeCode, :LineNumber) factory method.
-  TriFunction<AreaCode, ExchangeCode, LineNumber, PhoneNumber> PHONE_NUMBER_CONSTRUCTOR =
-    (areaCode, exchangeCode, number) -> new AbstractPhoneNumber(areaCode, exchangeCode, number) { };
+  TriFunction<AreaCode, ExchangeCode, LineNumber, PhoneNumber> PHONE_NUMBER_CONSTRUCTOR = GenericPhoneNumber::new;
 
   /**
    * Returns a new {@link PhoneNumber.Builder} used to construct and build a {@link PhoneNumber}.
@@ -455,6 +455,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   class Builder implements org.cp.elements.lang.Builder<PhoneNumber> {
 
     private AreaCode areaCode;
+    private Boolean textEnabled;
     private Country country;
     private ExchangeCode exchangeCode;
     private Extension extension;
@@ -559,6 +560,18 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
     }
 
     /**
+     * Builder method used to set whether {@literal texting} is enabled for the new {@link PhoneNumber}.
+     *
+     * @return this {@link Builder}.
+     * @see org.cp.elements.lang.annotation.Dsl
+     */
+    @Dsl
+    public @NotNull Builder withTextEnabled() {
+      this.textEnabled = Boolean.TRUE;
+      return this;
+    }
+
+    /**
      * Builds a new {@link PhoneNumber}.
      *
      * @return a new {@link PhoneNumber}.
@@ -568,18 +581,13 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
     @Override
     public @NotNull PhoneNumber build() {
 
-      return new AbstractPhoneNumber(this.areaCode, this.exchangeCode, this.lineNumber) {
+      AbstractPhoneNumber phoneNumber = new GenericPhoneNumber(this.areaCode, this.exchangeCode, this.lineNumber);
 
-        @Override
-        public Optional<Extension> getExtension() {
-          return Optional.ofNullable(Builder.this.extension);
-        }
+      phoneNumber.setCountry(this.country);
+      phoneNumber.setExtension(this.extension);
+      phoneNumber.setTextEnabled(this.textEnabled);
 
-        @Override
-        public Optional<Country> getCountry() {
-          return Optional.ofNullable(Builder.this.country);
-        }
-      };
+      return phoneNumber;
     }
   }
 

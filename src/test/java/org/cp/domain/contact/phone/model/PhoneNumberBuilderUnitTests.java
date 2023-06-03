@@ -54,6 +54,8 @@ public class PhoneNumberBuilderUnitTests {
     assertThat(phoneNumber.getCountry()).isNotPresent();
     assertThat(phoneNumber.getExtension()).isNotPresent();
     assertThat(phoneNumber.getType()).isNotPresent();
+    assertThat(phoneNumber.isRoaming()).isTrue();
+    assertThat(phoneNumber.isTextEnabled()).isFalse();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode, mockLineNumber);
   }
@@ -72,6 +74,7 @@ public class PhoneNumberBuilderUnitTests {
       .with(mockExchangeCode)
       .with(mockExtension)
       .with(mockLineNumber)
+      .withTextEnabled()
       .build()
       .asCell();
 
@@ -81,6 +84,8 @@ public class PhoneNumberBuilderUnitTests {
     assertThat(phoneNumber.getCountry().orElse(null)).isEqualTo(Country.CANADA);
     assertThat(phoneNumber.getExtension().orElse(null)).isEqualTo(mockExtension);
     assertThat(phoneNumber.getType().orElse(null)).isEqualTo(PhoneNumber.Type.CELL);
+    assertThat(phoneNumber.isRoaming()).isTrue();
+    assertThat(phoneNumber.isTextEnabled()).isTrue();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode, mockExtension, mockLineNumber);
   }
@@ -108,6 +113,8 @@ public class PhoneNumberBuilderUnitTests {
     assertThat(phoneNumber.getCountry().orElse(null)).isEqualTo(Country.localCountry());
     assertThat(phoneNumber.getExtension().orElse(null)).isEqualTo(mockExtension);
     assertThat(phoneNumber.getType().orElse(null)).isEqualTo(PhoneNumber.Type.VOIP);
+    assertThat(phoneNumber.isRoaming()).isFalse();
+    assertThat(phoneNumber.isTextEnabled()).isFalse();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode, mockExtension, mockLineNumber);
   }
