@@ -82,8 +82,8 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
-  static @NotNull Builder builder() {
-    return new Builder();
+  static @NotNull Address.Builder builder() {
+    return new Address.Builder();
   }
 
   /**
