@@ -25,7 +25,6 @@ import java.util.Optional;
 import org.cp.domain.contact.phone.model.AbstractPhoneNumber.GenericPhoneNumber;
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.support.CountryAware;
-import org.cp.elements.function.TriFunction;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
@@ -74,10 +73,6 @@ import org.cp.elements.util.ComparatorResultBuilder;
 public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, CountryAware,
     Identifiable<Long>, Renderable, Serializable, Verifiable<PhoneNumber>, Visitable {
 
-  // Constructor Function used for the type of PhoneNumber constructed
-  // in the of(:AreaCode, :ExchangeCode, :LineNumber) factory method.
-  TriFunction<AreaCode, ExchangeCode, LineNumber, PhoneNumber> PHONE_NUMBER_CONSTRUCTOR = GenericPhoneNumber::new;
-
   /**
    * Returns a new {@link PhoneNumber.Builder} used to construct and build a {@link PhoneNumber}.
    *
@@ -97,8 +92,9 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @param phoneNumber {@link PhoneNumber} to copy; must not be {@literal null}.
    * @return a new {@link PhoneNumber} copied from the existing, required {@link PhoneNumber}.
    * @throws IllegalArgumentException if the given {@link PhoneNumber} to copy is {@literal null}.
-   * @see #of(AreaCode, ExchangeCode, LineNumber)
+   * @see org.cp.domain.contact.phone.model.PhoneNumber.Builder#from(PhoneNumber)
    * @see org.cp.elements.lang.annotation.Dsl
+   * @see #builder()
    */
   @Dsl
   static @NotNull PhoneNumber from(@NotNull PhoneNumber phoneNumber) {
@@ -125,26 +121,26 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    *
    * @param areaCode {@link AreaCode} of the new {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of the new {@link PhoneNumber}; must not be {@literal null}.
-   * @param number {@link LineNumber} of the new {@link PhoneNumber}; must not be {@literal null}.
+   * @param lineNumer {@link LineNumber} of the new {@link PhoneNumber}; must not be {@literal null}.
    * @return a new {@link PhoneNumber} initialized from the given, required {@link AreaCode},
    * {@link ExchangeCode} and {@link LineNumber}.
    * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link LineNumber}
    * are {@literal null}.
-   * @see org.cp.domain.contact.phone.model.AbstractPhoneNumber
    * @see org.cp.domain.contact.phone.model.AreaCode
    * @see org.cp.domain.contact.phone.model.ExchangeCode
    * @see org.cp.domain.contact.phone.model.LineNumber
    * @see org.cp.elements.lang.annotation.Dsl
+   * @see #builder()
    */
   @Dsl
   static @NotNull PhoneNumber of(@NotNull AreaCode areaCode, @NotNull ExchangeCode exchangeCode,
-      @NotNull LineNumber number) {
+      @NotNull LineNumber lineNumer) {
 
-    Assert.notNull(areaCode, "AreaCode is required");
-    Assert.notNull(exchangeCode, "ExchangeCode is required");
-    Assert.notNull(number, "LineNumber is required");
-
-    return PHONE_NUMBER_CONSTRUCTOR.apply(areaCode, exchangeCode, number);
+    return builder()
+      .inAreaCode(areaCode)
+      .with(exchangeCode)
+      .with(lineNumer)
+      .build();
   }
 
   /**
