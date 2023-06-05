@@ -41,8 +41,7 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Serializable {
   private static final int REQUIRED_AREA_CODE_LENGTH = 3;
 
   /**
-   * Factory method used to construct a new instance of {@link AreaCode} copied from the existing,
-   * required {@link AreaCode}.
+   * Factory method used to construct a new {@link AreaCode} copied from an existing, required {@link AreaCode}.
    *
    * @param areaCode {@link AreaCode} to copy; must not be {@literal null}.
    * @return a new {@link AreaCode} copied from the existing, required {@link AreaCode}.
@@ -56,14 +55,13 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Serializable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link AreaCode} from the given,
-   * required {@link String 3-digit number}.
+   * Factory method used to construct a new {@link AreaCode} from the given, required {@link String number}.
    *
    * @param threeDigitNumber {@link String} containing the {@literal 3-digit number} of this {@link AreaCode};
    * must not be {@literal null} or {@literal empty}; must be {@literal 3-digits}.
    * @throws IllegalArgumentException if the {@link String 3-digit number} is {@literal null}, {@literal empty}
    * or is not (only) {@literal 3-digits}.
-   * @return a new {@link AreaCode} initialized with the given, required {@link String 3-digit number}.
+   * @return a new {@link AreaCode} initialized with the given, required {@link String number}.
    */
   public static @NotNull AreaCode of(@NotNull String threeDigitNumber) {
     return new AreaCode(threeDigitNumber);

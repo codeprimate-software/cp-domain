@@ -40,7 +40,7 @@ public class Distance implements Comparable<Distance> {
   protected static final String METER_NAME = "meter";
 
   /**
-   * Factory method used to construct a new instance of {@link Distance} with a given {@link Double measurement}
+   * Factory method used to construct a new {@link Distance} with a given {@link Double measurement}
    * in {@link LengthUnit#FOOT feet}.
    *
    * @param measurement {@link Double value} for the {@literal measurement of distance};
@@ -56,7 +56,7 @@ public class Distance implements Comparable<Distance> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Distance} with a given {@link Double measurement}
+   * Factory method used to construct a new {@link Distance} with a given {@link Double measurement}
    * in {@link LengthUnit#KILOMETER kilometers}.
    *
    * @param measurement {@link Double value} for the {@literal measurement of distance};
@@ -72,7 +72,7 @@ public class Distance implements Comparable<Distance> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Distance} with a given {@link Double measurement}
+   * Factory method used to construct a new {@link Distance} with a given {@link Double measurement}
    * in {@link LengthUnit#METER meters}.
    *
    * @param measurement {@link Double value} for the {@literal measurement of distance};
@@ -88,7 +88,7 @@ public class Distance implements Comparable<Distance> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Distance} with a given {@link Double measurement}
+   * Factory method used to construct a new {@link Distance} with a given {@link Double measurement}
    * in {@link LengthUnit#MILE miles}.
    *
    * @param measurement {@link Double value} for the {@literal measurement of distance};
@@ -104,7 +104,7 @@ public class Distance implements Comparable<Distance> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Distance} with a given {@link Double measurement}
+   * Factory method used to construct a new {@link Distance} with a given {@link Double measurement}
    * in {@link LengthUnit#YARD yards}.
    *
    * @param measurement {@link Double value} for the {@literal measurement of distance};
@@ -120,7 +120,7 @@ public class Distance implements Comparable<Distance> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Distance} with a given {@link Double measurement}
+   * Factory method used to construct a new {@link Distance} with a given {@link Double measurement}
    * in the {@link LengthUnit#getDefault() default LengthUnit} as determined by the current {@link java.util.Locale}.
    *
    * @param measurement {@link Double value} for the {@literal measurement of distance};
@@ -137,7 +137,7 @@ public class Distance implements Comparable<Distance> {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Distance} with a given {@link Double measurement}
+   * Factory method used to construct a new {@link Distance} with a given {@link Double measurement}
    * in the given, required {@link LengthUnit}.
    *
    * @param measurement {@link Double value} for the {@literal measurement of distance};

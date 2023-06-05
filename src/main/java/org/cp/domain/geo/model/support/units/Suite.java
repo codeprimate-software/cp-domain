@@ -35,7 +35,7 @@ import org.cp.elements.lang.annotation.NotNull;
 public class Suite extends Unit {
 
   /**
-   * Factory method used to construct a new instance of {@link Suite} copied from the given, required {@link Unit}.
+   * Factory method used to construct a new {@link Suite} copied from the given, required {@link Unit}.
    *
    * @param unit {@link Unit} to copy; must not be {@literal null}.
    * @return a new {@link Suite} copied from the existing {@link Unit}.
@@ -52,8 +52,8 @@ public class Suite extends Unit {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Suite} initialized with the given,
-   * required {@link String number} used to identify the {@link Unit}.
+   * Factory method used to construct a new {@link Suite} initialized with the given, required {@link String number}
+   * used to identify the {@link Unit}.
    *
    * @param number {@link String} containing the {@literal number} identifying the {@link Unit};
    * must not be {@literal null} or {@literal empty}.

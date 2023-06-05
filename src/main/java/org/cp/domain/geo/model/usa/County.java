@@ -44,8 +44,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
 public class County implements Cloneable, Comparable<County>, Nameable<String>, Serializable {
 
   /**
-   * Factory method used to construct a new instance of {@link County} copied from the existing,
-   * required {@link County}.
+   * Factory method used to construct a new {@link County} copied from an existing, required {@link County}.
    *
    * @param county {@link County} to copy; must not be {@literal null}.
    * @return a new {@link County} copied from the given, existing {@link County}.
@@ -61,7 +60,7 @@ public class County implements Cloneable, Comparable<County>, Nameable<String>, 
   }
 
   /**
-   * Factory method used to construct a new instance of {@link County} with the given, required {@link String name}.
+   * Factory method used to construct a new {@link County} with the given, required {@link String name}.
    *
    * @param name {@link String} containing the {@literal name} of this {@link County};
    * must not be {@literal null} or {@literal empty}.

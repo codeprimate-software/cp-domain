@@ -86,8 +86,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   }
 
   /**
-   * Factory method used to construct a new instance of {@link PhoneNumber} copied from an existing,
-   * required {@link PhoneNumber}.
+   * Factory method used to construct a new {@link PhoneNumber} copied from an existing, required {@link PhoneNumber}.
    *
    * @param phoneNumber {@link PhoneNumber} to copy; must not be {@literal null}.
    * @return a new {@link PhoneNumber} copied from the existing, required {@link PhoneNumber}.
@@ -116,8 +115,8 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   }
 
   /**
-   * Factory method used to construct a new instance of {@link PhoneNumber} initialized with the given,
-   * required {@link AreaCode}, {@link  ExchangeCode} and {@link LineNumber}.
+   * Factory method used to construct a new {@link PhoneNumber} initialized with the given, required {@link AreaCode},
+   * {@link  ExchangeCode} and {@link LineNumber}.
    *
    * @param areaCode {@link AreaCode} of the new {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of the new {@link PhoneNumber}; must not be {@literal null}.

@@ -46,7 +46,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
 public class City implements Cloneable, Comparable<City>, Nameable<String>, Serializable {
 
   /**
-   * Factory method used to construct a new instance of {@link City} copied from the given, required {@link City}.
+   * Factory method used to construct a new {@link City} copied from the given, required {@link City}.
    *
    * @param city {@link City} to copy; must not be {@literal null}.
    * @return a new {@link City} copied from the given, required {@link City}.
@@ -63,8 +63,7 @@ public class City implements Cloneable, Comparable<City>, Nameable<String>, Seri
   }
 
   /**
-   * Factory method used to construct a new instance of {@link City} initialized with the given,
-   * required {@link String name}.
+   * Factory method used to construct a new {@link City} initialized with the given, required {@link String name}.
    *
    * @param name {@link String} containing the {@literal name} of the {@link City};
    * must not be {@literal null} or {@literal empty}.

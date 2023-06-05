@@ -73,8 +73,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   private static final long serialVersionUID = 83448823861933031L;
 
   /**
-   * Factory method used to construct a new instance of {@link Name} by copying (or cloning)
-   * the existing, required {@link Name}.
+   * Factory method used to construct a new {@link Name} by copying (or cloning) the existing, required {@link Name}.
    *
    * @param name {@link Name} to copy; must not be {@literal null}.
    * @return a {@link Name} initialized from the given, required {@link Name}.
@@ -91,7 +90,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Name} for the given, required {@link Nameable} object.
+   * Factory method used to construct a new {@link Name} for the given, required {@link Nameable} object.
    *
    * @param nameable {@link Nameable} object used to construct a {@link Name}; must not be {@literal null}.
    * @return a new {@link Name} initialized with the given, required {@link Nameable} object.
@@ -135,8 +134,8 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Name} initialized with
-   * the given, required {@link String first} and {@link String last name}.
+   * Factory method used to construct a new {@link Name} initialized with the given, required {@link String first}
+   * and {@link String last name}.
    *
    * @param firstName {@link String} containing the {@literal first name};
    * must not be {@literal null} or {@literal empty}.
@@ -154,9 +153,8 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Name} initialized with
-   * the given, required {@link String first name}, an optional {@link String middle name or middle initial(s)}
-   * and a required {@link String last name}.
+   * Factory method used to construct a new {@link Name} initialized with the given, required {@link String first name},
+   * an optional {@link String middle name or middle initial(s)} and a required {@link String last name}.
    *
    * @param firstName {@link String} containing the {@literal first name};
    * must not be {@literal null} or {@literal empty}.

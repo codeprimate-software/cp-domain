@@ -53,8 +53,7 @@ public class ZIP extends PostalCode {
   protected static final String ZIP_CODE_EXTENSION = "-%s";
 
   /**
-   * Factory method used to construct a new instance of {@link ZIP} copied from the exiting,
-   * required {@link PostalCode}.
+   * Factory method used to construct a new {@link ZIP} copied from the exiting, required {@link PostalCode}.
    *
    * @param postalCode {@link PostalCode} to copy; must not be {@literal null}.
    * @return a new {@link ZIP} copied from the exiting {@link PostalCode}.
@@ -71,8 +70,7 @@ public class ZIP extends PostalCode {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ZIP} initialized with the given,
-   * required {@link String postal code}.
+   * Factory method used to construct a new {@link ZIP} initialized with the given, required {@link String postal code}.
    *
    * @param code {@link String} containing the {@literal postal code} for the {@link ZIP};
    * must not be {@literal null} or {@literal empty}; must be either {@literal 5 digits} of {@literal 9 digits}.

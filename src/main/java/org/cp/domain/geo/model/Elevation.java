@@ -47,9 +47,9 @@ public class Elevation implements Comparable<Elevation>, Serializable {
   protected static final String ELEVATION_TO_STRING = "%1$s %2$s";
 
   /**
-   * Factory method used to construct a new instance of {@link Elevation} initialized with
-   * the given {@link Double altitude} using a {@link LengthUnit#getDefault() default unit of measurement}
-   * determined by the current, default {@link java.util.Locale}.
+   * Factory method used to construct a new {@link Elevation} initialized with the given {@link Double altitude}
+   * using a {@link LengthUnit#getDefault() default unit of measurement} determined by the current,
+   * default {@link java.util.Locale}.
    *
    * A {@link Double negative altitude} is below {@literal sea level}. A {@link Double positive altitude}
    * is above {@literal sea level}. And, an {@literal altitude} of {@link Double zero} is at {@literal sea level}.
@@ -64,7 +64,7 @@ public class Elevation implements Comparable<Elevation>, Serializable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Elevation} at {@literal sea level},
+   * Factory method used to construct a new {@link Elevation} at {@literal sea level},
    * or {@literal 0} {@link LengthUnit#METER meters}.
    *
    * @return a new {@link Elevation} at {@literal sea level}.

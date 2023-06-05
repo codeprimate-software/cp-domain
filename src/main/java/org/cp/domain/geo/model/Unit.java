@@ -50,8 +50,8 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
   public static final Unit EMPTY = Unit.of("0").as(Unit.Type.UNKNOWN);
 
   /**
-   * Factory method used to construct a new instance of {@link Unit} initialized with the given,
-   * required {@link String number}, and type of {@link Unit.Type#APARTMENT}.
+   * Factory method used to construct a new {@link Unit} initialized with the given,
+   * required {@link String number} and type of {@link Unit.Type#APARTMENT}.
    *
    * @param number {@link String} containing the {@literal number} of the {@link Unit};
    * must not be {@literal null} or {@literal empty}.
@@ -68,8 +68,8 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Unit} initialized with the given,
-   * required {@link String number}, and type of {@link Unit.Type#OFFICE}.
+   * Factory method used to construct a new {@link Unit} initialized with the given,
+   * required {@link String number} and type of {@link Unit.Type#OFFICE}.
    *
    * @param number {@link String} containing the {@literal number} of the {@link Unit};
    * must not be {@literal null} or {@literal empty}.
@@ -86,8 +86,8 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Unit} initialized with the given,
-   * required {@link String number}, and type of {@link Unit.Type#ROOM}.
+   * Factory method used to construct a new {@link Unit} initialized with the given,
+   * required {@link String number} and type of {@link Unit.Type#ROOM}.
    *
    * @param number {@link String} containing the {@literal number} of the {@link Unit};
    * must not be {@literal null} or {@literal empty}.
@@ -104,8 +104,8 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Unit} initialized with the given,
-   * required {@link String number}, and type of {@link Unit.Type#SUITE}.
+   * Factory method used to construct a new {@link Unit} initialized with the given,
+   * required {@link String number} and type of {@link Unit.Type#SUITE}.
    *
    * @param number {@link String} containing the {@literal number} of the {@link Unit};
    * must not be {@literal null} or {@literal empty}.
@@ -122,7 +122,7 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Unit} copied from the given, required {@link Unit}.
+   * Factory method used to construct a new {@link Unit} copied from the given, required {@link Unit}.
    *
    * @param unit {@link Unit} to copy; must not be {@literal null}.
    * @return a new {@link Unit} copied from the given {@link Unit}.
@@ -141,8 +141,7 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Unit} initialized with the given,
-   * required {@link String number}.
+   * Factory method used to construct a new {@link Unit} initialized with the given, required {@link String number}.
    *
    * @param number {@link String} containing the {@literal number} of the new {@link Unit};
    * must not be {@literal null} or {@literal empty}.

@@ -41,8 +41,7 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Serializab
   private static final int REQUIRED_NUMBER_LENGTH = 4;
 
   /**
-   * Factory method used to construct a new instance of {@link LineNumber} copied from the existing,
-   * required {@link LineNumber}.
+   * Factory method used to construct a new {@link LineNumber} copied from an existing, required {@link LineNumber}.
    *
    * @param number {@link LineNumber} to copy; must not be {@literal null}.
    * @return a new {@link LineNumber} copied from the existing, required {@link LineNumber}.
@@ -56,14 +55,13 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Serializab
   }
 
   /**
-   * Factory method used to construct a new instance of {@link LineNumber} from the given,
-   * required {@link String 4-digit number}.
+   * Factory method used to construct a new {@link LineNumber} from the given, required {@link String number}.
    *
    * @param number {@link String} containing the {@literal 4-digit number} of this {@link LineNumber};
    * must not be {@literal null} or {@literal empty}; must be {@literal 4-digits}.
    * @throws IllegalArgumentException if the {@link String 4-digit number} is {@literal null}, {@literal empty}
    * or is not (only) {@literal 4-digits}.
-   * @return a new {@link LineNumber} initialized with the given, required {@link String 4-digit number}.
+   * @return a new {@link LineNumber} initialized with the given, required {@link String number}.
    */
   public static @NotNull LineNumber of(@NotNull String number) {
     return new LineNumber(number);

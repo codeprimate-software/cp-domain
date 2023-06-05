@@ -57,8 +57,8 @@ public class UnitedStatesAddress extends AbstractAddress {
     "{ @type = %1$s, street = %2$s, unit = %3$s, city = %4$s, state = %5$s, zip = %6$s, country = %7$s, type = %8$s }";
 
   /**
-   * Factory method used to construct a new instance of {@link UnitedStatesAddress.Builder} to build
-   * an {@link UnitedStatesAddress}.
+   * Factory method used to construct a new {@link UnitedStatesAddress.Builder} to construct and build
+   * a {@link UnitedStatesAddress}.
    *
    * @return a new {@link UnitedStatesAddress.Builder} used to build, construct and initialize
    * an {@link UnitedStatesAddress}.

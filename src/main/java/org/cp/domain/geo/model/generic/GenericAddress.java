@@ -44,7 +44,7 @@ import org.cp.elements.lang.annotation.Qualifier;
 public class GenericAddress extends AbstractAddress {
 
   /**
-   * Factory method used to construct a new instance of {@link GenericAddress.Builder} to build a {@link GenericAddress}
+   * Factory method used to construct a new {@link GenericAddress.Builder} to build a {@link GenericAddress}
    * based in the {@link Country#localCountry() local Country} determined by the current,
    * default {@link java.util.Locale}.
    *
@@ -57,7 +57,7 @@ public class GenericAddress extends AbstractAddress {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link GenericAddress.Builder} to build a {@link GenericAddress}
+   * Factory method used to construct a new {@link GenericAddress.Builder} to build a {@link GenericAddress}
    * based in the given, required {@link Country}.
    *
    * @param country {@link Country} in which the {@link GenericAddress} will be located; must not be {@literal null}.

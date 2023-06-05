@@ -34,7 +34,7 @@ import org.cp.elements.lang.annotation.NotNull;
 public class Office extends Unit {
 
   /**
-   * Factory method used to construct a new instance of {@link Office} copied from the given, required {@link Unit}.
+   * Factory method used to construct a new {@link Office} copied from the given, required {@link Unit}.
    *
    * @param unit {@link Unit} to copy; must not be {@literal null}.
    * @return a new {@link Office} copied from the existing {@link Unit}.
@@ -51,8 +51,8 @@ public class Office extends Unit {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Office} initialized with the given,
-   * required {@link String number} used to identify the {@link Unit}.
+   * Factory method used to construct a new {@link Office} initialized with the given, required {@link String number}
+   * used to identify the {@link Unit}.
    *
    * @param number {@link String} containing the {@literal number} identifying the {@link Unit};
    * must not be {@literal null} or {@literal empty}.

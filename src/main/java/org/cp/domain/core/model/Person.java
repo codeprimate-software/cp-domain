@@ -80,8 +80,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
       + " birthDate = %5$s, dateOfDeath = %6$s, gender = %7$s }";
 
   /**
-   * Factory method used to construct a new instance of {@link Person} copied from and initialized with
-   * the given {@link Person}.
+   * Factory method used to construct a new {@link Person} copied from the given, required {@link Person}.
    *
    * @param person {@link Person} to copy; must not be {@literal null}.
    * @return a new {@link Person} copied from and initialized with the given {@link Person}.
@@ -100,8 +99,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Person} initialized with the given,
-   * required {@link Name}.
+   * Factory method used to construct a new {@link Person} initialized with the given, required {@link Name}.
    *
    * @param name {@link Name} of the {@link Person}; must not be {@literal null}.
    * @return a new {@link Person} initialized with the given {@link Name}.
@@ -116,8 +114,8 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Person} initialized with the given,
-   * required {@link Name} and {@link LocalDateTime date of birth}.
+   * Factory method used to construct a new {@link Person} initialized with the given, required {@link Name}
+   * and {@link LocalDateTime date of birth}.
    *
    * @param name {@link Name} of the {@link Person}; must not be {@literal null}.
    * @param birthDate {@link LocalDateTime} specifying the {@link Person person's} {@literal date of birth}.
@@ -135,8 +133,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Person} initialized with the given,
-   * required {@link String name}.
+   * Factory method used to construct a new {@link Person} initialized with the given, required {@link String name}.
    *
    * @param name {@link String} containing the {@literal name} of the {@link Person};
    * must not be {@literal null} or {@literal empty}.
@@ -153,8 +150,8 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Person} initialized with the given,
-   * required {@link String name} and {@link LocalDateTime date of birth}.
+   * Factory method used to construct a new {@link Person} initialized with the given, required {@link String name}
+   * and {@link LocalDateTime date of birth}.
    *
    * @param name {@link String} containing the {@literal name} of the {@link Person};
    * must not be {@literal null} or {@literal empty}.
@@ -174,7 +171,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Person} initialized with
+   * Factory method used to construct a new {@link Person} initialized with
    * the given {@link String first name} and {@link String last name}.
    *
    * @param firstName {@link String} containing the {@link Person person's} {@literal first name};
@@ -195,8 +192,8 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Person} initialized with the given,
-   * required {@link String first name} and {@link String last name} as well as {@link LocalDateTime date of birth}.
+   * Factory method used to construct a new {@link Person} initialized with the given,
+   * required {@link String first name}, {@link String last name} and {@link LocalDateTime date of birth}.
    *
    * @param firstName {@link String} containing the {@link Person person's} {@literal first name};
    * must not be {@literal null} or {@literal empty}.

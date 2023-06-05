@@ -154,7 +154,7 @@ public class StateZipCodesRepository {
   protected static class ZipCodeRegion {
 
     /**
-     * Factory method used to construct a new instance of {@link ZipCodeRegion} initialized with the given,
+     * Factory method used to construct a new {@link ZipCodeRegion} initialized with the given,
      * required {@link String ZIP code prefix}.
      *
      * @param zipCodePrefix {@link String} containing the {@link ZIP} code prefix that a {@link PostalCode}
@@ -169,9 +169,9 @@ public class StateZipCodesRepository {
     }
 
     /**
-     * Factory method used to construct a new instance of {@link ZipCodeRegion} initialized with the given range,
-     * starting with the given, required {@link String ZIP code start} and ending with the required
-     * {@link String ZIP code end}.
+     * Factory method used to construct a new {@link ZipCodeRegion} initialized with the given range,
+     * starting with the given, required {@link String ZIP code start}
+     * and ending with the required {@link String ZIP code end}.
      *
      * @param zipCodeStart {@link String} containing the start of the {@link ZIP} code range;
      * must not be {@literal null} or {@literal empty}.

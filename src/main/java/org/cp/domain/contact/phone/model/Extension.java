@@ -39,8 +39,7 @@ import org.cp.elements.lang.annotation.Nullable;
 public class Extension implements Cloneable, Comparable<Extension>, Serializable {
 
   /**
-   * Factory method used to construct a new instance of {@link Extension} copied from the existing,
-   * required {@link Extension}.
+   * Factory method used to construct a new {@link Extension} copied from an existing, required {@link Extension}.
    *
    * @param extension {@link Extension} to copy; must not be {@literal null}.
    * @return a new {@link Extension} copied from the existing, required {@link Extension}.
@@ -54,8 +53,7 @@ public class Extension implements Cloneable, Comparable<Extension>, Serializable
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Extension} from the given,
-   * required {@link String number}.
+   * Factory method used to construct a new {@link Extension} from the given, required {@link String number}.
    *
    * @param number {@link String} containing the {@literal number} of this {@link Extension};
    * must not be {@literal null} or {@literal empty}.

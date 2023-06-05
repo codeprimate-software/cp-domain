@@ -45,8 +45,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
 public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializable {
 
   /**
-   * Factory method used to construct a new instance of {@link PostalCode} copied from the given,
-   * required {@link PostalCode}.
+   * Factory method used to construct a new {@link PostalCode} copied from the given, required {@link PostalCode}.
    *
    * @param postalCode {@link PostalCode} to copy; must not be {@literal null}.
    * @return a new {@link PostalCode} copied from the given, required {@link PostalCode}.
@@ -63,7 +62,7 @@ public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializab
   }
 
   /**
-   * Factory method used to construct a new instance of {@link PostalCode} initialized with the given,
+   * Factory method used to construct a new {@link PostalCode} initialized with the given,
    * required {@link String number}.
    *
    * @param number {@link String} containing the {@literal number} of the {@link PostalCode};

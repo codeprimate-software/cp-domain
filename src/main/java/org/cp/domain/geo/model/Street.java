@@ -50,8 +50,7 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
   protected static final String STREET_TO_STRING = "%1$d %2$s%3$s";
 
   /**
-   * Factory method used to construct a new instance of {@link Street} initialized from
-   * an existing, required {@link Street}.
+   * Factory method used to construct a new {@link Street} initialized from an existing, required {@link Street}.
    *
    * @param street {@link Street} to copy; must not be {@literal null}.
    * @return a new {@link Street} copied from the given {@link Street}.
@@ -69,7 +68,7 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Street} initialized with the given,
+   * Factory method used to construct a new {@link Street} initialized with the given,
    * required {@link Integer number} and {@link String name}.
    *
    * @param number {@link Integer} containing the {@literal building number} on the {@link Street}.

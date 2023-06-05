@@ -40,7 +40,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
 public class UnitedStatesCity extends City {
 
   /**
-   * Factory method used to construct a new instance of {@link UnitedStatesCity} initialized with the given,
+   * Factory method used to construct a new {@link UnitedStatesCity} initialized with the given,
    * required {@link String name}.
    *
    * @param name {@link String} containing the {@literal name} of the {@link City};
@@ -53,8 +53,7 @@ public class UnitedStatesCity extends City {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link UnitedStatesCity} copied from the existing,
-   * required {@link City}.
+   * Factory method used to construct a new {@link UnitedStatesCity} copied from the existing, required {@link City}.
    *
    * @param city {@link City} to copy; must not be {@literal null}.
    * @return a new {@link UnitedStatesCity} copied from the existing {@link City}

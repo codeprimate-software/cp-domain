@@ -54,7 +54,7 @@ public class Coordinates implements Serializable {
 
 
   /**
-   * Factory method used to construct a new instance of {@link Coordinates} initialized with
+   * Factory method used to construct a new {@link Coordinates} initialized with
    * the given {@link Double latitude} and {@link Double longitude}.
    *
    * @param latitude {@link Double latitude} at the geographic coordinates.
@@ -68,8 +68,7 @@ public class Coordinates implements Serializable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Coordinates} initialized from
-   * the given AWT {@link Point}.
+   * Factory method used to construct a new {@link Coordinates} initialized from the given AWT {@link Point}.
    *
    * @param point {@link Point} used to initialize the new {@link Coordinates}; must not be {@literal null}.
    * @return a new set of {@link Coordinates} initialized with the given AWT {@link Point}.

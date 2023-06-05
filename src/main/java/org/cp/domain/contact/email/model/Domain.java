@@ -49,8 +49,7 @@ public class Domain implements Cloneable, Comparable<Domain>, Serializable {
   private static final String DOMAIN_TO_STRING = "%1$s".concat(DOMAIN_DOT_SEPARATOR).concat("%2$s");
 
   /**
-   * Factory method used to construct a new instance of {@link Domain} copied from the existing,
-   * required {@link Domain}.
+   * Factory method used to construct a new {@link Domain} copied from the given, required {@link Domain}.
    *
    * @param domain {@link Domain} to copy; must not be {@literal null}.
    * @return a new {@link Domain} copied from the existing, required {@link Domain}.
@@ -64,8 +63,8 @@ public class Domain implements Cloneable, Comparable<Domain>, Serializable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Domain} initialized with the given,
-   * required {@link String name} and {@link Domain.Extension}.
+   * Factory method used to construct a new {@link Domain} initialized with the given, required {@link String name}
+   * and {@link Domain.Extension}.
    *
    * @param name {@link String name} of this {@link Domain}; must not be {@literal null} or {@literal empty}.
    * @param domainExtension {@link Domain.Extension} of this {@link Domain}.
@@ -79,8 +78,8 @@ public class Domain implements Cloneable, Comparable<Domain>, Serializable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Domain} initialized with the given,
-   * required {@link String name} and {@link String domain extension}.
+   * Factory method used to construct a new {@link Domain} initialized with the given, required {@link String name}
+   * and {@link String domain extension}.
    *
    * @param name {@link String name} of the new {@link Domain}; must not be {@literal null} or {@literal empty}.
    * @param extensionName {@link String extension name} of the new {@link Domain};
@@ -95,8 +94,8 @@ public class Domain implements Cloneable, Comparable<Domain>, Serializable {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link Domain} initialized by parsing
-   * a given, required {@link String} representing a {@link String domain name}.
+   * Factory method used to construct a new {@link Domain} initialized by parsing a given, required {@link String}
+   * representing a {@literal domain name}.
    *
    * @param domainName {@link String} containing the {@literal domain name} to parse;
    * must not be {@literal null} or {@literal empty}.

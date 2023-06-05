@@ -64,7 +64,7 @@ public abstract class AbstractAddress implements Address {
     "{ @type = %1$s, street = %2$s, unit = %3$s, city = %4$s, postal code = %5$s, country = %6$s, type = %7$s }";
 
   /**
-   * Factory method used to construct a new instance of {@link AbstractAddress} initialized with and copied from
+   * Factory method used to construct a new {@link AbstractAddress} initialized with and copied from
    * the given, required {@link Address}.
    *
    * @param <T> concrete {@link Class subtype} of the new {@link AbstractAddress}.
@@ -92,8 +92,8 @@ public abstract class AbstractAddress implements Address {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link AbstractAddress} based in the {@link Country}
-   * of origin determined by the current, default {@link Locale}.
+   * Factory method used to construct a new {@link AbstractAddress} based in the {@link Country} of origin
+   * determined by the current, default {@link Locale}.
    *
    * @return a new {@link AbstractAddress} based in the {@link Country} of origin determined by
    * the current, default {@link Locale}.
@@ -109,10 +109,10 @@ public abstract class AbstractAddress implements Address {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link AbstractAddress} based in the given {@link Country}.
+   * Factory method used to construct a new {@link AbstractAddress} based in the given {@link Country}.
    *
-   * The concrete {@link Class subtype} of the new {@link AbstractAddress} is based on the given {@link Country}
-   * of origin.
+   * The concrete {@link Class subtype} of the new {@link AbstractAddress} is based on
+   * the given {@link Country} of origin.
    *
    * @param country {@link Country} of origin for the new {@link AbstractAddress}.
    * @return a new {@link AbstractAddress} based in the given {@link Country}.
@@ -137,9 +137,9 @@ public abstract class AbstractAddress implements Address {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link AbstractAddress} initialized with
-   * the given, required {@link Street}, {@link City} and {@link PostalCode}, defaulting to
-   * the {@link Country} of origin determined by the current, default {@link Locale}.
+   * Factory method used to construct a new {@link AbstractAddress} initialized with the given, required {@link Street},
+   * {@link City} and {@link PostalCode}, defaulting to the {@link Country} of origin determined by the current,
+   * default {@link Locale}.
    *
    * @param <T> concrete {@link Class subtype} of the new {@link AbstractAddress}.
    * The concrete {@link Address} {@link Class type} is based on the {@link Country} of origin determined by
@@ -169,8 +169,8 @@ public abstract class AbstractAddress implements Address {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link AbstractAddress} initialized with
-   * the given, required {@link Street}, {@link City}, {@link PostalCode} and {@link Country}.
+   * Factory method used to construct a new {@link AbstractAddress} initialized with the given, required {@link Street},
+   * {@link City}, {@link PostalCode} and {@link Country}.
    *
    * @param <T> concrete {@link Class subtype} of the new {@link AbstractAddress}.
    * The concrete {@link Address} {@link Class type} is based on the given {@link Country} of origin,

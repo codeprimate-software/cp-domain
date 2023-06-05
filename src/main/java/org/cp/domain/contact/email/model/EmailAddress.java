@@ -48,8 +48,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
   private static final String EMAIL_ADDRESS_TO_STRING = "%1$s".concat(EMAIL_ADDRESS_AT_SYMBOL).concat("%2$s");
 
   /**
-   * Factory method used to construct a new instance of {@link EmailAddress} copied from the existing,
-   * required {@link EmailAddress}.
+   * Factory method used to construct a new {@link EmailAddress} copied from the given, required {@link EmailAddress}.
    *
    * @param emailAddress {@link EmailAddress} to copy; must not be {@literal null}.
    * @return a new {@link EmailAddress} copied from the existing, required {@link EmailAddress}.
@@ -63,8 +62,8 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
   }
 
   /**
-   * Factory method used to construct a new instance of {@link EmailAddress} initialized with the given,
-   * required {@link User} and {@link Domain}.
+   * Factory method used to construct a new {@link EmailAddress} initialized with the given, required {@link User}
+   * and {@link Domain}.
    *
    * @param user {@link User} containing the {@link String username} used as the {@literal handle}
    * or {@literal local part} of the new {@link EmailAddress}; must not be {@literal null}.
@@ -79,8 +78,8 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
   }
 
   /**
-   * Factory method used to construct a new instance of {@link EmailAddress} initialized from parsing
-   * the given, required {@link String} representing an {@link EmailAddress}.
+   * Factory method used to construct a new {@link EmailAddress} initialized from parsing the given,
+   * required {@link String} representing an {@literal email address}.
    *
    * {@link String Email Addresses} are expected to be in the format {@link String jonDoe@gmail.com}.
    *

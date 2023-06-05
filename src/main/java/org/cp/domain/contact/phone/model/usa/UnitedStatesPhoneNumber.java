@@ -40,7 +40,7 @@ import org.cp.elements.lang.annotation.NotNull;
 public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
 
   /**
-   * Factory method used to construct a new instance of {@link UnitedStatesPhoneNumber} copied from the existing,
+   * Factory method used to construct a new {@link UnitedStatesPhoneNumber} copied from an existing,
    * required {@link PhoneNumber}.
    *
    * @param phoneNumber {@link PhoneNumber} to copy; must not be {@literal null}.
@@ -63,7 +63,7 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link UnitedStatesPhoneNumber} initialized with the given,
+   * Factory method used to construct a new {@link UnitedStatesPhoneNumber} initialized with the given,
    * required {@link AreaCode}, {@link ExchangeCode} and {@link LineNumber}.
    *
    * @param areaCode {@link AreaCode} of this {@link PhoneNumber}; must not be {@literal null}.
