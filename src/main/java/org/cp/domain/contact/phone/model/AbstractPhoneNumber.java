@@ -40,7 +40,8 @@ import org.cp.elements.text.FormatUtils;
 public abstract class AbstractPhoneNumber implements PhoneNumber {
 
   private static final String PHONE_NUMBER_TO_STRING =
-    "{ @type = %1$s, areaCode = %2$s, exchangeCode = %3$s, number = %4$s, extension = %5$s, country = %6$s }";
+    "{ @type = %1$s, areaCode = %2$s, exchangeCode = %3$s, lineNumber = %4$s, type = %5$s,"
+      + " extension = %6$s, country = %7$s }";
 
   private Boolean textEnabled;
 
@@ -177,6 +178,7 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
 
     return FormatUtils.format(PHONE_NUMBER_TO_STRING, getClass().getName(),
       getAreaCode(), getExchangeCode(), getLineNumber(),
+      getType().orElse(PhoneNumber.Type.UNKNOWN),
       getExtension().map(ext -> "x".concat(ext.toString())).orElse(null),
       getCountry().orElse(null));
   }
