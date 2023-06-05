@@ -503,26 +503,6 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void setExtensionThrowsUnsupportedOperationException() {
-
-    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
-
-    Extension mockExtension = mock(Extension.class);
-
-    doCallRealMethod().when(mockPhoneNumber).setExtension(any());
-
-    assertThatUnsupportedOperationException()
-      .isThrownBy(ThrowableOperation.fromRunnable(() -> mockPhoneNumber.setExtension(mockExtension)))
-      .havingMessage("Cannot set Extension for a PhoneNumber of type [%s]",
-        mockPhoneNumber.getClass().getName())
-      .withNoCause();
-
-    verify(mockPhoneNumber, times(1)).setExtension(eq(mockExtension));
-    verifyNoMoreInteractions(mockPhoneNumber);
-    verifyNoInteractions(mockExtension);
-  }
-
-  @Test
   public void setTypeThrowsUnsupportedOperationException() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
@@ -644,22 +624,5 @@ public class PhoneNumberUnitTests {
     verify(mockPhoneNumber, times(1)).getLineNumber();
     verifyNoInteractions(mockAreaCode, mockExchangeCode);
     verifyNoMoreInteractions(mockPhoneNumber);
-  }
-
-  @Test
-  public void withExtensionCallsSetExtension() {
-
-    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
-
-    Extension mockExtension = mock(Extension.class);
-
-    doCallRealMethod().when(mockPhoneNumber).withExtension(any());
-
-    assertThat(mockPhoneNumber.withExtension(mockExtension)).isSameAs(mockPhoneNumber);
-
-    verify(mockPhoneNumber, times(1)).withExtension(eq(mockExtension));
-    verify(mockPhoneNumber, times(1)).setExtension(eq(mockExtension));
-    verifyNoMoreInteractions(mockPhoneNumber);
-    verifyNoInteractions(mockExtension);
   }
 }

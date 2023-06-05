@@ -214,18 +214,6 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   }
 
   /**
-   * Sets the {@link String extension} of this {@link PhoneNumber}.
-   *
-   * @param extension {@link String extension} of this {@link PhoneNumber}.
-   * @throws UnsupportedOperationException by default.
-   * @see org.cp.domain.contact.phone.model.Extension
-   */
-  default void setExtension(@Nullable Extension extension) {
-    throw newUnsupportedOperationException("Cannot set Extension for a PhoneNumber of type [%s]",
-      getClass().getName());
-  }
-
-  /**
    * Get the {@link Optional} {@link PhoneNumber.Type} of this {@link PhoneNumber}.
    *
    * Returns {@link Optional#empty()} by default.
@@ -437,20 +425,6 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
     ObjectUtils.requireState(getExchangeCode(), "ExchangeCode is required");
     ObjectUtils.requireState(getLineNumber(), "LineNumber is required");
 
-    return this;
-  }
-
-  /**
-   * Builder method used to set the {@link Extension} of this {@link PhoneNumber}.
-   *
-   * @param extension {@link Extension} of this {@link PhoneNumber}.
-   * @return this {@link PhoneNumber}.
-   * @see org.cp.domain.contact.phone.model.Extension
-   * @see org.cp.elements.lang.annotation.Dsl
-   */
-  @Dsl
-  default @NotNull PhoneNumber withExtension(@Nullable Extension extension) {
-    setExtension(extension);
     return this;
   }
 

@@ -85,6 +85,16 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
   }
 
   @Override
+  public @NotNull ExchangeCode getExchangeCode() {
+    return this.exchangeCode;
+  }
+
+  @Override
+  public @NotNull LineNumber getLineNumber() {
+    return this.lineNumber;
+  }
+
+  @Override
   public Optional<Country> getCountry() {
     return Optional.ofNullable(this.country);
   }
@@ -95,23 +105,12 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
   }
 
   @Override
-  public @NotNull ExchangeCode getExchangeCode() {
-    return this.exchangeCode;
-  }
-
-  @Override
   public Optional<Extension> getExtension() {
     return Optional.ofNullable(this.extension);
   }
 
-  @Override
   public void setExtension(@Nullable Extension extension) {
     this.extension = extension;
-  }
-
-  @Override
-  public @NotNull LineNumber getLineNumber() {
-    return this.lineNumber;
   }
 
   @Override
