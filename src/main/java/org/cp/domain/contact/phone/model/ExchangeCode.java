@@ -72,8 +72,7 @@ public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Serial
   private final String threeDigitNumber;
 
   /**
-   * Constructs a new instance of {@link ExchangeCode} initialized with the given,
-   * required {@link String 3-digit number}.
+   * Constructs a new {@link ExchangeCode} initialized with the given, required {@link String 3-digit number}.
    *
    * @param threeDigitNumber {@link String} containing the {@literal 3-digit number} of this {@link ExchangeCode};
    * must not be {@literal null} or {@literal empty}; must be {@literal 3-digits}.

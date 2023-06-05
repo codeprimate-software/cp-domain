@@ -70,7 +70,7 @@ public class Extension implements Cloneable, Comparable<Extension>, Serializable
   private final String number;
 
   /**
-   * Constructs a new instance of {@link Extension} initialized with the given, required {@link String number}.
+   * Constructs a new {@link Extension} initialized with the given, required {@link String number}.
    *
    * @param number {@link String} containing the {@literal number} of this {@link Extension};
    * must not be {@literal null} or {@literal empty}.

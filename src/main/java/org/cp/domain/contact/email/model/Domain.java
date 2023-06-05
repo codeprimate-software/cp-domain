@@ -123,7 +123,7 @@ public class Domain implements Cloneable, Comparable<Domain>, Serializable {
   private final String extensionName;
 
   /**
-   * Constructs a new instance of {@link Domain} initialized with the given, required {@link String name}
+   * Constructs a new {@link Domain} initialized with the given, required {@link String name}
    * and {@link Domain.Extension}.
    *
    * @param name {@link String name} of this {@link Domain}; must not be {@literal null} or {@literal empty}.
@@ -140,7 +140,7 @@ public class Domain implements Cloneable, Comparable<Domain>, Serializable {
   }
 
   /**
-   * Constructs a new instance of {@link Domain} initialized with the given, required {@link String name}
+   * Constructs a new {@link Domain} initialized with the given, required {@link String name}
    * and {@link String domain extension}.
    *
    * @param name {@link String name} of this {@link Domain}; must not be {@literal null} or {@literal empty}.

@@ -93,7 +93,7 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
   private Type type;
 
   /**
-   * Constructs a new instance of {@link Street} initialized with the given, required {@link Integer number}
+   * Constructs a new {@link Street} initialized with the given, required {@link Integer number}
    * and {@link String name}.
    *
    * @param number {@link Integer} containing the {@literal building number} on the {@link Street}.

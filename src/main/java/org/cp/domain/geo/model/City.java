@@ -79,7 +79,7 @@ public class City implements Cloneable, Comparable<City>, Nameable<String>, Seri
   private final String name;
 
   /**
-   * Constructs a new instance of {@link City} initialized with the given, required {@link String name}.
+   * Constructs a new {@link City} initialized with the given, required {@link String name}.
    *
    * @param name {@link String} containing the {@literal name} of this {@link City};
    * must not be {@literal null} or {@literal empty}.

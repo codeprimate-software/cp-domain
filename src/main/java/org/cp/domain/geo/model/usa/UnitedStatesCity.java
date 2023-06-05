@@ -80,7 +80,7 @@ public class UnitedStatesCity extends City {
   private State state;
 
   /**
-   * Constructs a new instance of {@link UnitedStatesCity} initialized with the given, required {@link String name}.
+   * Constructs a new {@link UnitedStatesCity} initialized with the given, required {@link String name}.
    *
    * @param name {@link String} containing the {@literal name} of the {@link City};
    * must not be {@literal null} or {@literal empty}.

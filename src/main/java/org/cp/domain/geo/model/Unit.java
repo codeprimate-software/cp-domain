@@ -163,7 +163,7 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
   private Type type;
 
   /**
-   * Constructs a new instance of {@link Unit} initialized with the given, required {@link String number}.
+   * Constructs a new {@link Unit} initialized with the given, required {@link String number}.
    *
    * @param number {@link String} containing the {@literal number} of this new {@link Unit};
    * must not be {@literal null} or {@literal empty}.

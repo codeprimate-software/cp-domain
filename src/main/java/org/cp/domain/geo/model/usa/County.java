@@ -77,7 +77,7 @@ public class County implements Cloneable, Comparable<County>, Nameable<String>, 
   private final String name;
 
   /**
-   * Constructs a new instance of {@link County} initialized with the given, required {@link String name}.
+   * Constructs a new {@link County} initialized with the given, required {@link String name}.
    *
    * @param name {@link String} containing the {@literal name} of this {@link County};
    * must not be {@literal null} or {@literal empty}.

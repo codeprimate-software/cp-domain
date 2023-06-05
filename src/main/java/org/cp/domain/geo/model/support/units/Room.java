@@ -64,7 +64,7 @@ public class Room extends Unit {
   }
 
   /**
-   * Constructs a new instance of {@link Room} initialized with the given, required {@link String number}
+   * Constructs a new {@link Room} initialized with the given, required {@link String number}
    * used to identify this {@link Unit}.
    *
    * @param number {@link String} containing the {@literal number} identifying this {@link Unit};

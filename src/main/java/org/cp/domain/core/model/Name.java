@@ -240,7 +240,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   private final String middleName;
 
   /**
-   * Constructs a new instance of {@link Name} initialized with the given, required {@link String first name},
+   * Constructs a new {@link Name} initialized with the given, required {@link String first name},
    * an optional {@link String middle name or middle initial(s)} and required {@link String last name}.
    *
    * @param firstName {@link String} containing the {@literal first name};

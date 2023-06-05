@@ -79,7 +79,7 @@ public class Elevation implements Comparable<Elevation>, Serializable {
   private LengthUnit lengthUnit;
 
   /**
-   * Constructs a new instance of {@link Elevation} initialized with the given {@link Double altitude}
+   * Constructs a new {@link Elevation} initialized with the given {@link Double altitude}
    * using a {@link LengthUnit#getDefault() default unit of measurement} determined by the current,
    * default {@link java.util.Locale}.
    *

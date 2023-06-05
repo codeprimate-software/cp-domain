@@ -108,8 +108,8 @@ public class Coordinates implements Serializable {
   private Elevation elevation;
 
   /**
-   * Constructs a new instance of {@link Coordinates} initialized with
-   * the given {@link Double latitude} and {@link Double longitude}.
+   * Constructs a new {@link Coordinates} initialized with the given {@link Double latitude}
+   * and {@link Double longitude}.
    *
    * @param latitude {@link Double latitude} at these {@link Coordinates geographic coordinates}.
    * @param longitude {@link Double longitude} at these {@link Coordinates geographic coordinates}.

@@ -118,8 +118,7 @@ public enum State {
   private final String name;
 
   /**
-   * Constructs a new instance of {@link State} initialized with
-   * the given {@link String abbreviation} and {@link String name}.
+   * Constructs a new {@link State} initialized with the given {@link String abbreviation} and {@link String name}.
    *
    * @param abbreviation {@link String} containing the {@link State} abbreviation.
    * @param name {@link String} containing the {@link State} name.

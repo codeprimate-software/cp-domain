@@ -606,8 +606,8 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
     private final String description;
 
     /**
-     * Constructs a new instance of {@link PhoneNumber.Type} initialized with the given,
-     * required {@link String abbreviation} and {@link String description}.
+     * Constructs a new {@link PhoneNumber.Type} initialized with the given, required {@link String abbreviation}
+     * and {@link String description}.
      *
      * @param abbreviation {@link String abbreviation} for this {@link PhoneNumber.Type}.
      * @param description {@link String description} of this {@link PhoneNumber.Type}.

@@ -79,7 +79,7 @@ public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializab
   private final String number;
 
   /**
-   * Constructs a new instance of {@link PostalCode} initialized with the given, required {@link String number}.
+   * Constructs a new {@link PostalCode} initialized with the given, required {@link String number}.
    *
    * @param number {@link String} containing the {@literal number} for the {@link PostalCode};
    * must not be {@literal null} or {@literal empty}.

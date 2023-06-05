@@ -65,7 +65,7 @@ public class Suite extends Unit {
   }
 
   /**
-   * Constructs a new instance of {@link Suite} initialized with the given, required {@link String number}
+   * Constructs a new {@link Suite} initialized with the given, required {@link String number}
    * used to identify this {@link Unit}.
    *
    * @param number {@link String} containing the {@literal number} identifying this {@link Unit};

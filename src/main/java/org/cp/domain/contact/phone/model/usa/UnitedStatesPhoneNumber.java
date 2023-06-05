@@ -85,8 +85,8 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
   }
 
   /**
-   * Constructs a new instance of {@link UnitedStatesPhoneNumber} initialized with the given,
-   * required {@link AreaCode}, {@link ExchangeCode} and {@link LineNumber}.
+   * Constructs a new {@link UnitedStatesPhoneNumber} initialized with the given, required {@link AreaCode},
+   * {@link ExchangeCode} and {@link LineNumber}.
    *
    * @param areaCode {@link AreaCode} of this {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of this {@link PhoneNumber}; must not be {@literal null}.

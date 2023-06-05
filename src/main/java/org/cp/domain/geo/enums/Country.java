@@ -345,7 +345,7 @@ public enum Country {
   private final String isoNumericThreeDigitCode;
 
   /**
-   * Constructs a new instance of {@link Country} on the given {@link Continent Continents}.
+   * Constructs a new {@link Country} on the given {@link Continent Continents}.
    *
    * @param continents array of {@link Continent Continents} in which this {@link Country} resides.
    * @see #Country(String, String, String, Continent...)
@@ -356,7 +356,7 @@ public enum Country {
   }
 
   /**
-   * Constructs a new instance of {@link Country} on the given {@link Continent Continents}.
+   * Constructs a new {@link Country} on the given {@link Continent Continents}.
    *
    * @param isoAlphaTwoLetterCode {@link String} containing the ISO alpha-2-letter country code.
    * @param isoAlphaThreeLetterCode {@link String} containing the ISO alpha-3-letter country code.

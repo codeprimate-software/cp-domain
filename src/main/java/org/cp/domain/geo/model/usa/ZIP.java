@@ -88,7 +88,7 @@ public class ZIP extends PostalCode {
   private String fourDigitExtension;
 
   /**
-   * Constructs a new instance of {@link ZIP} initialized with the given, required {@link String postal code}.
+   * Constructs a new {@link ZIP} initialized with the given, required {@link String postal code}.
    *
    * @param code {@link String} containing the {@literal postal code} defining this {@link ZIP};
    * must not be {@literal null} or {@literal empty}.

@@ -188,7 +188,7 @@ public class StateZipCodesRepository {
     private final String zipCodeEnd;
 
     /**
-     * Constructs a new instance of {@link ZipCodeRegion} initialized with the given range, starting with the given,
+     * Constructs a new {@link ZipCodeRegion} initialized with the given range, starting with the given,
      * required {@link String ZIP code start} and ending with the required {@link String ZIP code end}.
      *
      * @param zipCodeStart {@link String} containing the start of the {@link ZIP} code range;

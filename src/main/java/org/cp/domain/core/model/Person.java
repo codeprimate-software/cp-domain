@@ -230,7 +230,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   private final Name name;
 
   /**
-   * Constructs a new instance of {@link Person} initialized with the given, required {@link Name}
+   * Constructs a new {@link Person} initialized with the given, required {@link Name}
    * and no {@link LocalDateTime date of birth}.
    *
    * @param name {@link Name} of the {@link Person}; must not be {@literal null}.
@@ -243,7 +243,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   }
 
   /**
-   * Constructs a new instance of {@link Person} initialized with the given, required {@link Name}
+   * Constructs a new {@link Person} initialized with the given, required {@link Name}
    * and {@link LocalDateTime date of birth}.
    *
    * @param name {@link Name} of the {@link Person}; must not be {@literal null}.

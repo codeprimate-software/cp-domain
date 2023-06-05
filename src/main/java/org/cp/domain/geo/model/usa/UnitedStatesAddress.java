@@ -214,7 +214,7 @@ public class UnitedStatesAddress extends AbstractAddress {
     private State state;
 
     /**
-     * Constructs a new instance of {@link UnitedStatesAddress.Builder} used to build an {@link UnitedStatesAddress}
+     * Constructs a new {@link UnitedStatesAddress.Builder} used to build an {@link UnitedStatesAddress}
      * residing in the {@link Country#UNITED_STATES_OF_AMERICA}.
      *
      * @see org.cp.domain.geo.enums.Country#UNITED_STATES_OF_AMERICA

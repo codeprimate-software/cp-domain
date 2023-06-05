@@ -174,8 +174,8 @@ public class Distance implements Comparable<Distance> {
   private final LengthUnit lengthUnit;
 
   /**
-   * Constructs a new instance of {@link Distance} with the given {@link Double measurement}
-   * in the given, required {@link LengthUnit unit}.
+   * Constructs a new {@link Distance} with the given {@link Double measurement} in the given,
+   * required {@link LengthUnit unit}.
    *
    * @param measurement {@link Double value} for the {@literal measurement of distance};
    * must be greater than equal to {@literal 0}.

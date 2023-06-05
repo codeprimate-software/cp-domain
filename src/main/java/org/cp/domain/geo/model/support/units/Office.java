@@ -64,7 +64,7 @@ public class Office extends Unit {
   }
 
   /**
-   * Constructs a new instance of {@link Office} initialized with the given, required {@link String number}
+   * Constructs a new {@link Office} initialized with the given, required {@link String number}
    * used to identify this {@link Unit}.
    *
    * @param number {@link String} containing the {@literal number} identifying this {@link Unit};

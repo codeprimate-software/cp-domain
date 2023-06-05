@@ -423,8 +423,8 @@ public abstract class AbstractAddress implements Address {
     private Coordinates coordinates;
 
     /**
-     * Constructs a new instance of {@link AbstractAddress.Builder} initialized with the given, required {@link Country}
-     * of origin for the {@link Address}.
+     * Constructs a new {@link AbstractAddress.Builder} initialized with the given, required {@link Country} of origin
+     * for the {@link Address}.
      *
      * @param country {@link Country} of origin for the {@link Address}; must not be {@literal null}.
      * @throws IllegalArgumentException if the given {@link Country} is {@literal null}.

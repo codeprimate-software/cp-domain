@@ -60,8 +60,8 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
   private PhoneNumber.Type phoneNumberType;
 
   /**
-   * Constructs a new instance of {@link AbstractPhoneNumber} initialized with the given,
-   * required {@link AreaCode}, {@link ExchangeCode} and {@link LineNumber}.
+   * Constructs a new {@link AbstractPhoneNumber} initialized with the given, required {@link AreaCode},
+   * {@link ExchangeCode} and {@link LineNumber}.
    *
    * @param areaCode {@link AreaCode} of this {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of this {@link PhoneNumber}; must not be {@literal null}.

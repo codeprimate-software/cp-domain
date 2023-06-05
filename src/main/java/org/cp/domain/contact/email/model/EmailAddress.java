@@ -129,8 +129,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
   private final User<String> user;
 
   /**
-   * Constructs a new instance of {@link EmailAddress} initialized with the given, required {@link User}
-   * and {@link Domain}.
+   * Constructs a new {@link EmailAddress} initialized with the given, required {@link User} and {@link Domain}.
    *
    * @param user {@link User} containing the {@link String username} used as the {@literal handle}
    * or {@literal local part} for this {@link EmailAddress}; must not be {@literal null}.

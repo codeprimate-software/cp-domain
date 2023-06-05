@@ -118,8 +118,8 @@ public class GenericAddress extends AbstractAddress {
   public static class Builder extends AbstractAddress.Builder<GenericAddress> {
 
     /**
-     * Constructs a new instance of {@link GenericAddress.Builder} to build a new {@link GenericAddress}
-     * initialized with the given, required {@link Country} of origin.
+     * Constructs a new {@link GenericAddress.Builder} to build a new {@link GenericAddress} initialized with
+     * the given, required {@link Country} of origin.
      *
      * @param country {@link Country} of origin for the new {@link GenericAddress}; must not be {@literal null}
      * @throws IllegalArgumentException if the given {@link Country} is {@literal null}.
