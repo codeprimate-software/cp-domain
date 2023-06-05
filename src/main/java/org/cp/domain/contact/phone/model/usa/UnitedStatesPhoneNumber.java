@@ -68,7 +68,7 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
    *
    * @param areaCode {@link AreaCode} of this {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of this {@link PhoneNumber}; must not be {@literal null}.
-   * @param number {@link LineNumber} of this {@link PhoneNumber}; must not be {@literal null}.
+   * @param lineNumber {@link LineNumber} of this {@link PhoneNumber}; must not be {@literal null}.
    * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link LineNumber}
    * are {@literal null}.
    * @return a new {@link UnitedStatesPhoneNumber} initialized with the given, required {@link AreaCode},
@@ -79,9 +79,9 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
    * @see org.cp.domain.contact.phone.model.AreaCode
    */
   public static @NotNull UnitedStatesPhoneNumber of(@NotNull AreaCode areaCode, @NotNull ExchangeCode exchangeCode,
-      @NotNull LineNumber number) {
+      @NotNull LineNumber lineNumber) {
 
-    return new UnitedStatesPhoneNumber(areaCode, exchangeCode, number);
+    return new UnitedStatesPhoneNumber(areaCode, exchangeCode, lineNumber);
   }
 
   /**
@@ -90,7 +90,7 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
    *
    * @param areaCode {@link AreaCode} of this {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of this {@link PhoneNumber}; must not be {@literal null}.
-   * @param number {@link LineNumber} of this {@link PhoneNumber}; must not be {@literal null}.
+   * @param lineNumber {@link LineNumber} of this {@link PhoneNumber}; must not be {@literal null}.
    * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link LineNumber}
    * are {@literal null}.
    * @see org.cp.domain.contact.phone.model.LineNumber
@@ -98,9 +98,9 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
    * @see org.cp.domain.contact.phone.model.AreaCode
    */
   public UnitedStatesPhoneNumber(@NotNull AreaCode areaCode, @NotNull ExchangeCode exchangeCode,
-      @NotNull LineNumber number) {
+      @NotNull LineNumber lineNumber) {
 
-    super(areaCode, exchangeCode, number);
+    super(areaCode, exchangeCode, lineNumber);
   }
 
   @Override
