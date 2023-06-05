@@ -182,8 +182,7 @@ public class People implements Group {
         .orElse(resolvedName);
     }
 
-    return resolvedName != null ? resolvedName
-      : EMPTY_NO_ID_GROUP_NAME;
+    return resolvedName != null ? resolvedName : EMPTY_NO_ID_GROUP_NAME;
   }
 
   @Override
