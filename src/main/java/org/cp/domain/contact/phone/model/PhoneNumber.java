@@ -42,7 +42,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
 /**
  * Abstract Data Type (ADT) modeling a {@literal phone number}, such as a {@literal cell phone number},
  * {@literal land line} or a {@literal Voice-Over-IP (VOIP) number}.
- *
+ * <p>
  * Currently, the Codeprimate Domain {@link PhoneNumber} representation is limited to
  * the {@literal North American Numbering Plan (NANP)}. Eventually, support may be added for numbers outside of
  * North America and nations that do not participate in the {@literal NANP} numbering scheme.
@@ -101,12 +101,17 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   @Dsl
   static @NotNull PhoneNumber from(@NotNull PhoneNumber phoneNumber) {
 
-    Assert.notNull(phoneNumber, "PhoneNumber to copy is required");
+    PhoneNumber.Builder phoneNumberBuilder = builder().from(phoneNumber);
 
-    PhoneNumber copy = of(phoneNumber.getAreaCode(), phoneNumber.getExchangeCode(), phoneNumber.getLineNumber());
+    phoneNumber.getCountry().ifPresent(phoneNumberBuilder::inCountry);
+    phoneNumber.getExtension().ifPresent(phoneNumberBuilder::with);
 
-    phoneNumber.getCountry().ifPresent(copy::setCountry);
-    phoneNumber.getExtension().ifPresent(copy::setExtension);
+    if (phoneNumber.isTextEnabled()) {
+      phoneNumberBuilder.withTextEnabled();
+    }
+
+    PhoneNumber copy = phoneNumberBuilder.build();
+
     phoneNumber.getType().ifPresent(copy::setType);
 
     return copy;
@@ -460,7 +465,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
       Assert.notNull(phoneNumber, "PhoneNumber to copy is required");
 
       return inAreaCode(phoneNumber.getAreaCode())
-        .inCountry(phoneNumber.getCountry().orElseGet(Country::localCountry))
+        .inCountry(phoneNumber.getCountry().orElse(null))
         .with(phoneNumber.getExchangeCode())
         .with(phoneNumber.getExtension().orElse(null))
         .with(phoneNumber.getLineNumber());

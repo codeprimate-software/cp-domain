@@ -70,6 +70,8 @@ public class PhoneNumberUnitTests {
     assertThat(copy.getCountry()).isNotPresent();
     assertThat(copy.getExtension()).isNotPresent();
     assertThat(copy.getType()).isNotPresent();
+    assertThat(copy.isRoaming()).isTrue();
+    assertThat(copy.isTextEnabled()).isFalse();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode, mockLineNumber);
   }
@@ -88,8 +90,10 @@ public class PhoneNumberUnitTests {
     doReturn(mockAreaCode).when(mockPhoneNumber).getAreaCode();
     doReturn(mockExchangeCode).when(mockPhoneNumber).getExchangeCode();
     doReturn(mockLineNumber).when(mockPhoneNumber).getLineNumber();
-    doReturn(Optional.ofNullable(mockExtension)).when(mockPhoneNumber).getExtension();
     doReturn(Optional.of(Country.UNITED_STATES_OF_AMERICA)).when(mockPhoneNumber).getCountry();
+    doReturn(Optional.ofNullable(mockExtension)).when(mockPhoneNumber).getExtension();
+    doReturn(Optional.of(PhoneNumber.Type.VOIP)).when(mockPhoneNumber).getType();
+    doReturn(true).when(mockPhoneNumber).isTextEnabled();
 
     PhoneNumber copy = PhoneNumber.from(mockPhoneNumber);
 
@@ -99,7 +103,9 @@ public class PhoneNumberUnitTests {
     assertThat(copy.getLineNumber()).isEqualTo(mockLineNumber);
     assertThat(copy.getExtension().orElse(null)).isEqualTo(mockExtension);
     assertThat(copy.getCountry().orElse(null)).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
-    assertThat(copy.getType()).isNotPresent();
+    assertThat(copy.getType().orElse(null)).isEqualTo(PhoneNumber.Type.VOIP);
+    assertThat(copy.isRoaming()).isFalse();
+    assertThat(copy.isTextEnabled()).isTrue();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode, mockLineNumber);
   }
