@@ -25,7 +25,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract Data Type (ADT) modeling the {@literal 3-digit exchange code} of a {@link PhoneNumber}.
+ * Abstract Data Type (ADT) modeling the {@literal exchange code} of a {@link PhoneNumber}.
  *
  * @author John Blum
  * @see java.lang.Cloneable
@@ -44,54 +44,54 @@ public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Serial
    * Factory method used to construct a new {@link ExchangeCode} copied from an existing, required {@link ExchangeCode}.
    *
    * @param exchangeCode {@link ExchangeCode} to copy; must not be {@literal null}.
-   * @return a new {@link ExchangeCode} copied from the existing, required {@link ExchangeCode}.
+   * @return a new {@link ExchangeCode} copied from an existing, required {@link ExchangeCode}.
    * @throws IllegalArgumentException if the {@link ExchangeCode} to copy is {@literal null}.
    */
   public static @NotNull ExchangeCode from(@NotNull ExchangeCode exchangeCode) {
 
     Assert.notNull(exchangeCode, "ExchangeCode to copy is required");
 
-    return new ExchangeCode(exchangeCode.getThreeDigitNumber());
+    return new ExchangeCode(exchangeCode.getNumber());
   }
 
   /**
    * Factory method used to construct a new {@link ExchangeCode} from the given, required {@link String number}.
    *
-   * @param threeDigitNumber {@link String} containing the {@literal 3-digit number} of this {@link ExchangeCode};
+   * @param number {@link String} containing the {@literal 3-digit number} for the {@link ExchangeCode};
    * must not be {@literal null} or {@literal empty}; must be {@literal 3-digits}.
-   * @throws IllegalArgumentException if the {@link String 3-digit number} is {@literal null}, {@literal empty}
-   * or is not (only) {@literal 3-digits}.
-   * @return a new {@link ExchangeCode} initialized with the given, required {@link Stringnumber}.
+   * @return a new {@link ExchangeCode} initialized with the given, required {@link String number}.
+   * @throws IllegalArgumentException if the {@link String number} is {@literal null}, {@literal empty}
+   * or is not {@literal 3-digits}.
    */
-  public static @NotNull ExchangeCode of(@NotNull String threeDigitNumber) {
-    return new ExchangeCode(threeDigitNumber);
+  public static @NotNull ExchangeCode of(@NotNull String number) {
+    return new ExchangeCode(number);
   }
 
-  private final String threeDigitNumber;
+  private final String number;
 
   /**
-   * Constructs a new {@link ExchangeCode} initialized with the given, required {@link String 3-digit number}.
+   * Constructs a new {@link ExchangeCode} initialized with the given, required {@link String number}.
    *
-   * @param threeDigitNumber {@link String} containing the {@literal 3-digit number} of this {@link ExchangeCode};
+   * @param number {@link String} containing the {@literal 3-digit number} for this {@link ExchangeCode};
    * must not be {@literal null} or {@literal empty}; must be {@literal 3-digits}.
-   * @throws IllegalArgumentException if the {@link String 3-digit number} is {@literal null}, {@literal empty}
-   * or is not (only) {@literal 3-digits}.
+   * @throws IllegalArgumentException if the {@link String number} is {@literal null}, {@literal empty}
+   * or is not {@literal 3-digits}.
    */
-  public ExchangeCode(@NotNull String threeDigitNumber) {
+  public ExchangeCode(@NotNull String number) {
 
-    Assert.isTrue(StringUtils.getDigits(threeDigitNumber).length() == REQUIRED_EXCHANGE_CODE_LENGTH,
-      "ExchangeCode [%s] must be a %d-digit number", threeDigitNumber, REQUIRED_EXCHANGE_CODE_LENGTH);
+    Assert.isTrue(StringUtils.getDigits(number).length() == REQUIRED_EXCHANGE_CODE_LENGTH,
+      "ExchangeCode [%s] must be a %d-digit number", number, REQUIRED_EXCHANGE_CODE_LENGTH);
 
-    this.threeDigitNumber = threeDigitNumber;
+    this.number = number;
   }
 
   /**
-   * Gets the {@link String 3-digit number} of this {@link ExchangeCode}.
+   * Gets the {@link String number} of this {@link ExchangeCode}.
    *
-   * @return the {@link String 3-digit number} of this {@link ExchangeCode}.
+   * @return the {@link String number} of this {@link ExchangeCode}.
    */
-  public @NotNull String getThreeDigitNumber() {
-    return this.threeDigitNumber;
+  public @NotNull String getNumber() {
+    return this.number;
   }
 
   @Override
@@ -102,7 +102,7 @@ public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Serial
 
   @Override
   public int compareTo(@NotNull ExchangeCode that) {
-    return this.getThreeDigitNumber().compareTo(that.getThreeDigitNumber());
+    return this.getNumber().compareTo(that.getNumber());
   }
 
   @Override
@@ -116,16 +116,16 @@ public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Serial
       return false;
     }
 
-    return ObjectUtils.equals(this.getThreeDigitNumber(), that.getThreeDigitNumber());
+    return ObjectUtils.equals(this.getNumber(), that.getNumber());
   }
 
   @Override
   public int hashCode() {
-    return ObjectUtils.hashCodeOf(this.getThreeDigitNumber());
+    return ObjectUtils.hashCodeOf(this.getNumber());
   }
 
   @Override
   public String toString() {
-    return getThreeDigitNumber();
+    return getNumber();
   }
 }
