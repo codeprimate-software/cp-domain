@@ -25,7 +25,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract Data Type (ADT) modeling the {@literal 3-digit area code} of a {@link PhoneNumber}.
+ * Abstract Data Type (ADT) modeling the {@literal area code} of a {@link PhoneNumber}.
  *
  * @author John Blum
  * @see java.lang.Cloneable
@@ -44,54 +44,54 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Serializable {
    * Factory method used to construct a new {@link AreaCode} copied from an existing, required {@link AreaCode}.
    *
    * @param areaCode {@link AreaCode} to copy; must not be {@literal null}.
-   * @return a new {@link AreaCode} copied from the existing, required {@link AreaCode}.
+   * @return a new {@link AreaCode} copied from an existing, required {@link AreaCode}.
    * @throws IllegalArgumentException if the {@link AreaCode} to copy is {@literal null}.
    */
   public static @NotNull AreaCode from(@NotNull AreaCode areaCode) {
 
     Assert.notNull(areaCode, "AreaCode to copy is required");
 
-    return new AreaCode(areaCode.getThreeDigitNumber());
+    return new AreaCode(areaCode.getNumber());
   }
 
   /**
    * Factory method used to construct a new {@link AreaCode} from the given, required {@link String number}.
    *
-   * @param threeDigitNumber {@link String} containing the {@literal 3-digit number} of this {@link AreaCode};
+   * @param number {@link String} containing the {@literal 3-digit number} for the {@link AreaCode};
    * must not be {@literal null} or {@literal empty}; must be {@literal 3-digits}.
-   * @throws IllegalArgumentException if the {@link String 3-digit number} is {@literal null}, {@literal empty}
-   * or is not (only) {@literal 3-digits}.
    * @return a new {@link AreaCode} initialized with the given, required {@link String number}.
+   * @throws IllegalArgumentException if the {@link String number} is {@literal null}, {@literal empty}
+   * or is not {@literal 3-digits}.
    */
-  public static @NotNull AreaCode of(@NotNull String threeDigitNumber) {
-    return new AreaCode(threeDigitNumber);
+  public static @NotNull AreaCode of(@NotNull String number) {
+    return new AreaCode(number);
   }
 
-  private final String threeDigitNumber;
+  private final String number;
 
   /**
-   * Constructs a new {@link AreaCode} initialized with the given, required {@link String 3-digit number}.
+   * Constructs a new {@link AreaCode} initialized with the given, required {@link String number}.
    *
-   * @param threeDigitNumber {@link String} containing the {@literal 3-digit number} of this {@link AreaCode};
+   * @param number {@link String} containing the {@literal 3-digit number} for this {@link AreaCode};
    * must not be {@literal null} or {@literal empty}; must be {@literal 3-digits}.
-   * @throws IllegalArgumentException if the {@link String 3-digit number} is {@literal null}, {@literal empty}
-   * or is not (only) {@literal 3-digits}.
+   * @throws IllegalArgumentException if the {@link String number} is {@literal null}, {@literal empty}
+   * or is not {@literal 3-digits}.
    */
-  public AreaCode(@NotNull String threeDigitNumber) {
+  public AreaCode(@NotNull String number) {
 
-    Assert.isTrue(StringUtils.getDigits(threeDigitNumber).length() == REQUIRED_AREA_CODE_LENGTH,
-      "AreaCode [%s] must be a %d-digit number", threeDigitNumber, REQUIRED_AREA_CODE_LENGTH);
+    Assert.isTrue(StringUtils.getDigits(number).length() == REQUIRED_AREA_CODE_LENGTH,
+      "AreaCode [%s] must be a %d-digit number", number, REQUIRED_AREA_CODE_LENGTH);
 
-    this.threeDigitNumber = threeDigitNumber;
+    this.number = number;
   }
 
   /**
-   * Gets the {@link String 3-digit number} of this {@link AreaCode}.
+   * Gets the {@link String number} of this {@link AreaCode}.
    *
-   * @return the {@link String 3-digit number} of this {@link AreaCode}.
+   * @return the {@link String number} of this {@link AreaCode}.
    */
-  public @NotNull String getThreeDigitNumber() {
-    return this.threeDigitNumber;
+  public @NotNull String getNumber() {
+    return this.number;
   }
 
   @Override
@@ -102,7 +102,7 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Serializable {
 
   @Override
   public int compareTo(@NotNull AreaCode that) {
-    return this.getThreeDigitNumber().compareTo(that.getThreeDigitNumber());
+    return this.getNumber().compareTo(that.getNumber());
   }
 
   @Override
@@ -116,16 +116,16 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Serializable {
       return false;
     }
 
-    return ObjectUtils.equals(this.getThreeDigitNumber(), that.getThreeDigitNumber());
+    return ObjectUtils.equals(this.getNumber(), that.getNumber());
   }
 
   @Override
   public int hashCode() {
-    return ObjectUtils.hashCodeOf(this.getThreeDigitNumber());
+    return ObjectUtils.hashCodeOf(this.getNumber());
   }
 
   @Override
   public String toString() {
-    return getThreeDigitNumber();
+    return getNumber();
   }
 }
