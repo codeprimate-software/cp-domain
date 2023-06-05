@@ -31,6 +31,7 @@ import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Renderable;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.Verifiable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.Dsl;
@@ -60,6 +61,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.elements.function.TriFunction
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Renderable
+ * @see org.cp.elements.lang.Verifiable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
@@ -70,7 +72,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
 @FluentApi
 @SuppressWarnings("unused")
 public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, CountryAware,
-    Identifiable<Long>, Renderable, Serializable, Visitable {
+    Identifiable<Long>, Renderable, Serializable, Verifiable<PhoneNumber>, Visitable {
 
   // Constructor Function used for the type of PhoneNumber constructed
   // in the of(:AreaCode, :ExchangeCode, :LineNumber) factory method.
@@ -421,6 +423,21 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
       .doCompare(this.getLineNumber(), that.getLineNumber())
       .doCompare(this.getExtension().orElse(null), that.getExtension().orElse(null))
       .build();
+  }
+
+  /**
+   * Validates this {@link PhoneNumber}.
+   *
+   * @return this {@link PhoneNumber}.
+   */
+  @Override
+  default PhoneNumber validate() {
+
+    ObjectUtils.requireState(getAreaCode(), "AreaCode is required");
+    ObjectUtils.requireState(getExchangeCode(), "ExchangeCode is required");
+    ObjectUtils.requireState(getLineNumber(), "LineNumber is required");
+
+    return this;
   }
 
   /**
