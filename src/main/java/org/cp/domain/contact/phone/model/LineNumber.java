@@ -44,7 +44,7 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Serializab
    * Factory method used to construct a new {@link LineNumber} copied from an existing, required {@link LineNumber}.
    *
    * @param number {@link LineNumber} to copy; must not be {@literal null}.
-   * @return a new {@link LineNumber} copied from the existing, required {@link LineNumber}.
+   * @return a new {@link LineNumber} copied from an existing, required {@link LineNumber}.
    * @throws IllegalArgumentException if the {@link LineNumber} to copy is {@literal null}.
    */
   public static @NotNull LineNumber from(@NotNull LineNumber number) {
@@ -59,9 +59,9 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Serializab
    *
    * @param number {@link String} containing the {@literal 4-digit number} of this {@link LineNumber};
    * must not be {@literal null} or {@literal empty}; must be {@literal 4-digits}.
-   * @throws IllegalArgumentException if the {@link String 4-digit number} is {@literal null}, {@literal empty}
-   * or is not (only) {@literal 4-digits}.
    * @return a new {@link LineNumber} initialized with the given, required {@link String number}.
+   * @throws IllegalArgumentException if the {@link String number} is {@literal null}, {@literal empty}
+   * or is not {@literal 4-digits}.
    */
   public static @NotNull LineNumber of(@NotNull String number) {
     return new LineNumber(number);
@@ -72,8 +72,8 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Serializab
   /**
    * Constructs a new {@link LineNumber} initialized with the given, required {@link String number}.
    *
-   * @param number {@link String} containing the {@literal number} for this {@link LineNumber};
-   * must not be {@literal null} or {@literal empty}.
+   * @param number {@link String} containing the {@literal 4-digit number} for this {@link LineNumber};
+   * must not be {@literal null} or {@literal empty}; must be {@literal 4-digits}.
    * @throws IllegalArgumentException if the {@link String line number} is {@literal null}, {@literal empty}
    * or is not of the {@link #getRequiredNumberLength() required length}.
    */
@@ -88,14 +88,19 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Serializab
   }
 
   /**
-   * Gets the {@link String 4-digit number} of this {@link LineNumber}.
+   * Gets the {@link String number} of this {@link LineNumber}.
    *
-   * @return the {@link String 4-digit number} of this {@link LineNumber}.
+   * @return the {@link String number} of this {@link LineNumber}.
    */
   public @NotNull String getNumber() {
     return this.number;
   }
 
+  /**
+   * Gets the required {@link Integer length} of the {@link #getNumber()} for this {@link LineNumber}.
+   *
+   * @return the required {@link Integer length} of the {@link #getNumber()} for this {@link LineNumber}.
+   */
   protected int getRequiredNumberLength() {
     return REQUIRED_NUMBER_LENGTH;
   }
