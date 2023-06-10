@@ -96,13 +96,13 @@ public interface Group extends Identifiable<UUID>, Iterable<Person>, Nameable<St
   }
 
   /**
-   * Computes the {@literal set difference} between this {@link Group} and the given, required {@link Group}
-   * of {@link Person people}.
+   * Computes of {@literal difference} of this {@link Group} with the given, required {@link Group}.
    *
-   * @param group {@link Group} to compare with this {@link Group} in the {@literal set difference} operation;
+   * @param group {@link Group} to compare with this {@link Group} in the {@literal set difference operation};
    * must not be {@literal null}.
    * @return a {@link Set} of {@link Person people} in this {@link Group} but not in the given {@link Group}.
    * @throws IllegalArgumentException if the given {@link Group} is {@literal null}.
+   * @see #intersection(Group)
    * @see #findBy(Predicate)
    */
   default Set<Person> difference(@NotNull Group group) {
@@ -156,6 +156,23 @@ public interface Group extends Identifiable<UUID>, Iterable<Person>, Nameable<St
     return StreamUtils.stream(this)
       .filter(predicate)
       .findFirst();
+  }
+
+  /**
+   * Computes the {@literal intersection} of this {@link Group} with the given, required {@link Group}.
+   *
+   * @param group {@link Group} to compare with this {@link Group} in the {@literal intersection operation};
+   * must not be {@literal null}.
+   * @return a {@link Set} of {@link Person people} in this {@link Group} and the given {@link Group}.
+   * @throws IllegalArgumentException if the given {@link Group} is {@literal null}.
+   * @see #difference(Group)
+   * @see #findBy(Predicate)
+   */
+  default Set<Person> intersection(@NotNull Group group) {
+
+    Assert.notNull(group, "Group used in intersection is required");
+
+    return findBy(group::contains);
   }
 
   /**

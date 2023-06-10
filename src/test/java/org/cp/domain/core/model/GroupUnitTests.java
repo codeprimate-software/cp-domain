@@ -32,6 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
@@ -486,6 +487,112 @@ public class GroupUnitTests {
 
     verify(mockGroup, times(1)).findOne(isNull());
     verifyNoMoreInteractions(mockGroup);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void intersectionOfGroups() {
+
+    Person mockPersonOne = mock(Person.class);
+    Person mockPersonTwo = mock(Person.class);
+
+    Group mockGroupOne = mockGroup("A", mockPersonOne, mockPersonTwo);
+    Group mockGroupTwo = mockGroup("B", mockPersonTwo);
+
+    doCallRealMethod().when(mockGroupOne).intersection(any(Group.class));
+    doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
+    doAnswer(invocation -> mockPersonTwo.equals(invocation.getArgument(0))).when(mockGroupTwo).contains(any());
+
+    Set<Person> difference = mockGroupOne.intersection(mockGroupTwo);
+
+    assertThat(difference).isNotNull();
+    assertThat(difference).containsExactly(mockPersonTwo);
+
+    verify(mockGroupOne, times(1)).intersection(eq(mockGroupTwo));
+    verify(mockGroupOne, times(1)).findBy(isNotNull(Predicate.class));
+    verify(mockGroupOne, times(1)).iterator();
+    verify(mockGroupOne, times(1)).spliterator();
+    verify(mockGroupTwo, times(2)).contains(isA(Person.class));
+    verifyNoMoreInteractions(mockGroupOne, mockGroupTwo);
+    verifyNoInteractions(mockPersonOne, mockPersonTwo);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void intersectionOfEmptyGroup() {
+
+    Person mockPerson = mock(Person.class);
+
+    Group mockGroupOne = mockGroup("A");
+    Group mockGroupTwo = mockGroup("B", mockPerson);
+
+    doCallRealMethod().when(mockGroupOne).intersection(any(Group.class));
+    doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
+    doCallRealMethod().when(mockGroupTwo).intersection(any(Group.class));
+    doCallRealMethod().when(mockGroupTwo).findBy(any(Predicate.class));
+
+    Set<Person> intersection = mockGroupOne.intersection(mockGroupTwo);
+
+    assertThat(intersection).isNotNull();
+    assertThat(intersection).isEmpty();
+
+    intersection = mockGroupTwo.intersection(mockGroupOne);
+
+    assertThat(intersection).isNotNull();
+    assertThat(intersection).isEmpty();
+
+    verify(mockGroupOne, times(1)).contains(eq(mockPerson));
+    verify(mockGroupOne, times(1)).intersection(eq(mockGroupTwo));
+    verify(mockGroupTwo, times(1)).intersection(eq(mockGroupOne));
+
+    Arrays.asList(mockGroupOne, mockGroupTwo).forEach(mockGroup -> {
+      verify(mockGroup, times(1)).findBy(isNotNull(Predicate.class));
+      verify(mockGroup, times(1)).iterator();
+      verify(mockGroup, times(1)).spliterator();
+    });
+
+    verifyNoMoreInteractions(mockGroupOne, mockGroupTwo);
+    verifyNoInteractions(mockPerson);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void intersectionOfMatchingGroups() {
+
+    Person mockPerson = mock(Person.class);
+
+    Group mockGroupOne = mockGroup("A", mockPerson);
+    Group mockGroupTwo = mockGroup("B", mockPerson);
+
+    doCallRealMethod().when(mockGroupOne).intersection(any(Group.class));
+    doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
+    doAnswer(invocation -> mockPerson.equals(invocation.getArgument(0))).when(mockGroupTwo).contains(any());
+
+    Set<Person> difference = mockGroupOne.intersection(mockGroupTwo);
+
+    assertThat(difference).isNotNull();
+    assertThat(difference).containsExactly(mockPerson);
+
+    verify(mockGroupOne, times(1)).intersection(eq(mockGroupTwo));
+    verify(mockGroupOne, times(1)).findBy(isNotNull(Predicate.class));
+    verify(mockGroupOne, times(1)).iterator();
+    verify(mockGroupOne, times(1)).spliterator();
+    verify(mockGroupTwo, times(1)).contains(eq(mockPerson));
+    verifyNoMoreInteractions(mockGroupOne, mockGroupTwo);
+    verifyNoInteractions(mockPerson);
+  }
+
+  @Test
+  public void intersectionWithNullGroup() {
+
+    Group mockGroup = mockGroup();
+
+    doCallRealMethod().when(mockGroup).intersection(any());
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> mockGroup.intersection(null))
+      .withMessage("Group used in intersection is required")
+      .withNoCause();
   }
 
   @Test
