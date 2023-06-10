@@ -42,7 +42,7 @@ import org.cp.elements.lang.annotation.Nullable;
 @Immutable
 public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Renderable, Serializable {
 
-  private static final int REQUIRED_EXCHANGE_CODE_LENGTH = 3;
+  protected static final int REQUIRED_EXCHANGE_CODE_LENGTH = 3;
 
   /**
    * Factory method used to construct a new {@link ExchangeCode} copied from an existing, required {@link ExchangeCode}.
@@ -102,8 +102,10 @@ public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Render
    */
   public ExchangeCode(@NotNull String number) {
 
-    Assert.isTrue(StringUtils.getDigits(number).length() == REQUIRED_EXCHANGE_CODE_LENGTH,
-      "ExchangeCode [%s] must be a %d-digit number", number, REQUIRED_EXCHANGE_CODE_LENGTH);
+    int requiredLength = getRequiredLength();
+
+    Assert.isTrue(StringUtils.getDigits(number).length() == requiredLength,
+      "ExchangeCode [%s] must be a %d-digit number", number, requiredLength);
 
     this.number = number;
   }
@@ -115,6 +117,15 @@ public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Render
    */
   public @NotNull String getNumber() {
     return this.number;
+  }
+
+  /**
+   * Returns the {@link Integer required length} of this {@link ExchangeCode}.
+   *
+   * @return the {@link Integer required length} of this {@link ExchangeCode}.
+   */
+  protected int getRequiredLength() {
+    return REQUIRED_EXCHANGE_CODE_LENGTH;
   }
 
   @Override
