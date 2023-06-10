@@ -19,6 +19,7 @@ import java.io.Serializable;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.Renderable;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.Immutable;
 import org.cp.elements.lang.annotation.NotNull;
@@ -33,10 +34,11 @@ import org.cp.elements.lang.annotation.Nullable;
  * @see java.io.Serializable
  * @see org.cp.domain.contact.phone.model.PhoneNumber
  * @see org.cp.elements.lang.annotation.Immutable
+ * @see org.cp.elements.lang.Renderable
  * @since 0.1.0
  */
 @Immutable
-public class AreaCode implements Cloneable, Comparable<AreaCode>, Serializable {
+public class AreaCode implements Cloneable, Comparable<AreaCode>, Renderable, Serializable {
 
   protected static final int REQUIRED_AREA_CODE_LENGTH = 3;
 
