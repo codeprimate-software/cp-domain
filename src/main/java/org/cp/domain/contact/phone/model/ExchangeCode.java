@@ -15,6 +15,8 @@
  */
 package org.cp.domain.contact.phone.model;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
+
 import java.io.Serializable;
 
 import org.cp.elements.lang.Assert;
@@ -67,6 +69,25 @@ public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Render
    */
   public static @NotNull ExchangeCode of(@NotNull String number) {
     return new ExchangeCode(number);
+  }
+
+  /**
+   * Parses and extracts an {@link ExchangeCode} from the given, required {@link String phone number}.
+   *
+   * @param phoneNumber {@link String} containing the {@literal phone number} from which to parse
+   * and extract an {@link ExchangeCode}; must be {@literal 10-digits} or {@literal 7-digits}.
+   * @return an {@link ExchangeCode} from the given {@link String phone number}.
+   * @throws IllegalArgumentException if the given {@link String phone number} is not valid.
+   */
+  public static @NotNull ExchangeCode parse(@NotNull String phoneNumber) {
+
+    String digits = StringUtils.getDigits(phoneNumber);
+
+    return switch (digits.length()) {
+      case 10 -> new ExchangeCode(digits.substring(3, REQUIRED_EXCHANGE_CODE_LENGTH));
+      case 7 -> new ExchangeCode(digits.substring(0, REQUIRED_EXCHANGE_CODE_LENGTH));
+      default -> throw newIllegalArgumentException("Phone Number [%s] must be 10-digits or 7-digits");
+    };
   }
 
   private final String number;
