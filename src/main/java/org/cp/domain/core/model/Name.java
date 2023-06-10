@@ -448,6 +448,8 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
    */
   public enum Suffix {
 
+    II,
+    III,
     JR,
     SR;
 
