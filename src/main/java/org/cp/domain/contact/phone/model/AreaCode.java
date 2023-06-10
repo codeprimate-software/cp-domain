@@ -72,8 +72,8 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Renderable, Se
   /**
    * Parses and extracts an {@link AreaCode} from the given, required {@link String phone number}.
    *
-   * @param phoneNumber {@link String} containing the {@literal phone number} to parse and extract the {@link AreaCode};
-   * must be {@literal 10-digits}.
+   * @param phoneNumber {@link String} containing a {@literal phone number} from which to parse
+   * and extract the {@link AreaCode}; must be {@literal 10-digits}.
    * @return a new {@link AreaCode} based on the given {@link String phone number}.
    * @throws IllegalArgumentException if the {@link String phone number} is not {@literal 10-digits}.
    */
@@ -116,11 +116,10 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Renderable, Se
     return this.number;
   }
 
-
   /**
-   * Returns the {@link Integer required length} of this {@link AreaCode}.
+   * Returns the {@link Integer required length} for an {@link AreaCode}.
    *
-   * @return the {@link Integer required length} of this {@link AreaCode}.
+   * @return the {@link Integer required length} for an {@link AreaCode}.
    */
   protected int getRequiredLength() {
     return REQUIRED_AREA_CODE_LENGTH;
