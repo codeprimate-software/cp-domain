@@ -109,7 +109,7 @@ public interface Group extends Identifiable<UUID>, Iterable<Person>, Nameable<St
 
     Assert.notNull(group, "Group used in set difference is required");
 
-    return findBy(person -> group.findOne(person::equals).isEmpty());
+    return findBy(person -> !group.contains(person));
   }
 
   /**

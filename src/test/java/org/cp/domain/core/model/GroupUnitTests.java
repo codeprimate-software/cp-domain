@@ -237,6 +237,7 @@ public class GroupUnitTests {
 
     doCallRealMethod().when(mockGroupOne).difference(any(Group.class));
     doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
+    doCallRealMethod().when(mockGroupTwo).contains(any());
     doCallRealMethod().when(mockGroupTwo).findOne(any(Predicate.class));
 
     Set<Person> difference = mockGroupOne.difference(mockGroupTwo);
@@ -248,6 +249,8 @@ public class GroupUnitTests {
     verify(mockGroupOne, times(1)).findBy(isNotNull(Predicate.class));
     verify(mockGroupOne, times(1)).iterator();
     verify(mockGroupOne, times(1)).spliterator();
+    Arrays.asList(mockPersonOne, mockPersonTwo).forEach(mockPerson ->
+      verify(mockGroupTwo, times(1)).contains(eq(mockPerson)));
     verify(mockGroupTwo, times(2)).findOne(isNotNull(Predicate.class));
     verify(mockGroupTwo, times(2)).iterator();
     verify(mockGroupTwo, times(2)).spliterator();
@@ -291,6 +294,7 @@ public class GroupUnitTests {
 
     doCallRealMethod().when(mockGroupOne).difference(any(Group.class));
     doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
+    doCallRealMethod().when(mockGroupTwo).contains(any());
     doCallRealMethod().when(mockGroupTwo).findOne(any(Predicate.class));
 
     Set<Person> difference = mockGroupOne.difference(mockGroupTwo);
@@ -302,6 +306,7 @@ public class GroupUnitTests {
     verify(mockGroupOne, times(1)).findBy(isNotNull(Predicate.class));
     verify(mockGroupOne, times(1)).iterator();
     verify(mockGroupOne, times(1)).spliterator();
+    verify(mockGroupTwo, times(1)).contains(eq(mockPerson));
     verify(mockGroupTwo, times(1)).findOne(isNotNull(Predicate.class));
     verify(mockGroupTwo, times(1)).iterator();
     verify(mockGroupTwo, times(1)).spliterator();
