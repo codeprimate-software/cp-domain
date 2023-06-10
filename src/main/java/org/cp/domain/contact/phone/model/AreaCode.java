@@ -67,12 +67,30 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Serializable {
     return new AreaCode(number);
   }
 
+  /**
+   * Parses and extracts an {@link AreaCode} from the given, required {@link String phone number}.
+   *
+   * @param phoneNumber {@link String} containing the {@literal phone number} to parse and extract the {@link AreaCode};
+   * must be {@literal 10-digits}.
+   * @return a new {@link AreaCode} based on the given {@link String phone number}.
+   * @throws IllegalArgumentException if the {@link String phone number} is not {@literal 10-digits}.
+   */
+  public static @NotNull AreaCode parse(@NotNull String phoneNumber) {
+
+    String digits = StringUtils.getDigits(phoneNumber);
+
+    Assert.isTrue(digits.length() == 10,
+      "Phone Number [%s] to parse the Area Code from must be 10-digits", phoneNumber);
+
+    return new AreaCode(digits.substring(0, REQUIRED_AREA_CODE_LENGTH));
+  }
+
   private final String number;
 
   /**
    * Constructs a new {@link AreaCode} initialized with the given, required {@link String number}.
    *
-   * @param number {@link String} containing the {@literal 3-digit number} for this {@link AreaCode};
+   * @param number {@link String} containing a {@literal 3-digit number} for this {@link AreaCode};
    * must not be {@literal null} or {@literal empty}; must be {@literal 3-digits}.
    * @throws IllegalArgumentException if the {@link String number} is {@literal null}, {@literal empty}
    * or is not {@literal 3-digits}.
