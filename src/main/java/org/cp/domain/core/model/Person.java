@@ -793,16 +793,24 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   @Override
   public @NotNull String toString() {
 
-    String birthDateAsString = getBirthDate()
-      .map(birthDate -> DateTimeFormatter.ofPattern(BIRTH_DATE_TIME_PATTERN).format(birthDate))
-      .orElse(Constants.UNKNOWN);
-
-    String dateOfDeathAsString = getDateOfDeath()
-      .map(dateOfDeath -> DateTimeFormatter.ofPattern(DATE_TIME_OF_DEATH_PATTERN).format(dateOfDeath))
-      .orElse(Constants.UNKNOWN);
+    String resolvedMiddleName = getMiddleName().orElse(Constants.UNKNOWN);
 
     return String.format(PERSON_TO_STRING, getClass().getName(),
-      getFirstName(), getMiddleName().orElse(Constants.UNKNOWN), getLastName(), birthDateAsString, dateOfDeathAsString,
+      getFirstName(), resolvedMiddleName, getLastName(), birthDateAsString(), dateOfDeathAsString(),
         getGender().map(Gender::toString).orElse(Constants.UNKNOWN));
+  }
+
+  private @NotNull String birthDateAsString() {
+
+    return getBirthDate()
+      .map(birthDate -> DateTimeFormatter.ofPattern(BIRTH_DATE_TIME_PATTERN).format(birthDate))
+      .orElse(Constants.UNKNOWN);
+  }
+
+  private @NotNull String dateOfDeathAsString() {
+
+    return getDateOfDeath()
+      .map(dateOfDeath -> DateTimeFormatter.ofPattern(DATE_TIME_OF_DEATH_PATTERN).format(dateOfDeath))
+      .orElse(Constants.UNKNOWN);
   }
 }
