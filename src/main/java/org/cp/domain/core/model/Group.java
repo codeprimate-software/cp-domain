@@ -62,6 +62,17 @@ public interface Group extends Identifiable<UUID>, Iterable<Person>, Nameable<St
     StreamUtils.stream(this).forEach(person -> person.accept(visitor));
   }
 
+  /** Determines whether the given {@link Person} is a member of this {@link Group}.
+   *
+   * @param person {@link Person} to evaluate for membership in this {@link Group}.
+   * @return a boolean value indicating whether the given {@link Person} is a member of this {@link Group}.
+   * @see #findOne(Predicate)
+   */
+  @NullSafe
+  default boolean contains(@Nullable Person person) {
+    return person != null && findOne(person::equals).isPresent();
+  }
+
   /**
    * Counts the number of {@link Person people} in this {@link Group} matching the given, required {@link Predicate}.
    *

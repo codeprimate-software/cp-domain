@@ -175,6 +175,57 @@ public class GroupUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
+  public void containsPersonReturnsTrue() {
+
+    Person mockPerson = mock(Person.class);
+
+    Group mockGroup = mockGroup();
+
+    doCallRealMethod().when(mockGroup).contains(any());
+    doReturn(Optional.of(mockPerson)).when(mockGroup).findOne(any(Predicate.class));
+
+    assertThat(mockGroup.contains(mockPerson)).isTrue();
+
+    verify(mockGroup, times(1)).contains(eq(mockPerson));
+    verify(mockGroup, times(1)).findOne(isNotNull(Predicate.class));
+    verifyNoMoreInteractions(mockGroup);
+    verifyNoInteractions(mockPerson);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void containsPersonReturnsFalse() {
+
+    Person mockPerson = mock(Person.class);
+
+    Group mockGroup = mockGroup();
+
+    doCallRealMethod().when(mockGroup).contains(any());
+    doReturn(Optional.empty()).when(mockGroup).findOne(any(Predicate.class));
+
+    assertThat(mockGroup.contains(mockPerson)).isFalse();
+
+    verify(mockGroup, times(1)).contains(eq(mockPerson));
+    verify(mockGroup, times(1)).findOne(isNotNull(Predicate.class));
+    verifyNoMoreInteractions(mockGroup);
+    verifyNoInteractions(mockPerson);
+  }
+
+  @Test
+  public void containsNullIsNullSafeReturnsFalse() {
+
+    Group mockGroup = mockGroup();
+
+    doCallRealMethod().when(mockGroup).contains(any());
+
+    assertThat(mockGroup.contains(null)).isFalse();
+
+    verify(mockGroup, times(1)).contains(isNull());
+    verifyNoMoreInteractions(mockGroup);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
   public void differenceOfGroups() {
 
     Person mockPersonOne = mock(Person.class);
