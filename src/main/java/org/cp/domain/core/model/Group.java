@@ -85,6 +85,23 @@ public interface Group extends Identifiable<UUID>, Iterable<Person>, Nameable<St
   }
 
   /**
+   * Computes the {@literal set difference} between this {@link Group} and the given, required {@link Group}
+   * of {@link Person people}.
+   *
+   * @param group {@link Group} to compare with this {@link Group} in the {@literal set difference} operation;
+   * must not be {@literal null}.
+   * @return a {@link Set} of {@link Person people} in this {@link Group} but not in the given {@link Group}.
+   * @throws IllegalArgumentException if the given {@link Group} is {@literal null}.
+   * @see #findBy(Predicate)
+   */
+  default Set<Person> difference(@NotNull Group group) {
+
+    Assert.notNull(group, "Group used in set difference is required");
+
+    return findBy(person -> group.findOne(person::equals).isEmpty());
+  }
+
+  /**
    * Finds all {@link Person people} in this {@link Group} matching the given, required {@link Predicate}.
    *
    * @param predicate {@link Predicate} defining query criteria used to find and match {@link Person people}

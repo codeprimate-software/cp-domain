@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.isNotNull;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -57,8 +58,12 @@ import org.cp.elements.util.CollectionUtils;
 public class GroupUnitTests {
 
   private Group mockGroup(Person... people) {
+    return mockGroup("MockGroup", people);
+  }
 
-    Group mockGroup = mock(Group.class);
+  private Group mockGroup(String name, Person... people) {
+
+    Group mockGroup = mock(Group.class, name);
 
     doAnswer(invocation -> ArrayUtils.asIterator(people)).when(mockGroup).iterator();
     doCallRealMethod().when(mockGroup).spliterator();
@@ -165,6 +170,106 @@ public class GroupUnitTests {
       .withNoCause();
 
     verify(mockGroup, times(1)).count(isNull());
+    verifyNoMoreInteractions(mockGroup);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void differenceOfGroups() {
+
+    Person mockPersonOne = mock(Person.class);
+    Person mockPersonTwo = mock(Person.class);
+
+    Group mockGroupOne = mockGroup("A", mockPersonOne, mockPersonTwo);
+    Group mockGroupTwo = mockGroup("B", mockPersonTwo);
+
+    doCallRealMethod().when(mockGroupOne).difference(any(Group.class));
+    doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
+    doCallRealMethod().when(mockGroupTwo).findOne(any(Predicate.class));
+
+    Set<Person> difference = mockGroupOne.difference(mockGroupTwo);
+
+    assertThat(difference).isNotNull();
+    assertThat(difference).containsExactly(mockPersonOne);
+
+    verify(mockGroupOne, times(1)).difference(eq(mockGroupTwo));
+    verify(mockGroupOne, times(1)).findBy(isNotNull(Predicate.class));
+    verify(mockGroupOne, times(1)).iterator();
+    verify(mockGroupOne, times(1)).spliterator();
+    verify(mockGroupTwo, times(2)).findOne(isNotNull(Predicate.class));
+    verify(mockGroupTwo, times(2)).iterator();
+    verify(mockGroupTwo, times(2)).spliterator();
+    verifyNoMoreInteractions(mockGroupOne, mockGroupTwo);
+    verifyNoInteractions(mockPersonOne, mockPersonTwo);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void differenceOfEmptyGroup() {
+
+    Person mockPerson = mock(Person.class);
+
+    Group mockGroupOne = mockGroup("A");
+    Group mockGroupTwo = mockGroup("B", mockPerson);
+
+    doCallRealMethod().when(mockGroupOne).difference(any(Group.class));
+    doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
+
+    Set<Person> difference = mockGroupOne.difference(mockGroupTwo);
+
+    assertThat(difference).isNotNull();
+    assertThat(difference).isEmpty();
+
+    verify(mockGroupOne, times(1)).difference(eq(mockGroupTwo));
+    verify(mockGroupOne, times(1)).findBy(isNotNull(Predicate.class));
+    verify(mockGroupOne, times(1)).iterator();
+    verify(mockGroupOne, times(1)).spliterator();
+    verifyNoInteractions(mockGroupTwo, mockPerson);
+    verifyNoMoreInteractions(mockGroupOne);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void differenceOfMatchingGroups() {
+
+    Person mockPerson = mock(Person.class);
+
+    Group mockGroupOne = mockGroup("A", mockPerson);
+    Group mockGroupTwo = mockGroup("B", mockPerson);
+
+    doCallRealMethod().when(mockGroupOne).difference(any(Group.class));
+    doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
+    doCallRealMethod().when(mockGroupTwo).findOne(any(Predicate.class));
+
+    Set<Person> difference = mockGroupOne.difference(mockGroupTwo);
+
+    assertThat(difference).isNotNull();
+    assertThat(difference).isEmpty();
+
+    verify(mockGroupOne, times(1)).difference(eq(mockGroupTwo));
+    verify(mockGroupOne, times(1)).findBy(isNotNull(Predicate.class));
+    verify(mockGroupOne, times(1)).iterator();
+    verify(mockGroupOne, times(1)).spliterator();
+    verify(mockGroupTwo, times(1)).findOne(isNotNull(Predicate.class));
+    verify(mockGroupTwo, times(1)).iterator();
+    verify(mockGroupTwo, times(1)).spliterator();
+    verifyNoMoreInteractions(mockGroupOne, mockGroupTwo);
+    verifyNoInteractions(mockPerson);
+  }
+
+  @Test
+  public void differenceOfNullGroup() {
+
+    Group mockGroup = mockGroup();
+
+    doCallRealMethod().when(mockGroup).difference(any());
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> mockGroup.difference(null))
+      .withMessage("Group used in set difference is required")
+      .withNoCause();
+
+    verify(mockGroup, times(1)).difference(isNull());
     verifyNoMoreInteractions(mockGroup);
   }
 
