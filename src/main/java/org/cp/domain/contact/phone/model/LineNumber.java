@@ -38,7 +38,7 @@ import org.cp.elements.lang.annotation.Nullable;
 @Immutable
 public class LineNumber implements Cloneable, Comparable<LineNumber>, Serializable {
 
-  private static final int REQUIRED_NUMBER_LENGTH = 4;
+  protected static final int REQUIRED_LINE_NUMBER_LENGTH = 4;
 
   /**
    * Factory method used to construct a new {@link LineNumber} copied from an existing, required {@link LineNumber}.
@@ -75,11 +75,11 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Serializab
    * @param number {@link String} containing the {@literal 4-digit number} for this {@link LineNumber};
    * must not be {@literal null} or {@literal empty}; must be {@literal 4-digits}.
    * @throws IllegalArgumentException if the {@link String line number} is {@literal null}, {@literal empty}
-   * or is not of the {@link #getRequiredNumberLength() required length}.
+   * or is not of the {@link #getRequiredLength() required length}.
    */
   public LineNumber(@NotNull String number) {
 
-    int requiredNumberLength = getRequiredNumberLength();
+    int requiredNumberLength = getRequiredLength();
 
     Assert.isTrue(StringUtils.getDigits(number).length() == requiredNumberLength,
       "Number [%s] must be a %d-digit number", number, requiredNumberLength);
@@ -97,12 +97,12 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Serializab
   }
 
   /**
-   * Gets the required {@link Integer length} of the {@link #getNumber()} for this {@link LineNumber}.
+   * Get the required {@link Integer length} for a {@link LineNumber}.
    *
-   * @return the required {@link Integer length} of the {@link #getNumber()} for this {@link LineNumber}.
+   * @return the required {@link Integer length} for a {@link LineNumber}.
    */
-  protected int getRequiredNumberLength() {
-    return REQUIRED_NUMBER_LENGTH;
+  protected int getRequiredLength() {
+    return REQUIRED_LINE_NUMBER_LENGTH;
   }
 
   @Override
