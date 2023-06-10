@@ -38,7 +38,7 @@ import org.cp.elements.lang.annotation.Nullable;
 @Immutable
 public class AreaCode implements Cloneable, Comparable<AreaCode>, Serializable {
 
-  private static final int REQUIRED_AREA_CODE_LENGTH = 3;
+  protected static final int REQUIRED_AREA_CODE_LENGTH = 3;
 
   /**
    * Factory method used to construct a new {@link AreaCode} copied from an existing, required {@link AreaCode}.
@@ -97,8 +97,10 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Serializable {
    */
   public AreaCode(@NotNull String number) {
 
-    Assert.isTrue(StringUtils.getDigits(number).length() == REQUIRED_AREA_CODE_LENGTH,
-      "AreaCode [%s] must be a %d-digit number", number, REQUIRED_AREA_CODE_LENGTH);
+    int requiredLength = getRequiredLength();
+
+    Assert.isTrue(StringUtils.getDigits(number).length() == requiredLength,
+      "AreaCode [%s] must be a %d-digit number", number, requiredLength);
 
     this.number = number;
   }
@@ -110,6 +112,16 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Serializable {
    */
   public @NotNull String getNumber() {
     return this.number;
+  }
+
+
+  /**
+   * Returns the {@link Integer required length} of this {@link AreaCode}.
+   *
+   * @return the {@link Integer required length} of this {@link AreaCode}.
+   */
+  protected int getRequiredLength() {
+    return REQUIRED_AREA_CODE_LENGTH;
   }
 
   @Override
