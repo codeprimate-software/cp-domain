@@ -445,16 +445,21 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
      * @param phoneNumber {@link PhoneNumber} to copy; must not be {@literal null}.
      * @return this {@link Builder}.
      * @throws IllegalArgumentException if the given {@link PhoneNumber} to copy is {@literal null}.
+     * @see org.cp.elements.lang.annotation.Dsl
      */
+    @Dsl
     public @NotNull Builder from(@NotNull PhoneNumber phoneNumber) {
 
       Assert.notNull(phoneNumber, "PhoneNumber to copy is required");
 
-      return inAreaCode(phoneNumber.getAreaCode())
-        .inCountry(phoneNumber.getCountry().orElse(null))
+      Builder builder = inAreaCode(phoneNumber.getAreaCode())
         .with(phoneNumber.getExchangeCode())
-        .with(phoneNumber.getExtension().orElse(null))
         .with(phoneNumber.getLineNumber());
+
+      phoneNumber.getCountry().ifPresent(builder::inCountry);
+      phoneNumber.getExtension().ifPresent(builder::with);
+
+      return builder;
     }
 
     /**
