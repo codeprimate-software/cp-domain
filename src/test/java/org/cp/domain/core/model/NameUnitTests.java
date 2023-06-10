@@ -489,7 +489,7 @@ public class NameUnitTests {
   @Test
   @SuppressWarnings("all")
   public void equalsObjectIsFalse() {
-    assertThat(Name.of("Jon", "Bloom").equals("test")).isFalse();
+    assertThat(Name.of("Jon", "Bloom").equals("Jon Bloom")).isFalse();
   }
 
   @Test
