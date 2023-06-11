@@ -113,10 +113,12 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Renderable
 
     int requiredNumberLength = getRequiredLength();
 
-    Assert.isTrue(StringUtils.getDigits(number).length() == requiredNumberLength,
+    String resolvedNumber = StringUtils.getDigits(number);
+
+    Assert.isTrue(resolvedNumber.length() == requiredNumberLength,
       "LineNumber [%s] must be a %d-digit number", number, requiredNumberLength);
 
-    this.number = number;
+    this.number = resolvedNumber;
   }
 
   /**

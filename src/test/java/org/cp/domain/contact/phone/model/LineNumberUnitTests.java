@@ -132,7 +132,7 @@ public class LineNumberUnitTests {
   @Test
   public void parseInvalidPhoneNumbers() {
 
-    Arrays.asList("  ", "", null, "555", "555-lOlO").forEach(phoneNumber ->
+    Arrays.asList("555", "5OE-5S5", "P7l-SSS-lOlO", "  ", "", null).forEach(phoneNumber ->
       assertThatIllegalArgumentException()
         .isThrownBy(() -> LineNumber.parse(phoneNumber))
         .withMessage("Phone Number [%s] must be at least %d-digits",
@@ -146,29 +146,37 @@ public class LineNumberUnitTests {
   }
 
   @Test
+  public void constructLineNumberWithFormattedNumber() {
+    assertLineNumber(new LineNumber("[1234]"), "1234");
+  }
+
+  @Test
+  public void constructLineNumberWithInvalidLength() {
+
+    Arrays.asList("123", "12345").forEach(number ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> new LineNumber(number))
+        .withMessage("LineNumber [%s] must be a %d-digit number", number,
+          LineNumber.REQUIRED_LINE_NUMBER_LENGTH)
+        .withNoCause());
+  }
+
+  @Test
+  public void constructLineNumberWithInvalidNumber() {
+
+    Arrays.asList("5O5", "l2E").forEach(number ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> new LineNumber(number))
+        .withMessage("LineNumber [%s] must be a %d-digit number", number, LineNumber.REQUIRED_LINE_NUMBER_LENGTH)
+        .withNoCause());
+  }
+
+  @Test
   public void constructLineNumberWithNull() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new LineNumber(null))
       .withMessage("LineNumber [null] must be a %d-digit number", LineNumber.REQUIRED_LINE_NUMBER_LENGTH)
-      .withNoCause();
-  }
-
-  @Test
-  public void constructLineNumberWithTooFewDigits() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> new LineNumber("123"))
-      .withMessage("LineNumber [123] must be a %d-digit number", LineNumber.REQUIRED_LINE_NUMBER_LENGTH)
-      .withNoCause();
-  }
-
-  @Test
-  public void constructLineNumberWithTooManyDigits() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> new LineNumber("12345"))
-      .withMessage("LineNumber [12345] must be a %d-digit number", LineNumber.REQUIRED_LINE_NUMBER_LENGTH)
       .withNoCause();
   }
 
@@ -257,6 +265,7 @@ public class LineNumberUnitTests {
     assertThat(deserializedLineNumber).isNotSameAs(lineNumber);
     assertThat(deserializedLineNumber).isEqualTo(lineNumber);
   }
+
   @Test
   public void toStringIsCorrect() {
     assertThat(LineNumber.of("1234")).hasToString("1234");
