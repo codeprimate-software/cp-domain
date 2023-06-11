@@ -72,7 +72,8 @@ public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Render
   }
 
   /**
-   * Parses and extracts an {@link ExchangeCode} from the given, required {@link String phone number}.
+   * Factory method used to parse and extract an {@link ExchangeCode} from the given,
+   * required {@link String phone number}.
    *
    * @param phoneNumber {@link String} containing the {@literal phone number} from which to parse
    * and extract an {@link ExchangeCode}; must be {@literal 10-digits} or {@literal 7-digits}.
@@ -84,9 +85,9 @@ public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Render
     String digits = StringUtils.getDigits(phoneNumber);
 
     return switch (digits.length()) {
-      case 10 -> new ExchangeCode(digits.substring(3, REQUIRED_EXCHANGE_CODE_LENGTH));
+      case 10 -> new ExchangeCode(digits.substring(3, 3 + REQUIRED_EXCHANGE_CODE_LENGTH));
       case 7 -> new ExchangeCode(digits.substring(0, REQUIRED_EXCHANGE_CODE_LENGTH));
-      default -> throw newIllegalArgumentException("Phone Number [%s] must be 10-digits or 7-digits");
+      default -> throw newIllegalArgumentException("Phone Number [%s] must be 10-digits or 7-digits", phoneNumber);
     };
   }
 
@@ -120,9 +121,9 @@ public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Render
   }
 
   /**
-   * Returns the {@link Integer required length} of this {@link ExchangeCode}.
+   * Get the required {@link Integer length} for an {@link ExchangeCode}.
    *
-   * @return the {@link Integer required length} of this {@link ExchangeCode}.
+   * @return the required {@link Integer length} for an {@link ExchangeCode}.
    */
   protected int getRequiredLength() {
     return REQUIRED_EXCHANGE_CODE_LENGTH;
