@@ -108,17 +108,17 @@ public class AreaCodeUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> AreaCode.parse("555-1234"))
-      .withMessage("Phone Number [555-1234] to parse the Area Code from must be 10-digits")
+      .withMessage("Phone Number [555-1234] to parse must be 10-digits")
       .withNoCause();
   }
 
   @Test
   public void parseInvalidPhoneNumber() {
 
-    Arrays.asList("  ", "", null).forEach(phoneNumber ->
+    Arrays.asList("  ", "", null, "5551234", "971-555-lOlO", "5O3-555-12E4").forEach(phoneNumber ->
       assertThatIllegalArgumentException()
         .isThrownBy(() -> AreaCode.parse(phoneNumber))
-        .withMessage("Phone Number [%s] to parse the Area Code from must be 10-digits", phoneNumber)
+        .withMessage("Phone Number [%s] to parse must be 10-digits", phoneNumber)
         .withNoCause());
   }
 

@@ -81,8 +81,7 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Renderable, Se
 
     String digits = StringUtils.getDigits(phoneNumber);
 
-    Assert.isTrue(digits.length() == 10,
-      "Phone Number [%s] to parse the Area Code from must be 10-digits", phoneNumber);
+    Assert.isTrue(digits.length() == 10, "Phone Number [%s] to parse must be 10-digits", phoneNumber);
 
     return new AreaCode(digits.substring(0, REQUIRED_AREA_CODE_LENGTH));
   }
