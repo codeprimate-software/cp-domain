@@ -119,6 +119,15 @@ public class AreaCodeUnitTests {
   }
 
   @Test
+  public void constructAreaCodeWithNull() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new AreaCode(null))
+      .withMessage("AreaCode [null] must be a %s-digit number", AreaCode.REQUIRED_AREA_CODE_LENGTH)
+      .withNoCause();
+  }
+
+  @Test
   public void constructAreaCodeWithTooFewDigits() {
 
     assertThatIllegalArgumentException()
