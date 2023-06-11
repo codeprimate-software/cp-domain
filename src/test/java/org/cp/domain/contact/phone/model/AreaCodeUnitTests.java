@@ -31,6 +31,7 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.cp.elements.io.IOUtils;
 import org.cp.elements.lang.Renderer;
 import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
@@ -46,6 +47,12 @@ import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
  */
 public class AreaCodeUnitTests {
 
+  private void assertAreaCode(AreaCode areaCode, String number) {
+
+    assertThat(areaCode).isNotNull();
+    assertThat(areaCode.getNumber()).isEqualTo(number);
+  }
+
   @Test
   public void fromAreaCode() {
 
@@ -55,8 +62,7 @@ public class AreaCodeUnitTests {
 
     AreaCode copy = AreaCode.from(mockAreaCode);
 
-    assertThat(copy).isNotNull();
-    assertThat(copy.getNumber()).isEqualTo("123");
+    assertAreaCode(copy, "123");
 
     verify(mockAreaCode, times(1)).getNumber();
     verifyNoMoreInteractions(mockAreaCode);
@@ -73,34 +79,19 @@ public class AreaCodeUnitTests {
 
   @Test
   public void ofNumber() {
-
-    AreaCode areaCode = AreaCode.of("987");
-
-    assertThat(areaCode).isNotNull();
-    assertThat(areaCode.getNumber()).isEqualTo("987");
+    assertAreaCode(AreaCode.of("987"), "987");
   }
 
   @Test
   public void parseTenDigitPhoneNumber() {
-
-    AreaCode areaCode = AreaCode.parse("5035551234");
-
-    assertThat(areaCode).isNotNull();
-    assertThat(areaCode.getNumber()).isEqualTo("503");
+    assertAreaCode(AreaCode.parse("5035551234"), "503");
   }
 
   @Test
   public void parseFormattedTenDigitPhoneNumber() {
 
-    AreaCode areaCode = AreaCode.parse("(971) 555-2480");
-
-    assertThat(areaCode).isNotNull();
-    assertThat(areaCode.getNumber()).isEqualTo("971");
-
-    areaCode = AreaCode.parse("563-555-1234");
-
-    assertThat(areaCode).isNotNull();
-    assertThat(areaCode.getNumber()).isEqualTo("563");
+    assertAreaCode(AreaCode.parse("(971) 555-2480"), "971");
+    assertAreaCode(AreaCode.parse("503-555-1234"), "503");
   }
 
   @Test
@@ -124,11 +115,7 @@ public class AreaCodeUnitTests {
 
   @Test
   public void constructAreaCode() {
-
-    AreaCode areaCode = new AreaCode("248");
-
-    assertThat(areaCode).isNotNull();
-    assertThat(areaCode.getNumber()).isEqualTo("248");
+    assertAreaCode(new AreaCode("248"), "248");
   }
 
   @Test
@@ -154,11 +141,13 @@ public class AreaCodeUnitTests {
 
     AreaCode areaCode = AreaCode.of("123");
 
-    AreaCode clone = (AreaCode) areaCode.clone();
+    Object clone = areaCode.clone();
 
-    assertThat(clone).isNotNull();
-    assertThat(clone).isNotSameAs(areaCode);
-    assertThat(clone).isEqualTo(areaCode);
+    assertThat(clone).isInstanceOf(AreaCode.class)
+      .asInstanceOf(InstanceOfAssertFactories.type(AreaCode.class))
+      .isNotSameAs(areaCode)
+      .extracting(AreaCode::getNumber)
+      .isEqualTo("123");
   }
 
   @Test
@@ -168,9 +157,9 @@ public class AreaCodeUnitTests {
     AreaCode areaCodeOne = AreaCode.of("123");
     AreaCode areaCodeTwo = AreaCode.of("248");
 
-    assertThat(areaCodeOne.compareTo(areaCodeOne)).isZero();
-    assertThat(areaCodeOne.compareTo(areaCodeTwo)).isLessThan(0);
-    assertThat(areaCodeTwo.compareTo(areaCodeOne)).isGreaterThan(0);
+    assertThat(areaCodeOne).isEqualByComparingTo(areaCodeOne);
+    assertThat(areaCodeTwo).isGreaterThan(areaCodeOne);
+    assertThat(areaCodeOne).isLessThan(areaCodeTwo);
   }
 
   @Test
@@ -185,6 +174,7 @@ public class AreaCodeUnitTests {
     assertThat(areaCodeOne).isNotEqualTo(areaCodeTwo);
     assertThat(areaCodeOne).isNotEqualTo("123");
     assertThat(areaCodeOne).isNotEqualTo("test");
+    assertThat(areaCodeOne).isNotEqualTo(null);
   }
 
   @Test
@@ -196,6 +186,7 @@ public class AreaCodeUnitTests {
     assertThat(areaCodeOne).hasSameHashCodeAs(areaCodeOne);
     assertThat(areaCodeOne).hasSameHashCodeAs(AreaCode.of("123"));
     assertThat(areaCodeOne).doesNotHaveSameHashCodeAs(areaCodeTwo);
+    assertThat(areaCodeOne).doesNotHaveSameHashCodeAs("123");
   }
 
   @Test
@@ -215,10 +206,13 @@ public class AreaCodeUnitTests {
     verify(mockRenderer, times(1)).render(eq(areaCode));
     verifyNoMoreInteractions(mockRenderer);
   }
+
   @Test
   public void serializationIsCorrect() throws IOException, ClassNotFoundException {
 
     AreaCode areaCode = AreaCode.of("123");
+
+    assertAreaCode(areaCode, "123");
 
     byte[] areaCodeBytes = IOUtils.serialize(areaCode);
 
@@ -234,10 +228,6 @@ public class AreaCodeUnitTests {
 
   @Test
   public void toStringIsCorrect() {
-
-    AreaCode areaCode = AreaCode.of("123");
-
-    assertThat(areaCode).isNotNull();
-    assertThat(areaCode.toString()).isEqualTo("123");
+    assertThat(AreaCode.of("123")).hasToString("123");
   }
 }
