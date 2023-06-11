@@ -70,7 +70,7 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Renderable, Se
   }
 
   /**
-   * Parses and extracts an {@link AreaCode} from the given, required {@link String phone number}.
+   * Factory method used to parse and extract an {@link AreaCode} from the given, required {@link String phone number}.
    *
    * @param phoneNumber {@link String} containing a {@literal phone number} from which to parse
    * and extract the {@link AreaCode}; must be {@literal 10-digits}.
@@ -117,9 +117,9 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Renderable, Se
   }
 
   /**
-   * Returns the {@link Integer required length} for an {@link AreaCode}.
+   * Get the required {@link Integer length} for an {@link AreaCode}.
    *
-   * @return the {@link Integer required length} for an {@link AreaCode}.
+   * @return the required {@link Integer length} for an {@link AreaCode}.
    */
   protected int getRequiredLength() {
     return REQUIRED_AREA_CODE_LENGTH;
