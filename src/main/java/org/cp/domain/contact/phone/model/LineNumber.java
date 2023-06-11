@@ -19,6 +19,7 @@ import java.io.Serializable;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.Renderable;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.Immutable;
 import org.cp.elements.lang.annotation.NotNull;
@@ -33,10 +34,11 @@ import org.cp.elements.lang.annotation.Nullable;
  * @see java.io.Serializable
  * @see org.cp.domain.contact.phone.model.PhoneNumber
  * @see org.cp.elements.lang.annotation.Immutable
+ * @see org.cp.elements.lang.Renderable
  * @since 0.1.0
  */
 @Immutable
-public class LineNumber implements Cloneable, Comparable<LineNumber>, Serializable {
+public class LineNumber implements Cloneable, Comparable<LineNumber>, Renderable, Serializable {
 
   protected static final int REQUIRED_LINE_NUMBER_LENGTH = 4;
 
@@ -70,6 +72,25 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Serializab
   private final String number;
 
   /**
+   * Factory method used to parse and extract a {@link LineNumber} from the given, required {@link String phone number}.
+   *
+   * @param phoneNumber {@link String} containing a {@literal phone number} from which to parse
+   * and extract a {@link LineNumber}; must contain at least {@literal 4-digits}.
+   * @return a new {@link LineNumber} from the given {@link String phone number}.
+   * @throws IllegalArgumentException if the {@link String phone number} does not consist of
+   * at least {@literal 4-digits.
+   */
+  public static @NotNull LineNumber parse(@NotNull String phoneNumber) {
+
+    String digits = StringUtils.getDigits(phoneNumber);
+
+    Assert.isTrue(digits.length() >= REQUIRED_LINE_NUMBER_LENGTH,
+      "Phone Number [%s] must be at least %d-digits", phoneNumber, REQUIRED_LINE_NUMBER_LENGTH);
+
+    return new LineNumber(digits.substring(digits.length() - REQUIRED_LINE_NUMBER_LENGTH));
+  }
+
+  /**
    * Constructs a new {@link LineNumber} initialized with the given, required {@link String number}.
    *
    * @param number {@link String} containing the {@literal 4-digit number} for this {@link LineNumber};
@@ -82,7 +103,7 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Serializab
     int requiredNumberLength = getRequiredLength();
 
     Assert.isTrue(StringUtils.getDigits(number).length() == requiredNumberLength,
-      "Number [%s] must be a %d-digit number", number, requiredNumberLength);
+      "LineNumber [%s] must be a %d-digit number", number, requiredNumberLength);
 
     this.number = number;
   }
