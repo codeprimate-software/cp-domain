@@ -77,7 +77,13 @@ public class LineNumberUnitTests {
   }
 
   @Test
-  public void ofNumber() {
+  public void ofIntegerNumber() {
+    assertLineNumber(LineNumber.of(9876), "9876");
+    assertLineNumber(LineNumber.of(-9876), "9876");
+  }
+
+  @Test
+  public void ofStringNumber() {
     assertLineNumber(LineNumber.of("1234"), "1234");
   }
 

@@ -57,6 +57,17 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Renderable
   }
 
   /**
+   * Factory method used to construct a new {@link LineNumber} initialized with the given {@link Integer number}.
+   *
+   * @param number {@link Integer 3-digit number} for the {@link ExchangeCode}; must be {@literal 3-digits}.
+   * @return a new {@link LineNumber} with the given {@link Integer number}.
+   * @throws IllegalArgumentException if the given {@link Integer number} is not {@literal 3-digits}.
+   */
+  public static @NotNull LineNumber of(int number) {
+    return new LineNumber(String.valueOf(Math.abs(number)));
+  }
+
+  /**
    * Factory method used to construct a new {@link LineNumber} from the given, required {@link String number}.
    *
    * @param number {@link String} containing the {@literal 4-digit number} of this {@link LineNumber};
