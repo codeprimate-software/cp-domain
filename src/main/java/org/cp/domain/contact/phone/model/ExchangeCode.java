@@ -116,10 +116,12 @@ public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Render
 
     int requiredLength = getRequiredLength();
 
-    Assert.isTrue(StringUtils.getDigits(number).length() == requiredLength,
+    String resolvedNumber = StringUtils.getDigits(number);
+
+    Assert.isTrue(resolvedNumber.length() == requiredLength,
       "ExchangeCode [%s] must be a %d-digit number", number, requiredLength);
 
-    this.number = number;
+    this.number = resolvedNumber;
   }
 
   /**

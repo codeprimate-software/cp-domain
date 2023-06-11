@@ -111,7 +111,7 @@ public class ExchangeCodeUnitTests {
   @Test
   public void parseInvalidPhoneNumber() {
 
-    Arrays.asList("  ", "", null, "1234", "S0S-1234", "555-lOlO").forEach(phoneNumber ->
+    Arrays.asList("1234", "SOS-1234", "555-lOlO", "  ", "", null).forEach(phoneNumber ->
       assertThatIllegalArgumentException()
         .isThrownBy(() -> ExchangeCode.parse(phoneNumber))
         .withMessage("Phone Number [%s] must be 10-digits or 7-digits", phoneNumber)
@@ -124,29 +124,38 @@ public class ExchangeCodeUnitTests {
   }
 
   @Test
+  public void constructExchangeCodeWithFormattedNumber() {
+    assertExchangeCode(new ExchangeCode("[555]"), "555");
+  }
+
+  @Test
+  public void constructExchangeCodeWithInvalidLength() {
+
+    Arrays.asList("22", "4444").forEach(number ->
+      assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ExchangeCode(number))
+      .withMessage("ExchangeCode [%s] must be a %d-digit number", number,
+          ExchangeCode.REQUIRED_EXCHANGE_CODE_LENGTH)
+      .withNoCause());
+  }
+
+  @Test
+  public void constructExchangeCodeWithInvalidNumber() {
+
+    Arrays.asList("5O5", "l2E4", "SSS").forEach(number ->
+      assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ExchangeCode(number))
+      .withMessage("ExchangeCode [%s] must be a %d-digit number", number,
+          ExchangeCode.REQUIRED_EXCHANGE_CODE_LENGTH)
+      .withNoCause());
+  }
+
+  @Test
   public void constructExchangeCodeWithNull() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new ExchangeCode(null))
       .withMessage("ExchangeCode [null] must be a %d-digit number", ExchangeCode.REQUIRED_EXCHANGE_CODE_LENGTH)
-      .withNoCause();
-  }
-
-  @Test
-  public void constructExchangeCodeWithTooFewDigits() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> new ExchangeCode("55"))
-      .withMessage("ExchangeCode [55] must be a %d-digit number", ExchangeCode.REQUIRED_EXCHANGE_CODE_LENGTH)
-      .withNoCause();
-  }
-
-  @Test
-  public void constructExchangeCodeWithTooManyDigits() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> new ExchangeCode("1248"))
-      .withMessage("ExchangeCode [1248] must be a %d-digit number", ExchangeCode.REQUIRED_EXCHANGE_CODE_LENGTH)
       .withNoCause();
   }
 
