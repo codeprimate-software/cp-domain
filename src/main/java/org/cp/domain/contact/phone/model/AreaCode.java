@@ -57,6 +57,17 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Renderable, Se
   }
 
   /**
+   * Factory method used to construct a new {@link AreaCode} initialized with the given {@link Integer number}.
+   *
+   * @param number {@link Integer 3-digit number} for the {@link AreaCode}; must be {@literal 3-digits}.
+   * @return new {@link AreaCode} with the given {@link Integer number}.
+   * @throws IllegalArgumentException if the given {@link Integer number} is not {@literal 3-digits}.
+   */
+  public static @NotNull AreaCode of(int number) {
+    return new AreaCode(String.valueOf(Math.abs(number)));
+  }
+
+  /**
    * Factory method used to construct a new {@link AreaCode} from the given, required {@link String number}.
    *
    * @param number {@link String} containing the {@literal 3-digit number} for the {@link AreaCode};

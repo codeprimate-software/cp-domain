@@ -78,7 +78,13 @@ public class AreaCodeUnitTests {
   }
 
   @Test
-  public void ofNumber() {
+  public void ofIntegerNumber() {
+    assertAreaCode(AreaCode.of(999), "999");
+    assertAreaCode(AreaCode.of(-999), "999");
+  }
+
+  @Test
+  public void ofStringNumber() {
     assertAreaCode(AreaCode.of("987"), "987");
   }
 
@@ -89,7 +95,6 @@ public class AreaCodeUnitTests {
 
   @Test
   public void parseFormattedTenDigitPhoneNumber() {
-
     assertAreaCode(AreaCode.parse("(971) 555-2480"), "971");
     assertAreaCode(AreaCode.parse("503-555-1234"), "503");
   }
