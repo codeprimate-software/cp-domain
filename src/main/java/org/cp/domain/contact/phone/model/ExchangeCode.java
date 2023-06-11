@@ -59,6 +59,17 @@ public class ExchangeCode implements Cloneable, Comparable<ExchangeCode>, Render
   }
 
   /**
+   * Factory method used to construct a new {@link ExchangeCode} initialized with the given {@link Integer number}.
+   *
+   * @param number {@link Integer 3-digit number} for the {@link ExchangeCode}; must be {@literal 3-digits}.
+   * @return a new {@link ExchangeCode} with the given {@link Integer number}.
+   * @throws IllegalArgumentException if the {@link Integer number} is not {@literal 3-digits}.
+   */
+  public static @NotNull ExchangeCode of(int number) {
+    return new ExchangeCode(String.valueOf(Math.abs(number)));
+  }
+
+  /**
    * Factory method used to construct a new {@link ExchangeCode} from the given, required {@link String number}.
    *
    * @param number {@link String} containing the {@literal 3-digit number} for the {@link ExchangeCode};

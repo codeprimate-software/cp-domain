@@ -77,7 +77,13 @@ public class ExchangeCodeUnitTests {
   }
 
   @Test
-  public void ofNumber() {
+  public void ofIntegerNumber() {
+    assertExchangeCode(ExchangeCode.of(555), "555");
+    assertExchangeCode(ExchangeCode.of(-654), "654");
+  }
+
+  @Test
+  public void ofStringNumber() {
     assertExchangeCode(ExchangeCode.of("555"), "555");
   }
 
@@ -88,7 +94,6 @@ public class ExchangeCodeUnitTests {
 
   @Test
   public void parseFormattedTenDigitPhoneNumber() {
-
     assertExchangeCode(ExchangeCode.parse("(503) 555-1234"), "555");
     assertExchangeCode(ExchangeCode.parse("971-555-1234"), "555");
   }
