@@ -119,6 +119,15 @@ public class ExchangeCodeUnitTests {
   }
 
   @Test
+  public void constructExchangeCodeWithNull() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ExchangeCode(null))
+      .withMessage("ExchangeCode [null] must be a %d-digit number", ExchangeCode.REQUIRED_EXCHANGE_CODE_LENGTH)
+      .withNoCause();
+  }
+
+  @Test
   public void constructExchangeCodeWithTooFewDigits() {
 
     assertThatIllegalArgumentException()
