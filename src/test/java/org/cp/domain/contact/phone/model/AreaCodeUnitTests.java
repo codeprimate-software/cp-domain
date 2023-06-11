@@ -95,8 +95,8 @@ public class AreaCodeUnitTests {
 
   @Test
   public void parseFormattedTenDigitPhoneNumber() {
-    assertAreaCode(AreaCode.parse("(971) 555-2480"), "971");
     assertAreaCode(AreaCode.parse("503-555-1234"), "503");
+    assertAreaCode(AreaCode.parse("(971) 555-2480"), "971");
   }
 
   @Test
@@ -109,9 +109,9 @@ public class AreaCodeUnitTests {
   }
 
   @Test
-  public void parseInvalidPhoneNumber() {
+  public void parseInvalidPhoneNumbers() {
 
-    Arrays.asList("  ", "", null, "5551234", "971-555-lOlO", "5O3-555-12E4").forEach(phoneNumber ->
+    Arrays.asList("5O3-555-12E4", "P7l-SSS-lOlO", "  ", "", null).forEach(phoneNumber ->
       assertThatIllegalArgumentException()
         .isThrownBy(() -> AreaCode.parse(phoneNumber))
         .withMessage("Phone Number [%s] must be 10-digits", phoneNumber)
@@ -120,7 +120,32 @@ public class AreaCodeUnitTests {
 
   @Test
   public void constructAreaCode() {
-    assertAreaCode(new AreaCode("248"), "248");
+    assertAreaCode(new AreaCode("123"), "123");
+  }
+
+  @Test
+  public void constructAreaCodeWithFormattedNumber() {
+    assertAreaCode(new AreaCode("(503)"), "503");
+  }
+
+  @Test
+  public void constructAreaCodeWithInvalidLength() {
+
+    Arrays.asList("12", "1234").forEach(number ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> new AreaCode(number))
+        .withMessage("AreaCode [%s] must be a %d-digit number", number, AreaCode.REQUIRED_AREA_CODE_LENGTH)
+        .withNoCause());
+  }
+
+  @Test
+  public void constructAreaCodeWithInvalidNumber() {
+
+    Arrays.asList("S0S", "5O5", "#10").forEach(number ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> new AreaCode(number))
+        .withMessage("AreaCode [%s] must be a %d-digit number", number, AreaCode.REQUIRED_AREA_CODE_LENGTH)
+        .withNoCause());
   }
 
   @Test
@@ -129,24 +154,6 @@ public class AreaCodeUnitTests {
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new AreaCode(null))
       .withMessage("AreaCode [null] must be a %s-digit number", AreaCode.REQUIRED_AREA_CODE_LENGTH)
-      .withNoCause();
-  }
-
-  @Test
-  public void constructAreaCodeWithTooFewDigits() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> new AreaCode("12"))
-      .withMessage("AreaCode [12] must be a %s-digit number", AreaCode.REQUIRED_AREA_CODE_LENGTH)
-      .withNoCause();
-  }
-
-  @Test
-  public void constructAreaCodeWithTooManyDigits() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> new AreaCode("1234"))
-      .withMessage("AreaCode [1234] must be a %s-digit number", AreaCode.REQUIRED_AREA_CODE_LENGTH)
       .withNoCause();
   }
 

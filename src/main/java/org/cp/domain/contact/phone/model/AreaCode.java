@@ -111,10 +111,12 @@ public class AreaCode implements Cloneable, Comparable<AreaCode>, Renderable, Se
 
     int requiredLength = getRequiredLength();
 
-    Assert.isTrue(StringUtils.getDigits(number).length() == requiredLength,
+    String resolvedNumber = StringUtils.getDigits(number);
+
+    Assert.isTrue(resolvedNumber.length() == requiredLength,
       "AreaCode [%s] must be a %d-digit number", number, requiredLength);
 
-    this.number = number;
+    this.number = resolvedNumber;
   }
 
   /**
