@@ -117,7 +117,6 @@ public class StateAreaCodesRepository implements Iterable<Map.Entry<State, Set<A
   private static Set<AreaCode> setOf(Integer... areaCodes) {
 
     return Arrays.stream(ArrayUtils.nullSafeArray(areaCodes, Integer.class))
-      .map(String::valueOf)
       .map(AreaCode::of)
       .collect(Collectors.toSet());
   }
