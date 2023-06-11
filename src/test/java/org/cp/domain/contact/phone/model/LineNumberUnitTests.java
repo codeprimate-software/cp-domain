@@ -68,7 +68,7 @@ public class LineNumberUnitTests {
   }
 
   @Test
-  public void fromNull() {
+  public void fromNullLineNumber() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> LineNumber.from(null))
@@ -140,7 +140,7 @@ public class LineNumberUnitTests {
   }
 
   @Test
-  public void constructLineNumberWithNullIsNullSafe() {
+  public void constructLineNumberWithNull() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new LineNumber(null))
