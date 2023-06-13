@@ -137,7 +137,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
 
     return builder()
       .inAreaCode(areaCode)
-      .with(exchangeCode)
+      .usingExchange(exchangeCode)
       .with(lineNumber)
       .build();
   }
@@ -453,7 +453,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
       Assert.notNull(phoneNumber, "PhoneNumber to copy is required");
 
       Builder builder = inAreaCode(phoneNumber.getAreaCode())
-        .with(phoneNumber.getExchangeCode())
+        .usingExchange(phoneNumber.getExchangeCode())
         .with(phoneNumber.getLineNumber());
 
       phoneNumber.getCountry().ifPresent(builder::inCountry);
@@ -490,7 +490,8 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
     }
 
     /**
-     * Builder method used to set the new {@link PhoneNumber} in the {@link Country#localCountry()}.
+     * Builder method used to set the {@link Country} of origin for the new {@link PhoneNumber}
+     * in the {@link Country#localCountry()}.
      *
      * @return this {@link Builder}.
      * @see org.cp.domain.geo.enums.Country#localCountry()
@@ -510,7 +511,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
      * @see org.cp.domain.contact.phone.model.ExchangeCode
      */
     @Dsl
-    public @NotNull Builder with(@NotNull ExchangeCode exchangeCode) {
+    public @NotNull Builder usingExchange(@NotNull ExchangeCode exchangeCode) {
       this.exchangeCode = ObjectUtils.requireObject(exchangeCode, "ExchangeCode is required");
       return this;
     }

@@ -44,7 +44,7 @@ public class PhoneNumberBuilderUnitTests {
 
     PhoneNumber phoneNumber = PhoneNumber.builder()
       .inAreaCode(mockAreaCode)
-      .with(mockExchangeCode)
+      .usingExchange(mockExchangeCode)
       .with(mockLineNumber)
       .build();
 
@@ -61,7 +61,7 @@ public class PhoneNumberBuilderUnitTests {
   }
 
   @Test
-  public void buildCompletePhoneNumber() {
+  public void buildDetailedPhoneNumber() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
@@ -71,7 +71,7 @@ public class PhoneNumberBuilderUnitTests {
     PhoneNumber phoneNumber = PhoneNumber.builder()
       .inCountry(Country.CANADA)
       .inAreaCode(mockAreaCode)
-      .with(mockExchangeCode)
+      .usingExchange(mockExchangeCode)
       .with(mockExtension)
       .with(mockLineNumber)
       .withTextEnabled()
@@ -101,7 +101,7 @@ public class PhoneNumberBuilderUnitTests {
     PhoneNumber phoneNumber = PhoneNumber.builder()
       .inLocalCountry()
       .inAreaCode(mockAreaCode)
-      .with(mockExchangeCode)
+      .usingExchange(mockExchangeCode)
       .with(mockExtension)
       .with(mockLineNumber)
       .build()
@@ -132,7 +132,7 @@ public class PhoneNumberBuilderUnitTests {
   public void buildPhoneNumberWithNullExchangeCode() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> PhoneNumber.builder().with((ExchangeCode) null).build())
+      .isThrownBy(() -> PhoneNumber.builder().usingExchange(null).build())
       .withMessage("ExchangeCode is required")
       .withNoCause();
   }
