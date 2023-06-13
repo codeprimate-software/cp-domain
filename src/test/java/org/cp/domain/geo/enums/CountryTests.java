@@ -34,7 +34,7 @@ import org.cp.elements.util.CollectionUtils;
  * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.enums.Continent
  * @see org.cp.domain.geo.enums.Country
- * @since 1.0.0
+ * @since 0.1.0
  */
 public class CountryTests {
 

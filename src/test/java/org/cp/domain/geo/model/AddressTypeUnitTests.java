@@ -30,7 +30,7 @@ import org.cp.elements.lang.StringUtils;
  * @author John Blum
  * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.model.Address.Type
- * @since 1.0.0
+ * @since 0.1.0
  */
 public class AddressTypeUnitTests {
 

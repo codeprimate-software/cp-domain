@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
  * @author John J. Blum
  * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.enums.State
- * @since 1.0.0
+ * @since 0.1.0
  */
 public class StateTests {
 

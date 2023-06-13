@@ -34,7 +34,7 @@ import org.cp.elements.lang.annotation.Nullable;
  * @see java.lang.Comparable
  * @see org.cp.elements.enums.LengthUnit
  * @see org.cp.elements.lang.annotation.FluentApi
- * @since 1.0.0
+ * @since 0.1.0
  */
 @FluentApi
 public class Elevation implements Comparable<Elevation>, Serializable {

@@ -30,7 +30,7 @@ import org.cp.elements.lang.StringUtils;
  * @author John Blum
  * @see org.cp.domain.geo.enums.Country
  * @see <a href="https://www.countries-ofthe-world.com/continents-of-the-world.html">COUNTRIES-ofthe-WORLD.COM</a>
- * @since 1.0.0
+ * @since 0.1.0
  */
 @SuppressWarnings("unused")
 public enum Continent {

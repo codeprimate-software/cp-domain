@@ -40,7 +40,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see <a href="https://en.wikipedia.org/wiki/ISO_3166-1">ISO 3166-1 - Wikipedia</a>
  * @see <a href="https://www.countries-ofthe-world.com/all-countries.html">COUNTRIES-of-the-WORLD.COM</a>
  * @see <a href="https://countrycode.org/">countrycode.org</a>
- * @since 1.0.0
+ * @since 0.1.0
  */
 @SuppressWarnings("unused")
 public enum Country {

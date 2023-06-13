@@ -29,7 +29,7 @@ import org.cp.elements.enums.Race;
  * @author John J. Blum
  * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.core.enums.Race
- * @since 1.0.0
+ * @since 0.1.0
  */
 public class RaceUnitTests {
 

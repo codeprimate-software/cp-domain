@@ -67,7 +67,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.elements.lang.Verifiable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.annotation.FluentApi
- * @since 1.0.0
+ * @since 0.1.0
  */
 @FluentApi
 @SuppressWarnings("unused")

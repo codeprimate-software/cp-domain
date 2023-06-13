@@ -60,7 +60,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.elements.lang.annotation.FluentApi
  * @see org.cp.elements.lang.annotation.Id
  * @see org.cp.elements.lang.support.AbstractVersionedObject
- * @since 1.0.0
+ * @since 0.1.0
  */
 @FluentApi
 public class Person extends AbstractVersionedObject<Person, UUID>

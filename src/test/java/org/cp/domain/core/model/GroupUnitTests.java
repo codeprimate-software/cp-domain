@@ -54,7 +54,7 @@ import org.cp.elements.util.CollectionUtils;
  * @see org.mockito.Mockito
  * @see org.cp.domain.core.model.Group
  * @see org.cp.domain.core.model.Person
- * @since 1.0.0
+ * @since 0.1.0
  */
 public class GroupUnitTests {
 

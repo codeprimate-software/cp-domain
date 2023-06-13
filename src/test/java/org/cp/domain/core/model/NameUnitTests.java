@@ -41,7 +41,7 @@ import org.cp.elements.lang.Visitor;
  * @see org.mockito.Mockito
  * @see org.cp.domain.core.model.Name
  * @see org.cp.elements.lang.Nameable
- * @since 1.0.0
+ * @since 0.1.0
  */
 public class NameUnitTests {
 

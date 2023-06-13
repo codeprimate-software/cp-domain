@@ -45,7 +45,7 @@ import org.cp.elements.util.stream.StreamUtils;
  * @author John Blum
  * @see org.cp.domain.core.model.Group
  * @see org.cp.domain.core.model.Person
- * @since 1.0.0
+ * @since 0.1.0
  */
 @SuppressWarnings("unused")
 public class People implements Group {

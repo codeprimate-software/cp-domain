@@ -45,7 +45,7 @@ import org.cp.elements.util.stream.StreamUtils;
  * @see org.cp.elements.lang.Nameable
  * @see org.cp.elements.lang.Renderable
  * @see org.cp.elements.lang.Visitable
- * @since 1.0.0
+ * @since 0.1.0
  */
 public interface Group extends Identifiable<UUID>, Iterable<Person>, Nameable<String>, Renderable, Visitable {
 

@@ -52,7 +52,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.elements.lang.annotation.FluentApi
  * @see org.cp.elements.lang.annotation.Immutable
  * @see org.cp.elements.lang.concurrent.ThreadSafe
- * @since 1.0.0
+ * @since 0.1.0
  */
 @FluentApi
 @Immutable

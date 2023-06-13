@@ -54,7 +54,7 @@ import org.cp.elements.lang.Visitor;
  * @see org.mockito.Mockito
  * @see org.cp.domain.core.model.Person
  * @see org.cp.elements.enums.Gender
- * @since 1.0.0
+ * @since 0.1.0
  */
 public class PersonUnitTests {
 
