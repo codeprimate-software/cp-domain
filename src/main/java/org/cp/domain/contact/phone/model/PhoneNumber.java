@@ -120,7 +120,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    *
    * @param areaCode {@link AreaCode} of the new {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of the new {@link PhoneNumber}; must not be {@literal null}.
-   * @param lineNumer {@link LineNumber} of the new {@link PhoneNumber}; must not be {@literal null}.
+   * @param lineNumber {@link LineNumber} of the new {@link PhoneNumber}; must not be {@literal null}.
    * @return a new {@link PhoneNumber} initialized from the given, required {@link AreaCode},
    * {@link ExchangeCode} and {@link LineNumber}.
    * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link LineNumber}
@@ -133,12 +133,12 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    */
   @Dsl
   static @NotNull PhoneNumber of(@NotNull AreaCode areaCode, @NotNull ExchangeCode exchangeCode,
-      @NotNull LineNumber lineNumer) {
+      @NotNull LineNumber lineNumber) {
 
     return builder()
       .inAreaCode(areaCode)
       .with(exchangeCode)
-      .with(lineNumer)
+      .with(lineNumber)
       .build();
   }
 
