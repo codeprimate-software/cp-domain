@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
@@ -252,4 +253,16 @@ public interface Group extends Identifiable<UUID>, Iterable<Person>, Nameable<St
     long count = StreamUtils.stream(this).count();
     return Long.valueOf(count).intValue();
   }
+
+  /**
+   * Returns {@link Stream} of {@link Person people} in this {@link Group}.
+
+   * @return a {@link Stream} of {@link Person people} in this {@link Group}.
+   * @see org.cp.domain.core.model.Person
+   * @see java.util.stream.Stream
+   */
+  default Stream<Person> stream() {
+    return StreamUtils.stream(this);
+  }
+
 }

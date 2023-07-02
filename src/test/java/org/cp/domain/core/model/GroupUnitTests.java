@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
@@ -805,6 +806,60 @@ public class GroupUnitTests {
     assertThat(mockGroup.size()).isZero();
 
     verify(mockGroup, times(1)).size();
+  }
+
+  @Test
+  public void streamGroupOfPeople() {
+
+    Person mockPersonOne = mock(Person.class);
+    Person mockPersonTwo = mock(Person.class);
+
+    Group mockGroup = mockGroup(mockPersonOne, mockPersonTwo);
+
+    doCallRealMethod().when(mockGroup).stream();
+
+    assertThat(mockGroup).isNotNull();
+
+    Stream<Person> stream = mockGroup.stream();
+
+    assertThat(stream).isNotNull();
+    assertThat(stream).containsExactly(mockPersonOne, mockPersonTwo);
+
+    verifyNoInteractions(mockPersonOne, mockPersonTwo);
+  }
+
+  @Test
+  public void streamGroupOfPerson() {
+
+    Person mockPerson = mock(Person.class);
+
+    Group mockGroup = mockGroup(mockPerson);
+
+    doCallRealMethod().when(mockGroup).stream();
+
+    assertThat(mockGroup).isNotNull();
+
+    Stream<Person> stream = mockGroup.stream();
+
+    assertThat(stream).isNotNull();
+    assertThat(stream).containsExactly(mockPerson);
+
+    verifyNoInteractions(mockPerson);
+  }
+
+  @Test
+  public void streamEmptyGroup() {
+
+    Group mockGroup = mockGroup();
+
+    doCallRealMethod().when(mockGroup).stream();
+
+    assertThat(mockGroup).isNotNull();
+
+    Stream<Person> stream = mockGroup.stream();
+
+    assertThat(stream).isNotNull();
+    assertThat(stream).isEmpty();
   }
 
   private static class PersonGreaterThanAgePredicate implements Predicate<Person> {
