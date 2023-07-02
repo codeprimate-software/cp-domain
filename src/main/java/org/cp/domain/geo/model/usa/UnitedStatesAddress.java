@@ -119,7 +119,7 @@ public class UnitedStatesAddress extends AbstractAddress {
 
   /**
    * Returns the {@link ZIP} code of this {@link UnitedStatesAddress}.
-   *
+   * <p>
    * {@literal ZIP} code is an alias for {@link #getPostalCode() postal code}.
    *
    * @return the {@link ZIP} code of this {@link UnitedStatesAddress}.

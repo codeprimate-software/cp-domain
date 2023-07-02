@@ -40,7 +40,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
 /**
  * Abstract Data Type (ADT) modeling the {@link String full name} of a person, consisting of
  * a {@link String first name}, {@link String last name} and {@link String middle name or middle initial(s)}.
- *
+ * <p>
  * This type is immutable, non-extensible and Thread-safe.
  *
  * @author John Blum
@@ -69,7 +69,6 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   @SuppressWarnings("all")
   protected static final String COMPARABLE_MIDDLE_NAME = String.valueOf(DEFAULT_MIDDLE_NAME);
 
-  @Serial
   private static final long serialVersionUID = 83448823861933031L;
 
   /**
@@ -109,7 +108,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
 
   /**
    * Factory method used to parse the given, required {@link String} into the individual components of a {@literal name}
-   * and then construct a new instance of {@link Name} initialized with the individual {@literal name} components.
+   * and then construct a new {@link Name} initialized with the individual {@literal name} components.
    *
    * @param name {@link String} containing the {@literal name} to parse;
    * must not be {@literal null} or {@literal empty}.
@@ -276,7 +275,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
 
   /**
    * Return an {@link Optional} {@link String middle name}.
-   *
+   * <p>
    * May just be the {@literal middle initial(s)}.
    *
    * @return an {@link Optional} containing the {@link String middle name or middle initial(s)}.
@@ -312,7 +311,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
 
   /**
    * Builder method used to change a person's {@link String last name}.
-   *
+   * <p>
    * This method returns a new instance of {@link Name} initialized with this {@link Name Name's}
    * {@link #getFirstName() first name}, {@link #getMiddleName() middle name} and the given, new
    * and required {@link String last name}.
@@ -333,7 +332,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
 
   /**
    * Determines whether the given {@link Name} and this {@link Name} are alike.
-   *
+   * <p>
    * Technically, the {@link Name names} are considered {@literal alike} if they match
    * on either {@link #getFirstName() first name} or {@link #getLastName() last name}.
    *
@@ -366,7 +365,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   /**
    * Compares this {@link Name} with the given, required {@link Name} to determine the natural ordering (sort order)
    * of the {@link Name names}.
-   *
+   * <p>
    * The natural order of {@link Name names} as determined by this method is {@link #getLastName() last name} first,
    * {@link #getFirstName() first name} last, and then {@link #getMiddleName() middle name or middle initial(s)}
    * used in a tiebreak, in ascending order.

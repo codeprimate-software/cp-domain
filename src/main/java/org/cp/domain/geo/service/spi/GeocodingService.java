@@ -58,7 +58,7 @@ public interface GeocodingService {
 
   /**
    * Computes the {@link Distance} between two geographic {@link Coordinates}.
-   *
+   * <p>
    * This operation may result in a service provider call to compute the {@link Distance} between the two geographic
    * {@link Coordinates}, or implementations may choose to partly implement this call using triangulation.
    *

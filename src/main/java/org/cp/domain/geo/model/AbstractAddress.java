@@ -34,10 +34,10 @@ import org.cp.elements.lang.annotation.Nullable;
  * Abstract Data Type (ADT) and implementation of the {@link Address} interface modeling a {@literal physical,
  * postal address} defined by a {@link Street}, an {@link Optional} {@link Unit}, {@link City}, {@link PostalCode}
  * and {@link Country} of origin along with {@link Optional} geographic {@link Coordinates}.
- *
+ * <p>
  * An {@link Address} can also have a {@link Type} to indicate what kind of postal address this {@link Address}
  * represents. The {@link Address.Type} can be used to define the {@link Address Address's} use or purpose.
- *
+ * <p>
  * The geographic {@link Coordinates} may be declared for reverse geocoding purposes.
  *
  * @author John Blum
@@ -110,7 +110,7 @@ public abstract class AbstractAddress implements Address {
 
   /**
    * Factory method used to construct a new {@link AbstractAddress} based in the given {@link Country}.
-   *
+   * <p>
    * The concrete {@link Class subtype} of the new {@link AbstractAddress} is based on
    * the given {@link Country} of origin.
    *
@@ -288,7 +288,7 @@ public abstract class AbstractAddress implements Address {
 
   /**
    * Sets an optional {@link Unit} on the {@link Street} of this {@link Address}.
-   *
+   * <p>
    * The {@link Unit} may represent an {@literal apartment number}, an {@literal office number}
    * a {@literal suite number}, or any similar {@literal unit number}.
    *
@@ -354,7 +354,7 @@ public abstract class AbstractAddress implements Address {
 
   /**
    * Determines whether this {@link Address} is equal to the given {@link Object}.
-   *
+   * <p>
    * Equality is determined by {@link #getStreet() street}, {@link #getUnit() unit}, {@link #getCity() city},
    * {@link #getPostalCode() postal code} and {@link #getCountry() country}.
    *

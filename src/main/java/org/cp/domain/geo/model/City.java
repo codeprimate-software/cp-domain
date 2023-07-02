@@ -90,7 +90,7 @@ public class City implements Cloneable, Comparable<City>, Nameable<String>, Seri
 
   /**
    * Returns an {@link Optional} {@link Country} in which this {@link City} originates.
-   *
+   * <p>
    * Returns {@link Optional#empty()} by default.
    *
    * @return an {@link Optional} {@link Country} in which this {@link City} originates.

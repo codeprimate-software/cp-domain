@@ -126,7 +126,7 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
 
   /**
    * Returns an {@link Optional} {@link Type} for this {@link Street}.
-   *
+   * <p>
    * For example, the {@link Type} of {@link Street} may be a {@link Street.Type#ROAD} or {@link Street.Type#HIGHWAY}.
    *
    * @return an {@link Optional} {@link Type} for this {@link Street}.
@@ -368,7 +368,7 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
 
   /**
    * {@link Enum Enumeration} of {@link Street} suffixes recognized around the world.
-   *
+   * <p>
    * NOTE: Not every {@link Country} may recognize all {@link Street} suffixes defined by this {@link Enum enumeration}
    * nor is this {@link Enum enumeration} complete. This {@link Enum enumeration} only represents some of the more
    * common {@link Street} types.

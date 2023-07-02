@@ -50,7 +50,7 @@ public class Elevation implements Comparable<Elevation>, Serializable {
    * Factory method used to construct a new {@link Elevation} initialized with the given {@link Double altitude}
    * using a {@link LengthUnit#getDefault() default unit of measurement} determined by the current,
    * default {@link java.util.Locale}.
-   *
+   * <p>
    * A {@link Double negative altitude} is below {@literal sea level}. A {@link Double positive altitude}
    * is above {@literal sea level}. And, an {@literal altitude} of {@link Double zero} is at {@literal sea level}.
    *
@@ -82,7 +82,7 @@ public class Elevation implements Comparable<Elevation>, Serializable {
    * Constructs a new {@link Elevation} initialized with the given {@link Double altitude}
    * using a {@link LengthUnit#getDefault() default unit of measurement} determined by the current,
    * default {@link java.util.Locale}.
-   *
+   * <p>
    * A {@link Double negative altitude} is below {@literal sea level}. A {@link Double positive altitude}
    * is above {@literal sea level}. And, an {@literal altitude} of {@link Double zero} is at {@literal sea level}.
    *
@@ -97,7 +97,7 @@ public class Elevation implements Comparable<Elevation>, Serializable {
 
   /**
    * Returns the {@link Double altitude} of this {@link Elevation}.
-   *
+   * <p>
    * A {@link Double negative altitude} is below {@literal sea level}. A {@link Double positive altitude}
    * is above {@literal sea level}. And, an {@literal altitude} of {@link Double zero} is at {@literal sea level}.
    *
@@ -111,7 +111,7 @@ public class Elevation implements Comparable<Elevation>, Serializable {
   /**
    * Return the {@link LengthUnit unit of measurement} used when measuring the {@literal altitude}
    * of this {@link Elevation}, such as {@link LengthUnit#FOOT feet} or {@link LengthUnit#METER meters}.
-   *
+   * <p>
    * Defaults to a {@link LengthUnit#getDefault() unit of measurement} determined by the current,
    * default {@link java.util.Locale}.
    *
@@ -180,7 +180,7 @@ public class Elevation implements Comparable<Elevation>, Serializable {
 
   /**
    * Returns a boolean value indicating whether this {@link Elevation} is above {@literal sea level}.
-   *
+   * <p>
    * An {@link Elevation} is considered to be above {@literal sea level} with an {@link #getAltitude() altitude}
    * greater than {@literal 0}.
    *
@@ -193,7 +193,7 @@ public class Elevation implements Comparable<Elevation>, Serializable {
 
   /**
    * Returns a boolean value indicating whether this {@link Elevation} is at {@literal sea level}.
-   *
+   * <p>
    * An {@link Elevation} is considered to be at {@literal sea level} with an {@link #getAltitude() altitude}
    * equal to {@literal 0}.
    *
@@ -206,7 +206,7 @@ public class Elevation implements Comparable<Elevation>, Serializable {
 
   /**
    * Returns a boolean value indicating whether this {@link Elevation} is below {@literal sea level}.
-   *
+   * <p>
    * An {@link Elevation} is considered to be below {@literal sea level} with an {@link #getAltitude() altitude}
    * less than {@literal 0}.
    *

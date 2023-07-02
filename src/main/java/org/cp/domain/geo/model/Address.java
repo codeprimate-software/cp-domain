@@ -40,9 +40,9 @@ import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
  * Abstract Data Type (ADT) modeling a physical, postal address.
- *
+ * <p>
  * This interface defines a universally portable address format that can be used around the world.
- *
+ * <p>
  * This {@link Address} is also {@link Locatable} by geographic coordinates as defined on a map
  * as encoded or decoded by geocoding services.
  *
@@ -184,7 +184,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
 
   /**
    * Returns the {@link Street} of this {@link Address}.
-   *
+   * <p>
    * For example: {@literal 100 Main St.}
    *
    * @return the {@link Street} of this {@link Address}.
@@ -194,10 +194,10 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
 
   /**
    * Returns an {@link Optional} {@link Unit} on the {@link Street} at this {@link Address}.
-   *
+   * <p>
    * The {@link Unit} may represent an {@literal apartment number}, an {@literal office number}
    * a {@literal suite number}, or any similar {@literal unit number}.
-   *
+   * <p>
    * Defaults to {@link Optional#empty()}.
    *
    * @return an {@link Optional} {@link Unit} on the {@link Street} at this {@link Address}.
@@ -236,7 +236,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * Returns an {@link Optional} {@link Type type} to describe the use of this {@link Address},
    * such as {@link Type#BILLING}, {@link Type#HOME}, {@link Type#MAILING}, {@link Type#OFFICE},
    * and so on.
-   *
+   * <p>
    * Defaults to {@link Type#UNKNOWN}.
    *
    * @return an {@link Optional} {@link Type type} for this {@link Address}; defaults to {@link Type#UNKNOWN}.
@@ -367,7 +367,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
 
   /**
    * Validates this {@link Address}.
-   *
+   * <p>
    * The {@link Address} is considered valid only if the {@link #getStreet() street}, {@link #getCity() city}
    * {@link #getPostalCode() postal code} and {@link #getCountry() country} are set, that is are not {@literal null}.
    *
@@ -389,7 +389,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
 
   /**
    * Builder method used to set the {@link Type} for this {@link Address}.
-   *
+   * <p>
    * The {@link Type} serves to identify the purpose or use for this {@link Address},
    * such as for {@link Type#MAILING} purposes.
    *
@@ -629,7 +629,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
     /**
      * Builds a new {@link Address} from the components of an {@link Address}, minimally including, but not limited to,
      * the {@link Street}, {@link City}, {@link PostalCode} and {@link Country}.
-     *
+     * <p>
      * May also include the {@link Coordinates} at the {@link Address}.
      *
      * @return a new {@link Address}.
@@ -669,7 +669,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
 
     /**
      * Factory method used to search for an appropriate {@link Address.Type} based on its {@link String abbreviation}.
-     *
+     * <p>
      * This method performs a case-insensitive, ignoring whitespace search.
      *
      * @param abbreviation {@link String} containing the {@literal abbreviation} used to identify

@@ -152,7 +152,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
 
   /**
    * Gets the {@literal 3 digit} {@link ExchangeCode} of this {@link PhoneNumber}.
-   *
+   * <p>
    * The {@literal Exchange Code}, also known as the {@literal Telephone Prefix} or {@literal Central Office Code}
    * is the second 3 digits in the 10-digit phone number.
    *
@@ -186,7 +186,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
 
   /**
    * Determines whether this {@link PhoneNumber} supports {@literal texting}.
-   *
+   * <p>
    * Returns {@literal false} by default.
    *
    * @return a boolean value indicating whether this {@link PhoneNumber} supports {@literal texting}.
@@ -197,7 +197,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
 
   /**
    * Gets the {@link Optional} {@link String extension} at this {@link PhoneNumber}.
-   *
+   * <p>
    * Returns {@link Optional#empty()} by default.
    *
    * @return an {@link Optional} {@link String extension} at this {@link PhoneNumber}.
@@ -210,7 +210,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
 
   /**
    * Get the {@link Optional} {@link PhoneNumber.Type} of this {@link PhoneNumber}.
-   *
+   * <p>
    * Returns {@link Optional#empty()} by default.
    *
    * @return the {@link PhoneNumber.Type} of this {@link PhoneNumber}.

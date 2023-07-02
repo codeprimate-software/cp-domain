@@ -22,6 +22,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 import org.junit.jupiter.api.Test;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.cp.domain.geo.enums.Country;
 import org.cp.elements.lang.annotation.NotNull;
 
@@ -56,6 +57,36 @@ public class AbstractPhoneNumberUnitTests {
     assertThat(phoneNumber.getType()).isNotPresent();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode, mockLineNumber);
+  }
+
+  @Test
+  public void constructAbstractPhoneNumberWithCountryExtensionTypeAndTexting() {
+
+    AreaCode mockAreaCode = mock(AreaCode.class);
+    ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
+    Extension mockExtension = mock(Extension.class);
+    LineNumber mockLineNumber = mock(LineNumber.class);
+
+    AbstractPhoneNumber phoneNumber = new TestPhoneNumber(mockAreaCode, mockExchangeCode, mockLineNumber)
+      .<AbstractPhoneNumber>inLocalCountry()
+      .asVoip()
+      .identifiedBy(1L);
+
+    assertThat(phoneNumber).isNotNull();
+
+    phoneNumber.setExtension(mockExtension);
+    phoneNumber.setTextEnabled(true);
+
+    assertThat(phoneNumber.getId()).isOne();
+    assertThat(phoneNumber.getAreaCode()).isEqualTo(mockAreaCode);
+    assertThat(phoneNumber.getExchangeCode()).isEqualTo(mockExchangeCode);
+    assertThat(phoneNumber.getLineNumber()).isEqualTo(mockLineNumber);
+    assertThat(phoneNumber.getCountry().orElse(null)).isEqualTo(Country.localCountry());
+    assertThat(phoneNumber.getExtension().orElse(null)).isEqualTo(mockExtension);
+    assertThat(phoneNumber.isTextEnabled()).isTrue();
+    assertThat(phoneNumber.isVoip()).isTrue();
+
+    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockExtension, mockLineNumber);
   }
 
   @Test
@@ -101,31 +132,38 @@ public class AbstractPhoneNumberUnitTests {
   }
 
   @Test
-  public void createAbstractPhoneNumberWithCountryExtensionTypeAndTexting() {
+  public void clonesPhoneNumberCorrectly() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
     Extension mockExtension = mock(Extension.class);
     LineNumber mockLineNumber = mock(LineNumber.class);
 
-    AbstractPhoneNumber phoneNumber = new TestPhoneNumber(mockAreaCode, mockExchangeCode, mockLineNumber)
-      .<AbstractPhoneNumber>inLocalCountry()
-      .asVoip()
-      .identifiedBy(1L);
+    AbstractPhoneNumber phoneNumber = new TestPhoneNumber(mockAreaCode, mockExchangeCode, mockLineNumber);
 
-    assertThat(phoneNumber).isNotNull();
+    phoneNumber.asVoip()
+      .<AbstractPhoneNumber>in(Country.GERMANY)
+      .identifiedBy(1L);
 
     phoneNumber.setExtension(mockExtension);
     phoneNumber.setTextEnabled(true);
 
-    assertThat(phoneNumber.getId()).isOne();
-    assertThat(phoneNumber.getAreaCode()).isEqualTo(mockAreaCode);
-    assertThat(phoneNumber.getExchangeCode()).isEqualTo(mockExchangeCode);
-    assertThat(phoneNumber.getLineNumber()).isEqualTo(mockLineNumber);
-    assertThat(phoneNumber.getCountry().orElse(null)).isEqualTo(Country.localCountry());
-    assertThat(phoneNumber.getExtension().orElse(null)).isEqualTo(mockExtension);
-    assertThat(phoneNumber.isTextEnabled()).isTrue();
-    assertThat(phoneNumber.isVoip()).isTrue();
+    Object clone = phoneNumber.clone();
+
+    assertThat(clone).isInstanceOf(AbstractPhoneNumber.class)
+      .asInstanceOf(InstanceOfAssertFactories.type(AbstractPhoneNumber.class))
+      .extracting(PhoneNumber::getId)
+      .isNull();
+
+    PhoneNumber clonedPhoneNumber = (PhoneNumber) clone;
+
+    assertThat(clonedPhoneNumber.getAreaCode()).isEqualTo(mockAreaCode);
+    assertThat(clonedPhoneNumber.getExchangeCode()).isEqualTo(mockExchangeCode);
+    assertThat(clonedPhoneNumber.getLineNumber()).isEqualTo(mockLineNumber);
+    assertThat(clonedPhoneNumber.getCountry().orElse(null)).isEqualTo(Country.GERMANY);
+    assertThat(clonedPhoneNumber.getExtension().orElse(null)).isEqualTo(mockExtension);
+    assertThat(clonedPhoneNumber.isRoaming()).isTrue();
+    assertThat(clonedPhoneNumber.isTextEnabled()).isTrue();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode, mockExtension, mockLineNumber);
   }

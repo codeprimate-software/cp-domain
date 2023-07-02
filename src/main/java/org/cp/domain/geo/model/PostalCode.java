@@ -91,7 +91,7 @@ public class PostalCode implements Cloneable, Comparable<PostalCode>, Serializab
 
   /**
    * Returns an {@link Optional} {@link Country} in which this {@link PostalCode} has been assigned.
-   *
+   * <p>
    * Returns {@link Optional#empty()} by default.
    *
    * @return an {@link Optional} {@link Country} in which this {@link PostalCode} has been assigned.

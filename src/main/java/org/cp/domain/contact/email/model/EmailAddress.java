@@ -80,7 +80,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
   /**
    * Factory method used to construct a new {@link EmailAddress} initialized from parsing the given,
    * required {@link String} representing an {@literal email address}.
-   *
+   * <p>
    * {@link String Email Addresses} are expected to be in the format {@link String jonDoe@gmail.com}.
    *
    * @param emailAddress {@link String} containing the {@literal email address} to parse;

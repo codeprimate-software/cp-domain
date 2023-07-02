@@ -34,7 +34,7 @@ public interface CountryAware {
 
   /**
    * Gets the {@link Country} of origin for this implementing {@literal domain type}.
-   *
+   * <p>
    * Returns {@link Optional#empty()} by default.
    *
    * @return the {@link Country} of origin for this {@literal domain type}.

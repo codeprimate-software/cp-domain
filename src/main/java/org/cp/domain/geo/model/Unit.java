@@ -273,7 +273,7 @@ public class Unit implements Cloneable, Comparable<Unit>, Serializable {
 
   /**
    * Compares this {@link Unit} with the given, required {@link Unit} to determine the relative ordering in a sort.
-   *
+   * <p>
    * A {@link Unit} is ordered by {@link #getNumber() number} first and {@link Unit.Type}, if present, second.
    *
    * @param unit {@link Unit} to compare with this {@link Unit}; must not be {@literal null}.

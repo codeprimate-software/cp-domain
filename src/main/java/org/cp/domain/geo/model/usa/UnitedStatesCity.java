@@ -93,7 +93,7 @@ public class UnitedStatesCity extends City {
    * Determines whether this {@link City} is the {@literal capital} of
    * the {@link Country#UNITED_STATES_OF_AMERICA United States}
    * or the {@literal capital} of the containing {@link State}.
-   *
+   * <p>
    * Returns {@literal false} by default.
    *
    * @return a boolean value indicating whether this {@link City} is the {@literal capital} of

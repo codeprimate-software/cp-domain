@@ -85,7 +85,7 @@ public class Coordinates implements Serializable {
 
   /**
    * North-South position on the Earth's surface.
-   *
+   * <p>
    * Lines of latitude, also called parallels, are imaginary lines that divide the Earth. They run east to west,
    * but measure your distance north or south. The equator is the most well known parallel. At 0 degrees latitude,
    * it equally divides the Earth into the Northern and Southern hemispheres.
@@ -94,7 +94,7 @@ public class Coordinates implements Serializable {
 
   /**
    * East-West position on the Earth's surface.
-   *
+   * <p>
    * Lines of longitude, also called meridians, are imaginary lines that divide the Earth. They run north to south
    * from pole to pole, but they measure the distance east or west. The prime meridian, which runs through Greenwich,
    * England, has a longitude of 0 degrees.
@@ -121,7 +121,7 @@ public class Coordinates implements Serializable {
 
   /**
    * Returns an {@link Optional} {@link Elevation altitude} at these {@link Coordinates}.
-   *
+   * <p>
    * This method is an {@link Alias} for {@link #getElevation()}.
    *
    * @return an {@link Optional} {@link Elevation altitude} at these {@link Coordinates}.
@@ -150,7 +150,7 @@ public class Coordinates implements Serializable {
 
   /**
    * Returns the {@link Double latitude} at these {@link Coordinates}.
-   *
+   * <p>
    * Lines of latitude, also called parallels, are imaginary lines that divide the Earth. They run east to west,
    * but measure your distance north or south. The equator is the most well known parallel. At 0 degrees latitude,
    * it equally divides the Earth into the Northern and Southern hemispheres.
@@ -163,7 +163,7 @@ public class Coordinates implements Serializable {
 
   /**
    * Returns the {@link Double longitude} at these {@link Coordinates}.
-   *
+   * <p>
    * Lines of longitude, also called meridians, are imaginary lines that divide the Earth. They run north to south
    * from pole to pole, but they measure the distance east or west. The prime meridian, which runs through Greenwich,
    * England, has a longitude of 0 degrees.
@@ -189,7 +189,7 @@ public class Coordinates implements Serializable {
   /**
    * Sets the {@link Double elevation} or {@literal altitude} at these {@link Coordinates}
    * using the {@link LengthUnit#getDefault() default unit of measeurement}.
-   *
+   * <p>
    * A {@link Double positive value} is above {@literal sea level}. A {@link Double negative value}
    * is below {@literal sea level}. And, a {@link Double zero value} is at {@literal sea level},
    *
@@ -207,7 +207,7 @@ public class Coordinates implements Serializable {
   /**
    * Sets the {@link Double elevation} or {@literal altitude} at these {@link Coordinates}
    * using the given {@link LengthUnit unit of measurement}.
-   *
+   * <p>
    * A {@link Double positive value} is above {@literal sea level}. A {@link Double negative value}
    * is below {@literal sea level}. And, a {@link Double zero value} is at {@literal sea level},
    *

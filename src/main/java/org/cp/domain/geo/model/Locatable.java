@@ -43,7 +43,7 @@ public interface Locatable {
   /**
    * Return geographic {@link Coordinates}, such as {@literal latitude}, {@literal longitude} and {@literal altitude},
    * associated with this {@link Locatable object}.
-   *
+   * <p>
    * Returns {@link Optional#empty()} by default.
    *
    * @return geographic {@link Coordinates} associated with this {@link Locatable object}.
@@ -57,7 +57,7 @@ public interface Locatable {
   /**
    * Sets geographic {@link Coordinates}, such as {@literal latitude}, {@literal longitude} and {@literal altitude},
    * for this {@link Locatable object}.
-   *
+   * <p>
    * Most goecoding, or geomapping, services adjust geographic coordinates at a particular location,
    * such as an address, overtime, hence the reason {@link Coordinates} can be mutated.
    *

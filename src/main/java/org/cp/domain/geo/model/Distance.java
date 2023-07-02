@@ -311,7 +311,7 @@ public class Distance implements Comparable<Distance> {
   /**
    * Convert this {@link Distance} {@link #getMeasurement()} in {@link #getLengthUnit()}
    * to {@link LengthUnit#FOOT feet}.
-   *
+   * <p>
    * If this {@link Distance} is already {@link #getMeasurement() measured} in {@link LengthUnit#FOOT feet},
    * then this {@link Distance} is returned.
    *
@@ -326,7 +326,7 @@ public class Distance implements Comparable<Distance> {
   /**
    * Convert this {@link Distance} {@link #getMeasurement()} in {@link #getLengthUnit()}
    * to {@link LengthUnit#KILOMETER kilometers}.
-   *
+   * <p>
    * If this {@link Distance} is already {@link #getMeasurement() measured} in {@link LengthUnit#KILOMETER kilometers},
    * then this {@link Distance} is returned.
    *
@@ -341,7 +341,7 @@ public class Distance implements Comparable<Distance> {
   /**
    * Convert this {@link Distance} {@link #getMeasurement()} in {@link #getLengthUnit()}
    * to {@link LengthUnit#METER meters}.
-   *
+   * <p>
    * If this {@link Distance} is already {@link #getMeasurement() measured} in {@link LengthUnit#METER meters},
    * then this {@link Distance} is returned.
    *
@@ -360,7 +360,7 @@ public class Distance implements Comparable<Distance> {
   /**
    * Convert this {@link Distance} {@link #getMeasurement()} in {@link #getLengthUnit()}
    * to {@link LengthUnit#MILE miles}.
-   *
+   * <p>
    * If this {@link Distance} is already {@link #getMeasurement() measured} in {@link LengthUnit#MILE miles},
    * then this {@link Distance} is returned.
    *
@@ -375,7 +375,7 @@ public class Distance implements Comparable<Distance> {
   /**
    * Convert this {@link Distance} {@link #getMeasurement()} in {@link #getLengthUnit()}
    * to {@link LengthUnit#YARD yards}.
-   *
+   * <p>
    * If this {@link Distance} is already {@link #getMeasurement() measured} in {@link LengthUnit#YARD yards},
    * then this {@link Distance} is returned.
    *
@@ -390,7 +390,7 @@ public class Distance implements Comparable<Distance> {
   /**
    * Compares this {@link Distance} with the given, required {@link Distance} to determine relative ordering
    * in a sort data structure.
-   *
+   * <p>
    * Like {@link #equals(Object)}, this {@link Comparable#compareTo(Object)} method implementation evaluates
    * the measurement of the {@link Distance}. That is, {@literal 1 meter} is less than {@literal 1 kilometer},
    * but greater than {@literal 1 yard}, naturally. However, {@literal 3 feet} is equally comparable to
@@ -412,7 +412,7 @@ public class Distance implements Comparable<Distance> {
 
   /**
    * Determines whether this {@link Distance} is equal to the given {@link Object}.
-   *
+   * <p>
    * Two {@link Distance Distances} are {@literal equal} if their {@link #getMeasurement() measurements}
    * are the same (or equivalent) regardless of the base {@link #getLengthUnit() length unit}.  For example,
    * {@literal 1000 meters} is equal to {@literal 1 kilometer}.

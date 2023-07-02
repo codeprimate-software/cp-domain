@@ -66,7 +66,6 @@ import org.cp.elements.util.ComparatorResultBuilder;
 public class Person extends AbstractVersionedObject<Person, UUID>
     implements Cloneable, Comparable<Person>, Identifiable<Long>, Nameable<Name>, Renderable, Serializable, Visitable {
 
-  @Serial
   private static final long serialVersionUID = -8623980477296948648L;
 
   protected static final String BIRTH_DATE_PATTERN = "yyyy-MM-dd";
@@ -267,7 +266,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
 
   /**
    * Determines whether this {@link Person} has been born yet.
-   *
+   * <p>
    * This {@link Person} may have a {@link #getBirthDate() birth date} in the future representing an expected
    * {@link LocalDateTime date of birth} for an unborn child.
    *
@@ -351,7 +350,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   /**
    * Given this {@link Person person's} {@link #getBirthDate() date of birth},
    * determine this {@link Person person's {@link Integer age}.
-   *
+   * <p>
    * @return the {@link Integer age} of this {@link Person} based on his or her {@link #getBirthDate() date of birth}
    * with consideration of the {@link Person Person's} {@link #getDateOfDeath() date of death}.
    * @see java.time.Period#between(LocalDate, LocalDate)
@@ -378,7 +377,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
 
   /**
    * Sets this {@link Person person's} {@link LocalDateTime date of birth}.
-   *
+   * <p>
    * A {@link Person person's} {@link LocalDateTime date of birth} represents
    * the {@link LocalDateTime actual date of birth}, and not the {@link LocalDateTime expected date of birth}.
    * Therefore, a {@link Person} cannot be {@link #isBorn() born} before {@link LocalDateTime#now() today}.
@@ -408,7 +407,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
 
   /**
    * Returns this {@link Person person's} {@link LocalDateTime date of birth}.
-   *
+   * <p>
    * A {@link Person person's} {@link LocalDateTime date of birth} represents
    * the {@link LocalDateTime actual date of birth}, and not the {@link LocalDateTime expected date of birth}.
    * Therefore, a {@link Person} cannot be {@link #isBorn() born} before {@link LocalDateTime#now() today}.
@@ -532,7 +531,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   /**
    * Builder method used to estimate and set this {@link Person person's}
    * {@link #setBirthDate(LocalDateTime) date of birth} based on his or her {@link Integer age}.
-   *
+   * <p>
    * Additionally, this {@link Person person's} {@link LocalDateTime date of birth} is set to
    * the current {@literal month}, {@literal day}, {@literal hour}, {@literal minute} and {@literal second}.
    *
@@ -702,7 +701,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   /**
    * Compares this {@link Person} to another {@link Person} in order to determine the natural ordering (sort order)
    * in a list of {@link Person people}.
-   *
+   * <p>
    * This method determines the natural ordering (sort order) for a list of {@link Person people}
    * using {@link #getLastName()}  last name}, {@link #getFirstName() first name}, {@link #getMiddleName() middle name},
    * or the person's initial(s) if present, and {@link #getBirthDate() date of birth}, in ascending order.
@@ -728,18 +727,18 @@ public class Person extends AbstractVersionedObject<Person, UUID>
 
   /**
    * Determines whether this {@link Person} is equal to the given {@link Object}.
-   *
+   * <p>
    * Equality for {@link Person people} is determined based on the natural identifier of a {@link Person}.
-   *
+   * <p>
    * A {@link Person} can usually be uniquely identified by his or her {@link #getBirthDate() date of birth},
    * {@link #getFirstName() first name}, optionally {@link #getMiddleName() middle name or initial(s)}
    * and {@link #getLastName() last name}.
-   *
+   * <p>
    * A {@link Person} cannot be identified by his or her {@link Name} only since multiple {@link Person people}
    * can have the same {@link Name}. Additionally, more than 1 {@link Person} can also have the same
    * {@link LocalDateTime date of birth}. Therefore, both {@link Name} and {@link LocalDateTime date of birth}
    * are needed to properly identify a {@link Person}.
-   *
+   * <p>
    * It is possible that 2 or more {@link Person people} can have the same {@link Name}
    * and {@link LocalDateTime date of birth}. However, the likely-hood of such occurrences should be rather small
    * in the general population covered by the application. If it is possible that the application will process
@@ -768,7 +767,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
 
   /**
    * Computes the {@link Integer hash code} of this {@link Person}.
-   *
+   * <p>
    * Like the {@link #equals(Object)} method, the {@link Integer hash code} is determined from
    * the {@link Person person's} {@link #getBirthDate() date of birth} and {@link #getName() name}.
    *
