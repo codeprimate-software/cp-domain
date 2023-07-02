@@ -57,12 +57,10 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.domain.contact.phone.model.LineNumber
  * @see org.cp.domain.geo.enums.Country
  * @see org.cp.domain.geo.support.CountryAware
- * @see org.cp.elements.function.TriFunction
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Renderable
  * @see org.cp.elements.lang.Verifiable
  * @see org.cp.elements.lang.Visitable
- * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
  * @see <a href="https://en.wikipedia.org/wiki/National_conventions_for_writing_telephone_numbers">National conventions for writing telephone numbers</a>
  * @see <a href="https://en.wikipedia.org/wiki/North_American_Numbering_Plan">North American Numbering Plan (NANP)</a>
@@ -236,6 +234,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   /**
    * Builder method used to set this {@link PhoneNumber} to the given {@link PhoneNumber.Type}.
    *
+   * @param <T> {@link Class concrete type} of {@link PhoneNumber}.
    * @param phoneNumberType {@link PhoneNumber.Type} of this {@link PhoneNumber}.
    * @return this {@link PhoneNumber}.
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Type
@@ -243,22 +242,24 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @see #setType(PhoneNumber.Type)
    */
   @Dsl
-  default @NotNull PhoneNumber asType(@Nullable PhoneNumber.Type phoneNumberType) {
+  @SuppressWarnings("unchecked")
+  default @NotNull <T extends PhoneNumber> T asType(@Nullable PhoneNumber.Type phoneNumberType) {
     setType(phoneNumberType);
-    return this;
+    return (T) this;
   }
 
   /**
    * Builder method used to set the {@link PhoneNumber.Type} of this {@link PhoneNumber}
    * to {@link PhoneNumber.Type#CELL}.
    *
+   * @param <T> {@link Class concrete type} of {@link PhoneNumber}.
    * @return this {@link PhoneNumber}.
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#CELL
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #asType(PhoneNumber.Type)
    */
   @Dsl
-  default @NotNull PhoneNumber asCell() {
+  default @NotNull <T extends PhoneNumber> T asCell() {
     return asType(PhoneNumber.Type.CELL);
   }
 
@@ -266,13 +267,14 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * Builder method used to set the {@link PhoneNumber.Type} of this {@link PhoneNumber}
    * to {@link PhoneNumber.Type#LANDLINE}.
    *
+   * @param <T> {@link Class concrete type} of {@link PhoneNumber}.
    * @return this {@link PhoneNumber}.
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#LANDLINE
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #asType(PhoneNumber.Type)
    */
   @Dsl
-  default @NotNull PhoneNumber asLandline() {
+  default @NotNull <T extends PhoneNumber> T asLandline() {
     return asType(PhoneNumber.Type.LANDLINE);
   }
 
@@ -280,13 +282,14 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * Builder method used to set the {@link PhoneNumber.Type} of this {@link PhoneNumber}
    * to {@link PhoneNumber.Type#SATELLITE}.
    *
+   * @param <T> {@link Class concrete type} of {@link PhoneNumber}.
    * @return this {@link PhoneNumber}.
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#SATELLITE
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #asType(PhoneNumber.Type)
    */
   @Dsl
-  default @NotNull PhoneNumber asSatellite() {
+  default @NotNull <T extends PhoneNumber> T asSatellite() {
     return asType(PhoneNumber.Type.SATELLITE);
   }
 
@@ -294,13 +297,14 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * Builder method used to set the {@link PhoneNumber.Type} of this {@link PhoneNumber}
    * to {@link PhoneNumber.Type#VOIP}.
    *
+   * @param <T> {@link Class concrete type} of {@link PhoneNumber}.
    * @return this {@link PhoneNumber}.
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Type#VOIP
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #asType(PhoneNumber.Type)
    */
   @Dsl
-  default @NotNull PhoneNumber asVoip() {
+  default @NotNull <T extends PhoneNumber> T asVoip() {
     return asType(PhoneNumber.Type.VOIP);
   }
 

@@ -189,7 +189,7 @@ public class PhoneNumberUnitTests {
 
     doCallRealMethod().when(mockPhoneNumber).asType(any());
 
-    assertThat(mockPhoneNumber.asType(PhoneNumber.Type.UNKNOWN)).isSameAs(mockPhoneNumber);
+    assertThat(mockPhoneNumber.<PhoneNumber>asType(PhoneNumber.Type.UNKNOWN)).isSameAs(mockPhoneNumber);
 
     verify(mockPhoneNumber, times(1)).asType(eq(PhoneNumber.Type.UNKNOWN));
     verify(mockPhoneNumber, times(1)).setType(eq(PhoneNumber.Type.UNKNOWN));
@@ -204,7 +204,7 @@ public class PhoneNumberUnitTests {
     doCallRealMethod().when(mockPhoneNumber).asType(any());
     doCallRealMethod().when(mockPhoneNumber).asCell();
 
-    assertThat(mockPhoneNumber.asCell()).isSameAs(mockPhoneNumber);
+    assertThat(mockPhoneNumber.<PhoneNumber>asCell()).isSameAs(mockPhoneNumber);
 
     verify(mockPhoneNumber, times(1)).asCell();
     verify(mockPhoneNumber, times(1)).asType(eq(PhoneNumber.Type.CELL));
@@ -220,7 +220,7 @@ public class PhoneNumberUnitTests {
     doCallRealMethod().when(mockPhoneNumber).asType(any());
     doCallRealMethod().when(mockPhoneNumber).asLandline();
 
-    assertThat(mockPhoneNumber.asLandline()).isSameAs(mockPhoneNumber);
+    assertThat(mockPhoneNumber.<PhoneNumber>asLandline()).isSameAs(mockPhoneNumber);
 
     verify(mockPhoneNumber, times(1)).asLandline();
     verify(mockPhoneNumber, times(1)).asType(eq(PhoneNumber.Type.LANDLINE));
@@ -236,7 +236,7 @@ public class PhoneNumberUnitTests {
     doCallRealMethod().when(mockPhoneNumber).asType(any());
     doCallRealMethod().when(mockPhoneNumber).asSatellite();
 
-    assertThat(mockPhoneNumber.asSatellite()).isSameAs(mockPhoneNumber);
+    assertThat(mockPhoneNumber.<PhoneNumber>asSatellite()).isSameAs(mockPhoneNumber);
 
     verify(mockPhoneNumber, times(1)).asSatellite();
     verify(mockPhoneNumber, times(1)).asType(eq(PhoneNumber.Type.SATELLITE));
@@ -252,7 +252,7 @@ public class PhoneNumberUnitTests {
     doCallRealMethod().when(mockPhoneNumber).asType(any());
     doCallRealMethod().when(mockPhoneNumber).asVoip();
 
-    assertThat(mockPhoneNumber.asVoip()).isSameAs(mockPhoneNumber);
+    assertThat(mockPhoneNumber.<PhoneNumber>asVoip()).isSameAs(mockPhoneNumber);
 
     verify(mockPhoneNumber, times(1)).asVoip();
     verify(mockPhoneNumber, times(1)).asType(eq(PhoneNumber.Type.VOIP));
