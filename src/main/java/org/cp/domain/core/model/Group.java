@@ -17,6 +17,7 @@ package org.cp.domain.core.model;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -265,4 +266,26 @@ public interface Group extends Identifiable<UUID>, Iterable<Person>, Nameable<St
     return StreamUtils.stream(this);
   }
 
+  /**
+   * Computes the {@literal union} of this {@link Group} with the given {@link Group}.
+   *
+   * @param group {@link Group} to combine with this {@link Group}.
+   * @return the {@link Set} {@literal union} of this {@link Group} with the given {@link Group}.
+   * @see org.cp.domain.core.model.Person
+   * @see java.util.Set
+   */
+  default @NotNull Set<Person> union(@Nullable Group group) {
+
+    Set<Person> union = stream()
+      .filter(Objects::nonNull)
+      .collect(Collectors.toSet());
+
+    if (group != null) {
+      group.stream()
+        .filter(Objects::nonNull)
+        .forEach(union::add);
+    }
+
+    return union;
+  }
 }

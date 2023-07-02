@@ -862,6 +862,55 @@ public class GroupUnitTests {
     assertThat(stream).isEmpty();
   }
 
+  @Test
+  public void unionIsCorrect() {
+
+    Person mockPersonOne = mock(Person.class);
+    Person mockPersonTwo = mock(Person.class);
+    Person mockPersonThree = mock(Person.class);
+
+    Group mockGroupOne = mockGroup("GroupOne", mockPersonOne, mockPersonTwo);
+    Group mockGroupTwo = mockGroup("GroupTwo", mockPersonTwo, null, mockPersonThree);
+
+    doCallRealMethod().when(mockGroupOne).stream();
+    doCallRealMethod().when(mockGroupTwo).stream();
+    doCallRealMethod().when(mockGroupOne).union(any());
+
+    Set<Person> people = mockGroupOne.union(mockGroupTwo);
+
+    assertThat(people).isNotNull();
+    assertThat(people).containsExactlyInAnyOrder(mockPersonOne, mockPersonTwo, mockPersonThree);
+
+    verify(mockGroupOne, times(1)).union(eq(mockGroupTwo));
+    verify(mockGroupOne, times(1)).stream();
+    verify(mockGroupTwo, times(1)).stream();
+
+    verifyNoInteractions(mockPersonOne, mockPersonTwo, mockPersonThree);
+  }
+
+  @Test
+  public void unionIsNullSafe() {
+
+    Person mockPerson = mock(Person.class);
+
+    Group mockGroup = mockGroup(mockPerson);
+
+    doCallRealMethod().when(mockGroup).stream();
+    doCallRealMethod().when(mockGroup).union(any());
+
+    Set<Person> people = mockGroup.union(null);
+
+    assertThat(people).isNotNull();
+    assertThat(people).containsExactly(mockPerson);
+
+    verify(mockGroup, times(1)).union(isNull());
+    verify(mockGroup, times(1)).stream();
+    verify(mockGroup, times(1)).iterator();
+    verify(mockGroup, times(1)).spliterator();
+    verifyNoMoreInteractions(mockGroup);
+    verifyNoInteractions(mockPerson);
+  }
+
   private static class PersonGreaterThanAgePredicate implements Predicate<Person> {
 
     private final int age;
