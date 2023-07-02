@@ -66,6 +66,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
 public class Person extends AbstractVersionedObject<Person, UUID>
     implements Cloneable, Comparable<Person>, Identifiable<Long>, Nameable<Name>, Renderable, Serializable, Visitable {
 
+  @Serial
   private static final long serialVersionUID = -8623980477296948648L;
 
   protected static final String BIRTH_DATE_PATTERN = "yyyy-MM-dd";
@@ -261,7 +262,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * @see #getDateOfDeath()
    */
   public boolean isAlive() {
-    return !getDateOfDeath().isPresent();
+    return getDateOfDeath().isEmpty();
   }
 
   /**
