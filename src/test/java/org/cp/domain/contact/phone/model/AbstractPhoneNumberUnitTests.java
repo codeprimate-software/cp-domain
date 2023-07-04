@@ -53,6 +53,7 @@ public class AbstractPhoneNumberUnitTests {
     assertThat(phoneNumber.getLineNumber()).isEqualTo(mockLineNumber);
     assertThat(phoneNumber.getCountry()).isNotPresent();
     assertThat(phoneNumber.getExtension()).isNotPresent();
+    assertThat(phoneNumber.isRoaming()).isTrue();
     assertThat(phoneNumber.isTextEnabled()).isFalse();
     assertThat(phoneNumber.getType()).isNotPresent();
 
@@ -83,6 +84,7 @@ public class AbstractPhoneNumberUnitTests {
     assertThat(phoneNumber.getLineNumber()).isEqualTo(mockLineNumber);
     assertThat(phoneNumber.getCountry().orElse(null)).isEqualTo(Country.localCountry());
     assertThat(phoneNumber.getExtension().orElse(null)).isEqualTo(mockExtension);
+    assertThat(phoneNumber.isRoaming()).isFalse();
     assertThat(phoneNumber.isTextEnabled()).isTrue();
     assertThat(phoneNumber.isVoip()).isTrue();
 
@@ -166,6 +168,116 @@ public class AbstractPhoneNumberUnitTests {
     assertThat(clonedPhoneNumber.isTextEnabled()).isTrue();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode, mockExtension, mockLineNumber);
+  }
+
+  @Test
+  public void equalPhoneNumbersAreEqual() {
+
+    AbstractPhoneNumber phoneNumberOne =
+      new TestPhoneNumber(AreaCode.of(503), ExchangeCode.of(555), LineNumber.of(1234))
+        .asCell();
+
+    AbstractPhoneNumber phoneNumberTwo =
+      new TestPhoneNumber(AreaCode.of(503), ExchangeCode.of(555), LineNumber.of(1234))
+        .asLandline();
+
+    assertThat(phoneNumberOne).isEqualTo(phoneNumberTwo);
+
+    phoneNumberOne.<AbstractPhoneNumber>inLocalCountry().setExtension(Extension.of("11358"));
+    phoneNumberTwo.<AbstractPhoneNumber>inLocalCountry().setExtension(Extension.of("11358"));
+
+
+    assertThat(phoneNumberOne).isEqualTo(phoneNumberTwo);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void samePhoneNumberIsEqual() {
+
+    AbstractPhoneNumber phoneNumber =
+      new TestPhoneNumber(AreaCode.of(503), ExchangeCode.of(555), LineNumber.of(1234));
+
+    assertThat(phoneNumber).isEqualTo(phoneNumber);
+  }
+
+  @Test
+  public void unequalPhoneNumbersAreNotEqual() {
+
+    AbstractPhoneNumber phoneNumberOne =
+      new TestPhoneNumber(AreaCode.of(503), ExchangeCode.of(555), LineNumber.of(1234));
+
+    phoneNumberOne.setExtension(Extension.of("1234"));
+
+    AbstractPhoneNumber phoneNumberTwo =
+      new TestPhoneNumber(AreaCode.of(503), ExchangeCode.of(555), LineNumber.of(1234));
+
+    assertThat(phoneNumberOne).isNotEqualTo(phoneNumberTwo);
+
+    phoneNumberOne.setExtension(null);
+    phoneNumberTwo.inLocalCountry();
+
+    assertThat(phoneNumberOne).isNotEqualTo(phoneNumberTwo);
+
+    AbstractPhoneNumber phoneNumberThree =
+      new TestPhoneNumber(AreaCode.of(971), ExchangeCode.of(555), LineNumber.of(4321))
+        .in(Country.GERMANY);
+
+    phoneNumberOne.<AbstractPhoneNumber>in(Country.GERMANY).setExtension(Extension.of("2480"));
+    phoneNumberThree.setExtension(Extension.of("2480"));
+
+    assertThat(phoneNumberOne).isNotEqualTo(phoneNumberThree);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void phoneNumberIsNotEqualToObject() {
+
+    AbstractPhoneNumber phoneNumber =
+      new TestPhoneNumber(AreaCode.of(503), ExchangeCode.of(555), LineNumber.of(1234));
+
+    assertThat(phoneNumber.equals("503-555-1234")).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void phoneNumberIsNotEqualToNull() {
+
+    AbstractPhoneNumber phoneNumber =
+      new TestPhoneNumber(AreaCode.of(503), ExchangeCode.of(555), LineNumber.of(1234));
+
+    assertThat(phoneNumber.equals(null)).isFalse();
+  }
+
+  @Test
+  public void hashCodeIsCorrect() {
+
+    AbstractPhoneNumber phoneNumber =
+      new TestPhoneNumber(AreaCode.of(503), ExchangeCode.of(555), LineNumber.of(1234));
+
+    assertThat(phoneNumber).hasSameHashCodeAs(phoneNumber);
+    assertThat(phoneNumber).doesNotHaveSameHashCodeAs("503-504-8657");
+    assertThat(phoneNumber).doesNotHaveSameHashCodeAs(
+      new TestPhoneNumber(AreaCode.of(503), ExchangeCode.of(555), LineNumber.of(1234))
+        .inLocalCountry());
+  }
+
+  @Test
+  public void toStringIsCorrect() {
+
+    AbstractPhoneNumber phoneNumber =
+      new TestPhoneNumber(AreaCode.of(503), ExchangeCode.of(555), LineNumber.of(1234))
+        .<AbstractPhoneNumber>inLocalCountry()
+        .asCell();
+
+    phoneNumber.setExtension(Extension.of("2480"));
+
+    String expectedString = String.format(AbstractPhoneNumber.PHONE_NUMBER_TO_STRING, phoneNumber.getClass().getName(),
+      phoneNumber.getAreaCode(), phoneNumber.getExchangeCode(), phoneNumber.getLineNumber(),
+      "x".concat(phoneNumber.getExtension().map(Extension::getNumber).orElse("")),
+      phoneNumber.getType().map(PhoneNumber.Type::getAbbreviation).orElse(null),
+      phoneNumber.getCountry().orElse(null));
+
+    assertThat(phoneNumber).hasToString(expectedString);
   }
 
   private static final class TestPhoneNumber extends AbstractPhoneNumber {
