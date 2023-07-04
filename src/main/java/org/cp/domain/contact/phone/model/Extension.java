@@ -42,8 +42,8 @@ public class Extension implements Cloneable, Comparable<Extension>, Serializable
    * Factory method used to construct a new {@link Extension} copied from an existing, required {@link Extension}.
    *
    * @param extension {@link Extension} to copy; must not be {@literal null}.
-   * @return a new {@link Extension} copied from the existing, required {@link Extension}.
-   * @throws IllegalArgumentException if the {@link Extension} to copy is {@literal null}.
+   * @return a new {@link Extension} copied from the existing {@link Extension}.
+   * @throws IllegalArgumentException if the given {@link Extension} to copy is {@literal null}.
    */
   public static @NotNull Extension from(@NotNull Extension extension) {
 
@@ -53,13 +53,24 @@ public class Extension implements Cloneable, Comparable<Extension>, Serializable
   }
 
   /**
+   * Factory method used to construct a new {@link Extension} from the given {@link Integer number}.
+   *
+   * @param number {@link Integer number} of the {@link Extension}.
+   * @return a new {@link Extension} initialized with the given {@link Integer number}.
+   * @see #of(String)
+   */
+  public static @NotNull Extension of(@NotNull int number) {
+    return of(String.valueOf(Math.abs(number)));
+  }
+
+  /**
    * Factory method used to construct a new {@link Extension} from the given, required {@link String number}.
    *
-   * @param number {@link String} containing the {@literal number} of this {@link Extension};
+   * @param number {@link String} containing the {@literal number} of the {@link Extension};
    * must not be {@literal null} or {@literal empty}.
-   * @throws IllegalArgumentException if the {@link String number} is {@literal null}, {@literal empty}
+   * @throws IllegalArgumentException if the given {@link String number} is {@literal null}, {@literal empty}
    * or not {@link Character#isDigit(char) digits}.
-   * @return a new {@link Extension} initialized with the given, required {@link String number}.
+   * @return a new {@link Extension} initialized with the given {@link String number}.
    */
   public static @NotNull Extension of(@NotNull String number) {
     return new Extension(number);
@@ -71,8 +82,8 @@ public class Extension implements Cloneable, Comparable<Extension>, Serializable
    * Constructs a new {@link Extension} initialized with the given, required {@link String number}.
    *
    * @param number {@link String} containing the {@literal number} of this {@link Extension};
-   * must not be {@literal null} or {@literal empty}.
-   * @throws IllegalArgumentException if the {@link String number} is {@literal null}, {@literal empty}
+   * must not be {@literal null} or {@literal empty}, and be only {@link Character#isDigit(char) digits}.
+   * @throws IllegalArgumentException if the given {@link String number} is {@literal null}, {@literal empty}
    * or not {@link Character#isDigit(char) digits}.
    */
   public Extension(@NotNull String number) {
