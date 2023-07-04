@@ -110,6 +110,6 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
 
   @Override
   public final void setCountry(Country country) {
-    throw newUnsupportedOperationException("Cannot set the Country for a UnitedStatesPhoneNumber");
+    throw newUnsupportedOperationException("Cannot set the Country for a %s", getClass().getSimpleName());
   }
 }
