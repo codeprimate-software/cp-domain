@@ -74,13 +74,13 @@
 
   <properties>
     <java-module-name>codeprimate.domain</java-module-name>
-    <cp-elements.version>2.0.0-M1</cp-elements.version>
+    <cp-elements.version>2.0.0-M2</cp-elements.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.codeprimate</groupId>
-      <artifactId>cp-elements</artifactId>
+      <artifactId>elements</artifactId>
       <version>${cp-elements.version}</version>
     </dependency>
   </dependencies>
