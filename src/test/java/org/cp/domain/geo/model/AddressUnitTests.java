@@ -78,12 +78,11 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void constructAddressUsingBuilder() {
+  public void constructAddressUsingBuilderInLocalCountry() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
-    Country egypt = Country.EGYPT;
 
     Address.Builder addressBuilder = Address.builder();
 
@@ -93,14 +92,13 @@ public class AddressUnitTests {
       .on(mockStreet)
       .in(mockCity)
       .in(mockPostalCode)
-      .in(egypt)
       .build();
 
     assertThat(address).isNotNull();
     assertThat(address.getStreet()).isEqualTo(mockStreet);
     assertThat(address.getCity()).isEqualTo(mockCity);
     assertThat(address.getPostalCode()).isEqualTo(mockPostalCode);
-    assertThat(address.getCountry()).isEqualTo(egypt);
+    assertThat(address.getCountry()).isEqualTo(Country.localCountry());
 
     verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
   }

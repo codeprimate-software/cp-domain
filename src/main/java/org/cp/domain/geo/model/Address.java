@@ -72,15 +72,16 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
     Serializable, Visitable {
 
   /**
-   * Factory method used to construct a new {@link Builder} used to build and construct a new {@link Address}.
+   * Factory method used to construct a new {@link Builder} used to construct and build a new {@link Address}
+   * in the {@link Country#localCountry() local country}.
    *
-   * @return a new {@link Builder} used to build and construct a new {@link Address}.
+   * @return a new {@link Builder} used to construct and build a new {@link Address}.
    * @see org.cp.domain.geo.model.Address.Builder
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
   static @NotNull Address.Builder builder() {
-    return new Address.Builder();
+    return new Address.Builder().inLocalCountry();
   }
 
   /**
