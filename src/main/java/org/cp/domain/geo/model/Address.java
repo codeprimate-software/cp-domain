@@ -26,10 +26,8 @@ import java.util.Optional;
 import org.cp.domain.geo.enums.Country;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
-import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Renderable;
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.lang.Verifiable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.Dsl;
@@ -64,7 +62,6 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.domain.geo.model.Unit
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Renderable
- * @see org.cp.elements.lang.Verifiable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.annotation.FluentApi
  * @since 0.1.0
@@ -72,7 +69,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
 @FluentApi
 @SuppressWarnings("unused")
 public interface Address extends Cloneable, Comparable<Address>, Identifiable<Long>, Locatable, Renderable,
-    Serializable, Verifiable<Address>, Visitable {
+    Serializable, Visitable {
 
   /**
    * Factory method used to construct a new {@link Builder} used to build and construct a new {@link Address}.
@@ -363,28 +360,6 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
       .doCompare(this.getStreet(), that.getStreet())
       .doCompare(this.getUnit().orElse(Unit.EMPTY), that.getUnit().orElse(Unit.EMPTY))
       .build();
-  }
-
-  /**
-   * Validates this {@link Address}.
-   * <p>
-   * The {@link Address} is considered valid only if the {@link #getStreet() street}, {@link #getCity() city}
-   * {@link #getPostalCode() postal code} and {@link #getCountry() country} are set, that is are not {@literal null}.
-   *
-   * @return this {@link Address}.
-   * @throws IllegalStateException if {@link #getStreet() street}, {@link #getCity() city},
-   * {@link #getPostalCode() postal code} or {@link #getCountry() country} are not set.
-   * @see org.cp.elements.lang.Verifiable#validate()
-   */
-  @Override
-  default @NotNull Address validate() {
-
-    ObjectUtils.requireState(getStreet(), "Street is required");
-    ObjectUtils.requireState(getCity(), "City is required");
-    ObjectUtils.requireState(getPostalCode(), "Postal Code is required");
-    ObjectUtils.requireState(getCountry(), "Country is required");
-
-    return this;
   }
 
   /**

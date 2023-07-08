@@ -17,7 +17,6 @@ package org.cp.domain.geo.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -76,6 +75,70 @@ public class AddressUnitTests {
     doReturn(Optional.ofNullable(unit)).when(address).getUnit();
 
     return address;
+  }
+
+  @Test
+  public void constructAddressUsingBuilder() {
+
+    Street mockStreet = mock(Street.class);
+    City mockCity = mock(City.class);
+    PostalCode mockPostalCode = mock(PostalCode.class);
+    Country egypt = Country.EGYPT;
+
+    Address.Builder addressBuilder = Address.builder();
+
+    assertThat(addressBuilder).isNotNull();
+
+    Address address = addressBuilder
+      .on(mockStreet)
+      .in(mockCity)
+      .in(mockPostalCode)
+      .in(egypt)
+      .build();
+
+    assertThat(address).isNotNull();
+    assertThat(address.getStreet()).isEqualTo(mockStreet);
+    assertThat(address.getCity()).isEqualTo(mockCity);
+    assertThat(address.getPostalCode()).isEqualTo(mockPostalCode);
+    assertThat(address.getCountry()).isEqualTo(egypt);
+
+    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
+  }
+
+  @Test
+  public void constructAddressUsingBuilderFromAddress() {
+
+    Street mockStreet = mock(Street.class);
+    City mockCity = mock(City.class);
+    PostalCode mockPostalCode = mock(PostalCode.class);
+
+    Address mockAddress = mockAddress(mockStreet, mockCity, mockPostalCode);
+    Address addressCopy = Address.builder().from(mockAddress).build();
+
+    assertThat(addressCopy).isNotNull();
+    assertThat(addressCopy).isNotSameAs(mockAddress);
+    assertThat(addressCopy.getStreet()).isEqualTo(mockStreet);
+    assertThat(addressCopy.getCity()).isEqualTo(mockCity);
+    assertThat(addressCopy.getPostalCode()).isEqualTo(mockPostalCode);
+    assertThat(addressCopy.getCountry()).isEqualTo(Country.localCountry());
+    assertThat(addressCopy.getCoordinates()).isNotPresent();
+
+    verify(mockAddress, times(1)).getStreet();
+    verify(mockAddress, times(1)).getCity();
+    verify(mockAddress, times(1)).getPostalCode();
+    verify(mockAddress, times(1)).getCountry();
+    verify(mockAddress, times(1)).getCoordinates();
+    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
+    verifyNoMoreInteractions(mockAddress);
+  }
+
+  @Test
+  public void constructAddressUsingBuilderFromNullAddress() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Address.builder().from(null))
+      .withMessage("Address to copy is required")
+      .withNoCause();
   }
 
   @Test
@@ -208,70 +271,6 @@ public class AddressUnitTests {
       .withNoCause();
 
     verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
-  }
-
-  @Test
-  public void constructAddressUsingBuilder() {
-
-    Street mockStreet = mock(Street.class);
-    City mockCity = mock(City.class);
-    PostalCode mockPostalCode = mock(PostalCode.class);
-    Country egypt = Country.EGYPT;
-
-    Address.Builder addressBuilder = Address.builder();
-
-    assertThat(addressBuilder).isNotNull();
-
-    Address address = addressBuilder
-      .on(mockStreet)
-      .in(mockCity)
-      .in(mockPostalCode)
-      .in(egypt)
-      .build();
-
-    assertThat(address).isNotNull();
-    assertThat(address.getStreet()).isEqualTo(mockStreet);
-    assertThat(address.getCity()).isEqualTo(mockCity);
-    assertThat(address.getPostalCode()).isEqualTo(mockPostalCode);
-    assertThat(address.getCountry()).isEqualTo(egypt);
-
-    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
-  }
-
-  @Test
-  public void constructAddressUsingBuilderFromAddress() {
-
-    Street mockStreet = mock(Street.class);
-    City mockCity = mock(City.class);
-    PostalCode mockPostalCode = mock(PostalCode.class);
-
-    Address mockAddress = mockAddress(mockStreet, mockCity, mockPostalCode);
-    Address addressCopy = Address.builder().from(mockAddress).build();
-
-    assertThat(addressCopy).isNotNull();
-    assertThat(addressCopy).isNotSameAs(mockAddress);
-    assertThat(addressCopy.getStreet()).isEqualTo(mockStreet);
-    assertThat(addressCopy.getCity()).isEqualTo(mockCity);
-    assertThat(addressCopy.getPostalCode()).isEqualTo(mockPostalCode);
-    assertThat(addressCopy.getCountry()).isEqualTo(Country.localCountry());
-    assertThat(addressCopy.getCoordinates()).isNotPresent();
-
-    verify(mockAddress, times(1)).getStreet();
-    verify(mockAddress, times(1)).getCity();
-    verify(mockAddress, times(1)).getPostalCode();
-    verify(mockAddress, times(1)).getCountry();
-    verify(mockAddress, times(1)).getCoordinates();
-    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
-    verifyNoMoreInteractions(mockAddress);
-  }
-
-  @Test
-  public void constructAddressUsingBuilderFromNullAddress() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> Address.builder().from(null))
-      .withMessage("Address to copy is required")
-      .withNoCause();
   }
 
   @Test
@@ -467,119 +466,6 @@ public class AddressUnitTests {
     assertThat(mockPortlandAddress).isNotSameAs(mockSeattleAddress);
     assertThat(mockPortlandAddress.compareTo(mockSeattleAddress)).isLessThan(0);
     assertThat(mockSeattleAddress.compareTo(mockPortlandAddress)).isGreaterThan(0);
-  }
-
-  @Test
-  public void validateAddress() {
-
-    Street mockStreet = mock(Street.class);
-    City mockCity = mock(City.class);
-    PostalCode mockPostalCode = mock(PostalCode.class);
-
-    Address mockAddress = mockAddress(mockStreet, mockCity, mockPostalCode);
-
-    doCallRealMethod().when(mockAddress).validate();
-
-    assertThat(mockAddress.validate()).isSameAs(mockAddress);
-
-    verify(mockAddress, times(1)).validate();
-    verify(mockAddress, times(1)).getStreet();
-    verify(mockAddress, times(1)).getCity();
-    verify(mockAddress, times(1)).getPostalCode();
-    verify(mockAddress, times(1)).getCountry();
-    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
-    verifyNoMoreInteractions(mockAddress);
-  }
-
-  @Test
-  public void validateAddressWithNoStreet() {
-
-    City mockCity = mock(City.class);
-    PostalCode mockPostalCode = mock(PostalCode.class);
-
-    Address mockAddress = mockAddress(null, mockCity, mockPostalCode);
-
-    doCallRealMethod().when(mockAddress).validate();
-
-    assertThatIllegalStateException()
-      .isThrownBy(mockAddress::validate)
-      .withMessage("Street is required")
-      .withNoCause();
-
-    verify(mockAddress, times(1)).validate();
-    verify(mockAddress, times(1)).getStreet();
-    verifyNoInteractions(mockCity, mockPostalCode);
-    verifyNoMoreInteractions(mockAddress);
-  }
-
-  @Test
-  public void validateAddressWithNoCity() {
-
-    Street mockStreet = mock(Street.class);
-    PostalCode mockPostalCode = mock(PostalCode.class);
-
-    Address mockAddress = mockAddress(mockStreet, null, mockPostalCode);
-
-    doCallRealMethod().when(mockAddress).validate();
-
-    assertThatIllegalStateException()
-      .isThrownBy(mockAddress::validate)
-      .withMessage("City is required")
-      .withNoCause();
-
-    verify(mockAddress, times(1)).validate();
-    verify(mockAddress, times(1)).getStreet();
-    verify(mockAddress, times(1)).getCity();
-    verifyNoInteractions(mockStreet, mockPostalCode);
-    verifyNoMoreInteractions(mockAddress);
-  }
-
-  @Test
-  public void validateAddressWithNoPostalCode() {
-
-    Street mockStreet = mock(Street.class);
-    City mockCity = mock(City.class);
-
-    Address mockAddress = mockAddress(mockStreet, mockCity, null);
-
-    doCallRealMethod().when(mockAddress).validate();
-
-    assertThatIllegalStateException()
-      .isThrownBy(mockAddress::validate)
-      .withMessage("Postal Code is required")
-      .withNoCause();
-
-    verify(mockAddress, times(1)).validate();
-    verify(mockAddress, times(1)).getStreet();
-    verify(mockAddress, times(1)).getCity();
-    verify(mockAddress, times(1)).getPostalCode();
-    verifyNoInteractions(mockStreet, mockCity);
-    verifyNoMoreInteractions(mockAddress);
-  }
-
-  @Test
-  public void validateAddressWithNoCountry() {
-
-    Street mockStreet = mock(Street.class);
-    City mockCity = mock(City.class);
-    PostalCode mockPostalCode = mock(PostalCode.class);
-
-    Address mockAddress = mockAddress(mockStreet, mockCity, mockPostalCode, null);
-
-    doCallRealMethod().when(mockAddress).validate();
-
-    assertThatIllegalStateException()
-      .isThrownBy(mockAddress::validate)
-      .withMessage("Country is required")
-      .withNoCause();
-
-    verify(mockAddress, times(1)).validate();
-    verify(mockAddress, times(1)).getStreet();
-    verify(mockAddress, times(1)).getCity();
-    verify(mockAddress, times(1)).getPostalCode();
-    verify(mockAddress, times(1)).getCountry();
-    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
-    verifyNoMoreInteractions(mockAddress);
   }
 
   @Test
