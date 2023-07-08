@@ -26,7 +26,7 @@ and entities for recording and processing data in a Java application.
 [subs="verbatim,attributes"]
 ----
 <dependency>
-  <groupId>org.codeprimate</groupId>
+  <groupId>org.codeprimate.domain</groupId>
   <artifactId>cp-domain</artifactId>
   <version>{version}</version>
 </dependency>
