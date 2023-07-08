@@ -18,8 +18,8 @@
 
   <name>Domain</name>
   <description>
-    Codeprimate Domain (a.k.a. cp-domain) is a Java library containing Abstract Data Types (ADT) used in
-    the development of software application domain model types that process and manage state.
+    Codeprimate Domain (or simply, Domain) is a Java library containing Abstract Data Types (ADT) used in
+    the development of software applications to model, record and manage state processed by the application.
   </description>
   <inceptionYear>2017</inceptionYear>
   <url>http://www.codeprimate.org/projects/cp-domain</url>
@@ -29,7 +29,7 @@
       <name>Apache License, Version 2.0</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0</url>
       <comments>
-        Copyright 2016-Present Author or Authors.
+        Copyright 2017-Present Author or Authors.
 
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
