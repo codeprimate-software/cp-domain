@@ -48,7 +48,7 @@ import org.cp.elements.util.stream.StreamUtils;
  * @since 0.1.0
  */
 @SuppressWarnings("unused")
-public class People implements Group {
+public class People implements Group<Person> {
 
   private static final IdentifierSequence<UUID> ID_SEQUENCE = new UUIDIdentifierSequence();
 

@@ -59,13 +59,14 @@ import org.cp.elements.util.CollectionUtils;
  */
 public class GroupUnitTests {
 
-  private Group mockGroup(Person... people) {
+  private Group<Person> mockGroup(Person... people) {
     return mockGroup("MockGroup", people);
   }
 
-  private Group mockGroup(String name, Person... people) {
+  @SuppressWarnings("unchecked")
+  private Group<Person> mockGroup(String name, Person... people) {
 
-    Group mockGroup = mock(Group.class, name);
+    Group<Person> mockGroup = mock(Group.class, name);
 
     doAnswer(invocation -> ArrayUtils.asIterator(people)).when(mockGroup).iterator();
     doCallRealMethod().when(mockGroup).spliterator();
@@ -81,7 +82,7 @@ public class GroupUnitTests {
     Person mockPersonOne = mock(Person.class);
     Person mockPersonTwo = mock(Person.class);
 
-    Group mockGroup = mockGroup(mockPersonOne, mockPersonTwo);
+    Group<Person> mockGroup = mockGroup(mockPersonOne, mockPersonTwo);
 
     doCallRealMethod().when(mockGroup).accept(any(Visitor.class));
 
@@ -103,7 +104,7 @@ public class GroupUnitTests {
     Person mockPersonOne = mock(Person.class);
     Person mockPersonTwo = mock(Person.class);
 
-    Group mockGroup = mockGroup(mockPersonOne, mockPersonTwo);
+    Group<Person> mockGroup = mockGroup(mockPersonOne, mockPersonTwo);
 
     doReturn(true).when(mockPredicate).test(any(Person.class));
     doCallRealMethod().when(mockGroup).count(any(Predicate.class));
@@ -124,7 +125,7 @@ public class GroupUnitTests {
     Person mockPersonOne = mock(Person.class);
     Person mockPersonTwo = mock(Person.class);
 
-    Group mockGroup = mockGroup(mockPersonOne, mockPersonTwo);
+    Group<Person> mockGroup = mockGroup(mockPersonOne, mockPersonTwo);
 
     doCallRealMethod().when(mockGroup).count(any(Predicate.class));
 
@@ -144,7 +145,7 @@ public class GroupUnitTests {
     Person mockPersonTwo = mock(Person.class);
     Person mockPersonThree = mock(Person.class);
 
-    Group mockGroup = mockGroup(mockPersonOne, mockPersonTwo, mockPersonThree);
+    Group<Person> mockGroup = mockGroup(mockPersonOne, mockPersonTwo, mockPersonThree);
 
     doReturn(true, false).when(mockPredicate).test(any());
     doCallRealMethod().when(mockGroup).count(any(Predicate.class));
@@ -162,7 +163,7 @@ public class GroupUnitTests {
   @Test
   public void countWithNullPredicate() {
 
-    Group mockGroup = mockGroup();
+    Group<?> mockGroup = mockGroup();
 
     doCallRealMethod().when(mockGroup).count(any());
 
@@ -181,7 +182,7 @@ public class GroupUnitTests {
 
     Person mockPerson = mock(Person.class);
 
-    Group mockGroup = mockGroup();
+    Group<Person> mockGroup = mockGroup();
 
     doCallRealMethod().when(mockGroup).contains(any());
     doReturn(Optional.of(mockPerson)).when(mockGroup).findOne(any(Predicate.class));
@@ -200,7 +201,7 @@ public class GroupUnitTests {
 
     Person mockPerson = mock(Person.class);
 
-    Group mockGroup = mockGroup();
+    Group<Person> mockGroup = mockGroup();
 
     doCallRealMethod().when(mockGroup).contains(any());
     doReturn(Optional.empty()).when(mockGroup).findOne(any(Predicate.class));
@@ -216,7 +217,7 @@ public class GroupUnitTests {
   @Test
   public void containsNullIsNullSafeReturnsFalse() {
 
-    Group mockGroup = mockGroup();
+    Group<?> mockGroup = mockGroup();
 
     doCallRealMethod().when(mockGroup).contains(any());
 
@@ -233,8 +234,8 @@ public class GroupUnitTests {
     Person mockPersonOne = mock(Person.class);
     Person mockPersonTwo = mock(Person.class);
 
-    Group mockGroupOne = mockGroup("A", mockPersonOne, mockPersonTwo);
-    Group mockGroupTwo = mockGroup("B", mockPersonTwo);
+    Group<Person> mockGroupOne = mockGroup("A", mockPersonOne, mockPersonTwo);
+    Group<Person> mockGroupTwo = mockGroup("B", mockPersonTwo);
 
     doCallRealMethod().when(mockGroupOne).difference(any(Group.class));
     doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
@@ -265,8 +266,8 @@ public class GroupUnitTests {
 
     Person mockPerson = mock(Person.class);
 
-    Group mockGroupOne = mockGroup("A");
-    Group mockGroupTwo = mockGroup("B", mockPerson);
+    Group<Person> mockGroupOne = mockGroup("A");
+    Group<Person> mockGroupTwo = mockGroup("B", mockPerson);
 
     doCallRealMethod().when(mockGroupOne).difference(any(Group.class));
     doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
@@ -290,8 +291,8 @@ public class GroupUnitTests {
 
     Person mockPerson = mock(Person.class);
 
-    Group mockGroupOne = mockGroup("A", mockPerson);
-    Group mockGroupTwo = mockGroup("B", mockPerson);
+    Group<Person> mockGroupOne = mockGroup("A", mockPerson);
+    Group<Person> mockGroupTwo = mockGroup("B", mockPerson);
 
     doCallRealMethod().when(mockGroupOne).difference(any(Group.class));
     doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
@@ -318,7 +319,7 @@ public class GroupUnitTests {
   @Test
   public void differenceOfNullGroup() {
 
-    Group mockGroup = mockGroup();
+    Group<?> mockGroup = mockGroup();
 
     doCallRealMethod().when(mockGroup).difference(any());
 
@@ -339,7 +340,7 @@ public class GroupUnitTests {
     Person janeDoe = Person.newPerson("Jane", "Doe");
     Person jackHandy = Person.newPerson("Jack", "Handy");
 
-    Group mockGroup = mockGroup(jonDoe, janeDoe, jackHandy);
+    Group<Person> mockGroup = mockGroup(jonDoe, janeDoe, jackHandy);
 
     doCallRealMethod().when(mockGroup).findBy(any(Predicate.class));
 
@@ -362,7 +363,7 @@ public class GroupUnitTests {
     Person janeDoe = Person.newPerson("Jane", "Doe").age(16);
     Person jackHandy = Person.newPerson("Jack", "Handy").age(40);
 
-    Group mockGroup = mockGroup(jonDoe, janeDoe, jackHandy);
+    Group<Person> mockGroup = mockGroup(jonDoe, janeDoe, jackHandy);
 
     doCallRealMethod().when(mockGroup).findBy(any(Predicate.class));
 
@@ -386,7 +387,7 @@ public class GroupUnitTests {
     Person janeDoe = Person.newPerson("Jane", "Doe").asFemale();
     Person jackHandy = Person.newPerson("Jack", "Handy").asMale();
 
-    Group mockGroup = mockGroup(jonDoe, janeDoe, jackHandy);
+    Group<Person> mockGroup = mockGroup(jonDoe, janeDoe, jackHandy);
 
     doCallRealMethod().when(mockGroup).findBy(any(Predicate.class));
 
@@ -402,7 +403,7 @@ public class GroupUnitTests {
   @Test
   public void findByWithNullPredicate() {
 
-    Group mockGroup = mockGroup();
+    Group<?> mockGroup = mockGroup();
 
     doCallRealMethod().when(mockGroup).findBy(any());
 
@@ -422,7 +423,7 @@ public class GroupUnitTests {
     Person jonDoe = Person.newPerson("Jon", "Doe");
     Person janeDoe = Person.newPerson("Jane", "Doe");
 
-    Group mockGroup = mockGroup(jonDoe, janeDoe);
+    Group<Person> mockGroup = mockGroup(jonDoe, janeDoe);
 
     doCallRealMethod().when(mockGroup).findOne(any(Predicate.class));
 
@@ -444,7 +445,7 @@ public class GroupUnitTests {
     Person jonDoe = Person.newPerson("Jon", "Doe").age(20);
     Person janeDoe = Person.newPerson("Jane", "Doe").age(16);
 
-    Group mockGroup = mockGroup(jonDoe, janeDoe);
+    Group<Person> mockGroup = mockGroup(jonDoe, janeDoe);
 
     doCallRealMethod().when(mockGroup).findOne(any(Predicate.class));
 
@@ -465,7 +466,7 @@ public class GroupUnitTests {
 
     Person jonDoe = Person.newPerson("Jon", "Doe").asMale();
 
-    Group mockGroup = mockGroup(jonDoe);
+    Group<Person> mockGroup = mockGroup(jonDoe);
 
     doCallRealMethod().when(mockGroup).findOne(any(Predicate.class));
 
@@ -482,7 +483,7 @@ public class GroupUnitTests {
   @Test
   public void findOneWithNullPredicate() {
 
-    Group mockGroup = mockGroup();
+    Group<Person> mockGroup = mockGroup();
 
     doCallRealMethod().when(mockGroup).findOne(any());
 
@@ -502,8 +503,8 @@ public class GroupUnitTests {
     Person mockPersonOne = mock(Person.class);
     Person mockPersonTwo = mock(Person.class);
 
-    Group mockGroupOne = mockGroup("A", mockPersonOne, mockPersonTwo);
-    Group mockGroupTwo = mockGroup("B", mockPersonTwo);
+    Group<Person> mockGroupOne = mockGroup("A", mockPersonOne, mockPersonTwo);
+    Group<Person> mockGroupTwo = mockGroup("B", mockPersonTwo);
 
     doCallRealMethod().when(mockGroupOne).intersection(any(Group.class));
     doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
@@ -529,8 +530,8 @@ public class GroupUnitTests {
 
     Person mockPerson = mock(Person.class);
 
-    Group mockGroupOne = mockGroup("A");
-    Group mockGroupTwo = mockGroup("B", mockPerson);
+    Group<Person> mockGroupOne = mockGroup("A");
+    Group<Person> mockGroupTwo = mockGroup("B", mockPerson);
 
     doCallRealMethod().when(mockGroupOne).intersection(any(Group.class));
     doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
@@ -567,8 +568,8 @@ public class GroupUnitTests {
 
     Person mockPerson = mock(Person.class);
 
-    Group mockGroupOne = mockGroup("A", mockPerson);
-    Group mockGroupTwo = mockGroup("B", mockPerson);
+    Group<Person> mockGroupOne = mockGroup("A", mockPerson);
+    Group<Person> mockGroupTwo = mockGroup("B", mockPerson);
 
     doCallRealMethod().when(mockGroupOne).intersection(any(Group.class));
     doCallRealMethod().when(mockGroupOne).findBy(any(Predicate.class));
@@ -591,7 +592,7 @@ public class GroupUnitTests {
   @Test
   public void intersectionWithNullGroup() {
 
-    Group mockGroup = mockGroup();
+    Group<?> mockGroup = mockGroup();
 
     doCallRealMethod().when(mockGroup).intersection(any());
 
@@ -604,7 +605,7 @@ public class GroupUnitTests {
   @Test
   public void isEmptyWhenSizeIsGreaterThanZeroReturnsFalse() {
 
-    Group mockGroup = mockGroup();
+    Group<?> mockGroup = mockGroup();
 
     doReturn(1).when(mockGroup).size();
     doCallRealMethod().when(mockGroup).isEmpty();
@@ -619,7 +620,7 @@ public class GroupUnitTests {
   @Test
   public void isEmptyWhenSizeIsLessThanOneReturnsTrue() {
 
-    Group mockGroup = mockGroup();
+    Group<?> mockGroup = mockGroup();
 
     doReturn(0, -1, -2).when(mockGroup).size();
     doCallRealMethod().when(mockGroup).isEmpty();
@@ -642,7 +643,7 @@ public class GroupUnitTests {
 
     Set<Person> people = CollectionUtils.asSet(jonDoe, janeDoe);
 
-    Group mockGroup = mock(Group.class);
+    Group<Person> mockGroup = mock(Group.class);
 
     doAnswer(invocation -> people.iterator()).when(mockGroup).iterator();
     doAnswer(invocation -> people.spliterator()).when(mockGroup).spliterator();
@@ -665,7 +666,7 @@ public class GroupUnitTests {
 
     Set<Person> people = CollectionUtils.asSet(jonDoe, janeDoe);
 
-    Group mockGroup = mock(Group.class);
+    Group<Person> mockGroup = mock(Group.class);
 
     doAnswer(invocation -> people.iterator()).when(mockGroup).iterator();
     doAnswer(invocation -> people.spliterator()).when(mockGroup).spliterator();
@@ -687,7 +688,7 @@ public class GroupUnitTests {
 
     Set<Person> people = Collections.singleton(jonDoe);
 
-    Group mockGroup = mock(Group.class);
+    Group<Person> mockGroup = mock(Group.class);
 
     doAnswer(invocation -> people.iterator()).when(mockGroup).iterator();
     doAnswer(invocation -> people.spliterator()).when(mockGroup).spliterator();
@@ -707,7 +708,7 @@ public class GroupUnitTests {
 
     Person jackHandy = Person.newPerson("Jack", "Handy");
 
-    Group mockGroup = mockGroup();
+    Group<Person> mockGroup = mockGroup();
 
     doCallRealMethod().when(mockGroup).leave(any(Person.class));
     doCallRealMethod().when(mockGroup).leave(any(Predicate.class));
@@ -729,7 +730,7 @@ public class GroupUnitTests {
 
     Set<Person> people = CollectionUtils.asSet(jonDoe, janeDoe, pieDoe);
 
-    Group mockGroup = mock(Group.class);
+    Group<Person> mockGroup = mock(Group.class);
 
     doAnswer(invocation -> people.iterator()).when(mockGroup).iterator();
     doAnswer(invocation -> people.spliterator()).when(mockGroup).spliterator();
@@ -753,7 +754,7 @@ public class GroupUnitTests {
 
     Set<Person> people = CollectionUtils.asSet(jonDoe, janeDoe, jackHandy);
 
-    Group mockGroup = mock(Group.class);
+    Group<Person> mockGroup = mock(Group.class);
 
     doAnswer(invocation -> people.iterator()).when(mockGroup).iterator();
     doAnswer(invocation -> people.spliterator()).when(mockGroup).spliterator();
@@ -773,7 +774,7 @@ public class GroupUnitTests {
     Person jonDoe = Person.newPerson("Jon", "Doe");
     Person janeDoe = Person.newPerson("Jane", "Doe");
 
-    Group mockGroup = mockGroup(jonDoe, janeDoe);
+    Group<Person> mockGroup = mockGroup(jonDoe, janeDoe);
 
     doCallRealMethod().when(mockGroup).size();
 
@@ -787,7 +788,7 @@ public class GroupUnitTests {
 
     Person jonDoe = Person.newPerson("Jon", "Doe");
 
-    Group mockGroup = mockGroup(jonDoe);
+    Group<Person> mockGroup = mockGroup(jonDoe);
 
     doCallRealMethod().when(mockGroup).size();
 
@@ -799,7 +800,7 @@ public class GroupUnitTests {
   @Test
   public void sizeOfEmptyGroupReturnsZero() {
 
-    Group mockGroup = mockGroup();
+    Group<?> mockGroup = mockGroup();
 
     doCallRealMethod().when(mockGroup).size();
 
@@ -814,7 +815,7 @@ public class GroupUnitTests {
     Person mockPersonOne = mock(Person.class);
     Person mockPersonTwo = mock(Person.class);
 
-    Group mockGroup = mockGroup(mockPersonOne, mockPersonTwo);
+    Group<Person> mockGroup = mockGroup(mockPersonOne, mockPersonTwo);
 
     doCallRealMethod().when(mockGroup).stream();
 
@@ -833,7 +834,7 @@ public class GroupUnitTests {
 
     Person mockPerson = mock(Person.class);
 
-    Group mockGroup = mockGroup(mockPerson);
+    Group<Person> mockGroup = mockGroup(mockPerson);
 
     doCallRealMethod().when(mockGroup).stream();
 
@@ -850,7 +851,7 @@ public class GroupUnitTests {
   @Test
   public void streamEmptyGroup() {
 
-    Group mockGroup = mockGroup();
+    Group<Person> mockGroup = mockGroup();
 
     doCallRealMethod().when(mockGroup).stream();
 
@@ -869,8 +870,8 @@ public class GroupUnitTests {
     Person mockPersonTwo = mock(Person.class);
     Person mockPersonThree = mock(Person.class);
 
-    Group mockGroupOne = mockGroup("GroupOne", mockPersonOne, mockPersonTwo);
-    Group mockGroupTwo = mockGroup("GroupTwo", mockPersonTwo, null, mockPersonThree);
+    Group<Person> mockGroupOne = mockGroup("GroupOne", mockPersonOne, mockPersonTwo);
+    Group<Person> mockGroupTwo = mockGroup("GroupTwo", mockPersonTwo, null, mockPersonThree);
 
     doCallRealMethod().when(mockGroupOne).stream();
     doCallRealMethod().when(mockGroupTwo).stream();
@@ -893,7 +894,7 @@ public class GroupUnitTests {
 
     Person mockPerson = mock(Person.class);
 
-    Group mockGroup = mockGroup(mockPerson);
+    Group<Person> mockGroup = mockGroup(mockPerson);
 
     doCallRealMethod().when(mockGroup).stream();
     doCallRealMethod().when(mockGroup).union(any());
