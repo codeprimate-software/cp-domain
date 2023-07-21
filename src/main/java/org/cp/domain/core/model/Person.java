@@ -140,13 +140,13 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * @return a new {@link Person} initialized with the given, required {@link String name}.
    * @throws IllegalArgumentException if either the {@link String first name} or {@link String last name}
    * of the person were not given.
-   * @see org.cp.domain.core.model.Name#of(String)
+   * @see org.cp.domain.core.model.Name#parse(String)
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #newPerson(Name)
    */
   @Dsl
   public static @NotNull Person newPerson(@NotNull String name) {
-    return newPerson(Name.of(name));
+    return newPerson(Name.parse(name));
   }
 
   /**
@@ -160,14 +160,14 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * and {@link LocalDateTime date of birth}.
    * @throws IllegalArgumentException if either the {@link String first name} or {@link String last name}
    * of the person were not given.
-   * @see org.cp.domain.core.model.Name#of(String)
+   * @see org.cp.domain.core.model.Name#parse(String)
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #newPerson(Name, LocalDateTime)
    * @see java.time.LocalDateTime
    */
   @Dsl
   public static @NotNull Person newPerson(@NotNull String name, @Nullable LocalDateTime birthDate) {
-    return newPerson(Name.of(name), birthDate);
+    return newPerson(Name.parse(name), birthDate);
   }
 
   /**

@@ -108,38 +108,12 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Factory method used to parse the given, required {@link String} into the individual components of a {@literal name}
-   * and then construct a new {@link Name} initialized with the individual {@literal name} components.
-   *
-   * @param name {@link String} containing the {@literal name} to parse;
-   * must not be {@literal null} or {@literal empty}.
-   * @return a new {@link Name} initialized with the given, required {@link String name} parsed into individual
-   * name components: {@link String first name}, {@link String last name}
-   * and {@link String middle name or middle initial(s)}.
-   * @throws IllegalArgumentException if either {@link String first} or {@link String last name}
-   * are {@literal null} or {@literal empty}.
-   * @see org.cp.elements.lang.annotation.Dsl
-   * @see #of(String, String, String)
-   * @see #of(String, String)
-   * @see #parseName(String)
-   */
-  @Dsl
-  public static @NotNull Name of(@NotNull String name) {
-
-    String[] parts = parseName(name);
-
-    return parts.length < 3
-      ? of(parts[0], parts[1])
-      : of(parts[0], parts[1], parts[2]);
-  }
-
-  /**
    * Factory method used to construct a new {@link Name} initialized with the given, required {@link String first}
    * and {@link String last name}.
    *
-   * @param firstName {@link String} containing the {@literal first name};
+   * @param firstName {@link String} containing a {@literal first name};
    * must not be {@literal null} or {@literal empty}.
-   * @param lastName {@link String} containing the {@literal last name};
+   * @param lastName {@link String} containing a {@literal last name};
    * must not be {@literal null} or {@literal empty}.
    * @return a new {@link Name} initialized with the given, required {@link String first} and {@link String last name}.
    * @throws IllegalArgumentException if either the {@link String first} or {@link String last name}
@@ -154,14 +128,14 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
 
   /**
    * Factory method used to construct a new {@link Name} initialized with the given, required {@link String first name},
-   * an optional {@link String middle name or middle initial(s)} and a required {@link String last name}.
+   * optional {@link String middle name or middle initial(s)} and a required {@link String last name}.
    *
-   * @param firstName {@link String} containing the {@literal first name};
+   * @param firstName {@link String} containing a {@literal first name};
    * must not be {@literal null} or {@literal empty}.
    * @param middleName {@link String} containing an optional {@literal middle name} or {@literal middle initial(s)}.
-   * @param lastName {@link String} containing the {@literal last name};
+   * @param lastName {@link String} containing a {@literal last name};
    * must not be {@literal null} or {@literal empty}.
-   * @return a new {@link Name} initialized to the given {@link String first name}, {@link String middle name}
+   * @return a new {@link Name} initialized with the given {@link String first name}, {@link String middle name}
    * and {@link String last name}.
    * @throws IllegalArgumentException if either the {@link String first} or {@link String last name}
    * are {@literal null} or {@literal empty}.
@@ -171,6 +145,32 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   @Dsl
   public static @NotNull Name of(@NotNull String firstName, @Nullable String middleName, @NotNull String lastName) {
     return new Name(firstName, middleName, lastName);
+  }
+
+  /**
+   * Factory method used to parse and split the given {@link String} into the individual components of a {@literal name}
+   * to construct a new {@link Name} initialized with the individual components.
+   *
+   * @param name {@link String} containing the {@literal name} to parse;
+   * must not be {@literal null} or {@literal empty}.
+   * @return a new {@link Name} initialized with the given, required {@link String name} parsed and split into
+   * individual components of a {@literal name}: {@link String first name}, {@link String last name}
+   * and (optionally) {@link String middle name or middle initial(s)}.
+   * @throws IllegalArgumentException if either the {@link String first} or {@link String last name}
+   * in the given {@link String name} are {@literal null} or {@literal empty}.
+   * @see org.cp.elements.lang.annotation.Dsl
+   * @see #of(String, String, String)
+   * @see #of(String, String)
+   * @see #doParse(String)
+   */
+  @Dsl
+  public static @NotNull Name parse(@NotNull String name) {
+
+    String[] parts = doParse(name);
+
+    return parts.length < 3
+      ? of(parts[0], parts[1])
+      : of(parts[0], parts[1], parts[2]);
   }
 
   /**
@@ -185,7 +185,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
    * @see #stripSuffix(String)
    * @see #stripTitle(String)
    */
-  private static String[] parseName(@NotNull String name) {
+  private static String[] doParse(@NotNull String name) {
 
     return Optional.ofNullable(name)
       .filter(StringUtils::hasText)

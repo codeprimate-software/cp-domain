@@ -46,12 +46,7 @@ import org.cp.elements.lang.Visitor;
 public class NameUnitTests {
 
   private void assertName(Name name, String expectedFirstName, String expectedLastName) {
-
-    assertThat(name).isNotNull();
-    assertThat(name.getName()).isSameAs(name);
-    assertThat(name.getFirstName()).isEqualTo(expectedFirstName);
-    assertThat(name.getLastName()).isEqualTo(expectedLastName);
-    assertThat(name.getMiddleName()).isNotPresent();
+    assertName(name, expectedFirstName, null, expectedLastName);
   }
 
   private void assertName(Name name, String expectedFirstName, String expectedMiddleName, String expectedLastName) {
@@ -64,10 +59,10 @@ public class NameUnitTests {
   }
 
   @Test
-  public void ofName() {
+  public void fromName() {
 
     Name source = Name.of("Jon", "Jason", "Bloom");
-    Name target = Name.of(source);
+    Name target = Name.from(source);
 
     assertThat(target).isNotNull();
     assertThat(target).isNotSameAs(source);
@@ -76,10 +71,10 @@ public class NameUnitTests {
   }
 
   @Test
-  public void ofNameWithMiddleInitial() {
+  public void fromNameWithMiddleInitial() {
 
     Name source = Name.of("Jon", "J", "Bloom");
-    Name target = Name.of(source);
+    Name target = Name.from(source);
 
     assertThat(target).isNotNull();
     assertThat(target).isNotSameAs(source);
@@ -88,10 +83,10 @@ public class NameUnitTests {
   }
 
   @Test
-  public void ofNameWithNoMiddleName() {
+  public void fromNameWithNoMiddleName() {
 
     Name source = Name.of("Jon", "Bloom");
-    Name target = Name.of(source);
+    Name target = Name.from(source);
 
     assertThat(target).isNotNull();
     assertThat(target).isNotSameAs(source);
@@ -102,17 +97,17 @@ public class NameUnitTests {
   }
 
   @Test
-  public void ofNullNameThrowsIllegalArgumentException() {
+  public void fromNullNameThrowsIllegalArgumentException() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Name.of((Name) null))
+      .isThrownBy(() -> Name.from((Name) null))
       .withMessage("Name to copy is required")
       .withNoCause();
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void ofNameableOfName() {
+  public void fromNameableOfName() {
 
     Name name = Name.of("Jon", "Jason", "Bloom");
 
@@ -120,7 +115,7 @@ public class NameUnitTests {
 
     doReturn(name).when(mockNameable).getName();
 
-    Name copy = Name.of(mockNameable);
+    Name copy = Name.from(mockNameable);
 
     assertThat(copy).isNotNull();
     assertThat(copy).isNotSameAs(name);
@@ -133,7 +128,7 @@ public class NameUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void ofNameableOfNameWithMiddleInitial() {
+  public void fromNameableOfNameWithMiddleInitial() {
 
     Name name = Name.of("Jon", "J", "Bloom");
 
@@ -141,7 +136,7 @@ public class NameUnitTests {
 
     doReturn(name).when(mockNameable).getName();
 
-    Name copy = Name.of(mockNameable);
+    Name copy = Name.from(mockNameable);
 
     assertThat(copy).isNotNull();
     assertThat(copy).isNotSameAs(name);
@@ -154,7 +149,7 @@ public class NameUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void ofNameableOfNameWithNoMiddleName() {
+  public void fromNameableOfNameWithNoMiddleName() {
 
     Name name = Name.of("Jon", "Bloom");
 
@@ -162,7 +157,7 @@ public class NameUnitTests {
 
     doReturn(name).when(mockNameable).getName();
 
-    Name copy = Name.of(mockNameable);
+    Name copy = Name.from(mockNameable);
 
     assertThat(copy).isNotNull();
     assertThat(copy).isNotSameAs(name);
@@ -174,89 +169,12 @@ public class NameUnitTests {
   }
 
   @Test
-  public void ofNullNameableThrowsIllegalArgumentException() {
+  public void fromNullNameableThrowsIllegalArgumentException() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> Name.of((Nameable<Name>) null))
+      .isThrownBy(() -> Name.from((Nameable<Name>) null))
       .withMessage("Nameable of Name is required")
       .withNoCause();
-  }
-
-  @Test
-  public void ofStringContainingFirstNameAndLastName() {
-    assertName(Name.of("Jon Bloom"), "Jon", "Bloom");
-  }
-
-  @Test
-  public void ofStringContainingFirstNameMiddleInitialAndLastName() {
-    assertName(Name.of("Jon J Bloom"), "Jon", "J", "Bloom");
-  }
-
-  @Test
-  public void ofStringContainingFirstNameMiddleNameAndLastName() {
-    assertName(Name.of("Jon Jason Bloom"), "Jon", "Jason", "Bloom");
-  }
-
-  @Test
-  public void ofStringContainingFirstNameLastNameAndSuffix() {
-    assertName(Name.of("Jon Bloom Sr"), "Jon", "Bloom");
-  }
-
-  @Test
-  public void ofStringContainingFirstNameMiddleInitialLastNameAndSuffix() {
-    assertName(Name.of("Jon J Bloom Jr."), "Jon", "J", "Bloom");
-  }
-
-  @Test
-  public void ofStringContainingFirstNameMiddleNameLastNameAndUnknownSuffix() {
-    assertName(Name.of("Charles Gordon Howell III"),
-      "Charles", "Gordon", "Howell");
-  }
-
-  @Test
-  public void ofStringContainingMissTitleFirstNameAndLastName() {
-    assertName(Name.of("Miss Ellie Bloom"), "Ellie", "Bloom");
-  }
-
-  @Test
-  public void ofStringContainingMissesTitleFirstNameMiddleInitialAndLastName() {
-    assertName(Name.of("Mrs. Sarah E Bloom"), "Sarah", "E", "Bloom");
-  }
-
-  @Test
-  public void ofStringContainingMisterTitleFirstNameMiddleNameAndLastName() {
-    assertName(Name.of("Mr. Jon Jason Bloom"), "Jon", "Jason", "Bloom");
-  }
-
-  @Test
-  public void ofStringContainingMultipleTitlesWithNameAndMultipleSuffixes() {
-    assertName(Name.of("Sir Dr. Senior Bloom Jr. 111"), "Senior", "Bloom");
-  }
-
-  @Test
-  public void ofStringContainingMultipleTitlesWithFullNameAndMultipleSuffixes() {
-    assertName(Name.of("Sir Dr. Senior Xander Bloom Jr. 11"),
-      "Senior", "Xander", "Bloom");
-  }
-
-  @Test
-  public void ofStringContainingPaddedFirstNameMiddleNameAndLastName() {
-    assertName(Name.of("  Jon   J Bloom    "), "Jon", "J", "Bloom");
-  }
-
-  @Test
-  public void ofStringContainingTitleFirstNameLastNameAndSuffix() {
-    assertName(Name.of("Dr. Evil Mister Sr."), "Evil", "Mister");
-  }
-
-  @Test
-  public void ofStringContainingInvalidNamesThrowsIllegalArgumentException() {
-
-    Arrays.asList("Jon", "", "  ", null).forEach(name ->
-      assertThatIllegalArgumentException()
-        .isThrownBy(() -> Name.of(name))
-        .withMessage("First and last name are required; was [%s]", name)
-        .withNoCause());
   }
 
   @Test
@@ -268,6 +186,83 @@ public class NameUnitTests {
   public void ofFirstNameMiddleNameAndLastName() {
     assertName(Name.of("Jon", "Jason", "Bloom"),
       "Jon", "Jason", "Bloom");
+  }
+
+  @Test
+  public void parseStringContainingFirstNameAndLastName() {
+    assertName(Name.parse("Jon Bloom"), "Jon", "Bloom");
+  }
+
+  @Test
+  public void parseStringContainingFirstNameMiddleInitialAndLastName() {
+    assertName(Name.parse("Jon J Bloom"), "Jon", "J", "Bloom");
+  }
+
+  @Test
+  public void parseStringContainingFirstNameMiddleNameAndLastName() {
+    assertName(Name.parse("Jon Jason Bloom"), "Jon", "Jason", "Bloom");
+  }
+
+  @Test
+  public void parseStringContainingFirstNameLastNameAndSuffix() {
+    assertName(Name.parse("Jon Bloom Sr"), "Jon", "Bloom");
+  }
+
+  @Test
+  public void parseStringContainingFirstNameMiddleInitialLastNameAndSuffix() {
+    assertName(Name.parse("Jon J Bloom Jr."), "Jon", "J", "Bloom");
+  }
+
+  @Test
+  public void parseStringContainingFirstNameMiddleNameLastNameAndUnknownSuffix() {
+    assertName(Name.parse("Charles Gordon Howell III"),
+      "Charles", "Gordon", "Howell");
+  }
+
+  @Test
+  public void parseStringContainingMissTitleFirstNameAndLastName() {
+    assertName(Name.parse("Miss Ellie Bloom"), "Ellie", "Bloom");
+  }
+
+  @Test
+  public void parseStringContainingMissesTitleFirstNameMiddleInitialAndLastName() {
+    assertName(Name.parse("Mrs. Sarah E Bloom"), "Sarah", "E", "Bloom");
+  }
+
+  @Test
+  public void parseStringContainingMisterTitleFirstNameMiddleNameAndLastName() {
+    assertName(Name.parse("Mr. Jon Jason Bloom"), "Jon", "Jason", "Bloom");
+  }
+
+  @Test
+  public void parseStringContainingMultipleTitlesWithNameAndMultipleSuffixes() {
+    assertName(Name.parse("Sir Dr. Senior Bloom Jr. 111"), "Senior", "Bloom");
+  }
+
+  @Test
+  public void parseStringContainingMultipleTitlesWithFullNameAndMultipleSuffixes() {
+    assertName(Name.parse("Sir Dr. Senior Xander Bloom Jr. 11"),
+      "Senior", "Xander", "Bloom");
+  }
+
+  @Test
+  public void parseStringContainingPaddedFirstNameMiddleNameAndLastName() {
+    assertName(Name.parse("  Jon   J Bloom    "), "Jon", "J", "Bloom");
+  }
+
+  @Test
+  public void parseStringContainingTitleFirstNameLastNameAndSuffix() {
+    assertName(Name.parse("Dr. Evil Mister Sr."), "Evil", "Mister");
+  }
+
+  @Test
+  public void parseStringContainingInvalidNamesThrowsIllegalArgumentException() {
+
+    Arrays.asList("Jon", "Jon Jr.", "Mr. Jon", "", "  ", null).forEach(name ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> Name.parse(name))
+        .withMessage("First and last name are required; was [%s]", name)
+        .withNoCause());
   }
 
   @Test
@@ -537,7 +532,7 @@ public class NameUnitTests {
 
   @Test
   public void toStringWithTitleFirstNameMiddleNameLastNameAndSuffixIsStringWithFirstNameMiddleNameAndLastNameOnly() {
-    assertThat(Name.of("Dr. Evil C Doer Sr.").toString()).isEqualTo("Evil C Doer");
+    assertThat(Name.parse("Dr. Evil C Doer Sr.").toString()).isEqualTo("Evil C Doer");
   }
 
   @Test
