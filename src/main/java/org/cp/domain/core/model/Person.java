@@ -199,7 +199,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * must not be {@literal null} or {@literal empty}.
    * @param lastName {@link String} containing the {@link Person person's} {@literal last name};
    * must not be {@literal null} or {@literal empty}.
-   * @param birthDate {@link LocalDateTime} specifying the {@link Person person's} date of birth.
+   * @param birthDate {@link LocalDateTime} specifying the {@link Person person's} {@literal date of birth}.
    * @return a new {@link Person} initialized with the given, required {@link String first name}
    * and {@link String last name} as well as {@link LocalDateTime date of birth}.
    * @throws IllegalArgumentException if either the {@link String first name} or {@link String last name}
