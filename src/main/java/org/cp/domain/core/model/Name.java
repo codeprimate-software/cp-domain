@@ -69,19 +69,20 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   @SuppressWarnings("all")
   protected static final String COMPARABLE_MIDDLE_NAME = String.valueOf(DEFAULT_MIDDLE_NAME);
 
+  @Serial
   private static final long serialVersionUID = 83448823861933031L;
 
   /**
-   * Factory method used to construct a new {@link Name} by copying (or cloning) the existing, required {@link Name}.
+   * Factory method used to construct a new {@link Name} by copying (or cloning) an existing, required {@link Name}.
    *
    * @param name {@link Name} to copy; must not be {@literal null}.
-   * @return a {@link Name} initialized from the given, required {@link Name}.
+   * @return a {@link Name} initialized from the given {@link Name}.
    * @throws IllegalArgumentException if {@link Name} is {@literal null}.
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #of(String, String, String)
    */
   @Dsl
-  public static @NotNull Name of(@NotNull Name name) {
+  public static @NotNull Name from(@NotNull Name name) {
 
     Assert.notNull(name, "Name to copy is required");
 
@@ -89,21 +90,21 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   }
 
   /**
-   * Factory method used to construct a new {@link Name} for the given, required {@link Nameable} object.
+   * Factory method used to construct a new {@link Name} from the given, required {@link Nameable object}.
    *
-   * @param nameable {@link Nameable} object used to construct a {@link Name}; must not be {@literal null}.
-   * @return a new {@link Name} initialized with the given, required {@link Nameable} object.
+   * @param nameable {@link Nameable object} used to construct a new {@link Name}; must not be {@literal null}.
+   * @return a new {@link Name} initialized with the given {@link Nameable object}.
    * @throws IllegalArgumentException if {@link Nameable} is {@literal null}.
    * @see org.cp.elements.lang.Nameable#getName()
    * @see org.cp.elements.lang.annotation.Dsl
-   * @see #of(Name)
+   * @see #from(Name)
    */
   @Dsl
-  public static @NotNull Name of(@NotNull Nameable<Name> nameable) {
+  public static @NotNull Name from(@NotNull Nameable<Name> nameable) {
 
     Assert.notNull(nameable, "Nameable of Name is required");
 
-    return of(nameable.getName());
+    return from(nameable.getName());
   }
 
   /**
@@ -354,12 +355,12 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
    *
    * @return a clone (copy) of this {@link Name}.
    * @see java.lang.Object#clone()
-   * @see #of(Name)
+   * @see #from(Name)
    */
   @Override
   @SuppressWarnings("all")
   public @NotNull Object clone() {
-    return of(this);
+    return from(this);
   }
 
   /**
