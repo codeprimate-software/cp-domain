@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.enums;
-
-import static java.util.Arrays.stream;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -25,10 +22,11 @@ import java.util.stream.Collectors;
 import org.cp.elements.lang.StringUtils;
 
 /**
- * The {@link Continent} enum is an enumeration of all 7 continents in the world.
+ * {@link Enum Enumeration} of all 7 continents in the world.
  *
  * @author John Blum
  * @see org.cp.domain.geo.enums.Country
+ * @see <a href="https://www.worldometers.info/geography/7-continents/">7 contintents</a>
  * @see <a href="https://www.countries-ofthe-world.com/continents-of-the-world.html">COUNTRIES-ofthe-WORLD.COM</a>
  * @since 0.1.0
  */
@@ -45,13 +43,16 @@ public enum Continent {
   UNKNOWN;
 
   /**
-   * Returns all the {@link Country Countries} that reside on this {@link Continent}.
+   * Returns all {@link Country Countries} that reside on this {@link Continent}.
    *
    * @return a {@link Set} of {@link Country Countries} that reside on this {@link Continent}.
    * @see org.cp.domain.geo.enums.Country
+   * @see java.util.Set
    */
   public Set<Country> countries() {
-    return stream(Country.values()).filter(country -> country.isOnContinent(this))
+
+    return Arrays.stream(Country.values())
+      .filter(country -> country.isOnContinent(this))
       .collect(Collectors.toSet());
   }
 
