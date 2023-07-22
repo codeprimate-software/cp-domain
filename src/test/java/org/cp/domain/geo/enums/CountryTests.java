@@ -60,10 +60,10 @@ public class CountryTests {
     assertThat(add(Country.ANGOLA).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.ANTIGUA_AND_BARBUDA).getContinents()).containsExactly(Continent.NORTH_AMERICA);
     assertThat(add(Country.ARGENTINA).getContinents()).containsExactly(Continent.SOUTH_AMERICA);
-    assertThat(add(Country.ARMENIA).getContinents()).containsExactly(Continent.ASIA, Continent.EUROPE);
+    assertThat(add(Country.ARMENIA).getContinents()).containsExactlyInAnyOrder(Continent.ASIA, Continent.EUROPE);
     assertThat(add(Country.AUSTRALIA).getContinents()).containsExactly(Continent.AUSTRALIA_AND_OCEANIA);
     assertThat(add(Country.AUSTRIA).getContinents()).containsExactly(Continent.EUROPE);
-    assertThat(add(Country.AZERBAIJAN).getContinents()).containsExactly(Continent.ASIA, Continent.EUROPE);
+    assertThat(add(Country.AZERBAIJAN).getContinents()).containsExactlyInAnyOrder(Continent.ASIA, Continent.EUROPE);
     assertThat(add(Country.BAHAMAS).getContinents()).containsExactly(Continent.NORTH_AMERICA);
     assertThat(add(Country.BAHRAIN).getContinents()).containsExactly(Continent.ASIA);
     assertThat(add(Country.BANGLADESH).getContinents()).containsExactly(Continent.ASIA);

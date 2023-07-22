@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.enums;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
-import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
-import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link Country} enum is an enumerated type of all the Countries in the World.
+ * {@link Enum Enumeration} of all the {@literal Countries} in the {@literal World}.
  *
  * @author John Blum
  * @see org.cp.domain.geo.enums.Continent
@@ -245,13 +242,15 @@ public enum Country {
   UNKNOWN("UK", "UKN", "999");
 
   /**
-   * Returns a {@link Set} of all the {@link Country Countries} in the World that are on the given {@link Continent}.
+   * Returns a {@link Set} of all the {@link Country Countries} in the {@literal World}
+   * that are on the given {@link Continent}.
    *
-   * @param continent {@link Continent} used to determine the {@link Set} of {@link Country Countries} to return.
-   * @return all {@link Country Countries} in the World that are on the given {@link Continent}.
+   * @param continent {@link Continent} determining the {@link Set} of {@link Country Countries} to return.
+   * @return all {@link Country Countries} in the {@literal World} on the given {@link Continent}.
    * @see org.cp.domain.geo.enums.Continent
    * @see org.cp.domain.geo.enums.Country
    * @see #isOnContinent(Continent)
+   * @see java.util.Set
    * @see #values()
    */
   public static Set<Country> byContinent(Continent continent) {
@@ -259,6 +258,13 @@ public enum Country {
     return Arrays.stream(values())
       .filter(country -> country.isOnContinent(continent))
       .collect(Collectors.toSet());
+  }
+
+  private static Optional<Country> byQueryPredicate(@NotNull Predicate<Country> countryPredicate) {
+
+    return Arrays.stream(values())
+      .filter(countryPredicate)
+      .findFirst();
   }
 
   /**
@@ -271,12 +277,10 @@ public enum Country {
    * @see java.lang.String
    * @see #values()
    */
-  public static Country byIsoNumeric(String isoNumericThreeDigitCode) {
+  public static @NotNull Country byIsoNumeric(String isoNumericThreeDigitCode) {
 
-    return Arrays.stream(values())
-      .filter(country -> country.getIsoNumericThreeDigitCode().equals(isoNumericThreeDigitCode))
-      .findFirst()
-      .orElseThrow(() -> newIllegalArgumentException("No Country for ISO numeric code [%s] was found",
+    return byQueryPredicate(country -> country.getIsoNumericThreeDigitCode().equalsIgnoreCase(isoNumericThreeDigitCode))
+      .orElseThrow(() -> newIllegalArgumentException("Country for ISO numeric code [%s] was not found",
         isoNumericThreeDigitCode));
   }
 
@@ -290,12 +294,10 @@ public enum Country {
    * @see java.lang.String
    * @see #values()
    */
-  public static Country byIsoThree(String isoAlphaThreeLetterCode) {
+  public static @NotNull Country byIsoThree(String isoAlphaThreeLetterCode) {
 
-    return Arrays.stream(values())
-      .filter(country -> country.getIsoAlphaThreeLetterCode().equals(isoAlphaThreeLetterCode))
-      .findFirst()
-      .orElseThrow(() -> newIllegalArgumentException("No Country for ISO 3166-3 [%s] was found",
+    return byQueryPredicate(country -> country.getIsoAlphaThreeLetterCode().equalsIgnoreCase(isoAlphaThreeLetterCode))
+      .orElseThrow(() -> newIllegalArgumentException("Country for ISO 3166-3 [%s] was not found",
         isoAlphaThreeLetterCode));
   }
 
@@ -309,12 +311,10 @@ public enum Country {
    * @see java.lang.String
    * @see #values()
    */
-  public static Country byIsoTwo(String isoAlphaTwoLetterCode) {
+  public static @NotNull Country byIsoTwo(String isoAlphaTwoLetterCode) {
 
-    return Arrays.stream(values())
-      .filter(country -> country.getIsoAlphaTwoLetterCode().equals(isoAlphaTwoLetterCode))
-      .findFirst()
-      .orElseThrow(() -> newIllegalArgumentException("No Country for ISO 3166-2 [%s] was found",
+    return byQueryPredicate(country -> country.getIsoAlphaTwoLetterCode().equalsIgnoreCase(isoAlphaTwoLetterCode))
+      .orElseThrow(() -> newIllegalArgumentException("Country for ISO 3166-2 [%s] was not found",
         isoAlphaTwoLetterCode));
   }
 
@@ -326,16 +326,11 @@ public enum Country {
    * @see java.util.Locale#getDefault()
    * @see java.util.Locale#getISO3Country()
    */
-  public static Country localCountry() {
+  public static @NotNull Country localCountry() {
 
-    String isoAlphaThreeLetterCode = StringUtils.toLowerCase(Locale.getDefault().getISO3Country());
+    String isoAlphaThreeLetterCode = Locale.getDefault().getISO3Country();
 
-    return Arrays.stream(Country.values())
-      .filter(country ->
-        ObjectUtils.equals(StringUtils.toLowerCase(country.getIsoAlphaThreeLetterCode()), isoAlphaThreeLetterCode))
-      .findFirst()
-      .orElseThrow(() -> newIllegalStateException("Country for ISO alpha-3-letter code [%s] was not found",
-        isoAlphaThreeLetterCode));
+    return byIsoThree(isoAlphaThreeLetterCode);
   }
 
   private final Set<Continent> continents;
@@ -356,11 +351,12 @@ public enum Country {
   }
 
   /**
-   * Constructs a new {@link Country} on the given {@link Continent Continents}.
+   * Constructs a new {@link Country} on the given {@link Continent Continents}
+   * with the {@literal ISO} country letter codes.
    *
-   * @param isoAlphaTwoLetterCode {@link String} containing the ISO alpha-2-letter country code.
-   * @param isoAlphaThreeLetterCode {@link String} containing the ISO alpha-3-letter country code.
-   * @param isoNumericThreeDigitCode {@link String} containing the ISO numeric 3 digit country code.
+   * @param isoAlphaTwoLetterCode {@link String} containing the {@literal ISO alpha-2-letter country code}.
+   * @param isoAlphaThreeLetterCode {@link String} containing the {@literal ISO alpha-3-letter country code}.
+   * @param isoNumericThreeDigitCode {@link String} containing the {@literal ISO numeric 3-digit country code}.
    * @param continents array of {@link Continent Continents} in which this {@link Country} resides.
    * @see org.cp.domain.geo.enums.Continent
    */
@@ -370,8 +366,7 @@ public enum Country {
     this.isoAlphaTwoLetterCode = isoAlphaTwoLetterCode;
     this.isoAlphaThreeLetterCode = isoAlphaThreeLetterCode;
     this.isoNumericThreeDigitCode = isoNumericThreeDigitCode;
-    this.continents = Collections.unmodifiableSet(new TreeSet<>(
-      Arrays.asList(ArrayUtils.nullSafeArray(continents, Continent.class))));
+    this.continents = Set.of(continents);
   }
 
   /**
@@ -391,7 +386,7 @@ public enum Country {
    * @return the ISO alpha 2 letter code for this {@link Country}.
    * @see java.lang.String
    */
-  public String getIsoAlphaTwoLetterCode() {
+  public @NotNull String getIsoAlphaTwoLetterCode() {
     return this.isoAlphaTwoLetterCode;
   }
 
@@ -402,7 +397,7 @@ public enum Country {
    * @see java.util.Locale#getISO3Country()
    * @see java.lang.String
    */
-  public String getIsoAlphaThreeLetterCode() {
+  public @NotNull String getIsoAlphaThreeLetterCode() {
     return this.isoAlphaThreeLetterCode;
   }
 
@@ -412,8 +407,8 @@ public enum Country {
    * @return the ISO numeric 3 digit code for this {@link Country}.
    * @see java.lang.String
    */
-  public String getIsoNumericThreeDigitCode() {
-    return isoNumericThreeDigitCode;
+  public @NotNull String getIsoNumericThreeDigitCode() {
+    return this.isoNumericThreeDigitCode;
   }
 
   /**
@@ -425,7 +420,7 @@ public enum Country {
    * @see #getContinents()
    */
   @NullSafe
-  public boolean isOnContinent(Continent continent) {
+  public boolean isOnContinent(@Nullable Continent continent) {
     return getContinents().contains(continent);
   }
 }
