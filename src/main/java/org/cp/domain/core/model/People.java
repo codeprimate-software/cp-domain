@@ -27,13 +27,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Constants;
-import org.cp.elements.lang.IdentifierSequence;
 import org.cp.elements.lang.Integers;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
-import org.cp.elements.lang.support.UUIDIdentifierSequence;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.ComparatorResultBuilder;
@@ -43,14 +41,13 @@ import org.cp.elements.util.stream.StreamUtils;
  * Abstract Data Type (ADT) modeling a {@link Iterable collection} of {@link Person people}.
  *
  * @author John Blum
+ * @see java.util.UUID
  * @see org.cp.domain.core.model.Group
  * @see org.cp.domain.core.model.Person
  * @since 0.1.0
  */
 @SuppressWarnings("unused")
 public class People implements Group<Person> {
-
-  private static final IdentifierSequence<UUID> ID_SEQUENCE = new UUIDIdentifierSequence();
 
   private static final LocalDateTime EPOCH_BIRTH_DATE =
     LocalDateTime.ofEpochSecond(0L, 0, ZoneOffset.UTC);
@@ -66,17 +63,6 @@ public class People implements Group<Person> {
    */
   public static @NotNull People empty() {
     return new People();
-  }
-
-  /**
-   * Generates a new {@link UUID identifier} used to uniquely identify this {@link Group} of {@link People}.
-   *
-   * @return a new {@link UUID identifier} used to uniquely identify this {@link Group} of {@link People}.
-   * @see org.cp.elements.lang.IdentifierSequence
-   * @see java.util.UUID
-   */
-  public static @NotNull UUID generateId() {
-    return ID_SEQUENCE.nextId();
   }
 
   /**

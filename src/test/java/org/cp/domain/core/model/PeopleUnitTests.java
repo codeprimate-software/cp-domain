@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -132,15 +130,6 @@ public class PeopleUnitTests {
 
     assertThat(group).isNotNull();
     assertThat(group).isEmpty();
-  }
-
-  @Test
-  public void generatesUniqueIds() {
-
-    assertThat(Stream.generate(People::generateId)
-      .limit(100)
-      .collect(Collectors.toSet()))
-      .hasSize(100);
   }
 
   @Test

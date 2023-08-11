@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -494,6 +495,15 @@ public class GroupUnitTests {
 
     verify(mockGroup, times(1)).findOne(isNull());
     verifyNoMoreInteractions(mockGroup);
+  }
+
+  @Test
+  public void generatesUniqueIds() {
+
+    assertThat(Stream.generate(Group::generateId)
+      .limit(100)
+      .collect(Collectors.toSet()))
+      .hasSize(100);
   }
 
   @Test

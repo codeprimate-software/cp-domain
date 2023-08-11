@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
+import org.cp.elements.lang.IdentifierSequence;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.Renderable;
 import org.cp.elements.lang.Visitable;
@@ -34,6 +35,7 @@ import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.support.UUIDIdentifierSequence;
 import org.cp.elements.util.stream.StreamUtils;
 
 /**
@@ -50,6 +52,19 @@ import org.cp.elements.util.stream.StreamUtils;
  * @since 0.1.0
  */
 public interface Group<T> extends Identifiable<UUID>, Iterable<T>, Nameable<String>, Renderable, Visitable {
+
+  IdentifierSequence<UUID> ID_SEQUENCE = new UUIDIdentifierSequence();
+
+  /**
+   * Generates a new {@link UUID identifier} used to uniquely identify this {@link Group}.
+   *
+   * @return a new {@link UUID identifier} used to uniquely identify this {@link Group}.
+   * @see org.cp.elements.lang.IdentifierSequence
+   * @see java.util.UUID
+   */
+  static @NotNull UUID generateId() {
+    return ID_SEQUENCE.nextId();
+  }
 
   /**
    * Accepts the given {@link Visitor} used to visit each member in this {@link Group}.
