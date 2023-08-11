@@ -243,20 +243,19 @@ public enum Country {
 
   /**
    * Returns a {@link Set} of all the {@link Country Countries} in the {@literal World}
-   * that are on the given {@link Continent}.
+   * located on the given {@link Continent}.
    *
-   * @param continent {@link Continent} determining the {@link Set} of {@link Country Countries} to return.
-   * @return all {@link Country Countries} in the {@literal World} on the given {@link Continent}.
+   * @param continent {@link Continent} containing the {@link Country Countries} to return.
+   * @return all {@link Country Countries} in the {@literal World} located on the given {@link Continent}.
    * @see org.cp.domain.geo.enums.Continent
    * @see org.cp.domain.geo.enums.Country
-   * @see #isOnContinent(Continent)
-   * @see java.util.Set
+   * @see #isLocatedOnContinent(Continent)
    * @see #values()
    */
   public static Set<Country> byContinent(Continent continent) {
 
     return Arrays.stream(values())
-      .filter(country -> country.isOnContinent(continent))
+      .filter(country -> country.isLocatedOnContinent(continent))
       .collect(Collectors.toSet());
   }
 
@@ -268,81 +267,79 @@ public enum Country {
   }
 
   /**
-   * Factory method to lookup and find a {@link Country} based on the {@literal ISO numeric-2-digit code}.
+   * Factory method used to find a {@link Country} based on the {@literal ISO 3-digit numeric code}.
    *
-   * @param isoNumericThreeDigitCode {@literal ISO numeric-3-digit code} defined by ISO 3166.
-   * @return a {@link Country} for the given {@literal ISO numeric-3-digit code}.
+   * @param isoThreeDigitNumericCountryCode {@literal ISO 3-digit numeric code} defined by {@literal ISO 3166}.
+   * @return a {@link Country} for the given {@literal ISO 3-digit numeric code}.
    * @throws IllegalArgumentException if no {@link Country} is found.
-   * @see org.cp.domain.geo.enums.Country#getIsoNumericThreeDigitCode()
-   * @see java.lang.String
-   * @see #values()
+   * @see org.cp.domain.geo.enums.Country#getIsoThreeDigitNumericCountryCode()
+   * @see #byQueryPredicate(Predicate)
    */
-  public static @NotNull Country byIsoNumeric(String isoNumericThreeDigitCode) {
+  public static @NotNull Country byIsoThreeDigitNumericCountryCode(@NotNull String isoThreeDigitNumericCountryCode) {
 
-    return byQueryPredicate(country -> country.getIsoNumericThreeDigitCode().equalsIgnoreCase(isoNumericThreeDigitCode))
-      .orElseThrow(() -> newIllegalArgumentException("Country for ISO numeric code [%s] was not found",
-        isoNumericThreeDigitCode));
+    return byQueryPredicate(country -> country.getIsoThreeDigitNumericCountryCode()
+      .equalsIgnoreCase(isoThreeDigitNumericCountryCode))
+      .orElseThrow(() -> newIllegalArgumentException("Country for ISO 3-digit numeric code [%s] was not found",
+        isoThreeDigitNumericCountryCode));
   }
 
   /**
-   * Factory method to lookup and find a {@link Country} based on the {@literal ISO alpha-3-letter code}.
+   * Factory method used to find a {@link Country} based on the {@literal ISO 3 alphanumeric country code}.
    *
-   * @param isoAlphaThreeLetterCode {@literal ISO alpha-3-letter code} defined by ISO 3166-3.
-   * @return a {@link Country} for the given {@literal ISO alpha-3-letter code}.
+   * @param isoThreeCountryCode {@literal ISO 3 alphanumeric country code} defined by {@literal ISO 3166-3}.
+   * @return a {@link Country} for the given {@literal ISO 3 alphanumeric country code}.
    * @throws IllegalArgumentException if no {@link Country} is found.
-   * @see org.cp.domain.geo.enums.Country#getIsoAlphaThreeLetterCode()
-   * @see java.lang.String
-   * @see #values()
+   * @see org.cp.domain.geo.enums.Country#getIsoThree()
+   * @see #byQueryPredicate(Predicate)
    */
-  public static @NotNull Country byIsoThree(String isoAlphaThreeLetterCode) {
+  public static @NotNull Country byIsoThree(@NotNull String isoThreeCountryCode) {
 
-    return byQueryPredicate(country -> country.getIsoAlphaThreeLetterCode().equalsIgnoreCase(isoAlphaThreeLetterCode))
+    return byQueryPredicate(country -> country.getIsoThree().equalsIgnoreCase(isoThreeCountryCode))
       .orElseThrow(() -> newIllegalArgumentException("Country for ISO 3166-3 [%s] was not found",
-        isoAlphaThreeLetterCode));
+        isoThreeCountryCode));
   }
 
   /**
-   * Factory method to lookup and find a {@link Country} based on the {@literal ISO alpha-2-letter code}.
+   * Factory method used to find a {@link Country} based on the {@literal ISO 2 alphanumeric country code}.
    *
-   * @param isoAlphaTwoLetterCode {@literal ISO alpha-2-letter code} defined by ISO 3166-2.
-   * @return a {@link Country} for the given {@literal ISO alpha-2-letter code}.
+   * @param isoTwoCountryCode {@literal ISO 2 alphanumeric country code} defined by {@literal ISO 3166-2}.
+   * @return a {@link Country} for the given {@literal ISO 2 alphanumeric country code}.
    * @throws IllegalArgumentException if no {@link Country} is found.
-   * @see org.cp.domain.geo.enums.Country#getIsoAlphaTwoLetterCode()
-   * @see java.lang.String
-   * @see #values()
+   * @see org.cp.domain.geo.enums.Country#getIsoTwo()
+   * @see #byQueryPredicate(Predicate)
    */
-  public static @NotNull Country byIsoTwo(String isoAlphaTwoLetterCode) {
+  public static @NotNull Country byIsoTwo(String isoTwoCountryCode) {
 
-    return byQueryPredicate(country -> country.getIsoAlphaTwoLetterCode().equalsIgnoreCase(isoAlphaTwoLetterCode))
+    return byQueryPredicate(country -> country.getIsoTwo().equalsIgnoreCase(isoTwoCountryCode))
       .orElseThrow(() -> newIllegalArgumentException("Country for ISO 3166-2 [%s] was not found",
-        isoAlphaTwoLetterCode));
+        isoTwoCountryCode));
   }
 
   /**
    * Return the local {@link Country} determined from the current {@link Locale}.
    *
    * @return the {@link Country} in this {@link Locale}.
-   * @see org.cp.domain.geo.enums.Country#getIsoAlphaThreeLetterCode()
+   * @see org.cp.domain.geo.enums.Country#getIsoThree()
    * @see java.util.Locale#getDefault()
    * @see java.util.Locale#getISO3Country()
    */
   public static @NotNull Country localCountry() {
 
-    String isoAlphaThreeLetterCode = Locale.getDefault().getISO3Country();
+    String isoThreeLetterCode = Locale.getDefault().getISO3Country();
 
-    return byIsoThree(isoAlphaThreeLetterCode);
+    return byIsoThree(isoThreeLetterCode);
   }
 
   private final Set<Continent> continents;
 
-  private final String isoAlphaTwoLetterCode;
-  private final String isoAlphaThreeLetterCode;
-  private final String isoNumericThreeDigitCode;
+  private final String isoTwo;
+  private final String isoThree;
+  private final String isoThreeDigitNumericCountryCode;
 
   /**
-   * Constructs a new {@link Country} on the given {@link Continent Continents}.
+   * Constructs a new {@link Country} located on the given {@link Continent Continents}.
    *
-   * @param continents array of {@link Continent Continents} in which this {@link Country} resides.
+   * @param continents array of {@link Continent Continents} in which this {@link Country} is located.
    * @see #Country(String, String, String, Continent...)
    * @see org.cp.domain.geo.enums.Continent
    */
@@ -352,27 +349,28 @@ public enum Country {
 
   /**
    * Constructs a new {@link Country} on the given {@link Continent Continents}
-   * with the {@literal ISO} country letter codes.
+   * with the {@literal ISO} country codes.
    *
-   * @param isoAlphaTwoLetterCode {@link String} containing the {@literal ISO alpha-2-letter country code}.
-   * @param isoAlphaThreeLetterCode {@link String} containing the {@literal ISO alpha-3-letter country code}.
-   * @param isoNumericThreeDigitCode {@link String} containing the {@literal ISO numeric 3-digit country code}.
-   * @param continents array of {@link Continent Continents} in which this {@link Country} resides.
+   * @param isoTwo {@link String} containing the {@literal ISO 2 alphanumeric country code}.
+   * @param isoThree {@link String} containing the {@literal ISO 3 alphanumeric country code}.
+   * @param isoThreeDigitNumericCountryCode {@link String} containing the {@literal ISO 3-digit numeric country code}.
+   * @param continents array of {@link Continent Continents} in which this {@link Country} is located.
    * @see org.cp.domain.geo.enums.Continent
    */
-  Country(String isoAlphaTwoLetterCode, String isoAlphaThreeLetterCode, String isoNumericThreeDigitCode,
-      Continent... continents) {
+  Country(String isoTwo, String isoThree, String isoThreeDigitNumericCountryCode, Continent... continents) {
 
-    this.isoAlphaTwoLetterCode = isoAlphaTwoLetterCode;
-    this.isoAlphaThreeLetterCode = isoAlphaThreeLetterCode;
-    this.isoNumericThreeDigitCode = isoNumericThreeDigitCode;
+    this.isoTwo = isoTwo;
+    this.isoThree = isoThree;
+    this.isoThreeDigitNumericCountryCode = isoThreeDigitNumericCountryCode;
     this.continents = Set.of(continents);
   }
 
   /**
-   * Returns a {@link Set} of {@link Continent Continents} in the World in which this {@link Country} resides.
+   * Returns a {@link Set} of {@link Continent Continents} in the {@literal World}
+   * in which this {@link Country} is located.
    *
-   * @return a {@link Set} of {@link Continent Continents} in the World in which this {@link Country} resides.
+   * @return a {@link Set} of {@link Continent Continents} in the {@literal World}
+   * in which this {@link Country} is located.
    * @see org.cp.domain.geo.enums.Continent
    * @see java.util.Set
    */
@@ -381,46 +379,45 @@ public enum Country {
   }
 
   /**
-   * Returns the ISO alpha 2 letter code for this {@link Country}.
+   * Returns the {@literal ISO 3 alphanumeric country code} for this {@link Country}.
    *
-   * @return the ISO alpha 2 letter code for this {@link Country}.
-   * @see java.lang.String
-   */
-  public @NotNull String getIsoAlphaTwoLetterCode() {
-    return this.isoAlphaTwoLetterCode;
-  }
-
-  /**
-   * Returns the ISO alpha 3 letter code for this {@link Country}.
-   *
-   * @return the ISO alpha 3 letter code for this {@link Country}.
+   * @return the {@literal ISO 3 alphanumeric country code} for this {@link Country}.
    * @see java.util.Locale#getISO3Country()
-   * @see java.lang.String
+   * @see #getIsoTwo()
    */
-  public @NotNull String getIsoAlphaThreeLetterCode() {
-    return this.isoAlphaThreeLetterCode;
+  public @NotNull String getIsoThree() {
+    return this.isoThree;
   }
 
   /**
-   * Returns the ISO numeric 3 digit code for this {@link Country}.
+   * Returns the {@literal ISO 2 alphanumeric country code} for this {@link Country}.
    *
-   * @return the ISO numeric 3 digit code for this {@link Country}.
-   * @see java.lang.String
+   * @return the {@literal ISO 2 alphanumeric country code} for this {@link Country}.
+   * @see #getIsoThree()
    */
-  public @NotNull String getIsoNumericThreeDigitCode() {
-    return this.isoNumericThreeDigitCode;
+  public @NotNull String getIsoTwo() {
+    return this.isoTwo;
   }
 
   /**
-   * Determine whether this {@link Country} is on the given {@link Continent}.
+   * Returns the {@literal ISO 3-digit numeric country code} for this {@link Country}.
+   *
+   * @return the {@literal ISO 3-digit numeric country code} for this {@link Country}.
+   */
+  public @NotNull String getIsoThreeDigitNumericCountryCode() {
+    return this.isoThreeDigitNumericCountryCode;
+  }
+
+  /**
+   * Determine whether this {@link Country} is located on the given {@link Continent}.
    *
    * @param continent {@link Continent} to evaluate.
-   * @return a boolean value indicating whether this {@link Country} is on the given {@link Continent}.
+   * @return a boolean value indicating whether this {@link Country} is located on the given {@link Continent}.
    * @see org.cp.domain.geo.enums.Continent
    * @see #getContinents()
    */
   @NullSafe
-  public boolean isOnContinent(@Nullable Continent continent) {
-    return getContinents().contains(continent);
+  public boolean isLocatedOnContinent(@Nullable Continent continent) {
+    return continent != null && getContinents().contains(continent);
   }
 }

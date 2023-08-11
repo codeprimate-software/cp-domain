@@ -52,7 +52,7 @@ public enum Continent {
   public Set<Country> countries() {
 
     return Arrays.stream(Country.values())
-      .filter(country -> country.isOnContinent(this))
+      .filter(country -> country.isLocatedOnContinent(this))
       .collect(Collectors.toSet());
   }
 

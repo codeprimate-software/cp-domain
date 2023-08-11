@@ -25,18 +25,15 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import org.cp.elements.util.CollectionUtils;
-
 /**
  * Unit Tests for {@link Country}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
- * @see org.cp.domain.geo.enums.Continent
  * @see org.cp.domain.geo.enums.Country
  * @since 0.1.0
  */
-public class CountryTests {
+public class CountryUnitTests {
 
   private Set<Country> testedCountries;
 
@@ -51,7 +48,7 @@ public class CountryTests {
   }
 
   @Test
-  public void allCountryContinentsAreCorrect() {
+  void allCountryContinentsAreCorrect() {
 
     assertThat(add(Country.AFGHANISTAN).getContinents()).containsExactly(Continent.ASIA);
     assertThat(add(Country.ALBANIA).getContinents()).containsExactly(Continent.EUROPE);
@@ -255,9 +252,9 @@ public class CountryTests {
   }
 
   @Test
-  public void countriesInAfrica() {
+  void countriesInAfrica() {
 
-    Set<Country> expectedAfricanCountries = CollectionUtils.asSet(
+    Set<Country> expectedAfricanCountries = Set.of(
       Country.ALGERIA,
       Country.ANGOLA,
       Country.BENIN,
@@ -316,13 +313,14 @@ public class CountryTests {
 
     Set<Country> actualAfricanCountries = Country.byContinent(Continent.AFRICA);
 
+    assertThat(actualAfricanCountries).isNotNull();
     assertThat(actualAfricanCountries).isNotEmpty();
     assertThat(actualAfricanCountries).containsAll(expectedAfricanCountries);
     assertThat(expectedAfricanCountries).containsAll(actualAfricanCountries);
   }
 
   @Test
-  public void countriesInAntarctica() {
+  void countriesInAntarctica() {
 
     Set<Country> countries = Country.byContinent(Continent.ANTARCTICA);
 
@@ -331,9 +329,9 @@ public class CountryTests {
   }
 
   @Test
-  public void countriesInAsia() {
+  void countriesInAsia() {
 
-    Set<Country> expectedAsianCounties = CollectionUtils.asSet(
+    Set<Country> expectedAsianCounties = Set.of(
       Country.AFGHANISTAN,
       Country.ARMENIA,
       Country.AZERBAIJAN,
@@ -388,15 +386,16 @@ public class CountryTests {
 
     Set<Country> actualAsianCountries = Country.byContinent(Continent.ASIA);
 
+    assertThat(actualAsianCountries).isNotNull();
     assertThat(actualAsianCountries).isNotEmpty();
     assertThat(actualAsianCountries).containsAll(expectedAsianCounties);
     assertThat(expectedAsianCounties).containsAll(actualAsianCountries);
   }
 
   @Test
-  public void countriesInAustraliaAndOceania() {
+  void countriesInAustraliaAndOceania() {
 
-    Set<Country> expectedAustralianAndOceaniaCountries = CollectionUtils.asSet(
+    Set<Country> expectedAustralianAndOceaniaCountries = Set.of(
       Country.AUSTRALIA,
       Country.FIJI,
       Country.KIRIBATI,
@@ -415,15 +414,16 @@ public class CountryTests {
 
     Set<Country> actualAustralianAndOceaniaCountries = Country.byContinent(Continent.AUSTRALIA_AND_OCEANIA);
 
+    assertThat(actualAustralianAndOceaniaCountries).isNotNull();
     assertThat(actualAustralianAndOceaniaCountries).isNotEmpty();
     assertThat(actualAustralianAndOceaniaCountries).containsAll(expectedAustralianAndOceaniaCountries);
     assertThat(expectedAustralianAndOceaniaCountries).containsAll(actualAustralianAndOceaniaCountries);
   }
 
   @Test
-  public void countriesInEurope() {
+  void countriesInEurope() {
 
-    Set<Country> expectedEuropeanCountries = CollectionUtils.asSet(
+    Set<Country> expectedEuropeanCountries = Set.of(
       Country.ALBANIA,
       Country.ANDORRA,
       Country.ARMENIA,
@@ -479,15 +479,16 @@ public class CountryTests {
 
     Set<Country> actualEuropeanCounties = Country.byContinent(Continent.EUROPE);
 
+    assertThat(actualEuropeanCounties).isNotNull();
     assertThat(actualEuropeanCounties).isNotEmpty();
     assertThat(actualEuropeanCounties).containsAll(expectedEuropeanCountries);
     assertThat(expectedEuropeanCountries).containsAll(actualEuropeanCounties);
   }
 
   @Test
-  public void countriesInNorthAmerica() {
+  void countriesInNorthAmerica() {
 
-    Set<Country> expectedNorthAmericanCountries = CollectionUtils.asSet(
+    Set<Country> expectedNorthAmericanCountries = Set.of(
       Country.ANTIGUA_AND_BARBUDA,
       Country.BAHAMAS,
       Country.BARBADOS,
@@ -515,15 +516,16 @@ public class CountryTests {
 
     Set<Country> actualNorthAmericanCountries = Country.byContinent(Continent.NORTH_AMERICA);
 
+    assertThat(actualNorthAmericanCountries).isNotNull();
     assertThat(actualNorthAmericanCountries).isNotEmpty();
     assertThat(actualNorthAmericanCountries).containsAll(expectedNorthAmericanCountries);
     assertThat(expectedNorthAmericanCountries).containsAll(actualNorthAmericanCountries);
   }
 
   @Test
-  public void countriesInSouthAmerica() {
+  void countriesInSouthAmerica() {
 
-    Set<Country> expectedSouthAmericanCountries = CollectionUtils.asSet(
+    Set<Country> expectedSouthAmericanCountries = Set.of(
       Country.ARGENTINA,
       Country.BOLIVIA,
       Country.BRAZIL,
@@ -540,13 +542,14 @@ public class CountryTests {
 
     Set<Country> actualSouthAmericanCountries = Country.byContinent(Continent.SOUTH_AMERICA);
 
+    assertThat(actualSouthAmericanCountries).isNotNull();
     assertThat(actualSouthAmericanCountries).isNotEmpty();
     assertThat(actualSouthAmericanCountries).containsAll(expectedSouthAmericanCountries);
     assertThat(expectedSouthAmericanCountries).containsAll(actualSouthAmericanCountries);
   }
 
   @Test
-  public void countriesInUnknown() {
+  void countriesInUnknown() {
 
     Set<Country> unknownCountries = Country.byContinent(Continent.UNKNOWN);
 
@@ -555,78 +558,79 @@ public class CountryTests {
   }
 
   @Test
-  public void countryIsoNumericThreeDigitCodesAreUnique() {
-
-    Set<String> isoNumericThreeDigitCodes = Arrays.stream(Country.values())
-      .map(Country::getIsoNumericThreeDigitCode)
-      .collect(Collectors.toSet());
-
-    assertThat(isoNumericThreeDigitCodes).hasSize(Country.values().length);
-  }
-
-  @Test
-  public void countryIsoAlphaThreeLetterCodesAreUnique() {
+  void countryIsoThreeCountryCodesAreUnique() {
 
     Set<String> isoAlphaThreeLetterCodes = Arrays.stream(Country.values())
-      .map(Country::getIsoAlphaThreeLetterCode)
+      .map(Country::getIsoThree)
       .collect(Collectors.toSet());
 
-    assertThat(isoAlphaThreeLetterCodes).hasSize(Country.values().length);
+    assertThat(isoAlphaThreeLetterCodes).hasSameSizeAs(Country.values());
   }
 
   @Test
-  public void countryIsoAlphaTwoLetterCodesAreUnique() {
+  void countryIsoThreeDigitNumericCountryCodesAreUnique() {
+
+    Set<String> isoNumericThreeDigitCodes = Arrays.stream(Country.values())
+      .map(Country::getIsoThreeDigitNumericCountryCode)
+      .collect(Collectors.toSet());
+
+    assertThat(isoNumericThreeDigitCodes).hasSameSizeAs(Country.values());
+  }
+
+  @Test
+  void countryIsoTwoCountryCodesAreUnique() {
 
     Set<String> isoAlphaTwoLetterCodes = Arrays.stream(Country.values())
-      .map(Country::getIsoAlphaTwoLetterCode)
+      .map(Country::getIsoTwo)
       .collect(Collectors.toSet());
 
-    assertThat(isoAlphaTwoLetterCodes).hasSize(Country.values().length);
+    assertThat(isoAlphaTwoLetterCodes).hasSameSizeAs(Country.values());
   }
 
   @Test
-  public void byIsoNumericThreeDigitCodeIsCorrect() {
+  void byIsoNumericThreeDigitCodeIsCorrect() {
 
     Arrays.stream(Country.values()).forEach(country ->
-      assertThat(Country.byIsoNumeric(country.getIsoNumericThreeDigitCode())).isEqualTo(country));
+      assertThat(Country.byIsoThreeDigitNumericCountryCode(country.getIsoThreeDigitNumericCountryCode()))
+        .isEqualTo(country));
   }
 
   @Test
-  public void byIsoAlphaThreeLetterCodeIsCorrect() {
+  void byIsoThreeAlphanumericCountryCodeIsCorrect() {
 
     Arrays.stream(Country.values()).forEach(country ->
-      assertThat(Country.byIsoThree(country.getIsoAlphaThreeLetterCode())).isEqualTo(country));
+      assertThat(Country.byIsoThree(country.getIsoThree())).isEqualTo(country));
   }
 
   @Test
-  public void byIsoAlphaTwoLetterCodeIsCorrect() {
+  void byIsoTwoAlphanumericCountryCodeIsCorrect() {
 
     Arrays.stream(Country.values()).forEach(country ->
-      assertThat(Country.byIsoTwo(country.getIsoAlphaTwoLetterCode())).isEqualTo(country));
+      assertThat(Country.byIsoTwo(country.getIsoTwo())).isEqualTo(country));
   }
 
   @Test
-  public void isOnContinentReturnsTrue() {
+  void isLocatedOnContinentReturnsTrue() {
 
-    assertThat(Country.EGYPT.isOnContinent(Continent.AFRICA)).isTrue();
-    assertThat(Country.RUSSIA.isOnContinent(Continent.ASIA)).isTrue();
-    assertThat(Country.AUSTRALIA.isOnContinent(Continent.AUSTRALIA_AND_OCEANIA)).isTrue();
-    assertThat(Country.RUSSIA.isOnContinent(Continent.EUROPE)).isTrue();
-    assertThat(Country.UNITED_KINGDOM.isOnContinent(Continent.EUROPE)).isTrue();
-    assertThat(Country.UNITED_STATES_OF_AMERICA.isOnContinent(Continent.NORTH_AMERICA)).isTrue();
-    assertThat(Country.COLOMBIA.isOnContinent(Continent.SOUTH_AMERICA)).isTrue();
+    assertThat(Country.EGYPT.isLocatedOnContinent(Continent.AFRICA)).isTrue();
+    assertThat(Country.RUSSIA.isLocatedOnContinent(Continent.ASIA)).isTrue();
+    assertThat(Country.AUSTRALIA.isLocatedOnContinent(Continent.AUSTRALIA_AND_OCEANIA)).isTrue();
+    assertThat(Country.RUSSIA.isLocatedOnContinent(Continent.EUROPE)).isTrue();
+    assertThat(Country.UNITED_KINGDOM.isLocatedOnContinent(Continent.EUROPE)).isTrue();
+    assertThat(Country.UNITED_STATES_OF_AMERICA.isLocatedOnContinent(Continent.NORTH_AMERICA)).isTrue();
+    assertThat(Country.COLOMBIA.isLocatedOnContinent(Continent.SOUTH_AMERICA)).isTrue();
   }
 
   @Test
-  public void isOnContinentReturnsFalse() {
+  void isLocatedOnContinentReturnsFalse() {
 
-    assertThat(Country.COLOMBIA.isOnContinent(Continent.AFRICA)).isFalse();
-    assertThat(Country.UNITED_STATES_OF_AMERICA.isOnContinent(Continent.ANTARCTICA)).isFalse();
-    assertThat(Country.AUSTRALIA.isOnContinent(Continent.ASIA)).isFalse();
-    assertThat(Country.JAPAN.isOnContinent(Continent.AUSTRALIA_AND_OCEANIA)).isFalse();
-    assertThat(Country.AUSTRALIA.isOnContinent(Continent.EUROPE)).isFalse();
-    assertThat(Country.BRAZIL.isOnContinent(Continent.NORTH_AMERICA)).isFalse();
-    assertThat(Country.CANADA.isOnContinent(Continent.SOUTH_AMERICA)).isFalse();
-    assertThat(Country.UNITED_STATES_OF_AMERICA.isOnContinent(Continent.UNKNOWN)).isFalse();
+    assertThat(Country.COLOMBIA.isLocatedOnContinent(Continent.AFRICA)).isFalse();
+    assertThat(Country.UNITED_STATES_OF_AMERICA.isLocatedOnContinent(Continent.ANTARCTICA)).isFalse();
+    assertThat(Country.AUSTRALIA.isLocatedOnContinent(Continent.ASIA)).isFalse();
+    assertThat(Country.JAPAN.isLocatedOnContinent(Continent.AUSTRALIA_AND_OCEANIA)).isFalse();
+    assertThat(Country.AUSTRALIA.isLocatedOnContinent(Continent.EUROPE)).isFalse();
+    assertThat(Country.BRAZIL.isLocatedOnContinent(Continent.NORTH_AMERICA)).isFalse();
+    assertThat(Country.CANADA.isLocatedOnContinent(Continent.SOUTH_AMERICA)).isFalse();
+    assertThat(Country.UNITED_STATES_OF_AMERICA.isLocatedOnContinent(Continent.UNKNOWN)).isFalse();
   }
 }
