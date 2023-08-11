@@ -80,7 +80,8 @@ public class People implements Group<Person> {
   }
 
   /**
-   * Factory method used to construct a new {@link People} initialized with the given array of {@link Person people}.
+   * Factory method used to construct a new {@link Group} of {@link People} initialized from
+   * the given array of {@link Person people}.
    *
    * @param people array of {@link Person people} to {@link Group group} together.
    * @return a new {@link Group} of {@link People} initialized from the given array.
@@ -98,8 +99,8 @@ public class People implements Group<Person> {
   }
 
   /**
-   * Factory method used to construct a new {@link People} initialized with the given {@link Iterable}
-   * of {@link Person people}.
+   * Factory method used to construct a new {@link Group} of {@link People} initialized from
+   * the given {@link Iterable} of {@link Person people}.
    *
    * @param people {@link Iterable} of {@link Person people} to {@link Group group} together.
    * @return a new {@link Group} of {@link People} initialized from the given {@link Iterable}.
