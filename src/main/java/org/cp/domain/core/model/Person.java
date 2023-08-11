@@ -28,6 +28,7 @@ import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Identifiable;
+import org.cp.elements.lang.Integers;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Renderable;
@@ -118,7 +119,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * and {@link LocalDateTime date of birth}.
    *
    * @param name {@link Name} of the {@link Person}; must not be {@literal null}.
-   * @param birthDate {@link LocalDateTime} specifying the {@link Person person's} {@literal date of birth}.
+   * @param birthDate {@link LocalDateTime} declaring the {@link Person person's} {@literal date of birth}.
    * @return a new {@link Person} initialized with the given, required {@link Name}
    * and {@link LocalDateTime date of birth}.
    * @throws IllegalArgumentException if {@link Name} is {@literal null}.
@@ -171,8 +172,8 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   }
 
   /**
-   * Factory method used to construct a new {@link Person} initialized with
-   * the given {@link String first name} and {@link String last name}.
+   * Factory method used to construct a new {@link Person} initialized with the given,
+   * required {@link String first name} and {@link String last name}.
    *
    * @param firstName {@link String} containing the {@link Person person's} {@literal first name};
    * must not be {@literal null} or {@literal empty}.
@@ -199,7 +200,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * must not be {@literal null} or {@literal empty}.
    * @param lastName {@link String} containing the {@link Person person's} {@literal last name};
    * must not be {@literal null} or {@literal empty}.
-   * @param birthDate {@link LocalDateTime} specifying the {@link Person person's} {@literal date of birth}.
+   * @param birthDate {@link LocalDateTime} declaring the {@link Person person's} {@literal date of birth}.
    * @return a new {@link Person} initialized with the given, required {@link String first name}
    * and {@link String last name} as well as {@link LocalDateTime date of birth}.
    * @throws IllegalArgumentException if either the {@link String first name} or {@link String last name}
@@ -373,7 +374,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
 
       })
       .map(Period::getYears)
-      .map(years -> Math.max(years, 0));
+      .map(years -> Math.max(years, Integers.ZERO));
   }
 
   /**
