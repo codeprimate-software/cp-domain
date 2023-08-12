@@ -65,8 +65,7 @@ public class ZIP extends PostalCode {
 
     Assert.notNull(postalCode, "PostalCode to copy is required");
 
-    return postalCode instanceof ZIP ? (ZIP) postalCode
-      : of(postalCode.getNumber());
+    return postalCode instanceof ZIP zip ? zip : of(postalCode.getNumber());
   }
 
   /**
