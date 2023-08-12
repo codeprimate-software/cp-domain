@@ -42,6 +42,7 @@ public class AddressTypeUnitTests {
     assertThat(Address.Type.MAILING.getAbbreviation()).isEqualTo("MA");
     assertThat(Address.Type.OFFICE.getAbbreviation()).isEqualTo("OA");
     assertThat(Address.Type.PO_BOX.getAbbreviation()).isEqualTo("PO");
+    assertThat(Address.Type.RESIDENTIAL.getAbbreviation()).isEqualTo("RA");
     assertThat(Address.Type.WORK.getAbbreviation()).isEqualTo("WA");
     assertThat(Address.Type.UNKNOWN.getAbbreviation()).isEqualTo("??");
   }
@@ -54,15 +55,20 @@ public class AddressTypeUnitTests {
     assertThat(Address.Type.MAILING.getDescription()).isEqualTo("Mailing");
     assertThat(Address.Type.OFFICE.getDescription()).isEqualTo("Office");
     assertThat(Address.Type.PO_BOX.getDescription()).isEqualTo("Post Office Box");
+    assertThat(Address.Type.RESIDENTIAL.getDescription()).isEqualTo("Residential");
     assertThat(Address.Type.WORK.getDescription()).isEqualTo("Work");
     assertThat(Address.Type.UNKNOWN.getDescription()).isEqualTo("Unknown");
   }
 
   @Test
-  public void addressTypeToStringIsSameAsDescription() {
+  public void addressTypeToStringIsLikeOrSameAsDescription() {
 
-    Arrays.stream(Address.Type.values()).forEach(addressType ->
-      assertThat(addressType.toString()).isEqualTo(addressType.getDescription()));
+    Arrays.stream(Address.Type.values())
+      .filter(addressType -> !Address.Type.PO_BOX.equals(addressType))
+      .forEach(addressType ->
+        assertThat(addressType.toString()).isEqualTo(addressType.getDescription().concat(" Address")));
+
+    assertThat(Address.Type.PO_BOX.toString()).isEqualTo(Address.Type.PO_BOX.getDescription());
   }
 
   @Test
