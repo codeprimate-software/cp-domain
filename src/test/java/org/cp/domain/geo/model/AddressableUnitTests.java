@@ -47,7 +47,6 @@ public class AddressableUnitTests {
   public void isAddressPresentWhenAddressIsSetReturnsTrue() {
 
     Address mockAddress = mock(Address.class);
-
     Addressable mockAddressable = mock(Addressable.class);
 
     doReturn(mockAddress).when(mockAddressable).getAddress();
@@ -77,13 +76,12 @@ public class AddressableUnitTests {
   }
 
   @Test
-  public void setAddressThrowsUnsupportedOperationExceptionByDefault() {
+  public void setAddressThrowsUnsupportedOperationException() {
 
     Address mockAddress = mock(Address.class);
-
     Addressable mockAddressable = mock(Addressable.class);
 
-    doCallRealMethod().when(mockAddressable).setAddress(any(Address.class));
+    doCallRealMethod().when(mockAddressable).setAddress(any());
 
     assertThatUnsupportedOperationException()
       .isThrownBy(ThrowableOperation.fromRunnable(() -> mockAddressable.setAddress(mockAddress)))
