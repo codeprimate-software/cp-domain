@@ -101,6 +101,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @param country {@link Country} of origin for the new {@link Address}.
    * @return a new {@link Address.Builder} used to construct and build a new {@link Address}
    * based in the given {@link Country}.
+   * @see org.cp.domain.geo.model.AddressBuilderServiceLoader#getServiceInstance(Country)
    * @see org.cp.domain.geo.model.Address.Builder
    * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.domain.geo.enums.Country
@@ -111,8 +112,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
   static @NotNull <T extends Address, BUILDER extends Address.Builder<T>> BUILDER builder(@Nullable Country country) {
 
     try {
-      return (BUILDER) AddressBuilderServiceLoader.INSTANCE
-        .getServiceInstance(AddressBuilderServiceLoader.addressBuilderPredicate(country));
+      return (BUILDER) AddressBuilderServiceLoader.INSTANCE.getServiceInstance(country);
     }
     catch (ServiceUnavailableException ignore) {
       return AddressFactory.newAddressBuilder(country);
