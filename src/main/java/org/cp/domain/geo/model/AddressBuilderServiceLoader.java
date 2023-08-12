@@ -20,7 +20,7 @@ import java.util.function.Predicate;
 
 import org.cp.domain.geo.annotation.CountryQualifier;
 import org.cp.domain.geo.enums.Country;
-import org.cp.domain.geo.utils.GeoUtils;
+import org.cp.domain.geo.util.GeoUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.service.ServiceUnavailableException;

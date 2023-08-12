@@ -24,7 +24,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 import org.cp.domain.geo.enums.Country;
-import org.cp.domain.geo.utils.GeoUtils;
+import org.cp.domain.geo.util.GeoUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Renderable;
