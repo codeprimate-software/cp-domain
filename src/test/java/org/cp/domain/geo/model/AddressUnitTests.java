@@ -52,7 +52,37 @@ import org.mockito.Mockito;
  * @see org.cp.domain.geo.model.Address
  * @since 0.1.0
  */
+@SuppressWarnings("unused")
 public class AddressUnitTests {
+
+  private void assertAddress(Address address, Street street, City city, PostalCode postalCode) {
+    assertAddress(address, street, city, postalCode, Country.localCountry());
+  }
+
+  private void assertAddress(Address address, Street street, City city, PostalCode postalCode, Country country) {
+
+    assertThat(address).isNotNull();
+    assertThat(address.getStreet()).isEqualTo(street);
+    assertThat(address.getCity()).isEqualTo(city);
+    assertThat(address.getPostalCode()).isEqualTo(postalCode);
+    assertThat(address.getCountry()).isEqualTo(country);
+  }
+
+  private void assertAddressWith(Address address, Coordinates coordinates, Address.Type addressType, Unit unit) {
+
+    assertThat(address).isNotNull();
+    assertThat(address.getCoordinates().orElse(null)).isEqualTo(coordinates);
+    assertThat(address.getType().orElse(null)).isEqualTo(addressType);
+    assertThat(address.getUnit().orElse(null)).isEqualTo(unit);
+  }
+
+  private void assertAddressWithNoCoordinatesTypeOrUnit(Address address) {
+
+    assertThat(address).isNotNull();
+    assertThat(address.getCoordinates()).isNotPresent();
+    assertThat(address.getType()).isNotPresent();
+    assertThat(address.getUnit()).isNotPresent();
+  }
 
   private Address mockAddress(Street street, City city, PostalCode postalCode) {
     return mockAddress(street, city, postalCode, Country.localCountry());
@@ -71,20 +101,18 @@ public class AddressUnitTests {
   }
 
   private Address withUnit(Address address, Unit unit) {
-
     doReturn(Optional.ofNullable(unit)).when(address).getUnit();
-
     return address;
   }
 
   @Test
-  public void constructAddressUsingBuilderInLocalCountry() {
+  public void buildAddress() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
 
-    Address.Builder addressBuilder = Address.builder();
+    Address.Builder<?> addressBuilder = Address.builder();
 
     assertThat(addressBuilder).isNotNull();
 
@@ -94,75 +122,64 @@ public class AddressUnitTests {
       .in(mockPostalCode)
       .build();
 
-    assertThat(address).isNotNull();
-    assertThat(address.getStreet()).isEqualTo(mockStreet);
-    assertThat(address.getCity()).isEqualTo(mockCity);
-    assertThat(address.getPostalCode()).isEqualTo(mockPostalCode);
-    assertThat(address.getCountry()).isEqualTo(Country.localCountry());
+    assertAddress(address, mockStreet, mockCity, mockPostalCode);
+    assertAddressWithNoCoordinatesTypeOrUnit(address);
 
     verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
   }
 
   @Test
-  public void constructAddressUsingBuilderFromAddress() {
+  public void buildAddressInCountry() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
 
-    Address mockAddress = mockAddress(mockStreet, mockCity, mockPostalCode);
-    Address addressCopy = Address.builder().from(mockAddress).build();
+    Address.Builder<?> addressBuilder = Address.builder(Country.CANADA);
 
-    assertThat(addressCopy).isNotNull();
+    assertThat(addressBuilder).isNotNull();
+
+    Address address = addressBuilder
+      .on(mockStreet)
+      .in(mockCity)
+      .in(mockPostalCode)
+      .build();
+
+    assertAddress(address, mockStreet, mockCity, mockPostalCode, Country.CANADA);
+    assertAddressWithNoCoordinatesTypeOrUnit(address);
+
+    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
+  }
+
+  @Test
+  public void fromAddress() {
+
+    Street mockStreet = mock(Street.class);
+    City mockCity = mock(City.class);
+    PostalCode mockPostalCode = mock(PostalCode.class);
+    Coordinates mockCoordinates = mock(Coordinates.class);
+    Unit mockUnit = mock(Unit.class);
+
+    Address mockAddress = mockAddress(mockStreet, mockCity, mockPostalCode, Country.GERMANY);
+
+    doReturn(Optional.of(mockCoordinates)).when(mockAddress).getCoordinates();
+    doReturn(Optional.of(Address.Type.PO_BOX)).when(mockAddress).getType();
+    doReturn(Optional.of(mockUnit)).when(mockAddress).getUnit();
+
+    Address addressCopy = Address.from(mockAddress);
+
+    assertAddress(addressCopy, mockStreet, mockCity, mockPostalCode, Country.GERMANY);
+    assertAddressWith(addressCopy, mockCoordinates, Address.Type.PO_BOX, mockUnit);
     assertThat(addressCopy).isNotSameAs(mockAddress);
-    assertThat(addressCopy.getStreet()).isEqualTo(mockStreet);
-    assertThat(addressCopy.getCity()).isEqualTo(mockCity);
-    assertThat(addressCopy.getPostalCode()).isEqualTo(mockPostalCode);
-    assertThat(addressCopy.getCountry()).isEqualTo(Country.localCountry());
-    assertThat(addressCopy.getCoordinates()).isNotPresent();
 
     verify(mockAddress, times(1)).getStreet();
     verify(mockAddress, times(1)).getCity();
     verify(mockAddress, times(1)).getPostalCode();
     verify(mockAddress, times(1)).getCountry();
     verify(mockAddress, times(1)).getCoordinates();
-    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
-    verifyNoMoreInteractions(mockAddress);
-  }
-
-  @Test
-  public void constructAddressUsingBuilderFromNullAddress() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> Address.builder().from(null))
-      .withMessage("Address to copy is required")
-      .withNoCause();
-  }
-
-  @Test
-  public void fromAddress() {
-
-    Country usa = Country.UNITED_STATES_OF_AMERICA;
-
-    Street mockStreet = mock(Street.class);
-    City mockCity = mock(City.class);
-    PostalCode mockPostalCode = mock(PostalCode.class);
-
-    Address mockAddress = mockAddress(mockStreet, mockCity, mockPostalCode, usa);
-    Address addressCopy = Address.from(mockAddress);
-
-    assertThat(addressCopy).isNotNull();
-    assertThat(addressCopy).isNotSameAs(mockAddress);
-    assertThat(addressCopy.getStreet()).isEqualTo(mockStreet);
-    assertThat(addressCopy.getCity()).isEqualTo(mockCity);
-    assertThat(addressCopy.getPostalCode()).isEqualTo(mockPostalCode);
-    assertThat(addressCopy.getCountry()).isEqualTo(usa);
-
-    verify(mockAddress, times(1)).getStreet();
-    verify(mockAddress, times(1)).getCity();
-    verify(mockAddress, times(1)).getPostalCode();
-    verify(mockAddress, times(1)).getCountry();
-    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
+    verify(mockAddress, times(1)).getType();
+    verify(mockAddress, times(1)).getUnit();
+    verifyNoInteractions(mockStreet, mockCity, mockPostalCode, mockCoordinates, mockUnit);
     verifyNoMoreInteractions(mockAddress);
   }
 
@@ -184,12 +201,8 @@ public class AddressUnitTests {
 
     Address address = Address.of(mockStreet, mockCity, mockPostalCode);
 
-    assertThat(address).isNotNull();
-    assertThat(address.getId()).isNull();
-    assertThat(address.getStreet()).isEqualTo(mockStreet);
-    assertThat(address.getCity()).isEqualTo(mockCity);
-    assertThat(address.getPostalCode()).isEqualTo(mockPostalCode);
-    assertThat(address.getCountry()).isEqualTo(Country.localCountry());
+    assertAddress(address, mockStreet, mockCity, mockPostalCode);
+    assertAddressWithNoCoordinatesTypeOrUnit(address);
 
     verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
   }
@@ -200,16 +213,11 @@ public class AddressUnitTests {
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
-    Country canada = Country.CANADA;
 
-    Address address = Address.of(mockStreet, mockCity, mockPostalCode, canada);
+    Address address = Address.of(mockStreet, mockCity, mockPostalCode, Country.MEXICO);
 
-    assertThat(address).isNotNull();
-    assertThat(address.getId()).isNull();
-    assertThat(address.getStreet()).isEqualTo(mockStreet);
-    assertThat(address.getCity()).isEqualTo(mockCity);
-    assertThat(address.getPostalCode()).isEqualTo(mockPostalCode);
-    assertThat(address.getCountry()).isEqualTo(canada);
+    assertAddress(address, mockStreet, mockCity, mockPostalCode, Country.MEXICO);
+    assertAddressWithNoCoordinatesTypeOrUnit(address);
 
     verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
   }
@@ -250,7 +258,7 @@ public class AddressUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Address.of(mockStreet, mockCity, null))
-      .withMessage("Postal Code is required")
+      .withMessage("PostalCode is required")
       .withNoCause();
 
     verifyNoInteractions(mockStreet, mockCity);
@@ -263,28 +271,12 @@ public class AddressUnitTests {
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
 
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> Address.of(mockStreet, mockCity, mockPostalCode, null))
-      .withMessage("Country is required")
-      .withNoCause();
+    Address address = Address.of(mockStreet, mockCity, mockPostalCode, null);
+
+    assertAddress(address, mockStreet, mockCity, mockPostalCode);
+    assertAddressWithNoCoordinatesTypeOrUnit(address);
 
     verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
-  }
-
-  @Test
-  public void addressUnitIsEmpty() {
-
-    Address mockAddress = mock(Address.class);
-
-    doCallRealMethod().when(mockAddress).getUnit();
-
-    Optional<Unit> unit = mockAddress.getUnit();
-
-    assertThat(unit).isNotNull();
-    assertThat(unit).isNotPresent();
-
-    verify(mockAddress, times(1)).getUnit();
-    verifyNoMoreInteractions(mockAddress);
   }
 
   @Test
@@ -304,6 +296,57 @@ public class AddressUnitTests {
     verifyNoMoreInteractions(mockAddress);
   }
 
+  @Test
+  public void setTypeThrowsUnsupportedOperationException() {
+
+    Address mockAddress = mock(Address.class);
+
+    doCallRealMethod().when(mockAddress).setType(any());
+
+    assertThatUnsupportedOperationException()
+      .isThrownBy(ThrowableOperation.fromRunnable(() -> mockAddress.setType(Address.Type.HOME)))
+      .havingMessage("Setting Address.Type for Address of type [%s] is not supported",
+        mockAddress.getClass().getName())
+      .withNoCause();
+
+    verify(mockAddress, times(1)).setType(eq(Address.Type.HOME));
+    verifyNoMoreInteractions(mockAddress);
+  }
+
+  @Test
+  public void addressUnitIsEmpty() {
+
+    Address mockAddress = mock(Address.class);
+
+    doCallRealMethod().when(mockAddress).getUnit();
+
+    Optional<Unit> unit = mockAddress.getUnit();
+
+    assertThat(unit).isNotNull();
+    assertThat(unit).isNotPresent();
+
+    verify(mockAddress, times(1)).getUnit();
+    verifyNoMoreInteractions(mockAddress);
+  }
+
+  @Test
+  public void setUnitThrowsUnsupportedOperationException() {
+
+    Address mockAddress = mock(Address.class);
+
+    Unit unit = Unit.of("123");
+
+    doCallRealMethod().when(mockAddress).setUnit(any());
+
+    assertThatUnsupportedOperationException()
+      .isThrownBy(ThrowableOperation.fromRunnable(() -> mockAddress.setUnit(unit)))
+      .havingMessage("Setting Unit for Address of type [%s] is not supported", mockAddress.getClass().getName())
+      .withNoCause();
+
+    verify(mockAddress, times(1)).setUnit(unit);
+    verifyNoMoreInteractions(mockAddress);
+  }
+
   private void testIsAddressType(Address.Type expectedAddressType, Function<Address, Boolean> isAddressTypeFunction,
       Consumer<Address> arrange, Consumer<Address> verify) {
 
@@ -313,7 +356,7 @@ public class AddressUnitTests {
 
       Mockito.reset(mockAddress);
 
-      doReturn(Optional.ofNullable(addressType)).when(mockAddress).getType();
+      doReturn(Optional.of(addressType)).when(mockAddress).getType();
 
       arrange.accept(mockAddress);
 
@@ -350,14 +393,6 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void isOfficeAddress() {
-
-    testIsAddressType(Address.Type.OFFICE, Address::isOffice,
-      mockAddress -> doCallRealMethod().when(mockAddress).isOffice(),
-      mockAddress -> verify(mockAddress, times(1)).isOffice());
-  }
-
-  @Test
   public void isPoBoxAddress() {
 
     testIsAddressType(Address.Type.PO_BOX, Address::isPoBox,
@@ -366,35 +401,76 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void isWorkAddress() {
-
-    testIsAddressType(Address.Type.WORK, Address::isWork,
-      mockAddress -> doCallRealMethod().when(mockAddress).isWork(),
-      mockAddress -> verify(mockAddress, times(1)).isWork());
-  }
-
-  @Test
-  public void setAddressTypeThrowsUnsupportedOperationException() {
+  public void asAddressTypeCallsSetType() {
 
     Address mockAddress = mock(Address.class);
 
-    doCallRealMethod().when(mockAddress).setType(any());
+    doCallRealMethod().when(mockAddress).as(any());
+    doNothing().when(mockAddress).setType(any());
 
-    assertThatUnsupportedOperationException()
-      .isThrownBy(ThrowableOperation.fromRunnable(() -> mockAddress.setType(Address.Type.HOME)))
-      .havingMessage("Setting Address.Type for an Address of type [%s] is not supported",
-        mockAddress.getClass().getName())
-      .withNoCause();
+    assertThat(mockAddress.<Address>as(Address.Type.RESIDENTIAL)).isSameAs(mockAddress);
 
-    verify(mockAddress, times(1)).setType(eq(Address.Type.HOME));
+    verify(mockAddress, times(1)).as(eq(Address.Type.RESIDENTIAL));
+    verify(mockAddress, times(1)).setType(eq(Address.Type.RESIDENTIAL));
     verifyNoMoreInteractions(mockAddress);
+  }
+
+  private void testAsAddressType(Address.Type expectedAddressType, Function<Address, Address> arrangeAct,
+    Consumer<Address> verify) {
+
+    Address mockAddress = mock(Address.class);
+
+    doCallRealMethod().when(mockAddress).as(any(Address.Type.class));
+    doNothing().when(mockAddress).setType(any());
+
+    assertThat(arrangeAct.apply(mockAddress)).isSameAs(mockAddress);
+
+    verify.accept(mockAddress);
+    verify(mockAddress, times(1)).as(eq(expectedAddressType));
+    verify(mockAddress, times(1)).setType(eq(expectedAddressType));
+    verifyNoMoreInteractions(mockAddress);
+  }
+
+  @Test
+  public void asBillingAddress() {
+
+    testAsAddressType(Address.Type.BILLING, mockAddress -> {
+      doCallRealMethod().when(mockAddress).asBilling();
+      return mockAddress.asBilling();
+    }, mockAddress -> verify(mockAddress, times(1)).asBilling());
+  }
+
+  @Test
+  public void asHomeAddress() {
+
+    testAsAddressType(Address.Type.HOME, mockAddress -> {
+      doCallRealMethod().when(mockAddress).asHome();
+      return mockAddress.asHome();
+    }, mockAddress -> verify(mockAddress, times(1)).asHome());
+  }
+
+  @Test
+  public void asMailingAddress() {
+
+    testAsAddressType(Address.Type.MAILING, mockAddress -> {
+      doCallRealMethod().when(mockAddress).asMailing();
+      return mockAddress.asMailing();
+    }, mockAddress -> verify(mockAddress, times(1)).asMailing());
+  }
+
+  @Test
+  public void asPoBoxAddress() {
+
+    testAsAddressType(Address.Type.PO_BOX, mockAddress -> {
+      doCallRealMethod().when(mockAddress).asPoBox();
+      return mockAddress.asPoBox();
+    }, mockAddress -> verify(mockAddress, times(1)).asPoBox());
   }
 
   @Test
   public void acceptsVisitor() {
 
     Address mockAddress = mock(Address.class);
-
     Visitor mockVisitor = mock(Visitor.class);
 
     doCallRealMethod().when(mockAddress).accept(any());
@@ -409,8 +485,8 @@ public class AddressUnitTests {
   @Test
   public void compareToEqualAddressReturnsZero() {
 
-    Unit unit = Unit.of("A");
     Street street = Street.of(100, "Main");
+    Unit unit = Unit.of("A");
     City city = City.of("South Park");
     PostalCode postalCode = PostalCode.of("12345");
     Country georgia = Country.GEORGIA;
@@ -464,90 +540,5 @@ public class AddressUnitTests {
     assertThat(mockPortlandAddress).isNotSameAs(mockSeattleAddress);
     assertThat(mockPortlandAddress.compareTo(mockSeattleAddress)).isLessThan(0);
     assertThat(mockSeattleAddress.compareTo(mockPortlandAddress)).isGreaterThan(0);
-  }
-
-  @Test
-  public void asAddressTypeCallsSetType() {
-
-    Address mockAddress = mock(Address.class);
-
-    doCallRealMethod().when(mockAddress).as(any());
-    doNothing().when(mockAddress).setType(any());
-
-    assertThat((Address) mockAddress.as(Address.Type.PO_BOX)).isSameAs(mockAddress);
-
-    verify(mockAddress, times(1)).as(eq(Address.Type.PO_BOX));
-    verify(mockAddress, times(1)).setType(eq(Address.Type.PO_BOX));
-    verifyNoMoreInteractions(mockAddress);
-  }
-
-  private void testAsAddressType(Address.Type expectedAddressType, Function<Address, Address> arrangeAct,
-      Consumer<Address> verify) {
-
-    Address mockAddress = mock(Address.class);
-
-    doCallRealMethod().when(mockAddress).as(any(Address.Type.class));
-    doNothing().when(mockAddress).setType(any());
-
-    assertThat(arrangeAct.apply(mockAddress)).isSameAs(mockAddress);
-
-    verify.accept(mockAddress);
-    verify(mockAddress, times(1)).as(eq(expectedAddressType));
-    verify(mockAddress, times(1)).setType(eq(expectedAddressType));
-    verifyNoMoreInteractions(mockAddress);
-  }
-
-  @Test
-  public void asBillingAddress() {
-
-    testAsAddressType(Address.Type.BILLING, mockAddress -> {
-      doCallRealMethod().when(mockAddress).asBilling();
-      return mockAddress.asBilling();
-    }, mockAddress -> verify(mockAddress, times(1)).asBilling());
-  }
-
-  @Test
-  public void asHomeAddress() {
-
-    testAsAddressType(Address.Type.HOME, mockAddress -> {
-      doCallRealMethod().when(mockAddress).asHome();
-      return mockAddress.asHome();
-    }, mockAddress -> verify(mockAddress, times(1)).asHome());
-  }
-
-  @Test
-  public void asMailingAddress() {
-
-    testAsAddressType(Address.Type.MAILING, mockAddress -> {
-      doCallRealMethod().when(mockAddress).asMailing();
-      return mockAddress.asMailing();
-    }, mockAddress -> verify(mockAddress, times(1)).asMailing());
-  }
-
-  @Test
-  public void asOfficeAddress() {
-
-    testAsAddressType(Address.Type.OFFICE, mockAddress -> {
-      doCallRealMethod().when(mockAddress).asOffice();
-      return mockAddress.asOffice();
-    }, mockAddress -> verify(mockAddress, times(1)).asOffice());
-  }
-
-  @Test
-  public void asPoBoxAddress() {
-
-    testAsAddressType(Address.Type.PO_BOX, mockAddress -> {
-      doCallRealMethod().when(mockAddress).asPoBox();
-      return mockAddress.asPoBox();
-    }, mockAddress -> verify(mockAddress, times(1)).asPoBox());
-  }
-
-  @Test
-  public void asWorkAddress() {
-
-    testAsAddressType(Address.Type.WORK, mockAddress -> {
-      doCallRealMethod().when(mockAddress).asWork();
-      return mockAddress.asWork();
-    }, mockAddress -> verify(mockAddress, times(1)).asWork());
   }
 }
