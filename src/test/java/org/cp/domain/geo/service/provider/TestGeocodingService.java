@@ -16,7 +16,6 @@
 package org.cp.domain.geo.service.provider;
 
 import org.cp.domain.geo.enums.Country;
-import org.cp.domain.geo.model.AbstractAddress;
 import org.cp.domain.geo.model.Address;
 import org.cp.domain.geo.model.City;
 import org.cp.domain.geo.model.Coordinates;
@@ -56,7 +55,7 @@ public class TestGeocodingService implements GeocodingService {
 
   @Override
   public @NotNull Address reverseGeocode(@Nullable Coordinates coordinates) {
-    return AbstractAddress.of(Street.of(100, "Main").asStreet(),
+    return Address.of(Street.of(100, "Main").asStreet(),
       City.of("Portland"), PostalCode.of("97205"), Country.UNITED_STATES_OF_AMERICA);
   }
 }

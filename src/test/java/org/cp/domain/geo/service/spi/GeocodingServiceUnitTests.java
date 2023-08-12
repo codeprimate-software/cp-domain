@@ -63,7 +63,7 @@ public class GeocodingServiceUnitTests {
 
     Address actual = geocodingService.reverseGeocode(Coordinates.at(123.0d, 321.0d));
 
-    Address expected = UnitedStatesAddress.newUnitedStatesAddress()
+    Address expected = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(State.OREGON)
       .in(City.of("Portland"))
       .in(PostalCode.of("97205"))
