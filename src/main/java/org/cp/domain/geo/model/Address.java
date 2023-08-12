@@ -36,7 +36,6 @@ import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
-import org.cp.elements.service.ServiceUnavailableException;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
@@ -101,22 +100,15 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @param country {@link Country} of origin for the new {@link Address}.
    * @return a new {@link Address.Builder} used to construct and build a new {@link Address}
    * based in the given {@link Country}.
-   * @see org.cp.domain.geo.model.AddressBuilderServiceLoader#getServiceInstance(Country)
+   * @see org.cp.domain.geo.model.AddressFactory#newAddressBuilder(Country)
    * @see org.cp.domain.geo.model.Address.Builder
    * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.domain.geo.enums.Country
    */
   @Dsl
   @NullSafe
-  @SuppressWarnings("unchecked")
   static @NotNull <T extends Address, BUILDER extends Address.Builder<T>> BUILDER builder(@Nullable Country country) {
-
-    try {
-      return (BUILDER) AddressBuilderServiceLoader.INSTANCE.getServiceInstance(country);
-    }
-    catch (ServiceUnavailableException ignore) {
-      return AddressFactory.newAddressBuilder(country);
-    }
+    return AddressFactory.newAddressBuilder(country);
   }
 
   /**
@@ -681,6 +673,11 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
     @Dsl
     @Override
     public @NotNull T build() {
+
+      Assert.notNull(getStreet(), "Street is required");
+      Assert.notNull(getCity(), "City is required");
+      Assert.notNull(getPostalCode(), "PostalCode is required");
+      Assert.notNull(getCountry(), "Country is is required");
 
       T address = doBuild();
 
