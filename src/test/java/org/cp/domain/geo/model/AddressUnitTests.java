@@ -31,10 +31,13 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.enums.Country;
@@ -54,6 +57,16 @@ import org.mockito.Mockito;
  */
 @SuppressWarnings("unused")
 public class AddressUnitTests {
+
+  @BeforeAll
+  public static void beforeTests() {
+    Locale.setDefault(Locale.CANADA);
+  }
+
+  @AfterAll
+  public static void afterTests() {
+    Locale.setDefault(Locale.US);
+  }
 
   private void assertAddress(Address address, Street street, City city, PostalCode postalCode) {
     assertAddress(address, street, city, postalCode, Country.localCountry());
@@ -106,7 +119,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void buildAddress() {
+  void buildAddress() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -129,7 +142,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void buildAddressInCountry() {
+  void buildAddressInCountry() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -152,7 +165,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void fromAddress() {
+  void fromAddress() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -184,7 +197,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void fromNullAddress() {
+  void fromNullAddress() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Address.from(null))
@@ -193,7 +206,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void ofStreetCityAndPostalCode() {
+  void ofStreetCityAndPostalCode() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -208,7 +221,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void ofStreetCityPostalCodeAndCountry() {
+  void ofStreetCityPostalCodeAndCountry() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -223,7 +236,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void ofNullStreet() {
+  void ofNullStreet() {
 
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
@@ -237,7 +250,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void ofNullCity() {
+  void ofNullCity() {
 
     Street mockStreet = mock(Street.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
@@ -251,7 +264,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void ofNullPostalCode() {
+  void ofNullPostalCode() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -265,7 +278,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void ofNullCountry() {
+  void ofNullCountry() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -280,7 +293,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void addressTypeIsUnknown() {
+  void addressTypeIsUnknown() {
 
     Address mockAddress = mock(Address.class);
 
@@ -297,7 +310,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void setTypeThrowsUnsupportedOperationException() {
+  void setTypeThrowsUnsupportedOperationException() {
 
     Address mockAddress = mock(Address.class);
 
@@ -314,7 +327,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void addressUnitIsEmpty() {
+  void addressUnitIsEmpty() {
 
     Address mockAddress = mock(Address.class);
 
@@ -330,7 +343,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void setUnitThrowsUnsupportedOperationException() {
+  void setUnitThrowsUnsupportedOperationException() {
 
     Address mockAddress = mock(Address.class);
 
@@ -369,7 +382,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void isBillingAddress() {
+  void isBillingAddress() {
 
     testIsAddressType(Address.Type.BILLING, Address::isBilling,
       mockAddress -> doCallRealMethod().when(mockAddress).isBilling(),
@@ -377,7 +390,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void isHomeAddress() {
+  void isHomeAddress() {
 
     testIsAddressType(Address.Type.HOME, Address::isHome,
       mockAddress -> doCallRealMethod().when(mockAddress).isHome(),
@@ -385,7 +398,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void isMailingAddress() {
+  void isMailingAddress() {
 
     testIsAddressType(Address.Type.MAILING, Address::isMailing,
       mockAddress -> doCallRealMethod().when(mockAddress).isMailing(),
@@ -393,7 +406,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void isPoBoxAddress() {
+  void isPoBoxAddress() {
 
     testIsAddressType(Address.Type.PO_BOX, Address::isPoBox,
       mockAddress -> doCallRealMethod().when(mockAddress).isPoBox(),
@@ -401,7 +414,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void asAddressTypeCallsSetType() {
+  void asAddressTypeCallsSetType() {
 
     Address mockAddress = mock(Address.class);
 
@@ -432,7 +445,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void asBillingAddress() {
+  void asBillingAddress() {
 
     testAsAddressType(Address.Type.BILLING, mockAddress -> {
       doCallRealMethod().when(mockAddress).asBilling();
@@ -441,7 +454,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void asHomeAddress() {
+  void asHomeAddress() {
 
     testAsAddressType(Address.Type.HOME, mockAddress -> {
       doCallRealMethod().when(mockAddress).asHome();
@@ -450,7 +463,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void asMailingAddress() {
+  void asMailingAddress() {
 
     testAsAddressType(Address.Type.MAILING, mockAddress -> {
       doCallRealMethod().when(mockAddress).asMailing();
@@ -459,7 +472,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void asPoBoxAddress() {
+  void asPoBoxAddress() {
 
     testAsAddressType(Address.Type.PO_BOX, mockAddress -> {
       doCallRealMethod().when(mockAddress).asPoBox();
@@ -468,7 +481,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void acceptsVisitor() {
+  void acceptsVisitor() {
 
     Address mockAddress = mock(Address.class);
     Visitor mockVisitor = mock(Visitor.class);
@@ -483,7 +496,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void compareToEqualAddressReturnsZero() {
+  void compareToEqualAddressReturnsZero() {
 
     Street street = Street.of(100, "Main");
     Unit unit = Unit.of("A");
@@ -504,7 +517,7 @@ public class AddressUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void compareToSelfReturnsZero() {
+  void compareToSelfReturnsZero() {
 
     Address mockAddress = withUnit(mockAddress(Street.of(100, "Main"),
         City.of("Portland"), PostalCode.of("97205")), Unit.of("101"));
@@ -526,7 +539,7 @@ public class AddressUnitTests {
   }
 
   @Test
-  public void compareToUnequalAddressReturnsNonZero() {
+  void compareToUnequalAddressReturnsNonZero() {
 
     Address mockPortlandAddress =
       mockAddress(Street.of(100, "Main"), City.of("Portland"), PostalCode.of("54321"));
