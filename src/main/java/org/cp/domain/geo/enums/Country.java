@@ -325,7 +325,9 @@ public enum Country {
    */
   public static @NotNull Country localCountry() {
 
-    String isoThreeLetterCode = Locale.getDefault().getISO3Country();
+    Locale defaultLocale = Locale.getDefault();
+
+    String isoThreeLetterCode = defaultLocale.getISO3Country();
 
     return byIsoThree(isoThreeLetterCode);
   }
