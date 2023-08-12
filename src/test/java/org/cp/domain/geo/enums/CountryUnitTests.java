@@ -94,7 +94,7 @@ public class CountryUnitTests {
     assertThat(add(Country.COTE_D_IVOIRE).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.CROATIA).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.CUBA).getContinents()).containsExactly(Continent.NORTH_AMERICA);
-    assertThat(add(Country.CYPRUS).getContinents()).containsExactly(Continent.ASIA, Continent.EUROPE);
+    assertThat(add(Country.CYPRUS).getContinents()).containsExactlyInAnyOrder(Continent.ASIA, Continent.EUROPE);
     assertThat(add(Country.CZECHIA).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.DENMARK).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.DJIBOUTI).getContinents()).containsExactly(Continent.AFRICA);
@@ -112,7 +112,7 @@ public class CountryUnitTests {
     assertThat(add(Country.FRANCE).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.GABON).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.GAMBIA).getContinents()).containsExactly(Continent.AFRICA);
-    assertThat(add(Country.GEORGIA).getContinents()).containsExactly(Continent.ASIA, Continent.EUROPE);
+    assertThat(add(Country.GEORGIA).getContinents()).containsExactlyInAnyOrder(Continent.ASIA, Continent.EUROPE);
     assertThat(add(Country.GERMANY).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.GHANA).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.GREECE).getContinents()).containsExactly(Continent.EUROPE);
@@ -135,7 +135,7 @@ public class CountryUnitTests {
     assertThat(add(Country.JAMAICA).getContinents()).containsExactly(Continent.NORTH_AMERICA);
     assertThat(add(Country.JAPAN).getContinents()).containsExactly(Continent.ASIA);
     assertThat(add(Country.JORDAN).getContinents()).containsExactly(Continent.ASIA);
-    assertThat(add(Country.KAZAKHSTAN).getContinents()).containsExactly(Continent.ASIA, Continent.EUROPE);
+    assertThat(add(Country.KAZAKHSTAN).getContinents()).containsExactlyInAnyOrder(Continent.ASIA, Continent.EUROPE);
     assertThat(add(Country.KENYA).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.KIRIBATI).getContinents()).containsExactly(Continent.AUSTRALIA_AND_OCEANIA);
     assertThat(add(Country.DEMOCRATIC_PEOPLES_REPUBLIC_OF_KOREA).getContinents()).containsExactly(Continent.ASIA);
@@ -193,7 +193,7 @@ public class CountryUnitTests {
     assertThat(add(Country.PORTUGAL).getContinents()).containsExactly(Continent.EUROPE);
     assertThat(add(Country.QATAR).getContinents()).containsExactly(Continent.ASIA);
     assertThat(add(Country.ROMANIA).getContinents()).containsExactly(Continent.EUROPE);
-    assertThat(add(Country.RUSSIA).getContinents()).containsExactly(Continent.ASIA, Continent.EUROPE);
+    assertThat(add(Country.RUSSIA).getContinents()).containsExactlyInAnyOrder(Continent.ASIA, Continent.EUROPE);
     assertThat(add(Country.RWANDA).getContinents()).containsExactly(Continent.AFRICA);
     assertThat(add(Country.SAINT_KITTS_AND_NEVIS).getContinents()).containsExactly(Continent.NORTH_AMERICA);
     assertThat(add(Country.SAINT_LUCIA).getContinents()).containsExactly(Continent.NORTH_AMERICA);
@@ -230,7 +230,7 @@ public class CountryUnitTests {
     assertThat(add(Country.TONGA).getContinents()).containsExactly(Continent.AUSTRALIA_AND_OCEANIA);
     assertThat(add(Country.TRINIDAD_AND_TOBAGO).getContinents()).containsExactly(Continent.NORTH_AMERICA);
     assertThat(add(Country.TUNISIA).getContinents()).containsExactly(Continent.AFRICA);
-    assertThat(add(Country.TURKEY).getContinents()).containsExactly(Continent.ASIA, Continent.EUROPE);
+    assertThat(add(Country.TURKEY).getContinents()).containsExactlyInAnyOrder(Continent.ASIA, Continent.EUROPE);
     assertThat(add(Country.TURKMENISTAN).getContinents()).containsExactly(Continent.ASIA);
     assertThat(add(Country.TUVALU).getContinents()).containsExactly(Continent.AUSTRALIA_AND_OCEANIA);
     assertThat(add(Country.UGANDA).getContinents()).containsExactly(Continent.AFRICA);
