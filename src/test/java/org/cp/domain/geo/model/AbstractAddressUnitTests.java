@@ -100,7 +100,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void constructNewAbstractAddressWithStreetCityAndPostalCode() {
+  void constructNewAbstractAddressWithStreetCityAndPostalCode() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -114,7 +114,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void constructNewAbstractAddressWithStreetCityPostalCodeAndCountry() {
+  void constructNewAbstractAddressWithStreetCityPostalCodeAndCountry() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -128,7 +128,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void constructNewAbstractAddressWithNullStreet() {
+  void constructNewAbstractAddressWithNullStreet() {
 
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
@@ -142,7 +142,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void constructNewAbstractAddressWithNullCity() {
+  void constructNewAbstractAddressWithNullCity() {
 
     Street mockStreet = mock(Street.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
@@ -156,7 +156,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void constructNewAbstractAddressWithNullPostalCode() {
+  void constructNewAbstractAddressWithNullPostalCode() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -170,7 +170,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void constructNewAbstractAddressWithNullCountry() {
+  void constructNewAbstractAddressWithNullCountry() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -185,7 +185,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void setAndGetCoordinates() {
+  void setAndGetCoordinates() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -210,7 +210,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void setAndGetId() {
+  void setAndGetId() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -234,7 +234,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void setAndGetType() {
+  void setAndGetType() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -262,7 +262,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void setAndGetUnit() {
+  void setAndGetUnit() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -287,7 +287,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void cloneAddressIsCorrect() throws CloneNotSupportedException {
+  void cloneAddressIsCorrect() throws CloneNotSupportedException {
 
     Street mockStreet = mock(Street.class);
     Unit mockUnit = mock(Unit.class);
@@ -310,7 +310,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void equalAddressesAreEqual() {
+  void equalAddressesAreEqual() {
 
     Unit suiteSixteen = Unit.of("16").asSuite();
 
@@ -331,7 +331,7 @@ public class AbstractAddressUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void identicalAddressesAreEqual() {
+  void identicalAddressesAreEqual() {
 
     Street mockStreet = mock(Street.class);
     Unit mockUnit = mock(Unit.class);
@@ -353,7 +353,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void unequalAddressesAreNotEqual() {
+  void unequalAddressesAreNotEqual() {
 
     Unit suiteSixteen = Unit.of("16").asSuite();
 
@@ -374,7 +374,7 @@ public class AbstractAddressUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void equalsNullIsNullSafeReturnsFalse() {
+  void equalsNullIsNullSafeReturnsFalse() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -387,14 +387,14 @@ public class AbstractAddressUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void equalsObjectReturnsFalse() {
+  void equalsObjectReturnsFalse() {
 
     assertThat(this.<Address>newAddress(Street.of(100, "Main").asStreet(), null,
       City.of("Portland"), PostalCode.of("97205"))).isNotEqualTo("100 Main St. Portland, OR 97005");
   }
 
   @Test
-  public void hashCodeIsCorrect() {
+  void hashCodeIsCorrect() {
 
     Unit suiteSixteen = Unit.of("16").asSuite();
 
@@ -424,7 +424,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void toStringIsCorrect() {
+  void toStringIsCorrect() {
 
     AbstractAddress address = Address.builder(Country.UNKNOWN)
       .on(Street.of(100, "Main").asStreet())
@@ -442,7 +442,7 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void buildAbstractAddress() {
+  void buildAbstractAddress() {
 
     Street mockStreet = mock(Street.class);
     Unit mockUnit = mock(Unit.class);
