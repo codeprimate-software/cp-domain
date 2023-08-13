@@ -50,36 +50,38 @@ public class LocatableUnitTests {
 
     Coordinates mockCoordinates = mock(Coordinates.class);
 
-    Locatable locatable = mock(Locatable.class);
+    Locatable<?> mockLocatable = mock(Locatable.class);
 
-    doReturn(Optional.of(mockCoordinates)).when(locatable).getCoordinates();
-    doCallRealMethod().when(locatable).isLocated();
+    doReturn(Optional.of(mockCoordinates)).when(mockLocatable).getCoordinates();
+    doCallRealMethod().when(mockLocatable).isLocated();
 
-    assertThat(locatable.isLocated()).isTrue();
+    assertThat(mockLocatable.isLocated()).isTrue();
 
-    verify(locatable, times(1)).isLocated();
-    verify(locatable, times(1)).getCoordinates();
+    verify(mockLocatable, times(1)).isLocated();
+    verify(mockLocatable, times(1)).getCoordinates();
+    verifyNoMoreInteractions(mockLocatable);
     verifyNoInteractions(mockCoordinates);
   }
 
   @Test
   public void isLocatedWithNoCoordinatesReturnsFalse() {
 
-    Locatable locatable = mock(Locatable.class);
+    Locatable<?> mockLocatable = mock(Locatable.class);
 
-    doReturn(Optional.empty()).when(locatable).getCoordinates();
-    doCallRealMethod().when(locatable).isLocated();
+    doReturn(Optional.empty()).when(mockLocatable).getCoordinates();
+    doCallRealMethod().when(mockLocatable).isLocated();
 
-    assertThat(locatable.isLocated()).isFalse();
+    assertThat(mockLocatable.isLocated()).isFalse();
 
-    verify(locatable, times(1)).isLocated();
-    verify(locatable, times(1)).getCoordinates();
+    verify(mockLocatable, times(1)).isLocated();
+    verify(mockLocatable, times(1)).getCoordinates();
+    verifyNoMoreInteractions(mockLocatable);
   }
 
   @Test
   public void getCoordinatesIsEmpty() {
 
-    Locatable mockLocatable = mock(Locatable.class);
+    Locatable<?> mockLocatable = mock(Locatable.class);
 
     doCallRealMethod().when(mockLocatable).getCoordinates();
 
@@ -97,7 +99,7 @@ public class LocatableUnitTests {
 
     Coordinates mockCoordinates = mock(Coordinates.class);
 
-    Locatable mockLocatable = mock(Locatable.class);
+    Locatable<?> mockLocatable = mock(Locatable.class);
 
     doCallRealMethod().when(mockLocatable).setCoordinates(any());
 
@@ -107,6 +109,23 @@ public class LocatableUnitTests {
         mockLocatable.getClass().getName())
       .withNoCause();
 
+    verify(mockLocatable, times(1)).setCoordinates(eq(mockCoordinates));
+    verifyNoMoreInteractions(mockLocatable);
+    verifyNoInteractions(mockCoordinates);
+  }
+
+  @Test
+  public void atCoordinatesCallsSetCoordinates() {
+
+    Coordinates mockCoordinates = mock(Coordinates.class);
+
+    Locatable<?> mockLocatable = mock(Locatable.class);
+
+    doCallRealMethod().when(mockLocatable).at(any());
+
+    assertThat(mockLocatable.at(mockCoordinates)).isSameAs(mockLocatable);
+
+    verify(mockLocatable, times(1)).at(eq(mockCoordinates));
     verify(mockLocatable, times(1)).setCoordinates(eq(mockCoordinates));
     verifyNoMoreInteractions(mockLocatable);
     verifyNoInteractions(mockCoordinates);

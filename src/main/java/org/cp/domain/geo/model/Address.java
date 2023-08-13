@@ -71,7 +71,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  */
 @FluentApi
 @SuppressWarnings("unused")
-public interface Address extends Cloneable, Comparable<Address>, Identifiable<Long>, Locatable, Renderable,
+public interface Address extends Cloneable, Comparable<Address>, Identifiable<Long>, Locatable<Address>, Renderable,
     Serializable, Visitable {
 
   /**

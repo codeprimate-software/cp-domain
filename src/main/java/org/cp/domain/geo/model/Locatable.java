@@ -24,11 +24,12 @@ import java.util.Optional;
  * or are capable of being located.
  *
  * @author John Blum
+ * @param <T> concrete {@link Class type} of this {@link Locatable object}.
  * @see org.cp.domain.geo.model.Coordinates
  * @since 0.1.0
  */
 @SuppressWarnings("unused")
-public interface Locatable {
+public interface Locatable<T> {
 
   /**
    * Determines whether this {@link Object} has been geographically located.
@@ -58,8 +59,8 @@ public interface Locatable {
    * Sets geographic {@link Coordinates}, such as {@literal latitude}, {@literal longitude} and {@literal altitude},
    * for this {@link Locatable object}.
    * <p>
-   * Most goecoding, or geomapping, services adjust geographic coordinates at a particular location,
-   * such as an address, overtime, hence the reason {@link Coordinates} can be mutated.
+   * Most goecoding, or geomapping, services adjust geographic coordinates at a particular location overtime,
+   * such as an address, hence the reason {@link Coordinates} can be mutated.
    *
    * @param coordinates geographic {@link Coordinates} to set for this {@link Locatable object}.
    * @see org.cp.domain.geo.model.Coordinates
@@ -67,5 +68,19 @@ public interface Locatable {
   default void setCoordinates(Coordinates coordinates) {
     throw newUnsupportedOperationException("Setting Coordinates on a Locatable object of type [%s] is not supported",
       getClass().getName());
+  }
+
+  /**
+   * Builder method used to set the geographic {@link Coordinates} of this {@link Locatable object}.
+   *
+   * @param coordinates geographic {@link Coordinates} to set for this {@link Locatable object}.
+   * @return this {@link Locatable object}.
+   * @see org.cp.domain.geo.model.Coordinates
+   * @see #setCoordinates(Coordinates)
+   */
+  @SuppressWarnings("unchecked")
+  default T at(Coordinates coordinates) {
+    setCoordinates(coordinates);
+    return (T) this;
   }
 }
