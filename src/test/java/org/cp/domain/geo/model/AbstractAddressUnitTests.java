@@ -17,15 +17,9 @@ package org.cp.domain.geo.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -60,23 +54,12 @@ public class AbstractAddressUnitTests {
 
     assertThat(address).isNotNull();
     assertThat(address.getStreet()).isEqualTo(street);
-    assertThat(fromCity(address.getCity())).isEqualTo(city);
+    assertThat(address.getCity()).isEqualTo(city);
     assertThat(address.getPostalCode()).isEqualTo(postalCode);
     assertThat(address.getCountry()).isEqualTo(country);
     assertThat(address.getCoordinates()).isNotPresent();
     assertThat(address.getType()).isNotPresent();
     assertThat(address.getUnit()).isNotPresent();
-  }
-
-  private City fromCity(City city) {
-
-    return new City(city.getName()) {
-
-      @Override
-      public Optional<Country> getCountry() {
-        return city.getCountry();
-      }
-    };
   }
 
   @SuppressWarnings("unused")
@@ -96,68 +79,52 @@ public class AbstractAddressUnitTests {
     return mockAddress;
   }
 
-  private City mockCity(String name) {
+  @SuppressWarnings("unchecked")
+  private <T extends Address> T newAddress(Street street, Unit unit, City city, PostalCode postalCode) {
 
-    City mockCity = mock(City.class);
+    TestAddress address = new TestAddress(street, city, postalCode);
 
-    doReturn(name).when(mockCity).getName();
-    doReturn(Optional.of(Country.localCountry())).when(mockCity).getCountry();
+    address.setUnit(unit);
 
-    return mockCity;
+    return (T) address;
   }
 
-  private PostalCode mockPostalCode(String number) {
+  @SuppressWarnings({ "unchecked", "unused" })
+  private <T extends Address> T newAddress(Street street, Unit unit, City city, PostalCode postalCode, Country country) {
 
-    PostalCode mockPostalCode = mock(PostalCode.class);
+    TestAddress address = new TestAddress(street, city, postalCode, country);
 
-    doReturn(number).when(mockPostalCode).getNumber();
-    doReturn(Optional.of(Country.localCountry())).when(mockPostalCode).getCountry();
+    address.setUnit(unit);
 
-    return mockPostalCode;
-  }
-
-  private void verifyCityInteractions(City mockCity) {
-
-    verify(mockCity, times(2)).getName();
-    verify(mockCity, atLeastOnce()).getCountry();
-    verifyNoMoreInteractions(mockCity);
-  }
-
-  private void verifyPostalCodeInteractions(PostalCode mockPostalCode) {
-
-    verify(mockPostalCode, atLeastOnce()).getNumber();
-    verify(mockPostalCode, times(1)).getCountry();
-    verifyNoMoreInteractions(mockPostalCode);
+    return (T) address;
   }
 
   @Test
   public void constructNewAbstractAddressWithStreetCityAndPostalCode() {
 
     Street mockStreet = mock(Street.class);
-    City mockCity = mockCity("MockCity");
-    PostalCode mockPostalCode = mockPostalCode("12345");
+    City mockCity = mock(City.class);
+    PostalCode mockPostalCode = mock(PostalCode.class);
 
     AbstractAddress address = new TestAddress(mockStreet, mockCity, mockPostalCode);
 
     assertAddress(address, mockStreet, mockCity, mockPostalCode);
 
-    verifyCityInteractions(mockCity);
-    verifyNoInteractions(mockStreet, mockPostalCode);
+    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
   }
 
   @Test
   public void constructNewAbstractAddressWithStreetCityPostalCodeAndCountry() {
 
     Street mockStreet = mock(Street.class);
-    City mockCity = mockCity("MockCity");
+    City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
 
     AbstractAddress address = new TestAddress(mockStreet, mockCity, mockPostalCode, Country.GERMANY);
 
     assertAddress(address, mockStreet, mockCity, mockPostalCode, Country.GERMANY);
 
-    verifyCityInteractions(mockCity);
-    verifyNoInteractions(mockStreet, mockPostalCode);
+    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
   }
 
   @Test
@@ -218,181 +185,6 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
-  public void fromAddress() {
-
-    Street mockStreet = mock(Street.class);
-    Unit mockUnit = mock(Unit.class);
-    City mockCity = mock(City.class);
-    PostalCode mockPostalCode = mockPostalCode("12345");
-    Coordinates mockCoordinates = mock(Coordinates.class);
-
-    Address mockAddress = mockAddress(mockStreet, mockCity, mockPostalCode, Country.GERMANY);
-
-    doReturn(Optional.of(mockCoordinates)).when(mockAddress).getCoordinates();
-    doReturn(Optional.of(Address.Type.PO_BOX)).when(mockAddress).getType();
-    doReturn(Optional.of(mockUnit)).when(mockAddress).getUnit();
-
-    AbstractAddress address = AbstractAddress.from(mockAddress);
-
-    assertAddress(address, mockAddress);
-
-    verify(mockAddress, times(2)).getStreet();
-    verify(mockAddress, times(3)).getUnit();
-    verify(mockAddress, times(2)).getCity();
-    verify(mockAddress, times(2)).getPostalCode();
-    verify(mockAddress, times(2)).getCountry();
-    verify(mockAddress, times(2)).getCoordinates();
-    verify(mockAddress, times(2)).getType();
-    verifyNoInteractions(mockStreet, mockUnit, mockCity, mockCoordinates);
-    verifyNoMoreInteractions(mockAddress);
-  }
-
-  @Test
-  public void fromNullAddress() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> AbstractAddress.from(null))
-      .withMessage("Address to copy is required")
-      .withNoCause();
-  }
-
-  @Test
-  public void newAddress() {
-
-    AbstractAddress.Builder<?> addressBuilder = AbstractAddress.newAddress();
-
-    assertThat(addressBuilder).isNotNull();
-    assertThat(addressBuilder.getStreet()).isNull();
-    assertThat(addressBuilder.getUnit()).isNotPresent();
-    assertThat(addressBuilder.getCity()).isNull();
-    assertThat(addressBuilder.getPostalCode()).isNull();
-    assertThat(addressBuilder.getCountry()).isEqualTo(Country.localCountry());
-    assertThat(addressBuilder.getCoordinates()).isNotPresent();
-  }
-
-  @Test
-  public void newAddressWithCountry() {
-
-    AbstractAddress.Builder<?> addressBuilder = AbstractAddress.newAddress(Country.CANADA);
-
-    assertThat(addressBuilder).isNotNull();
-    assertThat(addressBuilder.getStreet()).isNull();
-    assertThat(addressBuilder.getUnit()).isNotPresent();
-    assertThat(addressBuilder.getCity()).isNull();
-    assertThat(addressBuilder.getPostalCode()).isNull();
-    assertThat(addressBuilder.getCountry()).isEqualTo(Country.CANADA);
-    assertThat(addressBuilder.getCoordinates()).isNotPresent();
-  }
-
-  @Test
-  public void ofStreetCityAndPostalCode() {
-
-    Street mockStreet = mock(Street.class);
-    City mockCity = mockCity("MockCity");
-    PostalCode mockPostalCode = mockPostalCode("12345");
-
-    AbstractAddress address = AbstractAddress.of(mockStreet, mockCity, mockPostalCode);
-
-    assertAddress(address, mockStreet, mockCity, mockPostalCode);
-
-    verifyCityInteractions(mockCity);
-    verifyPostalCodeInteractions(mockPostalCode);
-    verifyNoInteractions(mockStreet);
-  }
-
-  @Test
-  public void ofStreetCityPostalCodeAndCountry() {
-
-    Street mockStreet = mock(Street.class);
-    City mockCity = mockCity("MockCity");
-    PostalCode mockPostalCode = mock(PostalCode.class);
-
-    AbstractAddress address = AbstractAddress.of(mockStreet, mockCity, mockPostalCode, Country.MEXICO);
-
-    assertAddress(address, mockStreet, mockCity, mockPostalCode, Country.MEXICO);
-
-    verifyCityInteractions(mockCity);
-    verifyNoInteractions(mockStreet, mockPostalCode);
-  }
-
-  @Test
-  public void setAndGetId() {
-
-    Street mockStreet = mock(Street.class);
-    City mockCity = mock(City.class);
-    PostalCode mockPostalCode = mock(PostalCode.class);
-
-    AbstractAddress address = AbstractAddress.of(mockStreet, mockCity, mockPostalCode, Country.UNITED_KINGDOM);
-
-    assertThat(address.getId()).isNull();
-
-    address.setId(1L);
-
-    assertThat(address.getId()).isEqualTo(1L);
-    assertThat(address.<Address>identifiedBy(2L)).isSameAs(address);
-    assertThat(address.getId()).isEqualTo(2L);
-
-    address.setId(null);
-
-    assertThat(address.getId()).isNull();
-
-    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
-  }
-
-  @Test
-  public void setAndGetUnit() {
-
-    Street mockStreet = mock(Street.class);
-    City mockCity = mock(City.class);
-    PostalCode mockPostalCode = mock(PostalCode.class);
-    Unit mockUnit = mock(Unit.class);
-
-    AbstractAddress address = AbstractAddress.of(mockStreet, mockCity, mockPostalCode, Country.AUSTRALIA);
-
-    assertThat(address.getUnit()).isNotPresent();
-
-    address.setUnit(mockUnit);
-
-    assertThat(address.getUnit()).isPresent();
-    assertThat(address.getUnit().orElse(null)).isEqualTo(mockUnit);
-
-    address.setUnit(null);
-
-    assertThat(address.getUnit()).isNotPresent();
-    assertThat(address.getUnit().orElse(Unit.EMPTY)).isEqualTo(Unit.EMPTY);
-
-    verifyNoInteractions(mockStreet, mockCity, mockPostalCode, mockUnit);
-  }
-
-  @Test
-  public void setAndGetType() {
-
-    Street mockStreet = mock(Street.class);
-    City mockCity = mock(City.class);
-    PostalCode mockPostalCode = mock(PostalCode.class);
-
-    AbstractAddress address = AbstractAddress.of(mockStreet, mockCity, mockPostalCode, Country.COLOMBIA);
-
-    assertThat(address.getType()).isNotPresent();
-
-    address.setType(Address.Type.PO_BOX);
-
-    assertThat(address.getType()).isPresent();
-    assertThat(address.getType().orElse(null)).isEqualTo(Address.Type.PO_BOX);
-    assertThat(address.<Address>as(Address.Type.MAILING)).isSameAs(address);
-    assertThat(address.getType().orElse(null)).isEqualTo(Address.Type.MAILING);
-    assertThat(address.<Address>asHome()).isSameAs(address);
-    assertThat(address.getType().orElse(null)).isEqualTo(Address.Type.HOME);
-
-    address.setType(null);
-
-    assertThat(address.getType()).isNotPresent();
-    assertThat(address.getType().orElse(Address.Type.UNKNOWN)).isEqualTo(Address.Type.UNKNOWN);
-
-    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
-  }
-
-  @Test
   public void setAndGetCoordinates() {
 
     Street mockStreet = mock(Street.class);
@@ -400,7 +192,7 @@ public class AbstractAddressUnitTests {
     PostalCode mockPostalCode = mock(PostalCode.class);
     Coordinates mockCoordinates = mock(Coordinates.class);
 
-    AbstractAddress address = AbstractAddress.of(mockStreet, mockCity, mockPostalCode, Country.EGYPT);
+    AbstractAddress address = new TestAddress(mockStreet, mockCity, mockPostalCode, Country.AUSTRIA);
 
     assertThat(address.getCoordinates()).isNotPresent();
 
@@ -418,6 +210,83 @@ public class AbstractAddressUnitTests {
   }
 
   @Test
+  public void setAndGetId() {
+
+    Street mockStreet = mock(Street.class);
+    City mockCity = mock(City.class);
+    PostalCode mockPostalCode = mock(PostalCode.class);
+
+    AbstractAddress address = new TestAddress(mockStreet, mockCity, mockPostalCode, Country.UNITED_KINGDOM);
+
+    assertThat(address.getId()).isNull();
+
+    address.setId(1L);
+
+    assertThat(address.getId()).isEqualTo(1L);
+    assertThat(address.<Address>identifiedBy(2L)).isSameAs(address);
+    assertThat(address.getId()).isEqualTo(2L);
+
+    address.setId(null);
+
+    assertThat(address.getId()).isNull();
+
+    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
+  }
+
+  @Test
+  public void setAndGetType() {
+
+    Street mockStreet = mock(Street.class);
+    City mockCity = mock(City.class);
+    PostalCode mockPostalCode = mock(PostalCode.class);
+
+    AbstractAddress address = new TestAddress(mockStreet, mockCity, mockPostalCode, Country.UNITED_STATES_OF_AMERICA);
+
+    assertThat(address.getType()).isNotPresent();
+
+    address.setType(Address.Type.PO_BOX);
+
+    assertThat(address.getType()).isPresent();
+    assertThat(address.getType().orElse(null)).isEqualTo(Address.Type.PO_BOX);
+    assertThat(address.<Address>as(Address.Type.MAILING)).isSameAs(address);
+    assertThat(address.getType().orElse(null)).isEqualTo(Address.Type.MAILING);
+    assertThat(address.<Address>asBilling()).isSameAs(address);
+    assertThat(address.getType().orElse(null)).isEqualTo(Address.Type.BILLING);
+
+    address.setType(null);
+
+    assertThat(address.getType()).isNotPresent();
+    assertThat(address.getType().orElse(Address.Type.UNKNOWN)).isEqualTo(Address.Type.UNKNOWN);
+
+    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
+  }
+
+  @Test
+  public void setAndGetUnit() {
+
+    Street mockStreet = mock(Street.class);
+    City mockCity = mock(City.class);
+    PostalCode mockPostalCode = mock(PostalCode.class);
+    Unit mockUnit = mock(Unit.class);
+
+    AbstractAddress address = new TestAddress(mockStreet, mockCity, mockPostalCode, Country.EGYPT);
+
+    assertThat(address.getUnit()).isNotPresent();
+
+    address.setUnit(mockUnit);
+
+    assertThat(address.getUnit()).isPresent();
+    assertThat(address.getUnit().orElse(null)).isEqualTo(mockUnit);
+
+    address.setUnit(null);
+
+    assertThat(address.getUnit()).isNotPresent();
+    assertThat(address.getUnit().orElse(Unit.EMPTY)).isEqualTo(Unit.EMPTY);
+
+    verifyNoInteractions(mockStreet, mockCity, mockPostalCode, mockUnit);
+  }
+
+  @Test
   public void cloneAddressIsCorrect() throws CloneNotSupportedException {
 
     Street mockStreet = mock(Street.class);
@@ -426,7 +295,7 @@ public class AbstractAddressUnitTests {
     PostalCode mockPostalCode = mock(PostalCode.class);
     Coordinates mockCoordinates = mock(Coordinates.class);
 
-    AbstractAddress address = AbstractAddress.of(mockStreet, mockCity, mockPostalCode, Country.GREECE);
+    AbstractAddress address = new TestAddress(mockStreet, mockCity, mockPostalCode, Country.GREECE);
 
     address.setUnit(mockUnit);
     address.setType((Address.Type.PO_BOX));
@@ -445,19 +314,15 @@ public class AbstractAddressUnitTests {
 
     Unit suiteSixteen = Unit.of("16").asSuite();
 
-    AbstractAddress addressOne = new TestAddress(Street.of(100, "Main").asStreet(),
-      City.of("Portland"), PostalCode.of("97205"));
+    AbstractAddress addressOne = newAddress(Street.of(100, "Main").asStreet(), suiteSixteen,
+      City.of("Portland"), PostalCode.of("97205"))
+      .at(Coordinates.at(1.0d, 2.0d))
+      .asBilling();
 
-    addressOne.setUnit(suiteSixteen);
-    addressOne.setType(Address.Type.BILLING);
-    addressOne.setCoordinates(Coordinates.at(1.0d, 2.0d));
-
-    AbstractAddress addressTwo = new TestAddress(Street.of(100, "Main").asStreet(),
-      City.of("Portland"), PostalCode.of("97205"));
-
-    addressTwo.setUnit(suiteSixteen);
-    addressTwo.setType(Address.Type.MAILING);
-    addressTwo.setCoordinates(Coordinates.at(2.0d, 1.0d));
+    AbstractAddress addressTwo = newAddress(Street.of(100, "Main").asStreet(), suiteSixteen,
+      City.of("Portland"), PostalCode.of("97205"))
+      .at(Coordinates.at(2.0d, 1.0d))
+      .asMailing();
 
     assertThat(addressOne).isNotSameAs(addressTwo);
     assertThat(addressOne).isEqualTo(addressTwo);
@@ -474,11 +339,9 @@ public class AbstractAddressUnitTests {
     PostalCode mockPostalCode = mock(PostalCode.class);
     Coordinates mockCoordinates = mock(Coordinates.class);
 
-    AbstractAddress addressOne = new TestAddress(mockStreet, mockCity, mockPostalCode);
-
-    addressOne.setUnit(mockUnit);
-    addressOne.setType(Address.Type.PO_BOX);
-    addressOne.setCoordinates(mockCoordinates);
+    AbstractAddress addressOne = newAddress(mockStreet, mockUnit, mockCity, mockPostalCode)
+      .at(mockCoordinates)
+      .asPoBox();
 
     AbstractAddress addressTwo = addressOne;
 
@@ -494,19 +357,15 @@ public class AbstractAddressUnitTests {
 
     Unit suiteSixteen = Unit.of("16").asSuite();
 
-    AbstractAddress addressOne = new TestAddress(Street.of(100, "Main").asStreet(),
-      City.of("ABC"), PostalCode.of("12345"));
+    AbstractAddress addressOne = newAddress(Street.of(200, "Park").asWay(), suiteSixteen,
+      City.of("ABC"), PostalCode.of("12345"))
+      .at(Coordinates.at(1.0d, 2.0d))
+      .asPoBox();
 
-    addressOne.setUnit(suiteSixteen);
-    addressOne.setType(Address.Type.PO_BOX);
-    addressOne.setCoordinates(Coordinates.at(1.0d, 2.0d));
-
-    AbstractAddress addressTwo = new TestAddress(Street.of(100, "Main").asAvenue(),
-      City.of("XYZ"), PostalCode.of("54321"));
-
-    addressTwo.setUnit(suiteSixteen);
-    addressTwo.setType(Address.Type.PO_BOX);
-    addressTwo.setCoordinates(Coordinates.at(1.0d, 2.0d));
+    AbstractAddress addressTwo = newAddress(Street.of(200, "Par").asAvenue(), suiteSixteen,
+      City.of("XYZ"), PostalCode.of("54321"))
+      .at(Coordinates.at(1.0d, 2.0d))
+      .asPoBox();
 
     assertThat(addressOne).isNotSameAs(addressTwo);
     assertThat(addressOne).isNotEqualTo(addressTwo);
@@ -521,8 +380,7 @@ public class AbstractAddressUnitTests {
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
 
-    assertThat(new TestAddress(mockStreet, mockCity, mockPostalCode))
-      .isNotEqualTo(null);
+    assertThat(this.<Address>newAddress(mockStreet, null, mockCity, mockPostalCode)).isNotEqualTo(null);
 
     verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
   }
@@ -531,8 +389,8 @@ public class AbstractAddressUnitTests {
   @SuppressWarnings("all")
   public void equalsObjectReturnsFalse() {
 
-    assertThat(AbstractAddress.<AbstractAddress>of(Street.of(100, "Main").asStreet(),
-      City.of("Portland"), PostalCode.of("97205"))) .isNotEqualTo("100 Main St. Portland, OR 97005");
+    assertThat(this.<Address>newAddress(Street.of(100, "Main").asStreet(), null,
+      City.of("Portland"), PostalCode.of("97205"))).isNotEqualTo("100 Main St. Portland, OR 97005");
   }
 
   @Test
@@ -540,34 +398,35 @@ public class AbstractAddressUnitTests {
 
     Unit suiteSixteen = Unit.of("16").asSuite();
 
-    AbstractAddress address = new TestAddress(Street.of(100, "Main").asStreet(),
+    AbstractAddress address = newAddress(Street.of(100, "Main").asStreet(), suiteSixteen,
       City.of("Portland"), PostalCode.of("12345"), Country.CANADA);
-
-    address.setUnit(suiteSixteen);
 
     int hashCode = address.hashCode();
 
     assertThat(hashCode).isNotEqualTo(0);
     assertThat(hashCode).isEqualTo(address.hashCode());
-    assertThat(address).hasSameHashCodeAs(AbstractAddress.newAddress(Country.CANADA)
+
+    assertThat(address).hasSameHashCodeAs(Address.builder(Country.CANADA)
       .on(Street.of(100, "Main").asStreet())
       .in(suiteSixteen)
       .in(City.of("Portland"))
       .in(PostalCode.of("12345"))
       .build());
-    assertThat(address).doesNotHaveSameHashCodeAs(AbstractAddress.newAddress(Country.MEXICO)
+
+    assertThat(address).doesNotHaveSameHashCodeAs(Address.builder(Country.MEXICO)
       .on(Street.of(100, "Main").asStreet())
       .in(suiteSixteen)
       .in(City.of("Portland"))
       .in(PostalCode.of("12345"))
       .build());
+
     assertThat(address).doesNotHaveSameHashCodeAs("100 Main St. Portland, OR 12345");
   }
 
   @Test
   public void toStringIsCorrect() {
 
-    AbstractAddress address = AbstractAddress.newAddress(Country.UNKNOWN)
+    AbstractAddress address = Address.builder(Country.UNKNOWN)
       .on(Street.of(100, "Main").asStreet())
       .in(Unit.of("16").asSuite())
       .in(City.of("Portland"))
@@ -592,15 +451,17 @@ public class AbstractAddressUnitTests {
     Country usa = Country.UNITED_STATES_OF_AMERICA;
     Coordinates mockCoordinates = mock(Coordinates.class);
 
-    AbstractAddress address = new TestAddress.TestBuilder(usa)
+    AbstractAddress address = new TestAddress.Builder<AbstractAddress>()
       .on(mockStreet)
+      .in(mockUnit)
       .in(mockCity)
       .in(mockPostalCode)
-      .in(mockUnit)
+      .in(usa)
       .at(mockCoordinates)
       .build()
       .asPoBox();
 
+    assertThat(address).isNotNull();
     assertThat(address.getStreet()).isEqualTo(mockStreet);
     assertThat(address.getCity()).isEqualTo(mockCity);
     assertThat(address.getPostalCode()).isEqualTo(mockPostalCode);
@@ -615,35 +476,14 @@ public class AbstractAddressUnitTests {
     verifyNoInteractions(mockStreet, mockUnit, mockCity, mockPostalCode, mockCoordinates);
   }
 
-  @Test
-  public void buildAbstractAddressWithNullCountry() {
+  static class TestAddress extends AbstractAddress {
 
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> new TestAddress.TestBuilder(null))
-      .withMessage("Country is required")
-      .withNoCause();
-  }
-
-  protected static class TestAddress extends AbstractAddress {
-
-    protected TestAddress(Street street, City city, PostalCode postalCode) {
+    TestAddress(Street street, City city, PostalCode postalCode) {
       super(street, city, postalCode);
     }
 
-    protected TestAddress(Street street, City city, PostalCode postalCode, Country country) {
+    TestAddress(Street street, City city, PostalCode postalCode, Country country) {
       super(street, city, postalCode, country);
-    }
-
-    protected static class TestBuilder extends AbstractAddress.Builder<TestAddress> {
-
-      protected TestBuilder(Country country) {
-        super(country);
-      }
-
-      @Override
-      protected TestAddress doBuild() {
-        return new TestAddress(getStreet(), getCity(), getPostalCode(), getCountry());
-      }
     }
   }
 }
