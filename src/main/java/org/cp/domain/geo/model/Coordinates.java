@@ -35,7 +35,9 @@ import org.cp.elements.lang.annotation.Nullable;
  *
  * @author John Blum
  * @see java.awt.Point
+ * @see java.lang.Double
  * @see java.io.Serializable
+ * @see org.cp.domain.geo.model.Elevation
  * @see org.cp.elements.lang.annotation.FluentApi
  * @since 0.1.0
  */
