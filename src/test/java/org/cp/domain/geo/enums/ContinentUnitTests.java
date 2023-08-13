@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.domain.geo.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,23 +21,20 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import org.cp.elements.util.CollectionUtils;
-
 /**
- * Unit tests for {@link Continent}.
+ * Unit Tests for {@link Continent}.
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.geo.enums.Continent
- * @see org.cp.domain.geo.enums.Country
  * @since 0.1.0
  */
-public class ContinentTests {
+public class ContinentUnitTests {
 
   @Test
-  public void countriesInAfrica() {
+  void countriesInAfrica() {
 
-    Set<Country> expectedCountriesInAfrica = CollectionUtils.asSet(
+    Set<Country> expectedCountriesInAfrica = Set.of(
       Country.ALGERIA,
       Country.ANGOLA,
       Country.BENIN,
@@ -98,12 +94,12 @@ public class ContinentTests {
     Set<Country> actualCountriesInAfrica = Continent.AFRICA.countries();
 
     assertThat(actualCountriesInAfrica).isNotNull();
-    assertThat(actualCountriesInAfrica).hasSize(expectedCountriesInAfrica.size());
+    assertThat(actualCountriesInAfrica).hasSameSizeAs(expectedCountriesInAfrica);
     assertThat(actualCountriesInAfrica).containsAll(expectedCountriesInAfrica);
   }
 
   @Test
-  public void countriesInAntarctica() {
+  void countriesInAntarctica() {
 
     Set<Country> countriesInAntarctica = Continent.ANTARCTICA.countries();
 
@@ -112,9 +108,9 @@ public class ContinentTests {
   }
 
   @Test
-  public void countriesInAsia() {
+  void countriesInAsia() {
 
-    Set<Country> expectedCountriesInAsia = CollectionUtils.asSet(
+    Set<Country> expectedCountriesInAsia = Set.of(
       Country.AFGHANISTAN,
       Country.ARMENIA,
       Country.AZERBAIJAN,
@@ -170,14 +166,14 @@ public class ContinentTests {
     Set<Country> actualCountriesInAsia = Continent.ASIA.countries();
 
     assertThat(actualCountriesInAsia).isNotNull();
-    assertThat(actualCountriesInAsia).hasSize(expectedCountriesInAsia.size());
+    assertThat(actualCountriesInAsia).hasSameSizeAs(expectedCountriesInAsia);
     assertThat(actualCountriesInAsia).containsAll(expectedCountriesInAsia);
   }
 
   @Test
-  public void countriesInAustraliaAndOceania() {
+  void countriesInAustraliaAndOceania() {
 
-    Set<Country> expectedCountriesInAustraliaAndOceania = CollectionUtils.asSet(
+    Set<Country> expectedCountriesInAustraliaAndOceania = Set.of(
       Country.AUSTRALIA,
       Country.FIJI,
       Country.KIRIBATI,
@@ -197,14 +193,14 @@ public class ContinentTests {
     Set<Country> actualCountriesInAustraliaAndOceania = Continent.AUSTRALIA_AND_OCEANIA.countries();
 
     assertThat(actualCountriesInAustraliaAndOceania).isNotNull();
-    assertThat(actualCountriesInAustraliaAndOceania).hasSize(expectedCountriesInAustraliaAndOceania.size());
+    assertThat(actualCountriesInAustraliaAndOceania).hasSameSizeAs(expectedCountriesInAustraliaAndOceania);
     assertThat(actualCountriesInAustraliaAndOceania).containsAll(expectedCountriesInAustraliaAndOceania);
   }
 
   @Test
-  public void countriesInEurope() {
+  void countriesInEurope() {
 
-    Set<Country> expectedCountriesInEurope = CollectionUtils.asSet(
+    Set<Country> expectedCountriesInEurope = Set.of(
       Country.ALBANIA,
       Country.ANDORRA,
       Country.ARMENIA,
@@ -261,14 +257,14 @@ public class ContinentTests {
     Set<Country> actualCountriesInEurope = Continent.EUROPE.countries();
 
     assertThat(actualCountriesInEurope).isNotNull();
-    assertThat(actualCountriesInEurope).hasSize(expectedCountriesInEurope.size());
+    assertThat(actualCountriesInEurope).hasSameSizeAs(expectedCountriesInEurope);
     assertThat(actualCountriesInEurope).containsAll(expectedCountriesInEurope);
   }
 
   @Test
-  public void countriesInNorthAmerica() {
+  void countriesInNorthAmerica() {
 
-    Set<Country> expectedCountriesInNorthAmerica = CollectionUtils.asSet(
+    Set<Country> expectedCountriesInNorthAmerica = Set.of(
       Country.ANTIGUA_AND_BARBUDA,
       Country.BAHAMAS,
       Country.BARBADOS,
@@ -297,14 +293,14 @@ public class ContinentTests {
     Set<Country> actualCountriesInNorthAmerica = Continent.NORTH_AMERICA.countries();
 
     assertThat(actualCountriesInNorthAmerica).isNotNull();
-    assertThat(actualCountriesInNorthAmerica).hasSize(expectedCountriesInNorthAmerica.size());
+    assertThat(actualCountriesInNorthAmerica).hasSameSizeAs(expectedCountriesInNorthAmerica);
     assertThat(actualCountriesInNorthAmerica).containsAll(expectedCountriesInNorthAmerica);
   }
 
   @Test
-  public void countriesInSouthAmerica() {
+  void countriesInSouthAmerica() {
 
-    Set<Country> expectedCountriesInSouthAmerica = CollectionUtils.asSet(
+    Set<Country> expectedCountriesInSouthAmerica = Set.of(
       Country.ARGENTINA,
       Country.BOLIVIA,
       Country.BRAZIL,
@@ -322,12 +318,12 @@ public class ContinentTests {
     Set<Country> actualCountriesInSouthAmerica = Continent.SOUTH_AMERICA.countries();
 
     assertThat(actualCountriesInSouthAmerica).isNotNull();
-    assertThat(actualCountriesInSouthAmerica).hasSize(expectedCountriesInSouthAmerica.size());
+    assertThat(actualCountriesInSouthAmerica).hasSameSizeAs(expectedCountriesInSouthAmerica);
     assertThat(actualCountriesInSouthAmerica).containsAll(expectedCountriesInSouthAmerica);
   }
 
   @Test
-  public void countiesInUnknown() {
+  void countiesInUnknown() {
 
     Set<Country> countriesInUnknown = Continent.UNKNOWN.countries();
 
@@ -336,7 +332,7 @@ public class ContinentTests {
   }
 
   @Test
-  public void toStringReturnsFriendlyName() {
+  void toStringReturnsFriendlyName() {
 
     assertThat(Continent.AFRICA.toString()).isEqualTo("Africa");
     assertThat(Continent.ANTARCTICA.toString()).isEqualTo("Antarctica");

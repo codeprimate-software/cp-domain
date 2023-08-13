@@ -43,9 +43,9 @@ public enum Continent {
   UNKNOWN;
 
   /**
-   * Returns all {@link Country Countries} that reside on this {@link Continent}.
+   * Returns all {@link Country Countries} located on this {@link Continent}.
    *
-   * @return a {@link Set} of {@link Country Countries} that reside on this {@link Continent}.
+   * @return a {@link Set} of {@link Country Countries} located on this {@link Continent}.
    * @see org.cp.domain.geo.enums.Country
    * @see java.util.Set
    */
