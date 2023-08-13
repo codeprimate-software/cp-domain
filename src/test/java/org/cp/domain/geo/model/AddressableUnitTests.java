@@ -47,7 +47,7 @@ public class AddressableUnitTests {
   public void isAddressPresentWhenAddressIsSetReturnsTrue() {
 
     Address mockAddress = mock(Address.class);
-    Addressable mockAddressable = mock(Addressable.class);
+    Addressable<?> mockAddressable = mock(Addressable.class);
 
     doReturn(mockAddress).when(mockAddressable).getAddress();
     doCallRealMethod().when(mockAddressable).isAddressPresent();
@@ -63,7 +63,7 @@ public class AddressableUnitTests {
   @Test
   public void isAddressPresentWhenAddressIsNotSetReturnsFalse() {
 
-    Addressable mockAddressable = mock(Addressable.class);
+    Addressable<?> mockAddressable = mock(Addressable.class);
 
     doReturn(null).when(mockAddressable).getAddress();
     doCallRealMethod().when(mockAddressable).isAddressPresent();
@@ -79,7 +79,7 @@ public class AddressableUnitTests {
   public void setAddressThrowsUnsupportedOperationException() {
 
     Address mockAddress = mock(Address.class);
-    Addressable mockAddressable = mock(Addressable.class);
+    Addressable<?> mockAddressable = mock(Addressable.class);
 
     doCallRealMethod().when(mockAddressable).setAddress(any());
 
@@ -88,6 +88,22 @@ public class AddressableUnitTests {
       .havingMessage(Constants.NOT_IMPLEMENTED)
       .withNoCause();
 
+    verify(mockAddressable, times(1)).setAddress(eq(mockAddress));
+    verifyNoMoreInteractions(mockAddressable);
+    verifyNoInteractions(mockAddress);
+  }
+
+  @Test
+  public void withAddressCallsSetAddress() {
+
+    Address mockAddress = mock(Address.class);
+    Addressable<?> mockAddressable = mock(Addressable.class);
+
+    doCallRealMethod().when(mockAddressable).withAddress(any());
+
+    assertThat(mockAddressable.withAddress(mockAddress)).isSameAs(mockAddressable);
+
+    verify(mockAddressable, times(1)).withAddress(eq(mockAddress));
     verify(mockAddressable, times(1)).setAddress(eq(mockAddress));
     verifyNoMoreInteractions(mockAddressable);
     verifyNoInteractions(mockAddress);

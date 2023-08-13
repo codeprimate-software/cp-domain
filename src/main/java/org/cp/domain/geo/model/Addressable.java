@@ -32,7 +32,7 @@ import org.cp.elements.lang.Constants;
  */
 @FunctionalInterface
 @SuppressWarnings("unused")
-public interface Addressable {
+public interface Addressable<T> {
 
   /**
    * Determines whether this {@link Object} has an {@link Address}.
@@ -61,5 +61,19 @@ public interface Addressable {
    */
   default void setAddress(Address address) {
     throw newUnsupportedOperationException(Constants.NOT_IMPLEMENTED);
+  }
+
+  /**
+   * Builder method used to set the postal {@link Address} locating this {@link Addressable object}.
+   *
+   * @param address {@link Address} locating this {@link Addressable object}.
+   * @return this {@link Addressable object}.
+   * @see org.cp.domain.geo.model.Address
+   * @see #setAddress(Address)
+   */
+  @SuppressWarnings("unchecked")
+  default T withAddress(Address address) {
+    setAddress(address);
+    return (T) this;
   }
 }
