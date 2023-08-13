@@ -20,9 +20,11 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
+import org.cp.domain.geo.enums.Direction;
 import org.cp.elements.io.IOUtils;
 
 /**
@@ -42,6 +44,7 @@ public class StreetUnitTests {
   private void assertStreet(Street street, Integer number, String name) {
 
     assertStreet(street, number, name, null);
+    assertThat(street.getDirection()).isNotPresent();
     assertThat(street.getType()).isNotPresent();
   }
 
@@ -51,6 +54,15 @@ public class StreetUnitTests {
     assertThat(street.getName()).isEqualTo(name);
     assertThat(street.getNumber()).isEqualTo(number);
     assertThat(street.getType().orElse(null)).isEqualTo(streetType);
+  }
+
+  private void assertStreet(Street street, Integer number, String name, Street.Type streetType, Direction direction) {
+
+    assertThat(street).isNotNull();
+    assertThat(street.getName()).isEqualTo(name);
+    assertThat(street.getNumber()).isEqualTo(number);
+    assertThat(street.getType().orElse(null)).isEqualTo(streetType);
+    assertThat(street.getDirection().orElse(null)).isEqualTo(direction);
   }
 
   @Test
@@ -64,10 +76,10 @@ public class StreetUnitTests {
   @Test
   public void constructNewStreetWithInvalidName() {
 
-    Arrays.asList(null, "", "  ").forEach(name ->
+    Arrays.asList(null, "", "  ").forEach(invalidName ->
       assertThatIllegalArgumentException()
-        .isThrownBy(() -> new Street(100, name))
-        .withMessage("Street name [%s] is required", name)
+        .isThrownBy(() -> new Street(100, invalidName))
+        .withMessage("Street name [%s] is required", invalidName)
         .withNoCause());
   }
 
@@ -78,22 +90,6 @@ public class StreetUnitTests {
       .isThrownBy(() -> new Street(null, "Main"))
       .withMessage("Street number is required")
       .withNoCause();
-  }
-
-  @Test
-  public void ofStreetNumberAndName() {
-
-    Street street = Street.of(100, "Main");
-
-    assertStreet(street, 100, "Main");
-  }
-
-  @Test
-  public void ofStreetNumberNameAndType() {
-
-    Street street = Street.of(2, "One").as(Street.Type.WAY);
-
-    assertStreet(street, 2, "One", Street.Type.WAY);
   }
 
   @Test
@@ -112,6 +108,22 @@ public class StreetUnitTests {
       .isThrownBy(() -> Street.from(null))
       .withMessage("Street to copy is required")
       .withNoCause();
+  }
+
+  @Test
+  public void ofStreetNumberAndName() {
+
+    Street street = Street.of(100, "Main");
+
+    assertStreet(street, 100, "Main");
+  }
+
+  @Test
+  public void ofStreetNumberNameAndType() {
+
+    Street street = Street.of(2, "One").as(Street.Type.WAY);
+
+    assertStreet(street, 2, "One", Street.Type.WAY);
   }
 
   @Test
@@ -195,6 +207,16 @@ public class StreetUnitTests {
   }
 
   @Test
+  public void withDirectionReturnsStreet() {
+
+    Street street = Street.of(6700, "Oregon")
+      .withDirection(Direction.NORTHEAST)
+      .asStreet();
+
+    assertStreet(street, 6700, "Oregon", Street.Type.STREET, Direction.NORTHEAST);
+  }
+
+  @Test
   public void cloneIsCorrect() throws CloneNotSupportedException {
 
     Street street = Street.of(100, "Main").asStreet();
@@ -225,6 +247,19 @@ public class StreetUnitTests {
     Street street = Street.of(100, "Main").asStreet();
 
     assertThat(street.compareTo(street)).isZero();
+  }
+
+  @Test
+  public void compareToStreetWithDirection() {
+
+    Street streetW = Street.of(100, "Test").withDirection(Direction.WEST).asDrive();
+    Street streetNe = Street.of(100, "Test").withDirection(Direction.NORTHEAST).asStreet();
+    Street streetNw = Street.of(100, "Test").withDirection(Direction.NORTHWEST).asStreet();
+    Street streetSe = Street.of(100, "Test").withDirection(Direction.SOUTHEAST).asStreet();
+    Street streetE = Street.of(100, "Test").withDirection(Direction.EAST).asWay();
+
+    assertThat(Stream.of(streetSe, streetNw, streetNe, streetW, streetE).sorted())
+      .containsExactly(streetW, streetNe, streetNw, streetSe, streetE);
   }
 
   @Test
@@ -263,11 +298,13 @@ public class StreetUnitTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void identicalStreetsAreEqual() {
 
     Street street = Street.of(100, "Main").asStreet();
 
     assertThat(street).isEqualTo(street);
+    assertThat(street.equals(street)).isTrue();
   }
 
   @Test
@@ -305,6 +342,12 @@ public class StreetUnitTests {
 
     assertThat(Street.of(100, "Oregon").asStreet().toString()).isEqualTo("100 Oregon ST");
     assertThat(Street.of(100, "One").asWay().toString()).isEqualTo("100 One WY");
+  }
+
+  @Test
+  public void toStringWithDirectionAndType() {
+    assertThat(Street.of(6700, "Oregon").withDirection(Direction.NORTHEAST).asStreet().toString())
+      .isEqualTo("6700 NE Oregon ST");
   }
 
   @Test

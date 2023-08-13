@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import org.cp.domain.geo.enums.Country;
+import org.cp.domain.geo.enums.Direction;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
@@ -47,10 +48,10 @@ import org.cp.elements.util.ComparatorResultBuilder;
 @FluentApi
 public class Street implements Cloneable, Comparable<Street>, Nameable<String>, Serializable {
 
-  protected static final String STREET_TO_STRING = "%1$d %2$s%3$s";
+  protected static final String STREET_TO_STRING = "%1$d %2$s%3$s%4$s";
 
   /**
-   * Factory method used to construct a new {@link Street} initialized from an existing, required {@link Street}.
+   * Factory method used to construct a new {@link Street} copied from an existing, required {@link Street}.
    *
    * @param street {@link Street} to copy; must not be {@literal null}.
    * @return a new {@link Street} copied from the given {@link Street}.
@@ -71,8 +72,9 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
    * Factory method used to construct a new {@link Street} initialized with the given,
    * required {@link Integer number} and {@link String name}.
    *
-   * @param number {@link Integer} containing the {@literal building number} on the {@link Street}.
-   * @param name {@link String} containing the {@literal name} of the {@link Street}.
+   * @param number {@link Integer} containing the {@literal building number} on the {@link Street};
+   * must not be {@literal null}.
+   * @param name {@link String} containing the {@literal name} of the {@link Street}; must not be {@literal null}.
    * @return a new {@link Street} initialized with the given, required {@link Integer number} and {@link String name}.
    * @throws IllegalArgumentException if either {@link Integer number} or {@link String name} are {@literal null}
    * or the {@link String name} is {@link String#isEmpty() empty}.
@@ -85,6 +87,8 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
     return new Street(number, name);
   }
 
+  private Direction direction;
+
   private final Integer number;
 
   private final String name;
@@ -95,8 +99,9 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
    * Constructs a new {@link Street} initialized with the given, required {@link Integer number}
    * and {@link String name}.
    *
-   * @param number {@link Integer} containing the {@literal building number} on the {@link Street}.
-   * @param name {@link String} containing the {@literal name} of the {@link Street}.
+   * @param number {@link Integer} containing the {@literal building number} on the {@link Street};
+   * must not be {@literal null}.
+   * @param name {@link String} containing the {@literal name} of the {@link Street}; must not be {@literal null}.
    * @throws IllegalArgumentException if either {@link Integer number} or {@link String name} are {@literal null}
    * or the {@link String name} is {@link String#isEmpty() empty}.
    */
@@ -104,6 +109,17 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
 
     this.number = ObjectUtils.requireObject(number, "Street number is required");
     this.name = StringUtils.requireText(name, "Street name [%s] is required");
+  }
+
+  /**
+   * Gets the {@link Direction} on this {@link Street}.
+   *
+   * @return the {@link Direction} on this {@link Street}.
+   * @see org.cp.domain.geo.enums.Direction
+   * @see java.util.Optional
+   */
+  public Optional<Direction> getDirection() {
+    return Optional.ofNullable(this.direction);
   }
 
   /**
@@ -284,6 +300,18 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
   }
 
   /**
+   * Builder method used to set the {@link Direction} on this {@link Street}.
+   *
+   * @param direction {@link Direction} on this {@link Street}.
+   * @return this {@link Street}.
+   * @see org.cp.domain.geo.enums.Direction
+   */
+  public @NotNull Street withDirection(@Nullable Direction direction) {
+    this.direction = direction;
+      return this;
+  }
+
+  /**
    * Clones this {@link Street}.
    *
    * @return a clone (copy) of this {@link Street}.
@@ -314,6 +342,7 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
     return ComparatorResultBuilder.<Comparable>create()
       .doCompare(this.getName(), street.getName())
       .doCompare(this.getType().orElse(Street.Type.UNKNOWN), street.getType().orElse(Street.Type.UNKNOWN))
+      .doCompare(this.getDirection().orElse(Direction.NORTH), street.getDirection().orElse(Direction.NORTH))
       .doCompare(this.getNumber(), street.getNumber())
       .build();
   }
@@ -349,7 +378,8 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
    */
   @Override
   public int hashCode() {
-    return ObjectUtils.hashCodeOf(getName(), getNumber(), getType().orElse(Street.Type.UNKNOWN));
+    return ObjectUtils.hashCodeOf(getName(), getNumber(), getType().orElse(Street.Type.UNKNOWN),
+      getDirection().orElse(null));
   }
 
   /**
@@ -361,9 +391,14 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
   @Override
   public @NotNull String toString() {
 
-    return String.format(STREET_TO_STRING, getNumber(), getName(), getType()
-      .map(type -> StringUtils.SINGLE_SPACE.concat(type.getAbbreviation()))
-      .orElse(StringUtils.EMPTY_STRING));
+    return String.format(STREET_TO_STRING, getNumber(),
+      getDirection()
+        .map(direction -> direction.getAbbreviation().concat(StringUtils.SINGLE_SPACE))
+        .orElse(StringUtils.EMPTY_STRING),
+      getName(),
+      getType()
+        .map(type -> StringUtils.SINGLE_SPACE.concat(type.getAbbreviation()))
+        .orElse(StringUtils.EMPTY_STRING));
   }
 
   /**
