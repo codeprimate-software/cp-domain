@@ -114,7 +114,6 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
   /**
    * Factory method used to construct a new {@link Address} copied from an existing {@link Address}.
    *
-   * @param <T> concrete {@link Class type} of {@link Address}.
    * @param address {@link Address} to copy; must not be {@literal null}.
    * @return a new {@link Address} copied from an existing {@link Address}.
    * @throws IllegalArgumentException if the given {@link Address} is {@literal null}.
@@ -123,15 +122,11 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @see org.cp.domain.geo.model.Address
    */
   @Dsl
-  static @NotNull <T extends Address> T from(@NotNull Address address) {
+  static @NotNull Address from(@NotNull Address address) {
 
-    Assert.notNull(address, "Address to copy is required");
+    Address copy = Address.Builder.from(address).build();
 
-    T copy = of(address.getStreet(), address.getCity(), address.getPostalCode(), address.getCountry());
-
-    address.getCoordinates().ifPresent(copy::setCoordinates);
     address.getType().ifPresent(copy::setType);
-    address.getUnit().ifPresent(copy::setUnit);
 
     return copy;
   }
@@ -140,6 +135,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * Factory method used to construct a new {@link Address} from the given, required {@link Street}, {@link City}
    * and {@link PostalCode}, with a default {@link Country} based on {@link Locale}.
    *
+   * @param <T> concrete {@link Class type} of {@link Address}.
    * @param street {@link Street} of the {@link Address}; must not be {@literal null}.
    * @param city {@link City} of the {@link Address}; must not be {@literal null}.
    * @param postalCode {@link PostalCode} of the {@link Address}; must not be {@literal null}.
@@ -148,13 +144,14 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @throws IllegalArgumentException if {@link Street}, {@link City} or {@link PostalCode} are {@literal null}.
    * @see #of(Street, City, PostalCode, Country)
    * @see org.cp.domain.geo.enums.Country#localCountry()
+   * @see org.cp.domain.geo.model.Address
    * @see org.cp.domain.geo.model.Street
    * @see org.cp.domain.geo.model.City
    * @see org.cp.domain.geo.model.PostalCode
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
-  static @NotNull Address of(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode) {
+  static @NotNull <T extends Address> T of(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode) {
     return of(street, city, postalCode, Country.localCountry());
   }
 
@@ -162,6 +159,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * Factory method used to construct a new {@link Address} from the given, minimally required components of
    * an {@link Address} locating the {@link Address} anywhere in the world.
    *
+   * @param <T> concrete {@link Class type} of {@link Address}.
    * @param street {@link Street} of the {@link Address}; must not be {@literal null}.
    * @param city {@link City} of the {@link Address}; must not be {@literal null}.
    * @param postalCode {@link PostalCode} of the {@link Address}; must not be {@literal null}.
@@ -170,6 +168,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * {@link City}, {@link PostalCode} and {@link Country}.
    * @throws IllegalArgumentException if {@link Street}, {@link City}, {@link PostalCode} or {@link Country}
    * are {@literal null}.
+   * @see org.cp.domain.geo.model.Address
    * @see org.cp.domain.geo.model.Street
    * @see org.cp.domain.geo.model.City
    * @see org.cp.domain.geo.model.PostalCode
@@ -445,19 +444,14 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
   @FluentApi
   class Builder<T extends Address> implements org.cp.elements.lang.Builder<T> {
 
-    private Street street;
-    private Unit unit;
-    private City city;
-    private PostalCode postalCode;
-    private Country country;
-    private Coordinates coordinates;
-
     /**
-     * Builder method used to build and construct a new {@link Address} copied from an existing {@link Address}.
+     * Factory method used to build and construct a new {@link Address} copied from an existing {@link Address}.
      *
+     * @param <T> concrete {@link Class type} of {@link Address} to build.
      * @param address {@link Address} to copy; must not be {@literal null}.
-     * @return this {@link Address.Builder}.
+     * @return a new {@link Address.Builder}.
      * @throws IllegalArgumentException if the given {@link Address} is {@literal null}.
+     * @see org.cp.elements.lang.annotation.Dsl
      * @see org.cp.domain.geo.model.Address
      * @see #on(Street)
      * @see #in(City)
@@ -465,16 +459,26 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
      * @see #in(Country)
      * @see #at(Coordinates)
      */
-    public @NotNull Builder<T> from(@NotNull Address address) {
+    @Dsl
+    public static <T extends Address> @NotNull Builder<T> from(@NotNull Address address) {
 
       Assert.notNull(address, "Address to copy is required");
 
-      return on(address.getStreet())
+      return new Builder<T>()
+        .on(address.getStreet())
+        .in(address.getUnit().orElse(null))
         .in(address.getCity())
         .in(address.getPostalCode())
         .in(address.getCountry())
         .at(address.getCoordinates().orElse(null));
     }
+
+    private Street street;
+    private Unit unit;
+    private City city;
+    private PostalCode postalCode;
+    private Country country;
+    private Coordinates coordinates;
 
     /**
      * Get the configured {@link Street} for the {@link Address}.
