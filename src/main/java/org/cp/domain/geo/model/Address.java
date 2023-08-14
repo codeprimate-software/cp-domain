@@ -681,7 +681,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
       Assert.notNull(getStreet(), "Street is required");
       Assert.notNull(getCity(), "City is required");
       Assert.notNull(getPostalCode(), "PostalCode is required");
-      Assert.notNull(getCountry(), "Country is is required");
+      Assert.notNull(getCountry(), "Country is required");
 
       T address = doBuild();
 

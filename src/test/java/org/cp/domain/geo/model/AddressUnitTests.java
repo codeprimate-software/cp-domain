@@ -59,12 +59,12 @@ import org.mockito.Mockito;
 public class AddressUnitTests {
 
   @BeforeAll
-  public static void beforeTests() {
+  static void beforeTests() {
     Locale.setDefault(Locale.CANADA);
   }
 
   @AfterAll
-  public static void afterTests() {
+  static void afterTests() {
     Locale.setDefault(Locale.US);
   }
 
@@ -81,7 +81,8 @@ public class AddressUnitTests {
     assertThat(address.getCountry()).isEqualTo(country);
   }
 
-  private void assertAddressWith(Address address, Coordinates coordinates, Address.Type addressType, Unit unit) {
+  private void assertAddressWithCoordinatesTypeAndUnit(Address address,
+      Coordinates coordinates, Address.Type addressType, Unit unit) {
 
     assertThat(address).isNotNull();
     assertThat(address.getCoordinates().orElse(null)).isEqualTo(coordinates);
@@ -182,7 +183,7 @@ public class AddressUnitTests {
     Address addressCopy = Address.from(mockAddress);
 
     assertAddress(addressCopy, mockStreet, mockCity, mockPostalCode, Country.GERMANY);
-    assertAddressWith(addressCopy, mockCoordinates, Address.Type.PO_BOX, mockUnit);
+    assertAddressWithCoordinatesTypeAndUnit(addressCopy, mockCoordinates, Address.Type.PO_BOX, mockUnit);
     assertThat(addressCopy).isNotSameAs(mockAddress);
 
     verify(mockAddress, times(1)).getStreet();
@@ -290,6 +291,41 @@ public class AddressUnitTests {
     assertAddressWithNoCoordinatesTypeOrUnit(address);
 
     verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
+  }
+
+  @Test
+  void addressCoordinatesIsEmpty() {
+
+    Address mockAddress = mock(Address.class);
+
+    doCallRealMethod().when(mockAddress).getCoordinates();
+
+    Optional<Coordinates> coordinates = mockAddress.getCoordinates();
+
+    assertThat(coordinates).isNotNull();
+    assertThat(coordinates).isNotPresent();
+
+    verify(mockAddress, times(1)).getCoordinates();
+    verifyNoMoreInteractions(mockAddress);
+  }
+
+  @Test
+  void setCoordinatesThrowsUnsupportedOperationException() {
+
+    Address mockAddress = mock(Address.class);
+    Coordinates mockCoordinates = mock(Coordinates.class);
+
+    doCallRealMethod().when(mockAddress).setCoordinates(any());
+
+    assertThatUnsupportedOperationException()
+      .isThrownBy(ThrowableOperation.fromRunnable(() -> mockAddress.setCoordinates(mockCoordinates)))
+      .havingMessage("Setting Coordinates on a Locatable object of type [%s] is not supported",
+        mockAddress.getClass().getName())
+      .withNoCause();
+
+    verify(mockAddress, times(1)).setCoordinates(eq(mockCoordinates));
+    verifyNoMoreInteractions(mockAddress);
+    verifyNoInteractions(mockCoordinates);
   }
 
   @Test
