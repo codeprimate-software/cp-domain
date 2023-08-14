@@ -17,6 +17,7 @@ package org.cp.domain.geo.model.usa;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 
+import org.cp.domain.geo.annotation.CountryQualifier;
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.enums.State;
 import org.cp.domain.geo.model.AbstractAddress;
@@ -38,7 +39,6 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * in the {@link Country#UNITED_STATES_OF_AMERICA United States of America}.
  *
  * @author John Blum
- * @see org.cp.elements.lang.annotation.Qualifier
  * @see org.cp.domain.geo.model.AbstractAddress
  * @see org.cp.domain.geo.model.Address
  * @see org.cp.domain.geo.model.Street
@@ -48,6 +48,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.domain.geo.model.usa.ZIP
  * @see org.cp.domain.geo.enums.Country
  * @see org.cp.domain.geo.enums.State
+ * @see org.cp.elements.lang.annotation.Qualifier
  * @since 0.1.0
  */
 @Qualifier(name = "usa")
@@ -57,14 +58,13 @@ public class UnitedStatesAddress extends AbstractAddress {
     "{ @type = %1$s, street = %2$s, unit = %3$s, city = %4$s, state = %5$s, zip = %6$s, country = %7$s, type = %8$s }";
 
   /**
-   * Factory method used to construct a new {@link UnitedStatesAddress.Builder} to construct and build
-   * a {@link UnitedStatesAddress}.
+   * Factory method used to construct a new {@link UnitedStatesAddress.Builder} to build a {@link UnitedStatesAddress}.
    *
    * @return a new {@link UnitedStatesAddress.Builder} used to build, construct and initialize
    * an {@link UnitedStatesAddress}.
    * @see org.cp.domain.geo.model.usa.UnitedStatesAddress.Builder
    */
-  public static @NotNull UnitedStatesAddress.Builder newUnitedStatesAddress() {
+  public static @NotNull UnitedStatesAddress.Builder newUnitedStatesAddressBuilder() {
     return new UnitedStatesAddress.Builder();
   }
 
@@ -79,7 +79,7 @@ public class UnitedStatesAddress extends AbstractAddress {
    * @param city {@link City} of this {@link Address}; must not be {@literal null}.
    * @param state {@link State} of this {@link Address}; must not be {@literal null}.
    * @param zip {@link ZIP}, or {@link PostalCode}, of this {@link Address}; must not be {@literal null}.
-   * @throws IllegalArgumentException if the {@link Street}, {@link City}, {@link State} or {@link ZIP}
+   * @throws IllegalArgumentException if the given {@link Street}, {@link City}, {@link State} or {@link ZIP} code
    * are {@literal null}.
    * @see org.cp.domain.geo.enums.Country#UNITED_STATES_OF_AMERICA
    * @see org.cp.domain.geo.model.Street
@@ -204,29 +204,33 @@ public class UnitedStatesAddress extends AbstractAddress {
   }
 
   /**
-   * {@link org.cp.elements.lang.Builder} implementation used to build an {@link UnitedStatesAddress}.
+   * Elements {@link org.cp.elements.lang.Builder} implementation used to build a {@link UnitedStatesAddress}.
    *
-   * @see org.cp.domain.geo.model.AbstractAddress.Builder
+   * @see org.cp.domain.geo.annotation.CountryQualifier
+   * @see org.cp.domain.geo.model.Address.Builder
    * @see org.cp.domain.geo.model.usa.UnitedStatesAddress
    */
-  public static class Builder extends AbstractAddress.Builder<UnitedStatesAddress> {
+  @CountryQualifier(Country.UNITED_STATES_OF_AMERICA)
+  public static class Builder extends Address.Builder<UnitedStatesAddress> {
 
     private State state;
 
-    /**
-     * Constructs a new {@link UnitedStatesAddress.Builder} used to build an {@link UnitedStatesAddress}
-     * residing in the {@link Country#UNITED_STATES_OF_AMERICA}.
-     *
-     * @see org.cp.domain.geo.enums.Country#UNITED_STATES_OF_AMERICA
-     */
-    public Builder() {
-      super(Country.UNITED_STATES_OF_AMERICA);
+    @Override
+    protected Country getCountry() {
+      return super.getCountry();
     }
 
+    /**
+     * Returns the configured {@link State} of the {@link UnitedStatesAddress}.
+     * <p>
+     * If the {@link State} was not explicitly set, then the {@link State} is looked up by {@link PostalCode}.
+     *
+     * @return the configured {@link State} of the {@link UnitedStatesAddress}.
+     * @see org.cp.domain.geo.enums.State
+     */
     protected @NotNull State getState() {
 
       try {
-
         State state = resolveState(this.state);
 
         return ObjectUtils.requireState(state, "State was not initialized");
@@ -240,7 +244,15 @@ public class UnitedStatesAddress extends AbstractAddress {
       return state != null ? state : StateZipCodesRepository.getInstance().findBy(getZip());
     }
 
-    @Alias(forMember = "AbstractAddress.Builder.getPostalCode()")
+    /**
+     * Returns the configured {@link ZIP} of the {@link UnitedStatesAddress}.
+     * <p>
+     * Alias for {@link #getPostalCode()}.
+     *
+     * @return the configured {@link ZIP} of the {@link UnitedStatesAddress}.
+     * @see org.cp.domain.geo.model.usa.ZIP
+     */
+    @Alias(forMember = "Address.Builder.getPostalCode()")
     protected @NotNull ZIP getZip() {
       return ZIP.from(getPostalCode());
     }

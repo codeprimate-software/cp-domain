@@ -27,13 +27,11 @@ import org.junit.jupiter.api.Test;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.enums.State;
-import org.cp.domain.geo.model.AbstractAddress;
 import org.cp.domain.geo.model.Address;
 import org.cp.domain.geo.model.City;
 import org.cp.domain.geo.model.PostalCode;
 import org.cp.domain.geo.model.Street;
 import org.cp.elements.lang.IllegalTypeException;
-import org.cp.elements.lang.ObjectUtils;
 
 /**
  * Unit Tests for {@link UnitedStatesAddress}.
@@ -46,28 +44,30 @@ import org.cp.elements.lang.ObjectUtils;
  */
 public class UnitedStatesAddressUnitTests {
 
-  private Country getCountry(AbstractAddress.Builder<?> addressBuilder) {
-    return ObjectUtils.invoke(addressBuilder, "getCountry", Country.class);
+  private void assertAddress(UnitedStatesAddress address, Street street, City city, State state, ZIP zip) {
+
+    assertThat(address).isNotNull();
+    assertThat(address.getStreet()).isEqualTo(street);
+    assertThat(address.getUnit()).isNotPresent();
+    assertThat(address.getCity()).isEqualTo(city);
+    assertThat(address.getState()).isEqualTo(state);
+    assertThat(address.getPostalCode()).isEqualTo(zip);
+    assertThat(address.getZip()).isEqualTo(zip);
+    assertThat(address.getCountry()).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
   }
 
   @Test
   public void constructUnitedStatesAddress() {
 
+    Street mockStreet = mock(Street.class);
+
     UnitedStatesCity city = UnitedStatesCity.newUnitedStatesCity("MockCity").in(State.OREGON);
 
-    Street mockStreet = mock(Street.class);
     ZIP mockZip = mock(ZIP.class);
 
     UnitedStatesAddress address = new UnitedStatesAddress(mockStreet, city, State.OREGON, mockZip);
 
-    assertThat(address).isNotNull();
-    assertThat(address.getStreet()).isEqualTo(mockStreet);
-    assertThat(address.getUnit()).isNotPresent();
-    assertThat(address.getCity()).isEqualTo(city);
-    assertThat(address.getPostalCode()).isEqualTo(mockZip);
-    assertThat(address.getState()).isEqualTo(State.OREGON);
-    assertThat(address.getZip()).isEqualTo(mockZip);
-    assertThat(address.getCountry()).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
+    assertAddress(address, mockStreet, city, State.OREGON, mockZip);
 
     verifyNoInteractions(mockStreet, mockZip);
   }
@@ -90,12 +90,8 @@ public class UnitedStatesAddressUnitTests {
   @Test
   public void getCityReturnsUnitedStatesCity() {
 
-    UnitedStatesAddress address = UnitedStatesAddress.newUnitedStatesAddress()
-      .in(State.WISCONSIN)
-      .on(Street.of(314, "North Washington").asStreet())
-      .in(City.of("Cuba City"))
-      .in(ZIP.of("12345"))
-      .build();
+    UnitedStatesAddress address = new UnitedStatesAddress(Street.of(314, "North Washington").asStreet(),
+      City.of("Cuba City"), State.WISCONSIN, ZIP.of("12345"));
 
     assertThat(address).isNotNull();
     assertThat(address.getState()).isEqualTo(State.WISCONSIN);
@@ -111,63 +107,75 @@ public class UnitedStatesAddressUnitTests {
       .extracting(UnitedStatesCity::getState)
       .isEqualTo(State.WISCONSIN);
   }
-  @Test
-  public void newUnitedStatesAddressReturnsBuilder() {
 
-    UnitedStatesAddress.Builder addressBuilder = UnitedStatesAddress.newUnitedStatesAddress();
+  @Test
+  void getPostalCodeReturnsZip() {
+
+    PostalCode postalCode = PostalCode.of("12345");
+
+    UnitedStatesAddress address = UnitedStatesAddress.newUnitedStatesAddressBuilder()
+      .in(State.IOWA)
+      .on(Street.of(100, "Old Davenport").asRoad())
+      .in(City.of("Dubuque"))
+      .in(postalCode)
+      .build();
+
+    assertThat(address).isNotNull();
+    assertThat(address.getPostalCode()).isInstanceOf(ZIP.class);
+    assertThat(address.getZip()).isEqualTo(ZIP.from(postalCode));
+  }
+
+  @Test
+  public void newUnitedStatesAddressBuilderReturnsBuilder() {
+
+    UnitedStatesAddress.Builder addressBuilder = UnitedStatesAddress.newUnitedStatesAddressBuilder();
 
     assertThat(addressBuilder).isNotNull();
-    assertThat(getCountry(addressBuilder)).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
+    assertThat(addressBuilder.getCountry()).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
   }
 
   @Test
   public void unitedSatesAddressBuiltWithBuilder() {
 
+    PostalCode postalCode = PostalCode.of("12345");
+
+    Street street = Street.of(100, "Main").asStreet();
+
     UnitedStatesCity city = UnitedStatesCity.newUnitedStatesCity("Portland").in(State.OREGON);
 
-    UnitedStatesAddress address = UnitedStatesAddress.newUnitedStatesAddress()
+    UnitedStatesAddress address = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(State.OREGON)
       .in(city)
-      .in(PostalCode.of("12345"))
-      .on(Street.of(100, "Main").asStreet())
+      .in(postalCode)
+      .on(street)
       .build();
 
-    assertThat(address).isNotNull();
-    assertThat(address.getStreet()).isEqualTo(Street.of(100, "Main").asStreet());
-    assertThat(address.getUnit()).isNotPresent();
-    assertThat(address.getCity()).isEqualTo(city);
-    assertThat(address.getPostalCode()).isEqualTo(ZIP.of("12345"));
-    assertThat(address.getState()).isEqualTo(State.OREGON);
-    assertThat(address.getZip()).isEqualTo(ZIP.of("12345"));
-    assertThat(address.getCountry()).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
+    assertAddress(address, street, city, State.OREGON, ZIP.from(postalCode));
   }
 
   @Test
   public void unitedStatesAddressBuilderWithStateDeterminedByZip() {
 
+    ZIP zip = ZIP.of("97205");
+
     UnitedStatesCity city = UnitedStatesCity.newUnitedStatesCity("Portland").in(State.OREGON);
 
-    UnitedStatesAddress address = UnitedStatesAddress.newUnitedStatesAddress()
-      .on(Street.of(2, "One").asWay())
+    Street street = Street.of(2, "One").asWay();
+
+    UnitedStatesAddress address = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(city)
-      .in(ZIP.of("97205"))
+      .in(zip)
+      .on(street)
       .build();
 
-    assertThat(address).isNotNull();
-    assertThat(address.getStreet()).isEqualTo(Street.of(2, "One").asWay());
-    assertThat(address.getUnit()).isNotPresent();
-    assertThat(address.getCity()).isEqualTo(city);
-    assertThat(address.getPostalCode()).isEqualTo(ZIP.of("97205"));
-    assertThat(address.getState()).isEqualTo(State.OREGON);
-    assertThat(address.getZip()).isEqualTo(ZIP.of("97205"));
-    assertThat(address.getCountry()).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
+    assertAddress(address, street, city, State.OREGON, zip);
   }
 
   @Test
   public void unitedStatesAddressBuilderSetToNullState() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> UnitedStatesAddress.newUnitedStatesAddress().in((State) null))
+      .isThrownBy(() -> UnitedStatesAddress.newUnitedStatesAddressBuilder().in((State) null))
       .withMessage("State is required")
       .withNoCause();
   }
@@ -176,12 +184,12 @@ public class UnitedStatesAddressUnitTests {
   public void unitedStatesAddressBuilderWithUndeterminedState() {
 
     assertThatIllegalStateException()
-      .isThrownBy(args -> UnitedStatesAddress.newUnitedStatesAddress()
-        .<UnitedStatesAddress.Builder>in(PostalCode.of("00001"))
+      .isThrownBy(args -> UnitedStatesAddress.newUnitedStatesAddressBuilder()
+        .<UnitedStatesAddress.Builder>in(ZIP.of("00000"))
         .getState())
       .havingMessage("State was not initialized")
       .causedBy(IllegalArgumentException.class)
-      .havingMessage("State for ZIP code [00001] not found")
+      .havingMessage("State for ZIP code [00000] not found")
       .withNoCause();
   }
 
@@ -192,14 +200,14 @@ public class UnitedStatesAddressUnitTests {
     City portland = City.of("Portland");
     ZIP zip = ZIP.of("12345");
 
-    UnitedStatesAddress portlandMaine = UnitedStatesAddress.newUnitedStatesAddress()
+    UnitedStatesAddress portlandMaine = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(State.MAINE)
       .in(portland)
       .in(zip)
       .on(street)
       .build();
 
-    UnitedStatesAddress portlandOregon = UnitedStatesAddress.newUnitedStatesAddress()
+    UnitedStatesAddress portlandOregon = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(State.OREGON)
       .in(portland)
       .in(zip)
@@ -221,13 +229,13 @@ public class UnitedStatesAddressUnitTests {
     City portland = City.of("Portland");
     ZIP zip = ZIP.of("97205");
 
-    UnitedStatesAddress portlandOregonOne = UnitedStatesAddress.newUnitedStatesAddress()
+    UnitedStatesAddress portlandOregonOne = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(portland)
       .in(zip)
       .on(street)
       .build();
 
-    UnitedStatesAddress portlandOregonTwo = UnitedStatesAddress.newUnitedStatesAddress()
+    UnitedStatesAddress portlandOregonTwo = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(portland)
       .in(zip)
       .on(street)
@@ -250,11 +258,11 @@ public class UnitedStatesAddressUnitTests {
     ZIP mockZip = mock(ZIP.class);
 
     assertThatExceptionOfType(IllegalTypeException.class)
-      .isThrownBy(() -> UnitedStatesAddress.newUnitedStatesAddress()
+      .isThrownBy(() -> UnitedStatesAddress.newUnitedStatesAddressBuilder()
         .in(State.OREGON)
-        .on(mockStreet)
         .in(mockCity)
         .in(mockZip)
+        .on(mockStreet)
         .build()
         .compareTo(mockAddress))
       .withMessage("[%s] is not an instance of [%s]", mockAddress, UnitedStatesAddress.class)
@@ -270,7 +278,7 @@ public class UnitedStatesAddressUnitTests {
     City portland = City.of("Portland");
     ZIP zip = ZIP.of("97205");
 
-    UnitedStatesAddress portlandOregon = UnitedStatesAddress.newUnitedStatesAddress()
+    UnitedStatesAddress portlandOregon = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(portland)
       .in(zip)
       .on(street)
@@ -287,13 +295,13 @@ public class UnitedStatesAddressUnitTests {
     City portland = City.of("Portland");
     ZIP zip = ZIP.of("97205");
 
-    UnitedStatesAddress portlandOregonOne = UnitedStatesAddress.newUnitedStatesAddress()
+    UnitedStatesAddress portlandOregonOne = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(portland)
       .in(zip)
       .on(street)
       .build();
 
-    UnitedStatesAddress portlandOregonTwo = UnitedStatesAddress.newUnitedStatesAddress()
+    UnitedStatesAddress portlandOregonTwo = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(portland)
       .in(zip)
       .on(street)
@@ -314,7 +322,7 @@ public class UnitedStatesAddressUnitTests {
     City mockCity = mock(City.class);
     ZIP mockZip = mock(ZIP.class);
 
-    UnitedStatesAddress address = UnitedStatesAddress.newUnitedStatesAddress()
+    UnitedStatesAddress address = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(State.OREGON)
       .in(mockCity)
       .in(mockZip)
@@ -329,33 +337,25 @@ public class UnitedStatesAddressUnitTests {
   @SuppressWarnings("all")
   public void equalsObjectReturnsFalse() {
 
-    Street mockStreet = mock(Street.class);
-    City mockCity = mock(City.class);
-    ZIP mockZip = mock(ZIP.class);
-
-    UnitedStatesAddress address = UnitedStatesAddress.newUnitedStatesAddress()
+    UnitedStatesAddress address = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(State.OREGON)
-      .in(mockCity)
-      .in(mockZip)
-      .on(mockStreet)
+      .in(City.of("Portland"))
+      .in(ZIP.of("97205"))
+      .on(Street.of(100, "Main").asStreet())
       .build();
 
     assertThat(address).isNotNull();
-    assertThat(address.equals("100 Main St. Portland, OR 972005")).isFalse();
+    assertThat(address.equals("100 Main St. Portland, OR 97205")).isFalse();
   }
 
   @Test
   @SuppressWarnings("all")
   public void equalsSameAddress() {
 
-    Street street = Street.of(2, "One").asWay();
-    City portland = City.of("Portland");
-    ZIP zip = ZIP.of("97205");
-
-    UnitedStatesAddress portlandOregon = UnitedStatesAddress.newUnitedStatesAddress()
-      .in(portland)
-      .in(zip)
-      .on(street)
+    UnitedStatesAddress portlandOregon = UnitedStatesAddress.newUnitedStatesAddressBuilder()
+      .on(Street.of(2, "One").asWay())
+      .in(City.of("Portland"))
+      .in(ZIP.of("97205"))
       .build();
 
     assertThat(portlandOregon).isNotNull();
@@ -370,21 +370,21 @@ public class UnitedStatesAddressUnitTests {
     City portland = City.of("Portland");
     ZIP zip = ZIP.of("12345");
 
-    UnitedStatesAddress portlandMaine = UnitedStatesAddress.newUnitedStatesAddress()
+    UnitedStatesAddress portlandMaine = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(State.MAINE)
       .in(portland)
       .in(zip)
       .on(street)
       .build();
 
-    UnitedStatesAddress portlandOregonOne = UnitedStatesAddress.newUnitedStatesAddress()
+    UnitedStatesAddress portlandOregonOne = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(State.OREGON)
       .in(portland)
       .in(zip)
       .on(street)
       .build();
 
-    UnitedStatesAddress portlandOregonTwo = UnitedStatesAddress.newUnitedStatesAddress()
+    UnitedStatesAddress portlandOregonTwo = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .in(State.OREGON)
       .in(portland)
       .in(zip)
@@ -410,14 +410,15 @@ public class UnitedStatesAddressUnitTests {
   @Test
   public void toStringIsCorrect() {
 
-    UnitedStatesAddress portlandOregon = UnitedStatesAddress.newUnitedStatesAddress()
-      .in(State.OREGON)
-      .in(City.of("Portland"))
-      .in(ZIP.of("12345"))
+    UnitedStatesAddress portlandOregon = UnitedStatesAddress.newUnitedStatesAddressBuilder()
       .on(Street.of(100, "Main").asStreet())
+      .<UnitedStatesAddress.Builder>in(City.of("Portland"))
+      .in(State.OREGON)
+      .in(ZIP.of("12345"))
       .build();
 
     assertThat(portlandOregon).isNotNull();
+
     assertThat(portlandOregon.toString())
       .isEqualTo(String.format(UnitedStatesAddress.UNITED_STATES_ADDRESS_TO_STRING, UnitedStatesAddress.class.getName(),
         portlandOregon.getStreet(), portlandOregon.getUnit().orElse(null), portlandOregon.getCity(),
