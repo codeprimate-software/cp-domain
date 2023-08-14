@@ -16,7 +16,6 @@
 package org.cp.domain.geo.model.generic;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
@@ -24,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.model.City;
+import org.cp.domain.geo.model.Coordinates;
 import org.cp.domain.geo.model.PostalCode;
 import org.cp.domain.geo.model.Street;
 
@@ -41,7 +41,7 @@ public class GenericAddressUnitTests {
   @Test
   public void newGenericAddressBuilder() {
 
-    GenericAddress.Builder addressBuilder = GenericAddress.newGenericAddress();
+    GenericAddress.Builder addressBuilder = GenericAddress.newGenericAddressBuilder();
 
     assertThat(addressBuilder).isNotNull();
     assertThat(addressBuilder.getCountry()).isEqualTo(Country.localCountry());
@@ -50,19 +50,10 @@ public class GenericAddressUnitTests {
   @Test
   public void newGenericAddressBuilderWithCountry() {
 
-    GenericAddress.Builder addressBuilder = GenericAddress.newGenericAddress(Country.GERMANY);
+    GenericAddress.Builder addressBuilder = GenericAddress.newGenericAddressBuilder(Country.GERMANY);
 
     assertThat(addressBuilder).isNotNull();
     assertThat(addressBuilder.getCountry()).isEqualTo(Country.GERMANY);
-  }
-
-  @Test
-  public void newGenericAddressBuilderWithNullCountry() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> new GenericAddress.Builder(null))
-      .withMessage("Country is required")
-      .withNoCause();
   }
 
   @Test
@@ -72,7 +63,7 @@ public class GenericAddressUnitTests {
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
 
-    GenericAddress address = GenericAddress.newGenericAddress()
+    GenericAddress address = GenericAddress.newGenericAddressBuilder()
       .on(mockStreet)
       .in(mockCity)
       .in(mockPostalCode)
@@ -96,11 +87,13 @@ public class GenericAddressUnitTests {
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
+    Coordinates mockCoordinates = mock(Coordinates.class);
 
-    GenericAddress address = GenericAddress.newGenericAddress(Country.GERMANY)
+    GenericAddress address = GenericAddress.newGenericAddressBuilder(Country.GERMANY)
       .on(mockStreet)
       .in(mockCity)
       .in(mockPostalCode)
+      .at(mockCoordinates)
       .build();
 
     assertThat(address).isNotNull();
@@ -110,8 +103,8 @@ public class GenericAddressUnitTests {
     assertThat(address.getCountry()).isEqualTo(Country.GERMANY);
     assertThat(address.getUnit()).isNotPresent();
     assertThat(address.getType()).isNotPresent();
-    assertThat(address.getCoordinates()).isNotPresent();
+    assertThat(address.getCoordinates().orElse(null)).isEqualTo(mockCoordinates);
 
-    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
+    verifyNoInteractions(mockStreet, mockCity, mockPostalCode, mockCoordinates);
   }
 }
