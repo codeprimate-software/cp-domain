@@ -40,4 +40,14 @@ public class GeoUtilsUnitTests {
   void resolvesNullToLocalCountry() {
     assertThat(GeoUtils.resolveCountry(null)).isEqualTo(Country.localCountry());
   }
+
+  @Test
+  public void resolveToUnknownCountryWithKnownCountry() {
+    assertThat(GeoUtils.resolveToUnknownCountry(Country.EGYPT)).isEqualTo(Country.EGYPT);
+  }
+
+  @Test
+  public void resolveToUnknownCountryWithNull() {
+    assertThat(GeoUtils.resolveToUnknownCountry(null)).isEqualTo(Country.UNKNOWN);
+  }
 }

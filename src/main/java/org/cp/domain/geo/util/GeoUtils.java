@@ -15,6 +15,8 @@
  */
 package org.cp.domain.geo.util;
 
+import java.util.function.Supplier;
+
 import org.cp.domain.geo.enums.Country;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
@@ -28,6 +30,14 @@ import org.cp.elements.lang.annotation.Nullable;
 public abstract class GeoUtils {
 
   public static @NotNull Country resolveCountry(@Nullable Country country) {
-    return country != null ? country : Country.localCountry();
+    return resolveCountry(country, Country::localCountry);
+  }
+
+  public static @NotNull Country resolveToUnknownCountry(@Nullable Country country) {
+    return resolveCountry(country, () -> Country.UNKNOWN);
+  }
+
+  private static @NotNull Country resolveCountry(@Nullable Country country, Supplier<Country> countrySupplier) {
+    return country != null ? country : countrySupplier.get();
   }
 }
