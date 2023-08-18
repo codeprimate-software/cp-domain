@@ -62,6 +62,19 @@ public class AbstractAddressUnitTests {
     assertThat(address.getUnit()).isNotPresent();
   }
 
+  private void assertAddress(Address address, Street street, City city, PostalCode postalCode, Country country,
+      Coordinates coordinates, Address.Type addressType, Unit unit) {
+
+    assertThat(address).isNotNull();
+    assertThat(address.getStreet()).isEqualTo(street);
+    assertThat(address.getCity()).isEqualTo(city);
+    assertThat(address.getPostalCode()).isEqualTo(postalCode);
+    assertThat(address.getCountry()).isEqualTo(country);
+    assertThat(address.getCoordinates().orElse(Coordinates.NULL_ISLAND)).isEqualTo(coordinates);
+    assertThat(address.getType().orElse(Address.Type.UNKNOWN)).isEqualTo(addressType);
+    assertThat(address.getUnit().orElse(Unit.EMPTY)).isEqualTo(unit);
+  }
+
   @SuppressWarnings("unused")
   private Address mockAddress(Street street, City city, PostalCode postalCode) {
     return mockAddress(street, city, postalCode, Country.localCountry());
@@ -448,7 +461,7 @@ public class AbstractAddressUnitTests {
     Unit mockUnit = mock(Unit.class);
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
-    Country usa = Country.UNITED_STATES_OF_AMERICA;
+    Country unitedKingdom = Country.UNITED_KINGDOM;
     Coordinates mockCoordinates = mock(Coordinates.class);
 
     AbstractAddress address = new TestAddress.Builder<AbstractAddress>()
@@ -456,22 +469,13 @@ public class AbstractAddressUnitTests {
       .in(mockUnit)
       .in(mockCity)
       .in(mockPostalCode)
-      .in(usa)
+      .in(unitedKingdom)
       .at(mockCoordinates)
       .build()
       .asPoBox();
 
-    assertThat(address).isNotNull();
-    assertThat(address.getStreet()).isEqualTo(mockStreet);
-    assertThat(address.getCity()).isEqualTo(mockCity);
-    assertThat(address.getPostalCode()).isEqualTo(mockPostalCode);
-    assertThat(address.getCountry()).isEqualTo(usa);
-    assertThat(address.getCoordinates()).isPresent();
-    assertThat(address.getCoordinates().orElse(Coordinates.NULL_ISLAND)).isEqualTo(mockCoordinates);
-    assertThat(address.getType()).isPresent();
-    assertThat(address.getType().orElse(Address.Type.UNKNOWN)).isEqualTo(Address.Type.PO_BOX);
-    assertThat(address.getUnit()).isPresent();
-    assertThat(address.getUnit().orElse(Unit.EMPTY)).isEqualTo(mockUnit);
+    assertAddress(address, mockStreet, mockCity, mockPostalCode, unitedKingdom,
+      mockCoordinates, Address.Type.PO_BOX, mockUnit);
 
     verifyNoInteractions(mockStreet, mockUnit, mockCity, mockPostalCode, mockCoordinates);
   }
