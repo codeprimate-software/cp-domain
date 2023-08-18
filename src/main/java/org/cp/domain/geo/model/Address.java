@@ -78,6 +78,8 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * Factory method used to construct a new {@link Address.Builder} to build a new {@link Address}
    * based in the {@link Country#localCountry() local country} determined by {@link Locale}.
    *
+   * @param <T> concrete {@link Class type} of {@link Address} built by the {@link Address.Builder}.
+   * @param <BUILDER> concrete {@link Class type} of {@link Address.Builder}.
    * @return a new {@link Address.Builder} used to construct and build a new {@link Address}
    * based in the {@link Country#localCountry() local country} determined by {@link Locale}.
    * @see org.cp.domain.geo.enums.Country#localCountry()
@@ -95,20 +97,21 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * based in the given {@link Country}.
    * <p>
    * If {@link Country} is {@literal null}, then {@link Country} defaults to {@link Country#localCountry()}
-   * based in the current {@link Locale}.
+   * based on the {@link Locale}.
    *
+   * @param <T> concrete {@link Class type} of {@link Address} built by the {@link Address.Builder}.
+   * @param <BUILDER> concrete {@link Class type} of {@link Address.Builder}.
    * @param country {@link Country} of origin for the new {@link Address}.
    * @return a new {@link Address.Builder} used to construct and build a new {@link Address}
    * based in the given {@link Country}.
    * @see org.cp.domain.geo.model.AddressFactory#newAddressBuilder(Country)
    * @see org.cp.domain.geo.model.Address.Builder
-   * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.domain.geo.enums.Country
+   * @see org.cp.elements.lang.annotation.Dsl
    */
-  @Dsl
-  @NullSafe
+  @Dsl @NullSafe
   static @NotNull <T extends Address, BUILDER extends Address.Builder<T>> BUILDER builder(@Nullable Country country) {
-    return AddressFactory.newAddressBuilder(country);
+    return AddressFactory.<T>getInstance(country).newAddressBuilder(country);
   }
 
   /**
@@ -176,11 +179,10 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
-  @SuppressWarnings("unchecked")
   static @NotNull <T extends Address> T of(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode,
       @Nullable Country country) {
 
-    return (T) builder(country)
+    return Address.<T, Address.Builder<T>>builder(country)
       .on(street)
       .in(city)
       .in(postalCode)
@@ -674,8 +676,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
      * @see org.cp.domain.geo.model.Address#of(Street, City, PostalCode, Country)
      * @see org.cp.domain.geo.model.Address#of(Street, City, PostalCode)
      */
-    @Dsl
-    @Override
+    @Dsl @Override
     public @NotNull T build() {
 
       Assert.notNull(getStreet(), "Street is required");
@@ -692,7 +693,8 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
     }
 
     protected T doBuild() {
-      return AddressFactory.newAddress(getStreet(), getCity(), getPostalCode(), getCountry());
+      return AddressFactory.<T>getInstance(getCountry())
+        .newAddress(getStreet(), getCity(), getPostalCode(), getCountry());
     }
   }
 
