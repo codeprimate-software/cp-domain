@@ -16,28 +16,87 @@
 package org.cp.domain.geo.model;
 
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
+import org.cp.domain.geo.annotation.CountryQualifier;
 import org.cp.domain.geo.enums.Country;
-import org.cp.domain.geo.model.generic.GenericAddress;
+import org.cp.domain.geo.util.GeoUtils;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.service.ServiceUnavailableException;
+import org.cp.elements.service.loader.ServiceLoaderSupport;
 
 /**
  * Factory for {@link Address Addresses}.
  *
  * @author John Blum
+ * @param <T> {@link Class Type} of {@link Address} created by this factory.
+ * @see org.cp.domain.geo.annotation.CountryQualifier
+ * @see org.cp.domain.geo.enums.Country
  * @see org.cp.domain.geo.model.Address
- * @see org.cp.domain.geo.model.AddressBuilderServiceLoader
+ * @see org.cp.domain.geo.model.Address.Builder
  * @since 0.1.0
  */
 @SuppressWarnings("unused")
-abstract class AddressFactory {
+public abstract class AddressFactory<T extends Address> {
+
+  private static final AddressFactory.Loader addressFactoryLoader = new AddressFactory.Loader();
+
+  @SuppressWarnings("rawtypes")
+  private static final Map<Country, AddressFactory> cache = new ConcurrentHashMap<>();
+
+  /**
+   * Factory method used to request an {@link AddressFactory} for creating {@link Address Addresses}
+   * located in the {@link Country#localCountry() local Country} based on {@link Locale}.
+   *
+   * @param <T> concrete {@link Class type} of {@link Address} created by the factory.
+   * @see org.cp.domain.geo.model.Address
+   * @see #getInstance(Country)
+   */
+  public static @NotNull <T extends Address> AddressFactory<T> getInstance() {
+    return getInstance(Country.localCountry());
+  }
+
+  /**
+   * Factory method used to request an {@link AddressFactory} for creating {@link Address Addresses}
+   * in the given {@link Country}.
+   *
+   * @param <T> concrete {@link Class type} of {@link Address} created by the factory.
+   * @param country {@link Country} in which {@link Address Addresses} will be created by the factory;
+   * default to {@link Country#localCountry()}.
+   * @see org.cp.domain.geo.enums.Country
+   * @see org.cp.domain.geo.model.Address
+   */
+  @SuppressWarnings("unchecked")
+  public static @NotNull <T extends Address> AddressFactory<T> getInstance(@NotNull Country country) {
+
+    try {
+      return cache.computeIfAbsent(GeoUtils.resolveToUnknownCountry(country), requestedCountry ->
+        addressFactoryLoader.getServiceInstance(addressFactoryPredicate(requestedCountry)));
+    }
+    catch (ServiceUnavailableException ignore) {
+      return cache.computeIfAbsent(Country.UNKNOWN, key -> new DefaultAddressFactory());
+    }
+  }
+
+  @SuppressWarnings("rawtypes")
+  private static @NotNull Predicate<AddressFactory> addressFactoryPredicate(@Nullable Country country) {
+
+    return addressFactory -> {
+
+      Class<?> addressFactoryType = addressFactory.getClass();
+
+      return addressFactoryType.isAnnotationPresent(CountryQualifier.class)
+        && addressFactoryType.getAnnotation(CountryQualifier.class).value().equals(GeoUtils.resolveCountry(country));
+    };
+  }
 
   /**
    * Constructs a new {@link Address} on the given {@link Street}, located in the given {@link City}, {@link PostalCode}
    * and {@link Country} based on {@link Locale}.
    *
-   * @param <T> concrete {@link Class type} of {@link Address}.
    * @param street {@link Street} of the {@link Address}; must not be {@literal null}.
    * @param city {@link City} of the {@link Address}; must not be {@literal null}.
    * @param postalCode {@link PostalCode} of the {@link Address}; must not be {@literal null}.
@@ -51,7 +110,7 @@ abstract class AddressFactory {
    * @see org.cp.domain.geo.model.PostalCode
    */
   @SuppressWarnings("unchecked")
-  static <T extends Address> T newAddress(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode) {
+  public @NotNull T newAddress(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode) {
     return (T) new FactoryAddress(street, city, postalCode);
   }
 
@@ -59,7 +118,6 @@ abstract class AddressFactory {
    * Constructs a new {@link Address} on the given {@link Street}, located in the given {@link City}, {@link PostalCode}
    * and {@link Country}.
    *
-   * @param <T> concrete {@link Class type} of {@link Address}.
    * @param street {@link Street} of the {@link Address}; must not be {@literal null}.
    * @param city {@link City} of the {@link Address}; must not be {@literal null}.
    * @param postalCode {@link PostalCode} of the {@link Address}; must not be {@literal null}.
@@ -75,7 +133,7 @@ abstract class AddressFactory {
    * @see org.cp.domain.geo.enums.Country
    */
   @SuppressWarnings("unchecked")
-  static <T extends Address> T newAddress(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode,
+  public @NotNull T newAddress(@NotNull Street street, @NotNull City city, @NotNull PostalCode postalCode,
       @NotNull Country country) {
 
     return (T) new FactoryAddress(street, city, postalCode, country);
@@ -84,47 +142,26 @@ abstract class AddressFactory {
   /**
    * Constructs a new {@link Address.Builder} used to build an {@link Address} located in the given {@link Country}.
    *
-   * @param <T> {@link Class Type} of {@link Address}.
-   * @param <BUILDER> {@link Class Type} of {@link Address.Builder}.
+   * @param <BUILDER> {@link Class Type} of {@link Address.Builder} used to build an {@link Address} of type {@link T}.
    * @param country {@link Country} in which the new {@link Address} is located.
    * @return a new {@link Address.Builder}.
    * @see org.cp.domain.geo.enums.Country
    * @see org.cp.domain.geo.model.Address
    * @see org.cp.domain.geo.model.Address.Builder
-   * @see org.cp.domain.geo.model.AddressBuilderServiceLoader
-   * @see #newGenericAddressBuilder(Country)
    */
-  @SuppressWarnings("unchecked")
-  static @NotNull <T extends Address, BUILDER extends Address.Builder<T>> BUILDER newAddressBuilder(
+  public @NotNull <BUILDER extends Address.Builder<T>> BUILDER newAddressBuilder(
       @NotNull Country country) {
 
-    try {
-      return (BUILDER) AddressBuilderServiceLoader.INSTANCE.getServiceInstance(country);
-    }
-    catch (ServiceUnavailableException ignore) {
-      return newGenericAddressBuilder(country);
-    }
+    return new Address.Builder<T>().in(country);
   }
+
+  private static class DefaultAddressFactory extends AddressFactory<FactoryAddress> { }
 
   /**
-   * Constructs a new, generic {@link Address.Builder} used to build an {@link Address}
-   * located in the given {@link Country}.
+   * {@link AbstractAddress} implementation created by this factory.
    *
-   * @param <T> {@link Class Type} of {@link Address}.
-   * @param <BUILDER> {@link Class Type} of {@link Address.Builder}.
-   * @param country {@link Country} in which the new {@link Address} is located.
-   * @return a new, generic {@link Address.Builder}.
-   * @see org.cp.domain.geo.enums.Country
-   * @see org.cp.domain.geo.model.Address
-   * @see org.cp.domain.geo.model.Address.Builder
+   * @see org.cp.domain.geo.model.AbstractAddress
    */
-  @SuppressWarnings("unchecked")
-  static @NotNull <T extends Address, BUILDER extends Address.Builder<T>> BUILDER newGenericAddressBuilder(
-      @NotNull Country country) {
-
-    return (BUILDER) GenericAddress.newGenericAddressBuilder(country);
-  }
-
   static class FactoryAddress extends AbstractAddress {
 
     FactoryAddress(Street street, City city, PostalCode postalCode) {
@@ -133,6 +170,21 @@ abstract class AddressFactory {
 
     FactoryAddress(Street street, City city, PostalCode postalCode, Country country) {
       super(street, city, postalCode, country);
+    }
+  }
+
+  /**
+   * Elements {@link ServiceLoaderSupport} used to load {@link Locale} (context) specific
+   * {@link AddressFactory} instances.
+   *
+   * @see org.cp.elements.service.loader.ServiceLoaderSupport
+   */
+  @SuppressWarnings("rawtypes")
+  static class Loader implements ServiceLoaderSupport<AddressFactory> {
+
+    @Override
+    public Class<AddressFactory> getType() {
+      return AddressFactory.class;
     }
   }
 }
