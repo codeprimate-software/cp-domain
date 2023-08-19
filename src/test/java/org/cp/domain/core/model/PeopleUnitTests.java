@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.util.stream.StreamUtils;
@@ -37,7 +37,7 @@ import org.cp.elements.util.stream.StreamUtils;
  * Unit Tests for {@link People}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.core.model.Group
  * @see org.cp.domain.core.model.People
  * @see org.cp.domain.core.model.Person
@@ -124,7 +124,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void emptyGroupOfPeople() {
+  void emptyGroupOfPeople() {
 
     People group = People.empty();
 
@@ -133,7 +133,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void groupAnArrayOfPeople() {
+  void groupAnArrayOfPeople() {
 
     People group = People.of(this.jonDoe, this.janeDoe, this.cookieDoe, this.froDoe, this.hoeDoe, this.joeDoe,
       this.lanDoe, this.moeDoe, this.pieDoe, this.sourDoe);
@@ -145,7 +145,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void groupAnArrayOfOnePerson() {
+  void groupAnArrayOfOnePerson() {
 
     People group = People.of(this.jonDoe);
 
@@ -155,7 +155,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void groupAnArrayOfNoPeople() {
+  void groupAnArrayOfNoPeople() {
 
     People group = People.of();
 
@@ -164,7 +164,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void groupNullArrayIsNullSafe() {
+  void groupNullArrayIsNullSafe() {
 
     People group = People.of((Person[]) null);
 
@@ -173,7 +173,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void groupOfIterableOfPeople() {
+  void groupOfIterableOfPeople() {
 
     People group = People.of(Arrays.asList(this.jonDoe, this.janeDoe, this.cookieDoe, this.froDoe, this.hoeDoe,
       this.joeDoe, this.lanDoe, this.moeDoe, this.pieDoe, this.sourDoe));
@@ -185,7 +185,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void groupOfIterableOfOnePerson() {
+  void groupOfIterableOfOnePerson() {
 
     People group = People.of(Collections.singletonList(this.jonDoe));
 
@@ -195,7 +195,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void groupOfIterableOfNoPeople() {
+  void groupOfIterableOfNoPeople() {
 
     People group = People.of(Collections.emptyList());
 
@@ -204,7 +204,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void groupOfNullIterableIsNullSafe() {
+  void groupOfNullIterableIsNullSafe() {
 
     People group = People.of((Iterable<Person>) null);
 
@@ -213,7 +213,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void setAndGetId() {
+  void setAndGetId() {
 
     UUID idOne = UUID.randomUUID();
     UUID idTwo = UUID.randomUUID();
@@ -234,7 +234,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void getNameWhenSetUsesName() {
+  void getNameWhenSetUsesName() {
 
     People group = People.of(this.jonDoe, this.janeDoe)
       .named("Doe Does")
@@ -247,7 +247,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void getNameWhenUnsetUsesId() {
+  void getNameWhenUnsetUsesId() {
 
     UUID id = UUID.randomUUID();
 
@@ -262,7 +262,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void getNameWhenUnsetHavingNoIdUsesSingleLastName() {
+  void getNameWhenUnsetHavingNoIdUsesSingleLastName() {
 
     People group = People.of(this.jonDoe, this.janeDoe)
       .named("")
@@ -275,7 +275,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void getNameOfEmptyGroup() {
+  void getNameOfEmptyGroup() {
 
     People group = People.empty()
       .named(null)
@@ -288,7 +288,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void addPersonReturnsTrue() {
+  void addPersonReturnsTrue() {
 
     People group = People.of(this.jonDoe, this.janeDoe, this.pieDoe);
 
@@ -322,7 +322,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void addNullPersonIsNullSafeReturnsFalse() {
+  void addNullPersonIsNullSafeReturnsFalse() {
 
     People group = People.of(this.jonDoe, this.janeDoe);
 
@@ -335,7 +335,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void addExistingPersonReturnsFalse() {
+  void addExistingPersonReturnsFalse() {
 
     People group = People.of(this.jonDoe);
 
@@ -358,7 +358,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void findByFindsAdults() {
+  void findByFindsAdults() {
 
     People group = fromFamily();
 
@@ -371,7 +371,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void findByFindsFemales() {
+  void findByFindsFemales() {
 
     People group = fromFamily();
 
@@ -383,7 +383,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void findByFindsMaleChildren() {
+  void findByFindsMaleChildren() {
 
     People group = fromFamily();
 
@@ -396,7 +396,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void findByFindsNoPeople() {
+  void findByFindsNoPeople() {
 
     People group = fromFamily();
 
@@ -407,7 +407,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void findByFindsOnePerson() {
+  void findByFindsOnePerson() {
 
     People group = fromFamily();
 
@@ -419,7 +419,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void findOneFindsSinglePerson() {
+  void findOneFindsSinglePerson() {
 
     People group = fromFamily();
 
@@ -431,7 +431,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void findOneFindsNoPerson() {
+  void findOneFindsNoPerson() {
 
     People group = fromFamily();
 
@@ -442,17 +442,17 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void isEmptyWithEmptyGroupReturnsTrue() {
+  void isEmptyWithEmptyGroupReturnsTrue() {
     assertThat(People.empty().isEmpty()).isTrue();
   }
 
   @Test
-  public void isEmptyWithNonEmptyGroupReturnsFalse() {
+  void isEmptyWithNonEmptyGroupReturnsFalse() {
     assertThat(People.of(this.jonDoe).isEmpty()).isFalse();
   }
 
   @Test
-  public void iteratorOfPeople() {
+  void iteratorOfPeople() {
 
     People group = People.of(this.cookieDoe, this.jonDoe, this.joeDoe, this.froDoe, this.lanDoe, this.janeDoe,
       this.sourDoe, this.pieDoe);
@@ -472,7 +472,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void iteratorOfOnePerson() {
+  void iteratorOfOnePerson() {
 
     People group = People.of(this.jonDoe);
 
@@ -489,12 +489,12 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void iteratorOfNoPeople() {
+  void iteratorOfNoPeople() {
     assertThat(People.empty().iterator()).isExhausted();
   }
 
   @Test
-  public void removePeopleReturnsTrue() {
+  void removePeopleReturnsTrue() {
 
     People people = fromFamily();
 
@@ -508,7 +508,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void removeSinglePersonReturnsTrue() {
+  void removeSinglePersonReturnsTrue() {
 
     People group = fromFamily();
 
@@ -519,12 +519,12 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void removePersonFromEmptyGroupReturnsFalse() {
+  void removePersonFromEmptyGroupReturnsFalse() {
     assertThat(People.empty().leave(this.jonDoe)).isFalse();
   }
 
   @Test
-  public void removeNullPersonIsNullSafeReturnsFalse() {
+  void removeNullPersonIsNullSafeReturnsFalse() {
 
     People group = fromFamily();
 
@@ -534,7 +534,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void removeNonExistingPersonReturnsFalse() {
+  void removeNonExistingPersonReturnsFalse() {
 
     People group = fromFamily();
 
@@ -544,7 +544,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void removePersonWithNoBirthDateGenderOrMiddleNameFromFamilyOfOneIsSuccessful() {
+  void removePersonWithNoBirthDateGenderOrMiddleNameFromFamilyOfOneIsSuccessful() {
 
     Person jackHandy = Person.newPerson("Jack", "Handy");
 
@@ -563,7 +563,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void sizeReturnsEight() {
+  void sizeReturnsEight() {
 
     People group = fromFamily();
 
@@ -573,7 +573,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void sizeReturnsOne() {
+  void sizeReturnsOne() {
 
     People group = People.of(this.jonDoe);
 
@@ -583,7 +583,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void sizeReturnsZero() {
+  void sizeReturnsZero() {
 
     People group = People.empty();
 
@@ -592,7 +592,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void toStringWithPeople() {
+  void toStringWithPeople() {
 
     People people = People.of(this.jonDoe, this.janeDoe, this.cookieDoe, this.pieDoe, this.sourDoe);
 
@@ -603,7 +603,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void toStringWithOnePerson() {
+  void toStringWithOnePerson() {
 
     People people = People.of(this.jonDoe);
 
@@ -614,7 +614,7 @@ public class PeopleUnitTests {
   }
 
   @Test
-  public void toStringWithNoPeople() {
+  void toStringWithNoPeople() {
 
     People people = People.empty();
 
