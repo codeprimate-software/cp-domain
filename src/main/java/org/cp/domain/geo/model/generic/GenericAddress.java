@@ -17,7 +17,6 @@ package org.cp.domain.geo.model.generic;
 
 import java.util.Locale;
 
-import org.cp.domain.geo.annotation.CountryQualifier;
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.model.AbstractAddress;
 import org.cp.domain.geo.model.Address;
@@ -114,11 +113,9 @@ public class GenericAddress extends AbstractAddress {
   /**
    * {@link AbstractAddress.Builder} used to build a new {@link GenericAddress}.
    *
-   * @see org.cp.domain.geo.annotation.CountryQualifier
-   * @see org.cp.domain.geo.model.AbstractAddress.Builder
+   * @see org.cp.domain.geo.model.Address.Builder
    * @see org.cp.domain.geo.model.generic.GenericAddress
    */
-  @CountryQualifier(Country.UNKNOWN)
   public static class Builder extends Address.Builder<GenericAddress> {
 
     @Override

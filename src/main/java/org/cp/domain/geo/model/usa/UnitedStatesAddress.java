@@ -17,7 +17,6 @@ package org.cp.domain.geo.model.usa;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 
-import org.cp.domain.geo.annotation.CountryQualifier;
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.enums.State;
 import org.cp.domain.geo.model.AbstractAddress;
@@ -206,11 +205,9 @@ public class UnitedStatesAddress extends AbstractAddress {
   /**
    * Elements {@link org.cp.elements.lang.Builder} implementation used to build a {@link UnitedStatesAddress}.
    *
-   * @see org.cp.domain.geo.annotation.CountryQualifier
    * @see org.cp.domain.geo.model.Address.Builder
    * @see org.cp.domain.geo.model.usa.UnitedStatesAddress
    */
-  @CountryQualifier(Country.UNITED_STATES_OF_AMERICA)
   public static class Builder extends Address.Builder<UnitedStatesAddress> {
 
     private State state;
