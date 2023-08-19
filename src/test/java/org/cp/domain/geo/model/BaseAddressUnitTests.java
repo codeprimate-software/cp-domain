@@ -44,6 +44,11 @@ public abstract class BaseAddressUnitTests {
 
   private static final Locale DEFAULT_LOCALE = Locale.getDefault();
 
+  static {
+    // Load Coordinates, which loads Elevation, which uses the default Locale
+    var nullIsland = Coordinates.NULL_ISLAND;
+  }
+
   @AfterAll
   static void afterTests() {
     Locale.setDefault(DEFAULT_LOCALE);
