@@ -42,7 +42,7 @@ import org.cp.elements.service.loader.ServiceLoaderSupport;
 @SuppressWarnings("unused")
 public abstract class AddressFactory<T extends Address> {
 
-  private static final AddressFactory.Loader addressFactoryLoader = new AddressFactory.Loader();
+  private static final AddressFactory.Loader ADDRESS_FACTORY_LOADER = new AddressFactory.Loader() { };
 
   @SuppressWarnings("rawtypes")
   private static final Map<Country, AddressFactory> cache = new ConcurrentHashMap<>();
@@ -74,7 +74,7 @@ public abstract class AddressFactory<T extends Address> {
 
     try {
       return cache.computeIfAbsent(GeoUtils.resolveToUnknownCountry(country), requestedCountry ->
-        addressFactoryLoader.getServiceInstance(addressFactoryPredicate(requestedCountry)));
+        ADDRESS_FACTORY_LOADER.getServiceInstance(addressFactoryPredicate(requestedCountry)));
     }
     catch (ServiceUnavailableException ignore) {
       return cache.computeIfAbsent(Country.UNKNOWN, key -> new DefaultAddressFactory());
@@ -191,10 +191,10 @@ public abstract class AddressFactory<T extends Address> {
    * @see org.cp.elements.service.loader.ServiceLoaderSupport
    */
   @SuppressWarnings("rawtypes")
-  static class Loader implements ServiceLoaderSupport<AddressFactory> {
+  interface Loader extends ServiceLoaderSupport<AddressFactory> {
 
     @Override
-    public Class<AddressFactory> getType() {
+    default Class<AddressFactory> getType() {
       return AddressFactory.class;
     }
   }
