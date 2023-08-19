@@ -27,7 +27,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.util.Locale;
 import java.util.Optional;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -46,16 +45,9 @@ import org.cp.domain.geo.enums.Country;
 @SuppressWarnings("unused")
 public class AddressBuilderUnitTests extends BaseAddressUnitTests {
 
-  private static final Locale DEFAULT_LOCALE = Locale.getDefault();
-
   @BeforeAll
   static void beforeTests() {
     Locale.setDefault(Locale.CANADA);
-  }
-
-  @AfterAll
-  static void afterTests() {
-    Locale.setDefault(DEFAULT_LOCALE);
   }
 
   @Test

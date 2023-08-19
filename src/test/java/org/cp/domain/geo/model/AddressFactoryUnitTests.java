@@ -23,8 +23,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.util.Locale;
-
 import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.enums.Country;

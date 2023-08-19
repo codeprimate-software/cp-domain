@@ -36,7 +36,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -59,16 +58,9 @@ import org.mockito.Mockito;
 @SuppressWarnings("unused")
 public class AddressUnitTests extends BaseAddressUnitTests {
 
-  private static final Locale DEFAULT_LOCALE = Locale.getDefault();
-
   @BeforeAll
   static void beforeTests() {
     Locale.setDefault(Locale.CANADA);
-  }
-
-  @AfterAll
-  static void afterTests() {
-    Locale.setDefault(DEFAULT_LOCALE);
   }
 
   @Test

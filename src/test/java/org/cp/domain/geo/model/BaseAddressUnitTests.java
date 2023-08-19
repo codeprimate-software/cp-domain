@@ -19,7 +19,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+import java.util.Locale;
 import java.util.Optional;
+
+import org.junit.jupiter.api.AfterAll;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.model.usa.UnitedStatesCity;
@@ -38,6 +41,13 @@ import org.cp.domain.geo.model.usa.support.StateZipCodesRepository;
  */
 @SuppressWarnings("unused")
 public abstract class BaseAddressUnitTests {
+
+  private static final Locale DEFAULT_LOCALE = Locale.getDefault();
+
+  @AfterAll
+  static void afterTests() {
+    Locale.setDefault(DEFAULT_LOCALE);
+  }
 
   protected void assertAddress(Address actual, Address expected) {
 
