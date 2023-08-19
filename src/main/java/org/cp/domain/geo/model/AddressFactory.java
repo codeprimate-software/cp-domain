@@ -140,18 +140,29 @@ public abstract class AddressFactory<T extends Address> {
   }
 
   /**
+   * Constructs a new {@link Address.Builder} used to build an {@link Address}
+   * located in the {@link Country#localCountry() local Country} determined by {@link Locale}.
+   *
+   * @param <BUILDER> {@link Class Type} of {@link Address.Builder} used to build an {@link Address} of type {@link T}.
+   * @return a new {@link Address.Builder}.
+   * @see org.cp.domain.geo.model.Address.Builder
+   * @see org.cp.domain.geo.model.Address
+   */
+  public @NotNull <BUILDER extends Address.Builder<T>> BUILDER newAddressBuilder() {
+    return new Address.Builder<T>().inLocalCountry();
+  }
+
+  /**
    * Constructs a new {@link Address.Builder} used to build an {@link Address} located in the given {@link Country}.
    *
    * @param <BUILDER> {@link Class Type} of {@link Address.Builder} used to build an {@link Address} of type {@link T}.
    * @param country {@link Country} in which the new {@link Address} is located.
    * @return a new {@link Address.Builder}.
-   * @see org.cp.domain.geo.enums.Country
-   * @see org.cp.domain.geo.model.Address
    * @see org.cp.domain.geo.model.Address.Builder
+   * @see org.cp.domain.geo.model.Address
+   * @see org.cp.domain.geo.enums.Country
    */
-  public @NotNull <BUILDER extends Address.Builder<T>> BUILDER newAddressBuilder(
-      @NotNull Country country) {
-
+  public @NotNull <BUILDER extends Address.Builder<T>> BUILDER newAddressBuilder(@NotNull Country country) {
     return new Address.Builder<T>().in(country);
   }
 
