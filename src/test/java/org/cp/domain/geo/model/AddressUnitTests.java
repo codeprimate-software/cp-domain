@@ -53,10 +53,13 @@ import org.mockito.Mockito;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.geo.model.Address
+ * @see org.cp.domain.geo.model.BaseAddressUnitTests
  * @since 0.1.0
  */
 @SuppressWarnings("unused")
-public class AddressUnitTests {
+public class AddressUnitTests extends BaseAddressUnitTests {
+
+  private static final Locale DEFAULT_LOCALE = Locale.getDefault();
 
   @BeforeAll
   static void beforeTests() {
@@ -65,58 +68,7 @@ public class AddressUnitTests {
 
   @AfterAll
   static void afterTests() {
-    Locale.setDefault(Locale.US);
-  }
-
-  private void assertAddress(Address address, Street street, City city, PostalCode postalCode) {
-    assertAddress(address, street, city, postalCode, Country.localCountry());
-  }
-
-  private void assertAddress(Address address, Street street, City city, PostalCode postalCode, Country country) {
-
-    assertThat(address).isNotNull();
-    assertThat(address.getStreet()).isEqualTo(street);
-    assertThat(address.getCity()).isEqualTo(city);
-    assertThat(address.getPostalCode()).isEqualTo(postalCode);
-    assertThat(address.getCountry()).isEqualTo(country);
-  }
-
-  private void assertAddressWithCoordinatesTypeAndUnit(Address address,
-      Coordinates coordinates, Address.Type addressType, Unit unit) {
-
-    assertThat(address).isNotNull();
-    assertThat(address.getCoordinates().orElse(null)).isEqualTo(coordinates);
-    assertThat(address.getType().orElse(null)).isEqualTo(addressType);
-    assertThat(address.getUnit().orElse(null)).isEqualTo(unit);
-  }
-
-  private void assertAddressWithNoCoordinatesTypeOrUnit(Address address) {
-
-    assertThat(address).isNotNull();
-    assertThat(address.getCoordinates()).isNotPresent();
-    assertThat(address.getType()).isNotPresent();
-    assertThat(address.getUnit()).isNotPresent();
-  }
-
-  private Address mockAddress(Street street, City city, PostalCode postalCode) {
-    return mockAddress(street, city, postalCode, Country.localCountry());
-  }
-
-  private Address mockAddress(Street street, City city, PostalCode postalCode, Country country) {
-
-    Address mockAddress = mock(Address.class);
-
-    doReturn(street).when(mockAddress).getStreet();
-    doReturn(city).when(mockAddress).getCity();
-    doReturn(postalCode).when(mockAddress).getPostalCode();
-    doReturn(country).when(mockAddress).getCountry();
-
-    return mockAddress;
-  }
-
-  private Address withUnit(Address address, Unit unit) {
-    doReturn(Optional.ofNullable(unit)).when(address).getUnit();
-    return address;
+    Locale.setDefault(DEFAULT_LOCALE);
   }
 
   @Test

@@ -67,7 +67,10 @@ public class AddressTypeUnitTests {
       .filter(addressType -> !Address.Type.PO_BOX.equals(addressType))
       .forEach(addressType ->
         assertThat(addressType.toString()).isEqualTo(addressType.getDescription().concat(" Address")));
+  }
 
+  @Test
+  void poBoxAddressTypeToStringIsSameAsDescription() {
     assertThat(Address.Type.PO_BOX.toString()).isEqualTo(Address.Type.PO_BOX.getDescription());
   }
 

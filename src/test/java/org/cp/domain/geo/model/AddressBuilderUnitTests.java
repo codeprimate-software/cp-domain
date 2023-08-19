@@ -24,8 +24,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.Locale;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.enums.Country;
@@ -36,40 +39,23 @@ import org.cp.domain.geo.enums.Country;
  * @author John Blum
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
- * @see org.cp.domain.geo.enums.Country
  * @see org.cp.domain.geo.model.Address.Builder
+ * @see org.cp.domain.geo.model.BaseAddressUnitTests
  * @since 0.1.0
  */
 @SuppressWarnings("unused")
-public class AddressBuilderUnitTests {
+public class AddressBuilderUnitTests extends BaseAddressUnitTests {
 
-  private void assertAddress(Address address, Street street, City city, PostalCode postalCode) {
-    assertAddress(address, street, city, postalCode, Country.localCountry());
+  private static final Locale DEFAULT_LOCALE = Locale.getDefault();
+
+  @BeforeAll
+  static void beforeTests() {
+    Locale.setDefault(Locale.CANADA);
   }
 
-  private void assertAddress(Address address, Street street, City city, PostalCode postalCode, Country country) {
-
-    assertThat(address).isNotNull();
-    assertThat(address.getStreet()).isEqualTo(street);
-    assertThat(address.getCity()).isEqualTo(city);
-    assertThat(address.getPostalCode()).isEqualTo(postalCode);
-    assertThat(address.getCountry()).isEqualTo(country);
-  }
-
-  private Address mockAddress(Street street, City city, PostalCode postalCode) {
-    return mockAddress(street, city, postalCode, Country.localCountry());
-  }
-
-  private Address mockAddress(Street street, City city, PostalCode postalCode, Country country) {
-
-    Address mockAddress = mock(Address.class);
-
-    doReturn(street).when(mockAddress).getStreet();
-    doReturn(city).when(mockAddress).getCity();
-    doReturn(postalCode).when(mockAddress).getPostalCode();
-    doReturn(country).when(mockAddress).getCountry();
-
-    return mockAddress;
+  @AfterAll
+  static void afterTests() {
+    Locale.setDefault(DEFAULT_LOCALE);
   }
 
   @Test
@@ -129,7 +115,7 @@ public class AddressBuilderUnitTests {
   }
 
   @Test
-  public void buildBasicAddressInLocalCountry() {
+  void buildBasicAddressInLocalCountry() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
@@ -152,7 +138,7 @@ public class AddressBuilderUnitTests {
   }
 
   @Test
-  public void buildCompleteAddressInGermany() {
+  void buildCompleteAddressInGermany() {
 
     Street mockStreet = mock(Street.class);
     Unit mockUnit = mock(Unit.class);

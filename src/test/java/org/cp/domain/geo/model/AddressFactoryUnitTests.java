@@ -16,13 +16,18 @@
 package org.cp.domain.geo.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 
 import org.cp.domain.geo.enums.Country;
-import org.cp.domain.geo.model.generic.GenericAddress;
 import org.cp.domain.geo.model.usa.UnitedStatesAddress;
 
 /**
@@ -32,48 +37,37 @@ import org.cp.domain.geo.model.usa.UnitedStatesAddress;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.geo.model.AddressFactory
+ * @see org.cp.domain.geo.model.BaseAddressUnitTests
  * @since 0.1.0
  */
-public class AddressFactoryUnitTests {
+public class AddressFactoryUnitTests extends BaseAddressUnitTests {
 
-  private void assertAddress(Address address, Street street, City city, PostalCode postalCode) {
-    assertAddress(address, street, city, postalCode, Country.localCountry());
-  }
+  @Test
+  void newAddressInLocalCountry() {
 
-  private void assertAddress(Address address, Street street, City city, PostalCode postalCode, Country country) {
+    Street mockStreet = mock(Street.class);
+    City mockCity = mockCity("Portland");
+    PostalCode mockPostalCode = mockPostalCode("97205");
 
-    assertThat(address).isInstanceOf(AbstractAddress.class);
-    assertThat(address.getStreet()).isEqualTo(street);
-    assertThat(address.getCity()).isEqualTo(city);
-    assertThat(address.getPostalCode()).isEqualTo(postalCode);
-    assertThat(address.getCountry()).isEqualTo(country);
-    assertThat(address.getCoordinates()).isNotPresent();
-    assertThat(address.getType()).isNotPresent();
-    assertThat(address.getUnit()).isNotPresent();
+    Address address = AddressFactory.getInstance().newAddress(mockStreet, mockCity, mockPostalCode);
+
+    assertAddress(address, mockStreet, toLocalCity(mockCity, mockPostalCode), toLocalPostalCode(mockPostalCode));
+
+    verify(mockCity, atLeastOnce()).getName();
+    verify(mockPostalCode, atLeast(2)).getNumber();
+    verifyNoMoreInteractions(mockPostalCode);
+    verifyNoInteractions(mockStreet);
   }
 
   @Test
-  public void newAddressInLocalCountry() {
+  void newAddressInGermany() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
 
-    Address address = AddressFactory.newAddress(mockStreet, mockCity, mockPostalCode);
-
-    assertAddress(address, mockStreet, mockCity, mockPostalCode);
-
-    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
-  }
-
-  @Test
-  public void newAddressInGivenCountry() {
-
-    Street mockStreet = mock(Street.class);
-    City mockCity = mock(City.class);
-    PostalCode mockPostalCode = mock(PostalCode.class);
-
-    Address address = AddressFactory.newAddress(mockStreet, mockCity, mockPostalCode, Country.GERMANY);
+    Address address = AddressFactory.getInstance(Country.GERMANY)
+      .newAddress(mockStreet, mockCity, mockPostalCode, Country.GERMANY);
 
     assertAddress(address, mockStreet, mockCity, mockPostalCode, Country.GERMANY);
 
@@ -81,29 +75,31 @@ public class AddressFactoryUnitTests {
   }
 
   @Test
-  public void newAddressBuilderInAustria() {
+  void newAddressBuilderInGermany() {
 
-    Address.Builder<?> addressBuilder = AddressFactory.newAddressBuilder(Country.AUSTRIA);
+    Address.Builder<?> addressBuilder = AddressFactory.getInstance(Country.GERMANY)
+      .newAddressBuilder(Country.GERMANY);
 
-    assertThat(addressBuilder).isInstanceOf(GenericAddress.Builder.class);
-    assertThat(addressBuilder.getCountry()).isEqualTo(Country.AUSTRIA);
+    assertThat(addressBuilder).isNotNull();
+    assertThat(addressBuilder.getCountry()).isEqualTo(Country.GERMANY);
   }
 
   @Test
-  public void newAddressBuilderInUnitedStates() {
+  void newAddressBuilderInLocalCountry() {
 
-    Address.Builder<?> addressBuilder = AddressFactory.newAddressBuilder(Country.UNITED_STATES_OF_AMERICA);
+    Address.Builder<?> addressBuilder = AddressFactory.getInstance().newAddressBuilder();
+
+    assertThat(addressBuilder).isNotNull();
+    assertThat(addressBuilder.getCountry()).isEqualTo(Country.localCountry());
+  }
+
+  @Test
+  void newAddressBuilderInUnitedStates() {
+
+    Address.Builder<?> addressBuilder = AddressFactory.getInstance(Country.UNITED_STATES_OF_AMERICA)
+      .newAddressBuilder(Country.UNITED_STATES_OF_AMERICA);
 
     assertThat(addressBuilder).isInstanceOf(UnitedStatesAddress.Builder.class);
     assertThat(addressBuilder.getCountry()).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
-  }
-
-  @Test
-  public void newGenericAddressBuilderIsCorrect() {
-
-    Address.Builder<?> addressBuilder = AddressFactory.newGenericAddressBuilder(Country.EGYPT);
-
-    assertThat(addressBuilder).isInstanceOf(GenericAddress.Builder.class);
-    assertThat(addressBuilder.getCountry()).isEqualTo(Country.EGYPT);
   }
 }

@@ -17,7 +17,6 @@ package org.cp.domain.geo.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
@@ -32,35 +31,10 @@ import org.cp.domain.geo.enums.Country;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.geo.model.AbstractAddress
+ * @see org.cp.domain.geo.model.BaseAddressUnitTests
  * @since 0.1.0
  */
-public class AbstractAddressUnitTests {
-
-  private void assertAddress(Address actual, Address expected) {
-
-    assertThat(actual).isNotNull();
-    assertThat(actual).isNotSameAs(expected);
-    assertThat(actual).isEqualTo(expected);
-    assertThat(actual.getCoordinates().orElse(null)).isEqualTo(expected.getCoordinates().orElse(null));
-    assertThat(actual.getType().orElse(Address.Type.UNKNOWN)).isEqualTo(expected.getType().orElse(Address.Type.UNKNOWN));
-    assertThat(actual.getUnit().orElse(Unit.EMPTY)).isEqualTo(expected.getUnit().orElse(Unit.EMPTY));
-  }
-
-  private void assertAddress(Address address, Street street, City city, PostalCode postalCode) {
-    assertAddress(address, street, city, postalCode, Country.localCountry());
-  }
-
-  private void assertAddress(Address address, Street street, City city, PostalCode postalCode, Country country) {
-
-    assertThat(address).isNotNull();
-    assertThat(address.getStreet()).isEqualTo(street);
-    assertThat(address.getCity()).isEqualTo(city);
-    assertThat(address.getPostalCode()).isEqualTo(postalCode);
-    assertThat(address.getCountry()).isEqualTo(country);
-    assertThat(address.getCoordinates()).isNotPresent();
-    assertThat(address.getType()).isNotPresent();
-    assertThat(address.getUnit()).isNotPresent();
-  }
+public class AbstractAddressUnitTests extends BaseAddressUnitTests {
 
   private void assertAddress(Address address, Street street, City city, PostalCode postalCode, Country country,
       Coordinates coordinates, Address.Type addressType, Unit unit) {
@@ -73,23 +47,6 @@ public class AbstractAddressUnitTests {
     assertThat(address.getCoordinates().orElse(Coordinates.NULL_ISLAND)).isEqualTo(coordinates);
     assertThat(address.getType().orElse(Address.Type.UNKNOWN)).isEqualTo(addressType);
     assertThat(address.getUnit().orElse(Unit.EMPTY)).isEqualTo(unit);
-  }
-
-  @SuppressWarnings("unused")
-  private Address mockAddress(Street street, City city, PostalCode postalCode) {
-    return mockAddress(street, city, postalCode, Country.localCountry());
-  }
-
-  private Address mockAddress(Street street, City city, PostalCode postalCode, Country country) {
-
-    Address mockAddress = mock(Address.class);
-
-    doReturn(street).when(mockAddress).getStreet();
-    doReturn(city).when(mockAddress).getCity();
-    doReturn(postalCode).when(mockAddress).getPostalCode();
-    doReturn(country).when(mockAddress).getCountry();
-
-    return mockAddress;
   }
 
   @SuppressWarnings("unchecked")
