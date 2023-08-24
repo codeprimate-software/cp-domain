@@ -26,6 +26,7 @@ import org.cp.domain.geo.model.BaseAddressUnitTests;
 import org.cp.domain.geo.model.City;
 import org.cp.domain.geo.model.PostalCode;
 import org.cp.domain.geo.model.Street;
+import org.testcontainers.shaded.org.apache.commons.lang3.function.TriFunction;
 
 /**
  * Unit Tests for {@link GenericAddressFactory}.
@@ -40,51 +41,47 @@ public class GenericAddressFactoryUnitTests extends BaseAddressUnitTests {
 
   private final GenericAddressFactory addressFactory = new GenericAddressFactory();
 
-  @Test
-  void newAddress() {
+  private void testNewAddress(TriFunction<Street, City, PostalCode, GenericAddress> newAddressFunction, Country country) {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
 
-    GenericAddress address = this.addressFactory.newAddress(mockStreet, mockCity, mockPostalCode);
+    GenericAddress address = newAddressFunction.apply(mockStreet, mockCity, mockPostalCode);
 
-    assertAddress(address, mockStreet, mockCity, mockPostalCode);
+    if (country != null) {
+      assertAddress(address, mockStreet, mockCity, mockPostalCode, country);
+    }
+    else {
+      assertAddress(address, mockStreet, mockCity, mockPostalCode);
+    }
+
     assertAddressWithNoCoordinatesTypeOrUnit(address);
 
     verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
+  }
+
+  @Test
+  void newAddress() {
+    testNewAddress(this.addressFactory::newAddress, null);
   }
 
   @Test
   void newAddressInGermany() {
 
-    Street mockStreet = mock(Street.class);
-    City mockCity = mock(City.class);
-    PostalCode mockPostalCode = mock(PostalCode.class);
     Country germany = Country.GERMANY;
 
-    GenericAddress address = this.addressFactory.newAddress(mockStreet, mockCity, mockPostalCode, germany);
-
-    assertAddress(address, mockStreet, mockCity, mockPostalCode, germany);
-    assertAddressWithNoCoordinatesTypeOrUnit(address);
-
-    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
+    testNewAddress((mockStreet, mockCity, mockPostalCode) ->
+      this.addressFactory.newAddress(mockStreet, mockCity, mockPostalCode, germany), germany);
   }
 
   @Test
   void newAddressInUnitedStates() {
 
-    Street mockStreet = mock(Street.class);
-    City mockCity = mock(City.class);
-    PostalCode mockPostalCode = mock(PostalCode.class);
     Country unitedStates = Country.UNITED_STATES_OF_AMERICA;
 
-    GenericAddress address = this.addressFactory.newAddress(mockStreet, mockCity, mockPostalCode, unitedStates);
-
-    assertAddress(address, mockStreet, mockCity, mockPostalCode, unitedStates);
-    assertAddressWithNoCoordinatesTypeOrUnit(address);
-
-    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
+    testNewAddress((mockStreet, mockCity, mockPostalCode) ->
+      this.addressFactory.newAddress(mockStreet, mockCity, mockPostalCode, unitedStates), unitedStates);
   }
 
   @Test
