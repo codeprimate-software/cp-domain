@@ -102,7 +102,7 @@ public class UnitedStatesAddress extends AbstractAddress {
    * @see #getCity()
    */
   @Override
-  public @NotNull City getCity() {
+  public @NotNull UnitedStatesCity getCity() {
     return UnitedStatesCity.from(super.getCity()).in(getState());
   }
 
