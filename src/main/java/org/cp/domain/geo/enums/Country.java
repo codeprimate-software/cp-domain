@@ -252,7 +252,8 @@ public enum Country {
    * @see #isLocatedOnContinent(Continent)
    * @see #values()
    */
-  public static Set<Country> byContinent(Continent continent) {
+  @NullSafe
+  public static Set<Country> byContinent(@Nullable Continent continent) {
 
     return Arrays.stream(values())
       .filter(country -> country.isLocatedOnContinent(continent))
@@ -264,23 +265,6 @@ public enum Country {
     return Arrays.stream(values())
       .filter(countryPredicate)
       .findFirst();
-  }
-
-  /**
-   * Factory method used to find a {@link Country} based on the {@literal ISO 3-digit numeric code}.
-   *
-   * @param isoThreeDigitNumericCountryCode {@literal ISO 3-digit numeric code} defined by {@literal ISO 3166}.
-   * @return a {@link Country} for the given {@literal ISO 3-digit numeric code}.
-   * @throws IllegalArgumentException if no {@link Country} is found.
-   * @see org.cp.domain.geo.enums.Country#getIsoThreeDigitNumericCountryCode()
-   * @see #byQueryPredicate(Predicate)
-   */
-  public static @NotNull Country byIsoThreeDigitNumericCountryCode(@NotNull String isoThreeDigitNumericCountryCode) {
-
-    return byQueryPredicate(country -> country.getIsoThreeDigitNumericCountryCode()
-      .equalsIgnoreCase(isoThreeDigitNumericCountryCode))
-      .orElseThrow(() -> newIllegalArgumentException("Country for ISO 3-digit numeric code [%s] was not found",
-        isoThreeDigitNumericCountryCode));
   }
 
   /**
@@ -297,6 +281,23 @@ public enum Country {
     return byQueryPredicate(country -> country.getIsoThree().equalsIgnoreCase(isoThreeCountryCode))
       .orElseThrow(() -> newIllegalArgumentException("Country for ISO 3166-3 [%s] was not found",
         isoThreeCountryCode));
+  }
+
+  /**
+   * Factory method used to find a {@link Country} based on the {@literal ISO 3-digit numeric code}.
+   *
+   * @param isoThreeDigitNumericCountryCode {@literal ISO 3-digit numeric code} defined by {@literal ISO 3166}.
+   * @return a {@link Country} for the given {@literal ISO 3-digit numeric code}.
+   * @throws IllegalArgumentException if no {@link Country} is found.
+   * @see org.cp.domain.geo.enums.Country#getIsoThreeDigitNumericCountryCode()
+   * @see #byQueryPredicate(Predicate)
+   */
+  public static @NotNull Country byIsoThreeDigitNumericCountryCode(@NotNull String isoThreeDigitNumericCountryCode) {
+
+    return byQueryPredicate(country -> country.getIsoThreeDigitNumericCountryCode()
+      .equalsIgnoreCase(isoThreeDigitNumericCountryCode))
+      .orElseThrow(() -> newIllegalArgumentException("Country for ISO 3-digit numeric country code [%s] was not found",
+        isoThreeDigitNumericCountryCode));
   }
 
   /**
@@ -381,6 +382,16 @@ public enum Country {
   }
 
   /**
+   * Returns the {@literal ISO 2 alphanumeric country code} for this {@link Country}.
+   *
+   * @return the {@literal ISO 2 alphanumeric country code} for this {@link Country}.
+   * @see #getIsoThree()
+   */
+  public @NotNull String getIsoTwo() {
+    return this.isoTwo;
+  }
+
+  /**
    * Returns the {@literal ISO 3 alphanumeric country code} for this {@link Country}.
    *
    * @return the {@literal ISO 3 alphanumeric country code} for this {@link Country}.
@@ -392,22 +403,76 @@ public enum Country {
   }
 
   /**
-   * Returns the {@literal ISO 2 alphanumeric country code} for this {@link Country}.
-   *
-   * @return the {@literal ISO 2 alphanumeric country code} for this {@link Country}.
-   * @see #getIsoThree()
-   */
-  public @NotNull String getIsoTwo() {
-    return this.isoTwo;
-  }
-
-  /**
    * Returns the {@literal ISO 3-digit numeric country code} for this {@link Country}.
    *
    * @return the {@literal ISO 3-digit numeric country code} for this {@link Country}.
    */
   public @NotNull String getIsoThreeDigitNumericCountryCode() {
     return this.isoThreeDigitNumericCountryCode;
+  }
+
+  /**
+   * Determines whether this {@link Country} is the given {@link Country}.
+   *
+   * @param country {@link Country} to evaluate.
+   * @return a boolean value indicating whether this {@link Country} is the given {@link Country}.
+   */
+  private boolean isCountry(@Nullable Country country) {
+    return this.equals(country);
+  }
+
+  /**
+   * Determines whether this {@link Country} is the {@link Country#CANADA}.
+   *
+   * @return a boolean value indicating whether this {@link Country} is the {@link Country#CANADA}.
+   */
+  public boolean isCanada() {
+    return isCountry(Country.CANADA);
+  }
+
+  /**
+   * Determines whether this {@link Country} is the {@link Country#CHINA}.
+   *
+   * @return a boolean value indicating whether this {@link Country} is the {@link Country#CHINA}.
+   */
+  public boolean isChina() {
+    return isCountry(Country.CHINA);
+  }
+
+  /**
+   * Determines whether this {@link Country} is the {@link Country#FRANCE}.
+   *
+   * @return a boolean value indicating whether this {@link Country} is the {@link Country#FRANCE}.
+   */
+  public boolean isFrance() {
+    return isCountry(Country.FRANCE);
+  }
+
+  /**
+   * Determines whether this {@link Country} is the {@link Country#GERMANY}.
+   *
+   * @return a boolean value indicating whether this {@link Country} is the {@link Country#GERMANY}.
+   */
+  public boolean isGermany() {
+    return isCountry(Country.GERMANY);
+  }
+
+  /**
+   * Determines whether this {@link Country} is the {@link Country#ITALY}.
+   *
+   * @return a boolean value indicating whether this {@link Country} is the {@link Country#ITALY}.
+   */
+  public boolean isItaly() {
+    return isCountry(Country.ITALY);
+  }
+
+  /**
+   * Determines whether this {@link Country} is the {@link Country#JAPAN}.
+   *
+   * @return a boolean value indicating whether this {@link Country} is the {@link Country#JAPAN}.
+   */
+  public boolean isJapan() {
+    return isCountry(Country.JAPAN);
   }
 
   /**
@@ -421,5 +486,41 @@ public enum Country {
   @NullSafe
   public boolean isLocatedOnContinent(@Nullable Continent continent) {
     return continent != null && getContinents().contains(continent);
+  }
+
+  /**
+   * Determines whether this {@link Country} is the {@link Country#RUSSIA}.
+   *
+   * @return a boolean value indicating whether this {@link Country} is the {@link Country#RUSSIA}.
+   */
+  public boolean isRussia() {
+    return isCountry(Country.RUSSIA);
+  }
+
+  /**
+   * Determines whether this {@link Country} is the {@link Country#SPAIN}.
+   *
+   * @return a boolean value indicating whether this {@link Country} is the {@link Country#SPAIN}.
+   */
+  public boolean isSpain() {
+    return isCountry(Country.SPAIN);
+  }
+
+  /**
+   * Determines whether this {@link Country} is the {@link Country#UNITED_KINGDOM}.
+   *
+   * @return a boolean value indicating whether this {@link Country} is the {@link Country#UNITED_KINGDOM}.
+   */
+  public boolean isUnitedKingdom() {
+    return isCountry(Country.UNITED_KINGDOM);
+  }
+
+  /**
+   * Determines whether this {@link Country} is the {@link Country#UNITED_STATES_OF_AMERICA}.
+   *
+   * @return a boolean value indicating whether this {@link Country} is the {@link Country#UNITED_STATES_OF_AMERICA}.
+   */
+  public boolean isUnitedStatesOfAmerica() {
+    return isCountry(Country.UNITED_STATES_OF_AMERICA);
   }
 }

@@ -16,10 +16,12 @@
 package org.cp.domain.geo.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +35,7 @@ import org.junit.jupiter.api.Test;
  * @see org.cp.domain.geo.enums.Country
  * @since 0.1.0
  */
-public class CountryUnitTests {
+class CountryUnitTests {
 
   private Set<Country> testedCountries;
 
@@ -558,6 +560,64 @@ public class CountryUnitTests {
   }
 
   @Test
+  void byIsoThreeIsCorrect() {
+
+    Arrays.stream(Country.values()).forEach(country ->
+      assertThat(Country.byIsoThree(country.getIsoThree())).isEqualTo(country));
+  }
+
+  @Test
+  public void byInvalidIsoThreeThrowsIllegalArgumentException() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Country.byIsoThree("XXX"))
+      .withMessage("Country for ISO 3166-3 [XXX] was not found")
+      .withNoCause();
+  }
+
+  @Test
+  void byIsoThreeDigitNumericCountryCodeIsCorrect() {
+
+    Arrays.stream(Country.values()).forEach(country ->
+      assertThat(Country.byIsoThreeDigitNumericCountryCode(country.getIsoThreeDigitNumericCountryCode()))
+        .isEqualTo(country));
+  }
+
+  @Test
+  public void byInvalidIsoThreeDigitNumericCountryCodeThrowsIllegalArgumentException() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Country.byIsoThreeDigitNumericCountryCode("000"))
+      .withMessage("Country for ISO 3-digit numeric country code [000] was not found")
+      .withNoCause();
+  }
+
+  @Test
+  void byIsoTwoIsCorrect() {
+
+    Arrays.stream(Country.values()).forEach(country ->
+      assertThat(Country.byIsoTwo(country.getIsoTwo())).isEqualTo(country));
+  }
+
+  @Test
+  void byInvalidIsoTwoThrowsIllegalArgumentException() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Country.byIsoTwo("XX"))
+      .withMessage("Country for ISO 3166-2 [XX] was not found")
+      .withNoCause();
+  }
+
+  @Test
+  void byNullContinentIsNullSafe() {
+
+    Set<Country> countriesInNull = Country.byContinent(null);
+
+    assertThat(countriesInNull).isNotNull();
+    assertThat(countriesInNull).isEmpty();
+  }
+
+  @Test
   void countryIsoThreeCountryCodesAreUnique() {
 
     Set<String> isoAlphaThreeLetterCodes = Arrays.stream(Country.values())
@@ -588,28 +648,6 @@ public class CountryUnitTests {
   }
 
   @Test
-  void byIsoNumericThreeDigitCodeIsCorrect() {
-
-    Arrays.stream(Country.values()).forEach(country ->
-      assertThat(Country.byIsoThreeDigitNumericCountryCode(country.getIsoThreeDigitNumericCountryCode()))
-        .isEqualTo(country));
-  }
-
-  @Test
-  void byIsoThreeAlphanumericCountryCodeIsCorrect() {
-
-    Arrays.stream(Country.values()).forEach(country ->
-      assertThat(Country.byIsoThree(country.getIsoThree())).isEqualTo(country));
-  }
-
-  @Test
-  void byIsoTwoAlphanumericCountryCodeIsCorrect() {
-
-    Arrays.stream(Country.values()).forEach(country ->
-      assertThat(Country.byIsoTwo(country.getIsoTwo())).isEqualTo(country));
-  }
-
-  @Test
   void isLocatedOnContinentReturnsTrue() {
 
     assertThat(Country.EGYPT.isLocatedOnContinent(Continent.AFRICA)).isTrue();
@@ -632,5 +670,61 @@ public class CountryUnitTests {
     assertThat(Country.BRAZIL.isLocatedOnContinent(Continent.NORTH_AMERICA)).isFalse();
     assertThat(Country.CANADA.isLocatedOnContinent(Continent.SOUTH_AMERICA)).isFalse();
     assertThat(Country.UNITED_STATES_OF_AMERICA.isLocatedOnContinent(Continent.UNKNOWN)).isFalse();
+  }
+
+  private void assertIsCountry(Function<Country, Boolean> isCountryFunction, Country expectedCountry) {
+
+    Arrays.stream(Country.values()).forEach(country ->
+      assertThat(isCountryFunction.apply(country)).isEqualTo(country.equals(expectedCountry)));
+  }
+
+  @Test
+  void isCanadaIsCorrect() {
+    assertIsCountry(Country::isFrance, Country.FRANCE);
+  }
+
+  @Test
+  void isChinaIsCorrect() {
+    assertIsCountry(Country::isChina, Country.CHINA);
+  }
+
+  @Test
+  void isFranceIsCorrect() {
+    assertIsCountry(Country::isFrance, Country.FRANCE);
+  }
+
+  @Test
+  void isGermanyIsCorrect() {
+    assertIsCountry(Country::isGermany, Country.GERMANY);
+  }
+
+  @Test
+  void isItalyIsCorrect() {
+    assertIsCountry(Country::isItaly, Country.ITALY);
+  }
+
+  @Test
+  void isJapanIsCorrect() {
+    assertIsCountry(Country::isJapan, Country.JAPAN);
+  }
+
+  @Test
+  void isRussiaIsCorrect() {
+    assertIsCountry(Country::isRussia, Country.RUSSIA);
+  }
+
+  @Test
+  void isSpainIsCorrect() {
+    assertIsCountry(Country::isSpain, Country.SPAIN);
+  }
+
+  @Test
+  void isUnitedKingdomIsCorrect() {
+    assertIsCountry(Country::isUnitedKingdom, Country.UNITED_KINGDOM);
+  }
+
+  @Test
+  void isUnitedStatesOfAmericaIsCorrect() {
+    assertIsCountry(Country::isUnitedStatesOfAmerica, Country.UNITED_STATES_OF_AMERICA);
   }
 }
