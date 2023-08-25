@@ -30,7 +30,6 @@ import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Renderable;
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.lang.Verifiable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.Dsl;
@@ -59,7 +58,6 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.domain.geo.support.CountryAware
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Renderable
- * @see org.cp.elements.lang.Verifiable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.annotation.FluentApi
  * @see <a href="https://en.wikipedia.org/wiki/National_conventions_for_writing_telephone_numbers">National conventions for writing telephone numbers</a>
@@ -69,14 +67,14 @@ import org.cp.elements.util.ComparatorResultBuilder;
 @FluentApi
 @SuppressWarnings("unused")
 public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, CountryAware,
-    Identifiable<Long>, Renderable, Serializable, Verifiable<PhoneNumber>, Visitable {
+    Identifiable<Long>, Renderable, Serializable, Visitable {
 
   /**
    * Returns a new {@link PhoneNumber.Builder} used to construct and build a {@link PhoneNumber}.
    *
    * @return a new {@link PhoneNumber.Builder} used to construct and build a {@link PhoneNumber}.
+   * @see org.cp.domain.contact.phone.model.PhoneNumber.Builder
    * @see org.cp.elements.lang.annotation.Dsl
-   * @see PhoneNumber.Builder
    */
   @Dsl
   static @NotNull PhoneNumber.Builder builder() {
@@ -84,10 +82,10 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   }
 
   /**
-   * Factory method used to construct a new {@link PhoneNumber} copied from an existing, required {@link PhoneNumber}.
+   * Factory method used to construct a new {@link PhoneNumber} copied from an existing {@link PhoneNumber}.
    *
    * @param phoneNumber {@link PhoneNumber} to copy; must not be {@literal null}.
-   * @return a new {@link PhoneNumber} copied from the existing, required {@link PhoneNumber}.
+   * @return a new {@link PhoneNumber} copied from the existing {@link PhoneNumber}.
    * @throws IllegalArgumentException if the given {@link PhoneNumber} to copy is {@literal null}.
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Builder#from(PhoneNumber)
    * @see org.cp.elements.lang.annotation.Dsl
@@ -119,8 +117,8 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
    * @param areaCode {@link AreaCode} of the new {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of the new {@link PhoneNumber}; must not be {@literal null}.
    * @param lineNumber {@link LineNumber} of the new {@link PhoneNumber}; must not be {@literal null}.
-   * @return a new {@link PhoneNumber} initialized from the given, required {@link AreaCode},
-   * {@link ExchangeCode} and {@link LineNumber}.
+   * @return a new {@link PhoneNumber} initialized from the given, required {@link AreaCode}, {@link ExchangeCode}
+   * and {@link LineNumber}.
    * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link LineNumber}
    * are {@literal null}.
    * @see org.cp.domain.contact.phone.model.AreaCode
@@ -410,21 +408,6 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
       .doCompare(this.getLineNumber(), that.getLineNumber())
       .doCompare(this.getExtension().orElse(null), that.getExtension().orElse(null))
       .build();
-  }
-
-  /**
-   * Validates this {@link PhoneNumber}.
-   *
-   * @return this {@link PhoneNumber}.
-   */
-  @Override
-  default PhoneNumber validate() {
-
-    ObjectUtils.requireState(getAreaCode(), "AreaCode is required");
-    ObjectUtils.requireState(getExchangeCode(), "ExchangeCode is required");
-    ObjectUtils.requireState(getLineNumber(), "LineNumber is required");
-
-    return this;
   }
 
   /**

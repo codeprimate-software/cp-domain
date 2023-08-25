@@ -17,7 +17,6 @@ package org.cp.domain.contact.phone.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -533,96 +532,5 @@ public class PhoneNumberUnitTests {
     verify(mockPhoneNumber, times(1)).accept(eq(mockVisitor));
     verify(mockVisitor, times(1)).visit(eq(mockPhoneNumber));
     verifyNoMoreInteractions(mockPhoneNumber, mockVisitor);
-  }
-
-  @Test
-  public void validateValidPhoneNumber() {
-
-    AreaCode mockAreaCode = mock(AreaCode.class);
-    ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
-    LineNumber mockLineNumber = mock(LineNumber.class);
-
-    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
-
-    doReturn(mockAreaCode).when(mockPhoneNumber).getAreaCode();
-    doReturn(mockExchangeCode).when(mockPhoneNumber).getExchangeCode();
-    doReturn(mockLineNumber).when(mockPhoneNumber).getLineNumber();
-    doCallRealMethod().when(mockPhoneNumber).validate();
-
-    assertThat(mockPhoneNumber.validate()).isSameAs(mockPhoneNumber);
-
-    verify(mockPhoneNumber, times(1)).validate();
-    verify(mockPhoneNumber, times(1)).getAreaCode();
-    verify(mockPhoneNumber, times(1)).getExchangeCode();
-    verify(mockPhoneNumber, times(1)).getLineNumber();
-    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockLineNumber);
-    verifyNoMoreInteractions(mockPhoneNumber);
-  }
-
-  @Test
-  public void validateInvalidPhoneNumberWithNullAreaCode() {
-
-    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
-
-    doReturn(null).when(mockPhoneNumber).getAreaCode();
-    doCallRealMethod().when(mockPhoneNumber).validate();
-
-    assertThatIllegalStateException()
-      .isThrownBy(mockPhoneNumber::validate)
-      .withMessage("AreaCode is required")
-      .withNoCause();
-
-    verify(mockPhoneNumber, times(1)).validate();
-    verify(mockPhoneNumber, times(1)).getAreaCode();
-    verifyNoMoreInteractions(mockPhoneNumber);
-  }
-
-  @Test
-  public void validateInvalidPhoneNumberWithNullExhangeCode() {
-
-    AreaCode mockAreaCode = mock(AreaCode.class);
-
-    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
-
-    doReturn(mockAreaCode).when(mockPhoneNumber).getAreaCode();
-    doReturn(null).when(mockPhoneNumber).getExchangeCode();
-    doCallRealMethod().when(mockPhoneNumber).validate();
-
-    assertThatIllegalStateException()
-      .isThrownBy(mockPhoneNumber::validate)
-      .withMessage("ExchangeCode is required")
-      .withNoCause();
-
-    verify(mockPhoneNumber, times(1)).validate();
-    verify(mockPhoneNumber, times(1)).getAreaCode();
-    verify(mockPhoneNumber, times(1)).getExchangeCode();
-    verifyNoMoreInteractions(mockPhoneNumber);
-    verifyNoInteractions(mockAreaCode);
-  }
-
-  @Test
-  public void validateInvalidPhoneNumberWithNullLineNumber() {
-
-    AreaCode mockAreaCode = mock(AreaCode.class);
-    ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
-
-    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
-
-    doReturn(mockAreaCode).when(mockPhoneNumber).getAreaCode();
-    doReturn(mockExchangeCode).when(mockPhoneNumber).getExchangeCode();
-    doReturn(null).when(mockPhoneNumber).getLineNumber();
-    doCallRealMethod().when(mockPhoneNumber).validate();
-
-    assertThatIllegalStateException()
-      .isThrownBy(mockPhoneNumber::validate)
-      .withMessage("LineNumber is required")
-      .withNoCause();
-
-    verify(mockPhoneNumber, times(1)).validate();
-    verify(mockPhoneNumber, times(1)).getAreaCode();
-    verify(mockPhoneNumber, times(1)).getExchangeCode();
-    verify(mockPhoneNumber, times(1)).getLineNumber();
-    verifyNoInteractions(mockAreaCode, mockExchangeCode);
-    verifyNoMoreInteractions(mockPhoneNumber);
   }
 }
