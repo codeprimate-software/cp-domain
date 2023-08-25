@@ -182,7 +182,7 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
       getCountry().orElse(null));
   }
 
-  static final class GenericPhoneNumber extends AbstractPhoneNumber {
+  static class GenericPhoneNumber extends AbstractPhoneNumber {
 
     GenericPhoneNumber(@NotNull AreaCode areaCode, @NotNull ExchangeCode exchangeCode, @NotNull LineNumber lineNumber) {
       super(areaCode, exchangeCode, lineNumber);
