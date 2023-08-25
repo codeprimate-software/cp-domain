@@ -51,7 +51,9 @@ public abstract class AddressFactory<T extends Address> {
    * Factory method used to request an {@link AddressFactory} for creating {@link Address Addresses}
    * located in the {@link Country#localCountry() local Country} based on {@link Locale}.
    *
-   * @param <T> concrete {@link Class type} of {@link Address} created by the factory.
+   * @param <T> {@link Class Type} of {@link Address} created by the factory.
+   * @return a new {@link AddressFactory} used to create {@link Address Addresses}
+   * located in the {@link Country#localCountry() local Country} based on {@link Locale}.
    * @see org.cp.domain.geo.model.Address
    * @see #getInstance(Country)
    */
@@ -61,11 +63,13 @@ public abstract class AddressFactory<T extends Address> {
 
   /**
    * Factory method used to request an {@link AddressFactory} for creating {@link Address Addresses}
-   * in the given {@link Country}.
+   * located in the given {@link Country}.
    *
-   * @param <T> concrete {@link Class type} of {@link Address} created by the factory.
-   * @param country {@link Country} in which {@link Address Addresses} will be created by the factory;
-   * default to {@link Country#localCountry()}.
+   * @param <T> {@link Class Type} of {@link Address} created by the factory.
+   * @param country {@link Country} in which {@link Address Addresses} created by the factory will be located;
+   * defaults to {@link Country#localCountry()}.
+   * @return a new {@link AddressFactory} used to created {@link Address Addresses}
+   * located in the given {@link Country}.
    * @see org.cp.domain.geo.enums.Country
    * @see org.cp.domain.geo.model.Address
    */
@@ -148,8 +152,9 @@ public abstract class AddressFactory<T extends Address> {
    * @see org.cp.domain.geo.model.Address.Builder
    * @see org.cp.domain.geo.model.Address
    */
+  @SuppressWarnings("unchecked")
   public @NotNull <BUILDER extends Address.Builder<T>> BUILDER newAddressBuilder() {
-    return new Address.Builder<T>().inLocalCountry();
+    return (BUILDER) new FactoryAddressBuilder().inLocalCountry();
   }
 
   /**
@@ -162,8 +167,9 @@ public abstract class AddressFactory<T extends Address> {
    * @see org.cp.domain.geo.model.Address
    * @see org.cp.domain.geo.enums.Country
    */
+  @SuppressWarnings("unchecked")
   public @NotNull <BUILDER extends Address.Builder<T>> BUILDER newAddressBuilder(@NotNull Country country) {
-    return new Address.Builder<T>().in(country);
+    return (BUILDER) new FactoryAddressBuilder().in(country);
   }
 
   private static class DefaultAddressFactory extends AddressFactory<FactoryAddress> { }
@@ -181,6 +187,20 @@ public abstract class AddressFactory<T extends Address> {
 
     FactoryAddress(Street street, City city, PostalCode postalCode, Country country) {
       super(street, city, postalCode, country);
+    }
+  }
+
+  /**
+   * {@link Address.Builder} implementation used to create {@link FactoryAddress}.
+   *
+   * @see org.cp.domain.geo.model.Address.Builder
+   * @see org.cp.domain.geo.model.AddressFactory.FactoryAddress
+   */
+  static class FactoryAddressBuilder extends Address.Builder<FactoryAddress> {
+
+    @Override
+    protected FactoryAddress doBuild() {
+      return new FactoryAddress(getStreet(), getCity(), getPostalCode(), getCountry());
     }
   }
 

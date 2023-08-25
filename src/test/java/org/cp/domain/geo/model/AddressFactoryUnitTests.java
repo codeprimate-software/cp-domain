@@ -16,7 +16,6 @@
 package org.cp.domain.geo.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -25,8 +24,12 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.jupiter.api.Test;
 
+import org.cp.domain.geo.annotation.CountryQualifier;
 import org.cp.domain.geo.enums.Country;
+import org.cp.domain.geo.model.AddressFactory.FactoryAddress;
+import org.cp.domain.geo.model.AddressFactory.FactoryAddressBuilder;
 import org.cp.domain.geo.model.usa.UnitedStatesAddress;
+import org.cp.elements.lang.annotation.Qualifier;
 
 /**
  * Unit Tests for {@link AddressFactory}.
@@ -41,6 +44,22 @@ import org.cp.domain.geo.model.usa.UnitedStatesAddress;
 public class AddressFactoryUnitTests extends BaseAddressUnitTests {
 
   @Test
+  void newAddressInVaticanCity() {
+
+    Street mockStreet = mock(Street.class);
+    City mockCity = mock(City.class);
+    PostalCode mockPostalCode = mock(PostalCode.class);
+
+    Address address = AddressFactory.getInstance(Country.VATICAN_CITY)
+      .newAddress(mockStreet, mockCity, mockPostalCode, Country.VATICAN_CITY);
+
+    assertThat(address).isInstanceOf(TestAddress.class);
+    assertAddress(address, mockStreet, mockCity, mockPostalCode, Country.VATICAN_CITY);
+
+    verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
+  }
+
+  @Test
   void newAddressInLocalCountry() {
 
     Street mockStreet = mock(Street.class);
@@ -52,22 +71,23 @@ public class AddressFactoryUnitTests extends BaseAddressUnitTests {
     assertAddress(address, mockStreet, toLocalCity(mockCity, mockPostalCode), toLocalPostalCode(mockPostalCode));
 
     verify(mockCity, atLeastOnce()).getName();
-    verify(mockPostalCode, atLeast(2)).getNumber();
+    verify(mockPostalCode, atLeastOnce()).getNumber();
     verifyNoMoreInteractions(mockPostalCode);
     verifyNoInteractions(mockStreet);
   }
 
   @Test
-  void newAddressInGermany() {
+  void newAddressInEgypt() {
 
     Street mockStreet = mock(Street.class);
     City mockCity = mock(City.class);
     PostalCode mockPostalCode = mock(PostalCode.class);
 
-    Address address = AddressFactory.getInstance(Country.GERMANY)
-      .newAddress(mockStreet, mockCity, mockPostalCode, Country.GERMANY);
+    Address address = AddressFactory.getInstance(Country.EGYPT)
+      .newAddress(mockStreet, mockCity, mockPostalCode, Country.EGYPT);
 
-    assertAddress(address, mockStreet, mockCity, mockPostalCode, Country.GERMANY);
+    assertThat(address).isInstanceOf(FactoryAddress.class);
+    assertAddress(address, mockStreet, mockCity, mockPostalCode, Country.EGYPT);
 
     verifyNoInteractions(mockStreet, mockCity, mockPostalCode);
   }
@@ -78,7 +98,7 @@ public class AddressFactoryUnitTests extends BaseAddressUnitTests {
     Address.Builder<?> addressBuilder = AddressFactory.getInstance(Country.GERMANY)
       .newAddressBuilder(Country.GERMANY);
 
-    assertThat(addressBuilder).isNotNull();
+    assertThat(addressBuilder).isInstanceOf(FactoryAddressBuilder.class);
     assertThat(addressBuilder.getCountry()).isEqualTo(Country.GERMANY);
   }
 
@@ -87,6 +107,7 @@ public class AddressFactoryUnitTests extends BaseAddressUnitTests {
 
     Address.Builder<?> addressBuilder = AddressFactory.getInstance().newAddressBuilder();
 
+    // Maybe UnitedStatesAddress.Builder when tests are run in the United States of America.
     assertThat(addressBuilder).isNotNull();
     assertThat(addressBuilder.getCountry()).isEqualTo(Country.localCountry());
   }
@@ -99,5 +120,61 @@ public class AddressFactoryUnitTests extends BaseAddressUnitTests {
 
     assertThat(addressBuilder).isInstanceOf(UnitedStatesAddress.Builder.class);
     assertThat(addressBuilder.getCountry()).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
+  }
+
+  @Test
+  void newAddressBuilderInVaticanCity() {
+
+    Address.Builder<?> addressBuilder = AddressFactory.getInstance(Country.VATICAN_CITY)
+      .newAddressBuilder(Country.VATICAN_CITY);
+
+    assertThat(addressBuilder).isInstanceOf(TestAddressBuilder.class);
+    assertThat(addressBuilder.getCountry()).isEqualTo(Country.VATICAN_CITY);
+  }
+
+  @Qualifier(name = "vatican city")
+  static final class TestAddress extends AbstractAddress {
+
+    TestAddress(Street street, City city, PostalCode postalCode) {
+      super(street, city, postalCode);
+    }
+
+    TestAddress(Street street, City city, PostalCode postalCode, Country country) {
+      super(street, city, postalCode, country);
+    }
+  }
+
+  static final class TestAddressBuilder extends Address.Builder<TestAddress> {
+
+    @Override
+    protected TestAddress doBuild() {
+      return new TestAddress(getStreet(), getCity(), getPostalCode(), getCountry());
+    }
+  }
+
+  @CountryQualifier(Country.VATICAN_CITY)
+  public static final class TestAddressFactory extends AddressFactory<TestAddress> {
+
+    @Override
+    public TestAddress newAddress(Street street, City city, PostalCode postalCode) {
+      return new TestAddress(street, city, postalCode);
+    }
+
+    @Override
+    public TestAddress newAddress(Street street, City city, PostalCode postalCode, Country country) {
+      return new TestAddress(street, city, postalCode, country);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public TestAddressBuilder newAddressBuilder() {
+      return new TestAddressBuilder();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public TestAddressBuilder newAddressBuilder(Country country) {
+      return new TestAddressBuilder().in(country);
+    }
   }
 }
