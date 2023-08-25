@@ -49,7 +49,7 @@ import org.cp.elements.lang.Visitor;
 public class PhoneNumberUnitTests {
 
   @Test
-  public void copyFromPhoneNumber() {
+  void copyFromPhoneNumber() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
@@ -77,7 +77,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void copyFromPhoneNumberWithNonNullCountryExtensionAndType() {
+  void copyFromPhoneNumberWithNonNullCountryExtensionAndType() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
@@ -111,7 +111,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void copyFromNullThrowsIllegalArgumentException() {
+  void copyFromNullThrowsIllegalArgumentException() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> PhoneNumber.from(null))
@@ -120,7 +120,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void ofAreaCodeExchangeCodeAndLineNumber() {
+  void ofAreaCodeExchangeCodeAndLineNumber() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
@@ -140,7 +140,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void ofNullAreaCode() {
+  void ofNullAreaCode() {
 
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
     LineNumber mockLineNumber = mock(LineNumber.class);
@@ -154,7 +154,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void ofNullExchangeCode() {
+  void ofNullExchangeCode() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     LineNumber mockLineNumber = mock(LineNumber.class);
@@ -168,7 +168,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void ofNullLineNumber() {
+  void ofNullLineNumber() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
@@ -182,7 +182,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void asTypeCallsSetType() {
+  void asTypeCallsSetType() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -196,7 +196,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void asCellPhoneNumberCallsSetTypeWithCellPhoneNumberType() {
+  void asCellPhoneNumberCallsSetTypeWithCellPhoneNumberType() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -212,7 +212,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void asLandlinePhoneNumberCallsSetTypeWithLandlinePhoneNumberType() {
+  void asLandlinePhoneNumberCallsSetTypeWithLandlinePhoneNumberType() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -228,7 +228,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void asSatellitePhoneNumberCallsSetTypeWithSatellitePhoneNumberType() {
+  void asSatellitePhoneNumberCallsSetTypeWithSatellitePhoneNumberType() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -244,7 +244,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void asVoipPhoneNumberCallsSetTypeWithVoipPhoneNumberType() {
+  void asVoipPhoneNumberCallsSetTypeWithVoipPhoneNumberType() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -260,7 +260,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isRoamingInsideLocalCountryIsFalse() {
+  void isRoamingInsideLocalCountryIsFalse() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -275,7 +275,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isRoamingOutsideLocalCountryIsTrue() {
+  void isRoamingOutsideLocalCountryIsTrue() {
 
     Optional<Country> country = Arrays.stream(Country.values())
       .filter(it -> !Country.localCountry().equals(it))
@@ -294,7 +294,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isTextEnabled() {
+  void isTextEnabled() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -307,7 +307,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isCellPhoneNumberWhenCell() {
+  void isCellPhoneNumberWhenCell() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -322,7 +322,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isCellPhoneNumberWhenNotCell() {
+  void isCellPhoneNumberWhenNotCell() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -343,7 +343,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isLandlinePhoneNumberWhenLandline() {
+  void isLandlinePhoneNumberWhenLandline() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -358,7 +358,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isLandlinePhoneNumberWhenNotLandline() {
+  void isLandlinePhoneNumberWhenNotLandline() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -379,7 +379,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isSatellitePhoneNumberWhenSatellite() {
+  void isSatellitePhoneNumberWhenSatellite() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -394,7 +394,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isSatellitePhoneNumberWhenNotSatellite() {
+  void isSatellitePhoneNumberWhenNotSatellite() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -415,7 +415,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isUnknownPhoneNumberWhenKnown() {
+  void isUnknownPhoneNumberWhenKnown() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -436,7 +436,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isUnknownPhoneNumberWhenUnknown() {
+  void isUnknownPhoneNumberWhenUnknown() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -451,7 +451,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isUnknownPhoneNumberWhenUnset() {
+  void isUnknownPhoneNumberWhenUnset() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -466,7 +466,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isVoipPhoneNumberWhenVoip() {
+  void isVoipPhoneNumberWhenVoip() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -481,7 +481,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void isVoipPhoneNumberWhenNotVoip() {
+  void isVoipPhoneNumberWhenNotVoip() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -502,7 +502,26 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void setTypeThrowsUnsupportedOperationException() {
+  void setExtensionThrowsUnsupportedOperationException() {
+
+    Extension mockExtension = mock(Extension.class);
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).setExtension(any());
+
+    assertThatUnsupportedOperationException()
+      .isThrownBy(ThrowableOperation.fromRunnable(() -> mockPhoneNumber.setExtension(mockExtension)))
+      .havingMessage("Setting Extension for a PhoneNumber of type [%s] is not supported",
+        mockPhoneNumber.getClass().getName())
+      .withNoCause();
+
+    verify(mockPhoneNumber, times(1)).setExtension(eq(mockExtension));
+    verifyNoMoreInteractions(mockPhoneNumber);
+    verifyNoInteractions(mockExtension);
+  }
+
+  @Test
+  void setTypeThrowsUnsupportedOperationException() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
 
@@ -510,7 +529,7 @@ public class PhoneNumberUnitTests {
 
     assertThatUnsupportedOperationException()
       .isThrownBy(ThrowableOperation.fromRunnable(() -> mockPhoneNumber.setType(PhoneNumber.Type.CELL)))
-      .havingMessage("Cannot set PhoneNumber.Type for a PhoneNumber of type [%s] is not supported",
+      .havingMessage("Setting PhoneNumber.Type for a PhoneNumber of type [%s] is not supported",
         mockPhoneNumber.getClass().getName())
       .withNoCause();
 
@@ -519,7 +538,7 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  public void acceptVisitsPhoneNumber() {
+  void acceptVisitsPhoneNumber() {
 
     Visitor mockVisitor = mock(Visitor.class);
 

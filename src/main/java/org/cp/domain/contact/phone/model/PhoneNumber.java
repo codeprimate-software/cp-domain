@@ -205,6 +205,19 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   }
 
   /**
+   * Sets the {@link Extension} for this {@link PhoneNumber}.
+   * <p>
+   * Throws {@link UnsupportedOperationException} by default.
+   *
+   * @param extension {@link Extension} at this {@link PhoneNumber}.
+   * @see org.cp.domain.contact.phone.model.Extension
+   */
+  default void setExtension(@Nullable Extension extension) {
+    throw newUnsupportedOperationException("Setting Extension for a PhoneNumber of type [%s] is not supported",
+      getClass().getName());
+  }
+
+  /**
    * Get the {@link Optional} {@link PhoneNumber.Type} of this {@link PhoneNumber}.
    * <p>
    * Returns {@link Optional#empty()} by default.
@@ -219,14 +232,16 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
 
   /**
    * Sets the {@link PhoneNumber.Type} of this {@link PhoneNumber}.
+   * <p>
+   * Throws {@link UnsupportedOperationException} by default.
    *
    * @param phoneNumberType {@link PhoneNumber.Type} for this {@link PhoneNumber}.
    * @throws UnsupportedOperationException by default.
    * @see org.cp.domain.contact.phone.model.PhoneNumber.Type
    */
   default void setType(@Nullable PhoneNumber.Type phoneNumberType) {
-    throw newUnsupportedOperationException("Cannot set PhoneNumber.Type for a PhoneNumber of type [%s]"
-        + " is not supported", getClass().getName());
+    throw newUnsupportedOperationException("Setting PhoneNumber.Type for a PhoneNumber of type [%s] is not supported",
+      getClass().getName());
   }
 
   /**
