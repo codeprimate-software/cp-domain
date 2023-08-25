@@ -16,6 +16,7 @@
 package org.cp.domain.contact.phone.model.usa;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -36,7 +38,9 @@ import org.cp.domain.contact.phone.model.ExchangeCode;
 import org.cp.domain.contact.phone.model.Extension;
 import org.cp.domain.contact.phone.model.LineNumber;
 import org.cp.domain.contact.phone.model.PhoneNumber;
+import org.cp.domain.contact.phone.model.usa.support.StateAreaCodesRepository;
 import org.cp.domain.geo.enums.Country;
+import org.cp.domain.geo.enums.State;
 import org.cp.elements.lang.ThrowableOperation;
 
 /**
@@ -48,10 +52,10 @@ import org.cp.elements.lang.ThrowableOperation;
  * @see org.cp.domain.contact.phone.model.usa.UnitedStatesPhoneNumber
  * @since 0.1.0
  */
-public class UnitedStatesPhoneNumberUnitTests {
+class UnitedStatesPhoneNumberUnitTests {
 
   @Test
-  public void fromPhoneNumber() {
+  void fromPhoneNumber() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
@@ -89,7 +93,7 @@ public class UnitedStatesPhoneNumberUnitTests {
   }
 
   @Test
-  public void fromPhoneNumberWithExtensionAndType() {
+  void fromPhoneNumberWithExtensionAndType() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
@@ -130,7 +134,16 @@ public class UnitedStatesPhoneNumberUnitTests {
   }
 
   @Test
-  public void ofAreaCodeExchangeCodeLineNumber() {
+  void fromNullPhoneNumberThrowsIllegalArgumentException() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> UnitedStatesPhoneNumber.from(null))
+      .withMessage("PhoneNumber to copy is required")
+      .withNoCause();
+  }
+
+  @Test
+  void ofAreaCodeExchangeCodeLineNumber() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
@@ -150,7 +163,7 @@ public class UnitedStatesPhoneNumberUnitTests {
   }
 
   @Test
-  public void constructNewUnitedStatesPhoneNumber() {
+  void constructNewUnitedStatesPhoneNumber() {
 
     AreaCode mockAreaCode = mock(AreaCode.class);
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
@@ -171,7 +184,7 @@ public class UnitedStatesPhoneNumberUnitTests {
   }
 
   @Test
-  public void setCountryForUnitedStatesPhoneNumber() {
+  void setCountryForUnitedStatesPhoneNumber() {
 
     UnitedStatesPhoneNumber phoneNumber = mock(UnitedStatesPhoneNumber.class);
 
@@ -181,5 +194,22 @@ public class UnitedStatesPhoneNumberUnitTests {
       .isThrownBy(ThrowableOperation.fromRunnable(() -> phoneNumber.setCountry(Country.CANADA)))
       .havingMessage("Cannot set the Country for a UnitedStatesPhoneNumber")
       .withNoCause();
+  }
+
+  @Test
+  void getPhoneNumbersStateIsCorrect() {
+
+    ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
+    LineNumber mockLineNumber= mock(LineNumber.class);
+
+    Arrays.stream(State.values()).forEach(state ->
+      assertThat(UnitedStatesPhoneNumber.of(areaCodeForState(state), mockExchangeCode, mockLineNumber).getState())
+        .isEqualTo(state));
+
+    verifyNoInteractions(mockExchangeCode, mockLineNumber);
+  }
+
+  private AreaCode areaCodeForState(State state) {
+    return StateAreaCodesRepository.getInstance().findAreaCodesBy(state).iterator().next();
   }
 }

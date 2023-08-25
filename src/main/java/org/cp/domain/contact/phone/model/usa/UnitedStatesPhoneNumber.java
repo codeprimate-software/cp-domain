@@ -24,7 +24,9 @@ import org.cp.domain.contact.phone.model.AreaCode;
 import org.cp.domain.contact.phone.model.ExchangeCode;
 import org.cp.domain.contact.phone.model.LineNumber;
 import org.cp.domain.contact.phone.model.PhoneNumber;
+import org.cp.domain.contact.phone.model.usa.support.StateAreaCodesRepository;
 import org.cp.domain.geo.enums.Country;
+import org.cp.domain.geo.enums.State;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
 
@@ -111,5 +113,15 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
   @Override
   public final void setCountry(Country country) {
     throw newUnsupportedOperationException("Cannot set the Country for a %s", getClass().getSimpleName());
+  }
+
+  /**
+   * Get the {@link State} of this {@link PhoneNumber}.
+   *
+   * @return the {@link State} of this {@link PhoneNumber}.
+   * @see org.cp.domain.geo.enums.State
+   */
+  public State getState() {
+    return StateAreaCodesRepository.getInstance().findStateBy(getAreaCode());
   }
 }
