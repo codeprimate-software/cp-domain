@@ -16,6 +16,7 @@
 package org.cp.domain.geo.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.Arrays;
 
@@ -34,7 +35,7 @@ import org.cp.elements.lang.StringUtils;
 public class StreetTypeUnitTests {
 
   @Test
-  public void streetTypeAbbreviations() {
+  void streetTypeAbbreviations() {
 
     assertThat(Street.Type.ALLEY.getAbbreviation()).isEqualTo("ALLY");
     assertThat(Street.Type.AVENUE.getAbbreviation()).isEqualTo("AVE");
@@ -77,32 +78,50 @@ public class StreetTypeUnitTests {
   }
 
   @Test
-  public void streetTypeDescription() {
-
-    Arrays.stream(Street.Type.values()).forEach(streetType ->
-      assertThat(streetType.getDescription()).isEqualTo(StringUtils.capitalize(streetType.name().toLowerCase())));
-  }
-
-  @Test
-  public void fromAbbreviation() {
+  void fromAbbreviation() {
 
     Arrays.stream(Street.Type.values()).forEach(streetType ->
       assertThat(Street.Type.fromAbbreviation(streetType.getAbbreviation())).isEqualTo(streetType));
   }
 
   @Test
-  public void fromDescription() {
+  void fromIllegalAbbreviationThrowsIllegalArgumentException() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Street.Type.fromAbbreviation("XYZ"))
+      .withMessage("Street.Type for abbreviation [XYZ] was not found")
+      .withNoCause();
+  }
+
+  @Test
+  void fromName() {
 
     Arrays.stream(Street.Type.values()).forEach(streetType -> {
-      assertThat(Street.Type.fromDescription(streetType.getDescription())).isEqualTo(streetType);
-      assertThat(Street.Type.fromDescription(streetType.name())).isEqualTo(streetType);
+      assertThat(Street.Type.fromName(streetType.getName())).isEqualTo(streetType);
+      assertThat(Street.Type.fromName(streetType.name())).isEqualTo(streetType);
     });
   }
 
   @Test
-  public void streetTypeToStringIsSameAsDescription() {
+  void fromIllegalNameThrowsIllegalArgumentException() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Street.Type.fromName("Sidewalk"))
+      .withMessage("Street.Type for name [Sidewalk] was not found")
+      .withNoCause();
+  }
+
+  @Test
+  public void streetTypeNameUsesTitleCase() {
 
     Arrays.stream(Street.Type.values()).forEach(streetType ->
-      assertThat(streetType.toString()).isEqualTo(streetType.getDescription()));
+      assertThat(streetType.getName()).isEqualTo(StringUtils.capitalize(streetType.name().toLowerCase())));
+  }
+
+  @Test
+  public void streetTypeToStringIsSameAsName() {
+
+    Arrays.stream(Street.Type.values()).forEach(streetType ->
+      assertThat(streetType.toString()).isEqualTo(streetType.getName()));
   }
 }

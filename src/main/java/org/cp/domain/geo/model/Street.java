@@ -87,6 +87,85 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
     return new Street(number, name);
   }
 
+  /**
+   * Factory method used to parse the given {@link String} and construct a new {@link Street}.
+   *
+   * @param street {@link String array} containing the components of a {@link Street}, such a street number, name,
+   * optional directional and an optional street type.
+   * @return a new {@link Street} constructed from the parse street components of the given {@link String}.
+   * @throws IllegalArgumentException if the given {@link String} does not minimally contain a valid street number
+   * and name.
+   */
+  public static @NotNull Street parse(@NotNull String street) {
+
+    String[] streetComponents = assertStreet(street);
+
+    int number = toStreetNumber(streetComponents);
+
+    Optional<Direction> direction = toStreetDirection(streetComponents);
+
+    String name = direction.isPresent() ? streetComponents[2] : streetComponents[1];
+
+    Optional<Street.Type> streetType =
+      direction.isPresent() && streetComponents.length > 3 ? toStreetType(streetComponents[3])
+        : streetComponents.length > 2 ? toStreetType(streetComponents[2])
+        : Optional.empty();
+
+    Street resolvedStreet = of(number, name);
+
+    direction.ifPresent(resolvedStreet::withDirection);
+    streetType.ifPresent(resolvedStreet::as);
+
+    return resolvedStreet;
+  }
+
+  private static String[] assertStreet(String street) {
+
+    Assert.hasText(street, "Street [%s] to parse is required", street);
+
+    String[] streetComponents = street.trim().split("\\s+");
+
+    Assert.isTrue(streetComponents.length > 1,
+      "Street [%s] must minimally consist of a number and name", street);
+
+    return streetComponents;
+  }
+
+  private static Optional<Direction> toStreetDirection(String[] streetComponents) {
+
+    String direction = streetComponents[1];
+
+    try {
+      return Optional.of(Direction.fromAbbreviation(direction));
+    }
+    catch (Throwable ignore) {
+      return ObjectUtils.doOperationSafely(args ->
+        Optional.of(Direction.fromName(direction)), Optional.empty());
+    }
+  }
+
+  private static int toStreetNumber(String[] streetComponents) {
+
+    try {
+      return Integer.parseInt(streetComponents[0]);
+    }
+    catch (NumberFormatException cause) {
+      throw newIllegalArgumentException(cause, "Street %s must begin with a street number",
+        Arrays.toString(streetComponents).replaceAll(StringUtils.COMMA_DELIMITER, StringUtils.EMPTY_STRING));
+    }
+  }
+
+  private static Optional<Street.Type> toStreetType(String streetType) {
+
+    try {
+      return Optional.of(Street.Type.fromAbbreviation(streetType));
+    }
+    catch (Throwable ignore) {
+      return ObjectUtils.doOperationSafely(args ->
+        Optional.of(Street.Type.fromName(streetType)), Optional.empty());
+    }
+  }
+
   private Direction direction;
 
   private final Integer number;
@@ -308,7 +387,7 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
    */
   public @NotNull Street withDirection(@Nullable Direction direction) {
     this.direction = direction;
-      return this;
+    return this;
   }
 
   /**
@@ -409,9 +488,10 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
    * common {@link Street} types.
    *
    * @see java.lang.Enum
+   * @see org.cp.elements.lang.Nameable
    * @see <a href="https://en.wikipedia.org/wiki/Street_suffix">Street Suffixes</a>
    */
-  public enum Type {
+  public enum Type implements Nameable<String> {
 
     ALLEY("ALLY", "Alley"),
     AVENUE("AVE", "Avenue"),
@@ -460,7 +540,7 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
      * @return a {@link Street.Type} for the given {@link String abbreviation}.
      * @throws IllegalArgumentException if a {@link Street.Type} for the given {@link String abbreviation}
      * could not be found.
-     * @see #fromDescription(String)
+     * @see #fromName(String)
      * @see #getAbbreviation()
      * @see #values()
      */
@@ -474,39 +554,39 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
     }
 
     /**
-     * Factory method used to search for a {@link Street.Type} given a {@link String description}.
+     * Factory method used to search for a {@link Street.Type} given a {@link String name}.
      *
-     * @param description {@link String} containing a {@literal description} of the desired {@link Street.Type},
+     * @param name {@link String} containing a {@literal name} of the desired {@link Street.Type},
      * such as {@literal highway}.
-     * @return a {@link Street.Type} for the given {@link String description}.
-     * @throws IllegalArgumentException if a {@link Street.Type} for the given {@link String description}
+     * @return a {@link Street.Type} for the given {@link String name}.
+     * @throws IllegalArgumentException if a {@link Street.Type} for the given {@link String name}
      * could not be found.
      * @see #fromAbbreviation(String)
-     * @see #getDescription()
+     * @see #getName()
      * @see #values()
      */
-    public static @NotNull Street.Type fromDescription(@Nullable String description) {
+    public static @NotNull Street.Type fromName(@Nullable String name) {
 
       return Arrays.stream(values())
-        .filter(streetType -> streetType.getDescription().equalsIgnoreCase(StringUtils.trim(description)))
+        .filter(streetType -> streetType.getName().equalsIgnoreCase(StringUtils.trim(name)))
         .findFirst()
-        .orElseThrow(() -> newIllegalArgumentException("Street.Type for description [%s] was not found", description));
+        .orElseThrow(() -> newIllegalArgumentException("Street.Type for name [%s] was not found", name));
     }
 
     private final String abbreviation;
-    private final String description;
+    private final String name;
 
-    Type(String abbreviation, String description) {
+    Type(String abbreviation, String name) {
 
       this.abbreviation = StringUtils.requireText(abbreviation, "Abbreviation [%s] is required");
-      this.description = StringUtils.requireText(description, "Description [%s] is required");
+      this.name = StringUtils.requireText(name, "Name [%s] is required");
     }
 
     /**
      * Returns the {@link String abbreviation} for this {@link Street.Type}.
      *
      * @return the {@link String abbreviation} for this {@link Street.Type}.
-     * @see #getDescription()
+     * @see #getName()
      */
     public @NotNull String getAbbreviation() {
       return this.abbreviation;
@@ -518,8 +598,8 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
      * @return a {@link String description} of this {@link Street.Type}.
      * @see #getAbbreviation()
      */
-    public @NotNull String getDescription() {
-      return this.description;
+    public @NotNull String getName() {
+      return this.name;
     }
 
     /**
@@ -527,11 +607,11 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
      *
      * @return a {@link String} describing this {@link Street.Type}.
      * @see java.lang.Object#toString()
-     * @see #getDescription()
+     * @see #getName()
      */
     @Override
     public @NotNull String toString() {
-      return getDescription();
+      return getName();
     }
   }
 }
