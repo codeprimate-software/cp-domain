@@ -44,46 +44,10 @@ import org.cp.elements.lang.Visitor;
  * @author John Blum
  * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.contact.phone.model.PhoneNumber
+ * @see org.cp.domain.contact.phone.model.BasePhoneNumberUnitTests
  * @since 0.1.0
  */
-public class PhoneNumberUnitTests {
-
-  private void assertPhoneNumber(PhoneNumber phoneNumber,
-      AreaCode areaCode, ExchangeCode exchangeCode, LineNumber lineNumber) {
-
-    assertThat(phoneNumber).isNotNull();
-    assertThat(phoneNumber.getAreaCode()).isEqualTo(areaCode);
-    assertThat(phoneNumber.getExchangeCode()).isEqualTo(exchangeCode);
-    assertThat(phoneNumber.getLineNumber()).isEqualTo(lineNumber);
-  }
-
-  private void assertPhoneNumberWithCountryExtensionAndType(PhoneNumber phoneNumber,
-      Country country, Extension extension, PhoneNumber.Type phoneNumberType) {
-
-    assertThat(phoneNumber).isNotNull();
-    assertThat(phoneNumber.getCountry().orElse(null)).isEqualTo(country);
-    assertThat(phoneNumber.getExtension().orElse(null)).isEqualTo(extension);
-    assertThat(phoneNumber.getType().orElse(null)).isEqualTo(phoneNumberType);
-  }
-
-  private void assertPhoneNumberWithNoCountryExtensionOrType(PhoneNumber phoneNumber) {
-
-    assertThat(phoneNumber).isNotNull();
-    assertThat(phoneNumber.getCountry()).isNotPresent();
-    assertThat(phoneNumber.getExtension()).isNotPresent();
-    assertThat(phoneNumber.getType()).isNotPresent();
-  }
-
-  private PhoneNumber mockPhoneNumber(AreaCode areaCode, ExchangeCode exchangeCode, LineNumber lineNumber) {
-
-    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
-
-    doReturn(areaCode).when(mockPhoneNumber).getAreaCode();
-    doReturn(exchangeCode).when(mockPhoneNumber).getExchangeCode();
-    doReturn(lineNumber).when(mockPhoneNumber).getLineNumber();
-
-    return mockPhoneNumber;
-  }
+public class PhoneNumberUnitTests extends BasePhoneNumberUnitTests {
 
   @Test
   void builderIsCorrect() {

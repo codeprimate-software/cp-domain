@@ -33,9 +33,10 @@ import org.cp.elements.lang.annotation.NotNull;
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.domain.contact.phone.model.AbstractPhoneNumber
+ * @see org.cp.domain.contact.phone.model.BasePhoneNumberUnitTests
  * @since 0.1.0
  */
-public class AbstractPhoneNumberUnitTests {
+public class AbstractPhoneNumberUnitTests extends BasePhoneNumberUnitTests {
 
   @Test
   public void constructAbstractPhoneNumber() {
@@ -46,16 +47,11 @@ public class AbstractPhoneNumberUnitTests {
 
     AbstractPhoneNumber phoneNumber = new TestPhoneNumber(mockAreaCode, mockExchangeCode, mockLineNumber);
 
-    assertThat(phoneNumber).isNotNull();
+    assertPhoneNumber(phoneNumber, mockAreaCode, mockExchangeCode, mockLineNumber);
+    assertPhoneNumberWithNoCountryExtensionOrType(phoneNumber);
     assertThat(phoneNumber.getId()).isNull();
-    assertThat(phoneNumber.getAreaCode()).isEqualTo(mockAreaCode);
-    assertThat(phoneNumber.getExchangeCode()).isEqualTo(mockExchangeCode);
-    assertThat(phoneNumber.getLineNumber()).isEqualTo(mockLineNumber);
-    assertThat(phoneNumber.getCountry()).isNotPresent();
-    assertThat(phoneNumber.getExtension()).isNotPresent();
     assertThat(phoneNumber.isRoaming()).isTrue();
     assertThat(phoneNumber.isTextEnabled()).isFalse();
-    assertThat(phoneNumber.getType()).isNotPresent();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode, mockLineNumber);
   }
@@ -78,12 +74,10 @@ public class AbstractPhoneNumberUnitTests {
     phoneNumber.setExtension(mockExtension);
     phoneNumber.setTextEnabled(true);
 
+    assertPhoneNumber(phoneNumber, mockAreaCode, mockExchangeCode, mockLineNumber);
+    assertPhoneNumberWithCountryExtensionAndType(phoneNumber,
+      Country.localCountry(), mockExtension, PhoneNumber.Type.VOIP);
     assertThat(phoneNumber.getId()).isOne();
-    assertThat(phoneNumber.getAreaCode()).isEqualTo(mockAreaCode);
-    assertThat(phoneNumber.getExchangeCode()).isEqualTo(mockExchangeCode);
-    assertThat(phoneNumber.getLineNumber()).isEqualTo(mockLineNumber);
-    assertThat(phoneNumber.getCountry().orElse(null)).isEqualTo(Country.localCountry());
-    assertThat(phoneNumber.getExtension().orElse(null)).isEqualTo(mockExtension);
     assertThat(phoneNumber.isRoaming()).isFalse();
     assertThat(phoneNumber.isTextEnabled()).isTrue();
     assertThat(phoneNumber.isVoip()).isTrue();
@@ -159,13 +153,12 @@ public class AbstractPhoneNumberUnitTests {
 
     PhoneNumber clonedPhoneNumber = (PhoneNumber) clone;
 
-    assertThat(clonedPhoneNumber.getAreaCode()).isEqualTo(mockAreaCode);
-    assertThat(clonedPhoneNumber.getExchangeCode()).isEqualTo(mockExchangeCode);
-    assertThat(clonedPhoneNumber.getLineNumber()).isEqualTo(mockLineNumber);
-    assertThat(clonedPhoneNumber.getCountry().orElse(null)).isEqualTo(Country.GERMANY);
-    assertThat(clonedPhoneNumber.getExtension().orElse(null)).isEqualTo(mockExtension);
+    assertPhoneNumber(clonedPhoneNumber, mockAreaCode, mockExchangeCode, mockLineNumber);
+    assertPhoneNumberWithCountryExtensionAndType(clonedPhoneNumber,
+      Country.GERMANY, mockExtension, PhoneNumber.Type.VOIP);
     assertThat(clonedPhoneNumber.isRoaming()).isTrue();
     assertThat(clonedPhoneNumber.isTextEnabled()).isTrue();
+    assertThat(clonedPhoneNumber.isVoip()).isTrue();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode, mockExtension, mockLineNumber);
   }
@@ -185,7 +178,6 @@ public class AbstractPhoneNumberUnitTests {
 
     phoneNumberOne.<AbstractPhoneNumber>inLocalCountry().setExtension(Extension.of("11358"));
     phoneNumberTwo.<AbstractPhoneNumber>inLocalCountry().setExtension(Extension.of("11358"));
-
 
     assertThat(phoneNumberOne).isEqualTo(phoneNumberTwo);
   }
