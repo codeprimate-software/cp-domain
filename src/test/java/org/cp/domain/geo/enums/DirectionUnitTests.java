@@ -24,6 +24,8 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
+import org.cp.elements.lang.StringUtils;
+
 /**
  * Unit Tests for {@link Direction}.
  *
@@ -44,10 +46,31 @@ public class DirectionUnitTests {
   @Test
   public void fromIllegalAbbreviationThrowsIllegalArgumentException() {
 
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> Direction.fromAbbreviation("NS"))
-      .withMessage("Direction abbreviation [NS] is not valid")
-      .withNoCause();
+    Arrays.asList("NS", "WE", "  ", "", null).forEach(illegalAbbreviation ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> Direction.fromAbbreviation(illegalAbbreviation))
+        .withMessage("Direction abbreviation [%s] is not valid", illegalAbbreviation)
+        .withNoCause());
+  }
+
+  @Test
+  void fromNameReturnsDirection() {
+
+    Arrays.stream(Direction.values()).forEach(direction -> {
+      assertThat(Direction.fromName(direction.name())).isEqualTo(direction);
+      assertThat(Direction.fromName(direction.name().toLowerCase())).isEqualTo(direction);
+      assertThat(Direction.fromName(StringUtils.capitalize(direction.name().toLowerCase()))).isEqualTo(direction);
+    });
+  }
+
+  @Test
+  void fromIllegalNameThrowsIllegalArgumentException() {
+
+    Arrays.asList("northsouth", "westnorth", "  ", "", null).forEach(illegalName ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> Direction.fromName(illegalName))
+        .withMessage("Direction name [%s] is not valid", illegalName)
+        .withNoCause());
   }
 
   @Test

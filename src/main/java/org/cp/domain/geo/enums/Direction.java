@@ -60,6 +60,22 @@ public enum Direction implements Nameable<String> {
       .orElseThrow(() -> newIllegalArgumentException("Direction abbreviation [%s] is not valid", abbreviation));
   }
 
+  /**
+   * Factory method used to query a {@link Direction} by {@link String name}.
+   *
+   * @param name {@link String} containing a {@literal name} used to look up the {@link Direction}.
+   * @return a {@link Direction} for the given {@link String name}.
+   * @throws IllegalArgumentException if the given {@link String name} does not match a {@link Direction}.
+   * @see #name()
+   */
+  public static @NotNull Direction fromName(@NotNull String name) {
+
+    return Arrays.stream(values())
+      .filter(direction -> direction.name().equalsIgnoreCase(name))
+      .findFirst()
+      .orElseThrow(() -> newIllegalArgumentException("Direction name [%s] is not valid", name));
+  }
+
   private final String abbreviation;
 
   Direction(@NotNull String abbreviation) {
