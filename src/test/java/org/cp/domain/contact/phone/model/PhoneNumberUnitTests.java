@@ -30,7 +30,9 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
@@ -572,5 +574,22 @@ public class PhoneNumberUnitTests extends BasePhoneNumberUnitTests {
     verify(mockPhoneNumber, times(1)).accept(eq(mockVisitor));
     verify(mockVisitor, times(1)).visit(eq(mockPhoneNumber));
     verifyNoMoreInteractions(mockPhoneNumber, mockVisitor);
+  }
+
+  @Test
+  void compareToIsCorrect() {
+
+    PhoneNumber one = PhoneNumber.parse("503-555-1234");
+    PhoneNumber two = PhoneNumber.parse("971-555-1234");
+    PhoneNumber three = PhoneNumber.parse("503-555-4321");
+    PhoneNumber four = PhoneNumber.parse("864-555-1234");
+    PhoneNumber five = PhoneNumber.parse("503-123-1234");
+    PhoneNumber six = PhoneNumber.parse("503-555-1234");
+
+    one.setExtension(Extension.of("2480"));
+
+    List<PhoneNumber> phoneNumberList = Stream.of(two, three, one, five, six, four).sorted().toList();
+
+    assertThat(phoneNumberList).containsExactly(five, one, six, three, four, two);
   }
 }
