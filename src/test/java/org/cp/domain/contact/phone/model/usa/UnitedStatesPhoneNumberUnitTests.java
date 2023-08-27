@@ -192,7 +192,7 @@ class UnitedStatesPhoneNumberUnitTests {
 
     assertThatUnsupportedOperationException()
       .isThrownBy(ThrowableOperation.fromRunnable(() -> phoneNumber.setCountry(Country.CANADA)))
-      .havingMessage("Cannot set the Country for a UnitedStatesPhoneNumber")
+      .havingMessage("Cannot set Country for a UnitedStatesPhoneNumber")
       .withNoCause();
   }
 

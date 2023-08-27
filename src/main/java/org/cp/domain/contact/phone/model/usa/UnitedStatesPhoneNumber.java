@@ -112,7 +112,7 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
 
   @Override
   public final void setCountry(Country country) {
-    throw newUnsupportedOperationException("Cannot set the Country for a %s", getClass().getSimpleName());
+    throw newUnsupportedOperationException("Cannot set Country for a %s", getClass().getSimpleName());
   }
 
   /**
