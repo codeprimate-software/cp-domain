@@ -45,7 +45,7 @@ public class PhoneNumberBuilderUnitTests {
     PhoneNumber phoneNumber = PhoneNumber.builder()
       .inAreaCode(mockAreaCode)
       .usingExchange(mockExchangeCode)
-      .with(mockLineNumber)
+      .withLineNumber(mockLineNumber)
       .build();
 
     assertThat(phoneNumber).isNotNull();
@@ -72,8 +72,8 @@ public class PhoneNumberBuilderUnitTests {
       .inCountry(Country.CANADA)
       .inAreaCode(mockAreaCode)
       .usingExchange(mockExchangeCode)
-      .with(mockExtension)
-      .with(mockLineNumber)
+      .withExtension(mockExtension)
+      .withLineNumber(mockLineNumber)
       .withTextEnabled()
       .build()
       .asCell();
@@ -102,8 +102,8 @@ public class PhoneNumberBuilderUnitTests {
       .inLocalCountry()
       .inAreaCode(mockAreaCode)
       .usingExchange(mockExchangeCode)
-      .with(mockExtension)
-      .with(mockLineNumber)
+      .withExtension(mockExtension)
+      .withLineNumber(mockLineNumber)
       .build()
       .asVoip();
 
@@ -141,7 +141,7 @@ public class PhoneNumberBuilderUnitTests {
   public void buildPhoneNumberWithNullLineNumber() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> PhoneNumber.builder().with((LineNumber) null).build())
+      .isThrownBy(() -> PhoneNumber.builder().withLineNumber(null).build())
       .withMessage("LineNumber is required")
       .withNoCause();
   }

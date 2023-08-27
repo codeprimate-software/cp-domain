@@ -48,6 +48,51 @@ import org.cp.elements.lang.Visitor;
  */
 public class PhoneNumberUnitTests {
 
+  private void assertPhoneNumber(PhoneNumber phoneNumber,
+      AreaCode areaCode, ExchangeCode exchangeCode, LineNumber lineNumber) {
+
+    assertThat(phoneNumber).isNotNull();
+    assertThat(phoneNumber.getAreaCode()).isEqualTo(areaCode);
+    assertThat(phoneNumber.getExchangeCode()).isEqualTo(exchangeCode);
+    assertThat(phoneNumber.getLineNumber()).isEqualTo(lineNumber);
+  }
+
+  private void assertPhoneNumberWithCountryExtensionAndType(PhoneNumber phoneNumber,
+      Country country, Extension extension, PhoneNumber.Type phoneNumberType) {
+
+    assertThat(phoneNumber).isNotNull();
+    assertThat(phoneNumber.getCountry().orElse(null)).isEqualTo(country);
+    assertThat(phoneNumber.getExtension().orElse(null)).isEqualTo(extension);
+    assertThat(phoneNumber.getType().orElse(null)).isEqualTo(phoneNumberType);
+  }
+
+  private void assertPhoneNumberWithNoCountryExtensionOrType(PhoneNumber phoneNumber) {
+
+    assertThat(phoneNumber).isNotNull();
+    assertThat(phoneNumber.getCountry()).isNotPresent();
+    assertThat(phoneNumber.getExtension()).isNotPresent();
+    assertThat(phoneNumber.getType()).isNotPresent();
+  }
+
+  private PhoneNumber mockPhoneNumber(AreaCode areaCode, ExchangeCode exchangeCode, LineNumber lineNumber) {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doReturn(areaCode).when(mockPhoneNumber).getAreaCode();
+    doReturn(exchangeCode).when(mockPhoneNumber).getExchangeCode();
+    doReturn(lineNumber).when(mockPhoneNumber).getLineNumber();
+
+    return mockPhoneNumber;
+  }
+
+  @Test
+  void builderIsCorrect() {
+
+    PhoneNumber.Builder phoneNumberBuilder = PhoneNumber.builder();
+
+    assertThat(phoneNumberBuilder).isNotNull();
+  }
+
   @Test
   void copyFromPhoneNumber() {
 
@@ -55,21 +100,11 @@ public class PhoneNumberUnitTests {
     ExchangeCode mockExchangeCode = mock(ExchangeCode.class);
     LineNumber mockLineNumber = mock(LineNumber.class);
 
-    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
-
-    doReturn(mockAreaCode).when(mockPhoneNumber).getAreaCode();
-    doReturn(mockExchangeCode).when(mockPhoneNumber).getExchangeCode();
-    doReturn(mockLineNumber).when(mockPhoneNumber).getLineNumber();
-
+    PhoneNumber mockPhoneNumber = mockPhoneNumber(mockAreaCode, mockExchangeCode, mockLineNumber);
     PhoneNumber copy = PhoneNumber.from(mockPhoneNumber);
 
-    assertThat(copy).isNotNull();
-    assertThat(copy.getAreaCode()).isEqualTo(mockAreaCode);
-    assertThat(copy.getExchangeCode()).isEqualTo(mockExchangeCode);
-    assertThat(copy.getLineNumber()).isEqualTo(mockLineNumber);
-    assertThat(copy.getCountry()).isNotPresent();
-    assertThat(copy.getExtension()).isNotPresent();
-    assertThat(copy.getType()).isNotPresent();
+    assertPhoneNumber(copy, mockAreaCode, mockExchangeCode, mockLineNumber);
+    assertPhoneNumberWithNoCountryExtensionOrType(copy);
     assertThat(copy.isRoaming()).isTrue();
     assertThat(copy.isTextEnabled()).isFalse();
 
@@ -84,30 +119,22 @@ public class PhoneNumberUnitTests {
     LineNumber mockLineNumber = mock(LineNumber.class);
     Extension mockExtension = mock(Extension.class);
 
-    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+    PhoneNumber mockPhoneNumber = mockPhoneNumber(mockAreaCode, mockExchangeCode, mockLineNumber);
 
     doNothing().when(mockPhoneNumber).setCountry(any());
-    doReturn(mockAreaCode).when(mockPhoneNumber).getAreaCode();
-    doReturn(mockExchangeCode).when(mockPhoneNumber).getExchangeCode();
-    doReturn(mockLineNumber).when(mockPhoneNumber).getLineNumber();
     doReturn(Optional.of(Country.UNITED_STATES_OF_AMERICA)).when(mockPhoneNumber).getCountry();
-    doReturn(Optional.ofNullable(mockExtension)).when(mockPhoneNumber).getExtension();
+    doReturn(Optional.of(mockExtension)).when(mockPhoneNumber).getExtension();
     doReturn(Optional.of(PhoneNumber.Type.VOIP)).when(mockPhoneNumber).getType();
     doReturn(true).when(mockPhoneNumber).isTextEnabled();
 
     PhoneNumber copy = PhoneNumber.from(mockPhoneNumber);
 
-    assertThat(copy).isNotNull();
-    assertThat(copy.getAreaCode()).isEqualTo(mockAreaCode);
-    assertThat(copy.getExchangeCode()).isEqualTo(mockExchangeCode);
-    assertThat(copy.getLineNumber()).isEqualTo(mockLineNumber);
-    assertThat(copy.getExtension().orElse(null)).isEqualTo(mockExtension);
-    assertThat(copy.getCountry().orElse(null)).isEqualTo(Country.UNITED_STATES_OF_AMERICA);
-    assertThat(copy.getType().orElse(null)).isEqualTo(PhoneNumber.Type.VOIP);
-    assertThat(copy.isRoaming()).isFalse();
+    assertPhoneNumber(copy, mockAreaCode, mockExchangeCode, mockLineNumber);
+    assertPhoneNumberWithCountryExtensionAndType(copy,
+      Country.UNITED_STATES_OF_AMERICA, mockExtension, PhoneNumber.Type.VOIP);
     assertThat(copy.isTextEnabled()).isTrue();
 
-    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockLineNumber);
+    verifyNoInteractions(mockAreaCode, mockExchangeCode, mockLineNumber, mockExtension);
   }
 
   @Test
@@ -128,13 +155,8 @@ public class PhoneNumberUnitTests {
 
     PhoneNumber phoneNumber = PhoneNumber.of(mockAreaCode, mockExchangeCode, mockLineNumber);
 
-    assertThat(phoneNumber).isNotNull();
-    assertThat(phoneNumber.getAreaCode()).isEqualTo(mockAreaCode);
-    assertThat(phoneNumber.getExchangeCode()).isEqualTo(mockExchangeCode);
-    assertThat(phoneNumber.getLineNumber()).isEqualTo(mockLineNumber);
-    assertThat(phoneNumber.getCountry()).isNotPresent();
-    assertThat(phoneNumber.getExtension()).isNotPresent();
-    assertThat(phoneNumber.getType()).isNotPresent();
+    assertPhoneNumber(phoneNumber, mockAreaCode, mockExchangeCode, mockLineNumber);
+    assertPhoneNumberWithNoCountryExtensionOrType(phoneNumber);
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode, mockLineNumber);
   }
@@ -179,6 +201,41 @@ public class PhoneNumberUnitTests {
       .withNoCause();
 
     verifyNoInteractions(mockAreaCode, mockExchangeCode);
+  }
+
+  @Test
+  void parseValidPhoneNumberWithExtension() {
+
+    PhoneNumber phoneNumber = PhoneNumber.parse("5035551234 x4321");
+
+    assertPhoneNumber(phoneNumber, AreaCode.of(503), ExchangeCode.of(555), LineNumber.of(1234));
+  }
+
+  @Test
+  void parseValidPhoneNumberWithHyphens() {
+
+    PhoneNumber phoneNumber = PhoneNumber.parse("503-555-1234");
+
+    assertPhoneNumber(phoneNumber, AreaCode.of(503), ExchangeCode.of(555), LineNumber.of(1234));
+  }
+
+  @Test
+  void parseValidPhoneNumberWithParenthesis() {
+
+    PhoneNumber phoneNumber = PhoneNumber.parse("(971) 555-1234");
+
+    assertPhoneNumber(phoneNumber, AreaCode.of(971), ExchangeCode.of(555), LineNumber.of(1234));
+  }
+
+  @Test
+  void parseInvalidPhoneNumberThrowsIllegalArgumentException() {
+
+    Arrays.asList("555-1234", "  ", "", null).forEach(invalidPhoneNumber ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> PhoneNumber.parse(invalidPhoneNumber))
+        .withMessage("Phone Number [%s] must be [%d] digits",
+          invalidPhoneNumber, PhoneNumber.REQUIRED_PHONE_NUMBER_LENGTH)
+        .withNoCause());
   }
 
   @Test
@@ -260,53 +317,6 @@ public class PhoneNumberUnitTests {
   }
 
   @Test
-  void isRoamingInsideLocalCountryIsFalse() {
-
-    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
-
-    doCallRealMethod().when(mockPhoneNumber).isRoaming();
-    doReturn(Optional.of(Country.localCountry())).when(mockPhoneNumber).getCountry();
-
-    assertThat(mockPhoneNumber.isRoaming()).isFalse();
-
-    verify(mockPhoneNumber, times(1)).isRoaming();
-    verify(mockPhoneNumber, times(1)).getCountry();
-    verifyNoMoreInteractions(mockPhoneNumber);
-  }
-
-  @Test
-  void isRoamingOutsideLocalCountryIsTrue() {
-
-    Optional<Country> country = Arrays.stream(Country.values())
-      .filter(it -> !Country.localCountry().equals(it))
-      .findFirst();
-
-    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
-
-    doCallRealMethod().when(mockPhoneNumber).isRoaming();
-    doReturn(country).when(mockPhoneNumber).getCountry();
-
-    assertThat(mockPhoneNumber.isRoaming()).isTrue();
-
-    verify(mockPhoneNumber, times(1)).isRoaming();
-    verify(mockPhoneNumber, times(1)).getCountry();
-    verifyNoMoreInteractions(mockPhoneNumber);
-  }
-
-  @Test
-  void isTextEnabled() {
-
-    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
-
-    doCallRealMethod().when(mockPhoneNumber).isTextEnabled();
-
-    assertThat(mockPhoneNumber.isTextEnabled()).isFalse();
-
-    verify(mockPhoneNumber, times(1)).isTextEnabled();
-    verifyNoMoreInteractions(mockPhoneNumber);
-  }
-
-  @Test
   void isCellPhoneNumberWhenCell() {
 
     PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
@@ -316,8 +326,8 @@ public class PhoneNumberUnitTests {
 
     assertThat(mockPhoneNumber.isCell()).isTrue();
 
-    verify(mockPhoneNumber, times(1)).getType();
     verify(mockPhoneNumber, times(1)).isCell();
+    verify(mockPhoneNumber, times(1)).getType();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
 
@@ -337,8 +347,8 @@ public class PhoneNumberUnitTests {
 
     int callCount = PhoneNumber.Type.values().length - 1;
 
-    verify(mockPhoneNumber, times(callCount)).getType();
     verify(mockPhoneNumber, times(callCount)).isCell();
+    verify(mockPhoneNumber, times(callCount)).getType();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
 
@@ -352,8 +362,8 @@ public class PhoneNumberUnitTests {
 
     assertThat(mockPhoneNumber.isLandline()).isTrue();
 
-    verify(mockPhoneNumber, times(1)).getType();
     verify(mockPhoneNumber, times(1)).isLandline();
+    verify(mockPhoneNumber, times(1)).getType();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
 
@@ -373,8 +383,8 @@ public class PhoneNumberUnitTests {
 
     int callCount = PhoneNumber.Type.values().length - 1;
 
-    verify(mockPhoneNumber, times(callCount)).getType();
     verify(mockPhoneNumber, times(callCount)).isLandline();
+    verify(mockPhoneNumber, times(callCount)).getType();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
 
@@ -388,8 +398,8 @@ public class PhoneNumberUnitTests {
 
     assertThat(mockPhoneNumber.isSatellite()).isTrue();
 
-    verify(mockPhoneNumber, times(1)).getType();
     verify(mockPhoneNumber, times(1)).isSatellite();
+    verify(mockPhoneNumber, times(1)).getType();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
 
@@ -409,8 +419,8 @@ public class PhoneNumberUnitTests {
 
     int callCount = PhoneNumber.Type.values().length - 1;
 
-    verify(mockPhoneNumber, times(callCount)).getType();
     verify(mockPhoneNumber, times(callCount)).isSatellite();
+    verify(mockPhoneNumber, times(callCount)).getType();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
 
@@ -430,8 +440,8 @@ public class PhoneNumberUnitTests {
 
     int callCount = PhoneNumber.Type.values().length - 1;
 
-    verify(mockPhoneNumber, times(callCount)).getType();
     verify(mockPhoneNumber, times(callCount)).isUnknown();
+    verify(mockPhoneNumber, times(callCount)).getType();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
 
@@ -445,8 +455,8 @@ public class PhoneNumberUnitTests {
 
     assertThat(mockPhoneNumber.isUnknown()).isTrue();
 
-    verify(mockPhoneNumber, times(1)).getType();
     verify(mockPhoneNumber, times(1)).isUnknown();
+    verify(mockPhoneNumber, times(1)).getType();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
 
@@ -460,8 +470,8 @@ public class PhoneNumberUnitTests {
 
     assertThat(mockPhoneNumber.isUnknown()).isTrue();
 
-    verify(mockPhoneNumber, times(1)).getType();
     verify(mockPhoneNumber, times(1)).isUnknown();
+    verify(mockPhoneNumber, times(1)).getType();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
 
@@ -475,8 +485,8 @@ public class PhoneNumberUnitTests {
 
     assertThat(mockPhoneNumber.isVoip()).isTrue();
 
-    verify(mockPhoneNumber, times(1)).getType();
     verify(mockPhoneNumber, times(1)).isVoip();
+    verify(mockPhoneNumber, times(1)).getType();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
 
@@ -496,8 +506,55 @@ public class PhoneNumberUnitTests {
 
     int callCount = PhoneNumber.Type.values().length - 1;
 
-    verify(mockPhoneNumber, times(callCount)).getType();
     verify(mockPhoneNumber, times(callCount)).isVoip();
+    verify(mockPhoneNumber, times(callCount)).getType();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  void isRoamingInsideLocalCountryIsFalse() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doReturn(Optional.of(Country.localCountry())).when(mockPhoneNumber).getCountry();
+    doCallRealMethod().when(mockPhoneNumber).isRoaming();
+
+    assertThat(mockPhoneNumber.isRoaming()).isFalse();
+
+    verify(mockPhoneNumber, times(1)).isRoaming();
+    verify(mockPhoneNumber, times(1)).getCountry();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  void isRoamingOutsideLocalCountryIsTrue() {
+
+    Optional<Country> country = Arrays.stream(Country.values())
+      .filter(it -> !Country.localCountry().equals(it))
+      .findFirst();
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doReturn(country).when(mockPhoneNumber).getCountry();
+    doCallRealMethod().when(mockPhoneNumber).isRoaming();
+
+    assertThat(mockPhoneNumber.isRoaming()).isTrue();
+
+    verify(mockPhoneNumber, times(1)).isRoaming();
+    verify(mockPhoneNumber, times(1)).getCountry();
+    verifyNoMoreInteractions(mockPhoneNumber);
+  }
+
+  @Test
+  void isTextEnabled() {
+
+    PhoneNumber mockPhoneNumber = mock(PhoneNumber.class);
+
+    doCallRealMethod().when(mockPhoneNumber).isTextEnabled();
+
+    assertThat(mockPhoneNumber.isTextEnabled()).isFalse();
+
+    verify(mockPhoneNumber, times(1)).isTextEnabled();
     verifyNoMoreInteractions(mockPhoneNumber);
   }
 

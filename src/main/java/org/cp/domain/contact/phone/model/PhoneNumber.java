@@ -69,6 +69,10 @@ import org.cp.elements.util.ComparatorResultBuilder;
 public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, CountryAware,
     Identifiable<Long>, Renderable, Serializable, Visitable {
 
+  int REQUIRED_PHONE_NUMBER_LENGTH = AreaCode.REQUIRED_AREA_CODE_LENGTH
+    + ExchangeCode.REQUIRED_EXCHANGE_CODE_LENGTH
+    + LineNumber.REQUIRED_LINE_NUMBER_LENGTH;
+
   /**
    * Returns a new {@link PhoneNumber.Builder} used to construct and build a {@link PhoneNumber}.
    *
@@ -97,7 +101,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
     PhoneNumber.Builder phoneNumberBuilder = builder().from(phoneNumber);
 
     phoneNumber.getCountry().ifPresent(phoneNumberBuilder::inCountry);
-    phoneNumber.getExtension().ifPresent(phoneNumberBuilder::with);
+    phoneNumber.getExtension().ifPresent(phoneNumberBuilder::withExtension);
 
     if (phoneNumber.isTextEnabled()) {
       phoneNumberBuilder.withTextEnabled();
@@ -111,14 +115,14 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
   }
 
   /**
-   * Factory method used to construct a new {@link PhoneNumber} initialized with the given, required {@link AreaCode},
-   * {@link  ExchangeCode} and {@link LineNumber}.
+   * Factory method used to construct a new {@link PhoneNumber} initialized from the given {@link AreaCode},
+   * {@link ExchangeCode} and {@link LineNumber}.
    *
    * @param areaCode {@link AreaCode} of the new {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of the new {@link PhoneNumber}; must not be {@literal null}.
    * @param lineNumber {@link LineNumber} of the new {@link PhoneNumber}; must not be {@literal null}.
-   * @return a new {@link PhoneNumber} initialized from the given, required {@link AreaCode}, {@link ExchangeCode}
-   * and {@link LineNumber}.
+   * @return a new {@link PhoneNumber} initialized with the given, required {@link AreaCode},
+   * {@link ExchangeCode} and {@link LineNumber}.
    * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link LineNumber}
    * are {@literal null}.
    * @see org.cp.domain.contact.phone.model.AreaCode
@@ -134,8 +138,43 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
     return builder()
       .inAreaCode(areaCode)
       .usingExchange(exchangeCode)
-      .with(lineNumber)
+      .withLineNumber(lineNumber)
       .build();
+  }
+
+  /**
+   * Parses the given {@link String phone number} and constructs a new {@link PhoneNumber}.
+   *
+   * @param phoneNumber {@link String} containing the digits making up the {@link PhoneNumber}.
+   * @return a new {@link PhoneNumber} with {@link AreaCode}, {@link ExchangeCode} and {@link LineNumber}
+   * contained in the given {@link String phone number}.
+   * @throws IllegalArgumentException if the given {@link String phone number} is not valid.
+   * @see #of(AreaCode, ExchangeCode, LineNumber)
+   */
+  static @NotNull PhoneNumber parse(@NotNull String phoneNumber) {
+
+    String phoneNumberDigits = toRawPhoneNumber(phoneNumber);
+
+    assertValidPhoneNumber(phoneNumber, phoneNumberDigits);
+
+    String areaCodeExchangeCodeLineNumber = toAreaCodeExchangeCodeLineNumber(phoneNumberDigits);
+
+    return of(AreaCode.parse(areaCodeExchangeCodeLineNumber),
+      ExchangeCode.parse(areaCodeExchangeCodeLineNumber),
+      LineNumber.parse(areaCodeExchangeCodeLineNumber));
+  }
+
+  private static void assertValidPhoneNumber(String phoneNumber, String phoneNumberDigits) {
+    Assert.isTrue(phoneNumberDigits.length() >= REQUIRED_PHONE_NUMBER_LENGTH,
+      "Phone Number [%s] must be [%d] digits", phoneNumber, REQUIRED_PHONE_NUMBER_LENGTH);
+  }
+
+  private static String toAreaCodeExchangeCodeLineNumber(String phoneNumberDigits) {
+    return phoneNumberDigits.substring(0, REQUIRED_PHONE_NUMBER_LENGTH);
+  }
+
+  private static String toRawPhoneNumber(String phoneNumber) {
+    return StringUtils.getDigits(phoneNumber);
   }
 
   /**
@@ -456,10 +495,10 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
 
       Builder builder = inAreaCode(phoneNumber.getAreaCode())
         .usingExchange(phoneNumber.getExchangeCode())
-        .with(phoneNumber.getLineNumber());
+        .withLineNumber(phoneNumber.getLineNumber());
 
       phoneNumber.getCountry().ifPresent(builder::inCountry);
-      phoneNumber.getExtension().ifPresent(builder::with);
+      phoneNumber.getExtension().ifPresent(builder::withExtension);
 
       return builder;
     }
@@ -526,7 +565,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
      * @see org.cp.domain.contact.phone.model.Extension
      */
     @Dsl
-    public @NotNull Builder with(@Nullable Extension extension) {
+    public @NotNull Builder withExtension(@Nullable Extension extension) {
       this.extension = extension;
       return this;
     }
@@ -540,7 +579,7 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
      * @see org.cp.domain.contact.phone.model.LineNumber
      */
     @Dsl
-    public @NotNull Builder with(@NotNull LineNumber number) {
+    public @NotNull Builder withLineNumber(@NotNull LineNumber number) {
       this.lineNumber = ObjectUtils.requireObject(number, "LineNumber is required");
       return this;
     }
