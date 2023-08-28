@@ -152,7 +152,15 @@ public class StreetUnitTests {
   }
 
   @Test
-  void parseStreetWithNumberDirectionAndNumericNameIsCorrect() {
+  void parseStreetWithNumberNameAndTypeIsCorrect() {
+
+    Street street = Street.parse("1248 One Way");
+
+    assertStreet(street, 1248, "One", Street.Type.WAY, null);
+  }
+
+  @Test
+  void parseStreetWithNumberNumericNameAndTypeIsCorrect() {
 
     Street street = Street.parse("99 10th Ave");
 
@@ -160,11 +168,11 @@ public class StreetUnitTests {
   }
 
   @Test
-  void parseStreetWithNumberNameAndTypeIsCorrect() {
+  void parseStreetWithSpacing() {
 
-    Street street = Street.parse("1248 One Way");
+    Street street = Street.parse("  101  SouTH 5th   AVE ");
 
-    assertStreet(street, 1248, "One", Street.Type.WAY, null);
+    assertStreet(street, 101, "5th", Street.Type.AVENUE, Direction.SOUTH);
   }
 
   @Test
