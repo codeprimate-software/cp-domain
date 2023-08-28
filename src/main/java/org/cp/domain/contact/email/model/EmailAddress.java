@@ -23,6 +23,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.annotation.Immutable;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
@@ -38,6 +39,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see java.lang.Cloneable
  * @see java.lang.Comparable
  * @see java.io.Serializable;
+ * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.annotation.Immutable
  * @see org.cp.elements.lang.concurrent.ThreadSafe
  * @see org.cp.elements.security.model.User
@@ -46,7 +48,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
 @Immutable
 @ThreadSafe
 @SuppressWarnings("unused")
-public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serializable {
+public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serializable, Visitable {
 
   private static final String EMAIL_ADDRESS_AT_SYMBOL = "@";
   private static final String EMAIL_ADDRESS_TO_STRING = "%1$s".concat(EMAIL_ADDRESS_AT_SYMBOL).concat("%2$s");
@@ -74,7 +76,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
    * @param domain {@link Domain} of the new {@link EmailAddress}; must not be {@literal null}.
    * @return a new {@link EmailAddress} initialized with the given, required {@link User} and {@link Domain}.
    * @throws IllegalArgumentException if the given {@link User} or {@link Domain} are {@literal null}.
-   * @see Domain
+   * @see org.cp.domain.contact.email.model.EmailAddress.Domain
    * @see org.cp.elements.security.model.User
    */
   public static @NotNull EmailAddress of(@NotNull User<String> user, @NotNull Domain domain) {
@@ -82,10 +84,10 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
   }
 
   /**
-   * Factory method used to construct a new {@link EmailAddress} initialized from parsing the given,
-   * required {@link String} representing an {@literal email address}.
+   * Factory method used to construct a new {@link EmailAddress} parsed from the given, required {@link String}
+   * representing an {@literal email address}.
    * <p>
-   * {@link String Email Addresses} are expected to be in the format {@link String jonDoe@gmail.com}.
+   * {@link String Email Addresses} are expected to be in the format {@link String jonDoe@example.com}.
    *
    * @param emailAddress {@link String} containing the {@literal email address} to parse;
    * must not be {@literal null} or {@literal empty}; must be a valid {@literal email address}.
@@ -96,17 +98,23 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
    */
   public static @NotNull EmailAddress parse(@NotNull String emailAddress) {
 
-    Assert.hasText(emailAddress, "Email Address [%s] to parse is required", emailAddress);
-
-    int indexOfAtSymbol = emailAddress.indexOf(EMAIL_ADDRESS_AT_SYMBOL);
-
-    Assert.isTrue(indexOfAtSymbol > 0,
-      "Email Address [%s] format is not valid", emailAddress);
+    int indexOfAtSymbol = assertEmailAddress(emailAddress);
 
     String username = emailAddress.substring(0, indexOfAtSymbol);
     String domainName = emailAddress.substring(indexOfAtSymbol + 1);
 
     return new EmailAddress(asUser(username), Domain.parse(domainName));
+  }
+
+  private static int assertEmailAddress(String emailAddress) {
+
+    Assert.hasText(emailAddress, "Email Address [%s] to parse is required", emailAddress);
+
+    int indexOfAtSymbol = emailAddress.indexOf(EMAIL_ADDRESS_AT_SYMBOL);
+
+    Assert.isTrue(indexOfAtSymbol > 0, "Email Address [%s] format is not valid", emailAddress);
+
+    return indexOfAtSymbol;
   }
 
   protected static @NotNull User<String> asUser(@NotNull String name) {
@@ -139,13 +147,13 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
    * @param domain {@link Domain} containing the {@link String domain name} of this {@link EmailAddress};
    * must not be {@literal null}.
    * @throws IllegalArgumentException if the given {@link User} or {@link Domain} are {@literal null}.
-   * @see Domain
+   * @see org.cp.domain.contact.email.model.EmailAddress.Domain
    * @see org.cp.elements.security.model.User
    */
   public EmailAddress(@NotNull User<String> user, @NotNull Domain domain) {
 
-    this.user = ObjectUtils.requireObject(user, "User [%s] is required");
-    this.domain = ObjectUtils.requireObject(domain, "Domain [%s] is required");
+    this.user = ObjectUtils.requireObject(user, "User is required");
+    this.domain = ObjectUtils.requireObject(domain, "Domain is required");
   }
 
   /**
@@ -271,14 +279,14 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
      * and {@link Extension}.
      *
      * @param name {@link String name} of this {@link Domain}; must not be {@literal null} or {@literal empty}.
-     * @param domainExtension {@link Extension} of this {@link Domain}.
+     * @param extension {@link Extension} of this {@link Domain}.
      * @return a new {@link Domain} initialized with the given, required {@link String name} and {@link Extension}.
      * @throws IllegalArgumentException if the given {@link String name} is {@literal null} or {@literal empty},
      * or {@link Extension} is {@literal null}.
-     * @see Extension
+     * @see org.cp.domain.contact.email.model.EmailAddress.Domain.Extension
      */
-    public static @NotNull Domain of(@NotNull String name, @NotNull Extension domainExtension) {
-      return new Domain(name, domainExtension);
+    public static @NotNull Domain of(@NotNull String name, @NotNull Extension extension) {
+      return new Domain(name, extension);
     }
 
     /**
@@ -310,16 +318,23 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
      */
     public static @NotNull Domain parse(@NotNull String domainName) {
 
-      Assert.hasText(domainName, "Domain Name [%s] to parse is required");
+      int indexOfDot = assertDomainName(domainName);
+
+      String name = domainName.substring(0, indexOfDot);
+      String extensionName = domainName.substring(indexOfDot + 1);
+
+      return new Domain(name, extensionName);
+    }
+
+    private static int assertDomainName(String domainName) {
+
+      Assert.hasText(domainName, "Domain Name [%s] to parse is required", domainName);
 
       int indexOfDot = domainName.lastIndexOf(DOMAIN_DOT_SEPARATOR);
 
       Assert.isTrue(indexOfDot > 0, "Domain Name [%s] format is not valid", domainName);
 
-      String name = domainName.substring(indexOfDot);
-      String extensionName = domainName.substring(indexOfDot + 1);
-
-      return new Domain(name, extensionName);
+      return indexOfDot;
     }
 
     private final String name;
@@ -330,16 +345,14 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
      * and {@link Extension}.
      *
      * @param name {@link String name} of this {@link Domain}; must not be {@literal null} or {@literal empty}.
-     * @param domainExtension {@link Extension} of this {@link Domain}.
+     * @param extension {@link Extension} of this {@link Domain}.
      * @throws IllegalArgumentException if the given {@link String name} is {@literal null} or {@literal empty},
      * or {@link Extension} is {@literal null}.
-     * @see Extension
-     * @see Domain (String, String)
+     * @see org.cp.domain.contact.email.model.EmailAddress.Domain.Extension
+     * @see Domain(String, String)
      */
-    public Domain(@NotNull String name, @NotNull Extension domainExtension) {
-
-      this(name, ObjectUtils.requireObject(domainExtension, "Domain.Extension is required")
-        .name().toLowerCase());
+    public Domain(@NotNull String name, @NotNull Extension extension) {
+      this(name, ObjectUtils.requireObject(extension, "Domain.Extension is required").name());
     }
 
     /**
@@ -355,7 +368,8 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
     public Domain(@NotNull String name, @NotNull String extensionName) {
 
       this.name = StringUtils.requireText(name, "Name [%s] is required");
-      this.extensionName = StringUtils.requireText(extensionName, "Extension [%s] is required");
+      this.extensionName = StringUtils.toLowerCase(StringUtils.requireText(extensionName,
+        "Extension [%s] is required"));
     }
 
     /**
@@ -431,9 +445,9 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
     }
 
     /**
-     * {@link Enum Enumeration} of {@link Domain} {@link String Extensions}.
+     * {@link Enum Enumeration} of common {@link Domain} {@link String Extensions}.
      *
-     * @see Enum
+     * @see java.lang.Enum
      */
     enum Extension {
 
@@ -456,12 +470,20 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
       public static Optional<Extension> from(@Nullable String domainName) {
 
         return Optional.ofNullable(domainName)
-          .map(StringUtils::trim)
-          .map(StringUtils::toLowerCase)
+          .map(Extension::trimmedLowerCase)
           .filter(StringUtils::hasText)
+          .map(Extension::stripName)
           .flatMap(it -> Arrays.stream(Extension.values())
             .filter(ext -> it.endsWith(ext.name().toLowerCase()))
             .findFirst());
+      }
+
+      private static String stripName(String domainName) {
+        return domainName.substring(domainName.lastIndexOf(StringUtils.DOT_SEPARATOR) + 1);
+      }
+
+      private static String trimmedLowerCase(String value) {
+        return StringUtils.trim(StringUtils.toLowerCase(value));
       }
     }
   }
