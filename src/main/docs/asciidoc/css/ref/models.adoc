@@ -1,0 +1,180 @@
+[[domain-models]]
+== Codeprimate Domain Models
+
+The primary theme of Codeprimate Domain centers around Abstract Data Types (ADT), application domain model objects
+and entities used by software applications written in Java to represent (model), record and process data.
+
+Domain ADT, application domain model objects and entities are modeled using the lowest common denominator representation
+of a particular type definition. The Domain models are meant to represent things as they exist naturally
+and are not specific to any one application context. Domain models are pure models.
+
+All Domain models use a fluent API and domain-specific language (DSL) to construct or build, and initialize the object.
+In addition, all Domain models are proper _JavaBeans_.
+
+Many of the Domain models build on and extend abstractions provided by Codeprimate Elements, such as,
+but not limited to: `Auditable`, Identifiable`, `Renderable`, `Versioned`, `Visitable`, and so on.
+
+Although most Domain model types are `Identifiable`, thus providing a non-natural, surrogate identifier, the ID
+is not required. IDs are commonly used in persistent data models.
+
+Where possible, Domain model types are designed as immutable. Such model types are even annotated as such using Elements
+`@Immutable` annotation.
+
+[[domain-models-core]]
+=== Core Domain Model Types
+
+Codeprimate Domain contains core model types and enumerated values.
+
+One of the most common types modeled across any software application is a `Person` as well as a group of `People`.
+
+Minimally a `Person` can be represented or modeled and even identified with just a name, a date of birth and gender.
+Universally and fundamentally all persons (people) have a name, birthdate and a gender assigned or given at birth.
+For completeness, a `Person` can also have a `date of death`.
+
+A `Person` is modeled as:
+
+.Person
+[source,java]
+[subs="verbatim,attributes"]
+----
+class Person {
+
+  Name name;
+
+  LocalDateTime birthdate;
+  LocalDateTime dateOfDeath
+
+  Gender gender;
+
+}
+----
+
+You can easily build or constructs a new `Person` using the fluent API and DSL as follows:
+
+.Constructing a Person
+[source,java]
+[subs="verbatim,attributes"]
+----
+Person jonDoe = Person.newPerson("Jon", "Doe")
+  .born(LocalDateTime.of(2011, Month.OCTOBER, 5, 16, 44, 0))
+  .asMale();
+----
+
+Even a `Person's` "name" is a formal type, called `Name`, which consists of a first, last and (optional) middle name
+along with optional support for `Title` and `Suffix`:
+
+.Name
+[source,java]
+[subs="verbatim,attributes"]
+----
+class Name {
+
+  String firstName;
+  String lastName;
+  String middleName;
+
+}
+----
+
+The `Person` model type provides many more convenient methods such as the ability to compute age from the date of birth,
+or even set a person's date of birth when given an age. Of course, the date of birth computed from an age is approximate
+and set to a date in the past on this day making the person exactly X years old. For example, today's date is
+Tuesday, August 29th, 2023. If a person is 16 years old, then the date of birth will be set to August 29th, 2007,
+by calling:
+
+.Constructing a Person with an Age
+[source,java]
+[subs="verbatim,attributes"]
+----
+Person jonDoe = Person.newPerson("Jane", "Doe")
+  .asFemale()
+  .age(16);
+----
+
+When getting a person's `age` (i.e. `person.getAge()`, returned as an `int` value), it is computed from the birthdate,
+taking date of death into consideration.
+
+A `Person` is additionally supported and represented by the `Gender` enum:
+
+.Gender
+[source,java]
+[subs="verbatim,attributes"]
+----
+enum Gender {
+  FEMALE, MALE, NON_BINARY
+}
+----
+
+Given the fluidity of `Gender`, non-female and non-male genders are simply represented by `NON_BINARY`.
+
+The `Person` type also supports simple queries about the person, such as whether s/he is alive, or has the person
+even been born yet.
+
+.Person Queries
+[source,java]
+[subs="verbatim,attributes"]
+----
+boolean alive = person.isAlive();
+
+boolean born = person.isBorn();
+----
+
+Finally, the `Person` type provides basic validations, such as no future death dates, or birthdate cannot be after
+date of death, and so on. A person must minimally have a name.
+
+[[domain-models-core-collections]]
+=== Collections of Domain Model Types
+
+Codeprimate Domain provides the `Group` interface that allows collections or aggregates of domain model types
+to be constructed.
+
+The `Group` interface has the following common operations:
+
+.Group
+[source,java]
+[subs="verbatim,attributes"]
+----
+interface Group<T> {
+
+  void accept(:Visitor<T>);
+
+  boolean contains(T);
+
+  int count(:Predicate<T>);
+
+  Group difference(:Group<T>);
+
+  Group<T> findBy(:Predicate<T>);
+
+  T findOne(:Predicate<T>);
+
+  boolean isEmpty();
+
+  boolean join(:T);
+
+  boolean leave(:T);
+
+  boolean leave(:Predicate<T>);
+
+  Group intersection(:Group<T>);
+
+  int size();
+
+  Stream<T> stream();
+
+  Group union(:Group<T>);
+
+}
+----
+
+All operations declared by the `Group` interface provide default implementations, therefore it is a simple matter to
+create typed `Groups`. Often times, you will want to override th default implementation based on the underlying data
+structure to achieve more optimal performance.
+
+Domain even offers one such typed `Group` out-of-the-box: `People`, which is a collection aggregating a group of
+`Person` objects.
+
+[[domain-models-geo]]
+=== Geo Domain Model Types
+
+Domain offers a package to model `Address` and other geographic types.
