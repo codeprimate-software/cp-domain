@@ -38,7 +38,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @author John Blum
  * @see java.lang.Cloneable
  * @see java.lang.Comparable
- * @see java.io.Serializable;
+ * @see java.io.Serializable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.annotation.Immutable
  * @see org.cp.elements.lang.concurrent.ThreadSafe

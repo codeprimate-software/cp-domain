@@ -351,7 +351,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
 
   /**
    * Given this {@link Person person's} {@link #getBirthDate() date of birth},
-   * determine this {@link Person person's {@link Integer age}.
+   * determine this {@link Person person's} {@link Integer age}.
    * <p>
    * @return the {@link Integer age} of this {@link Person} based on his or her {@link #getBirthDate() date of birth}
    * with consideration of the {@link Person Person's} {@link #getDateOfDeath() date of death}.
@@ -658,7 +658,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   /**
    * Builder method used to set this {@link Person person's} {@link LocalDateTime date of death}.
    *
-   * @param dateOfDeath {@link LocalDateTime} indicating this {@link Person's} date of death.
+   * @param dateOfDeath {@link LocalDateTime} indicating this {@link Person Person's} date of death.
    * @return this {@link Person}.
    * @throws IllegalArgumentException if the {@link LocalDateTime date of death} is in the future
    * or is before the {@link #getBirthDate() date of birth}.

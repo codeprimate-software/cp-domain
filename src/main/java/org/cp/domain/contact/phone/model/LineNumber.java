@@ -89,7 +89,7 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Renderable
    * and extract a {@link LineNumber}; must contain at least {@literal 4-digits}.
    * @return a new {@link LineNumber} from the given {@link String phone number}.
    * @throws IllegalArgumentException if the {@link String phone number} does not consist of
-   * at least {@literal 4-digits.
+   * at least {@literal 4-digits}.
    */
   public static @NotNull LineNumber parse(@NotNull String phoneNumber) {
 
