@@ -34,7 +34,6 @@ import org.junit.jupiter.api.Test;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.cp.elements.io.IOUtils;
 import org.cp.elements.lang.Renderer;
-import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 
 /**
  * Unit Tests for {@link AreaCode}.
@@ -51,6 +50,18 @@ public class AreaCodeUnitTests {
 
     assertThat(areaCode).isNotNull();
     assertThat(areaCode.getNumber()).isEqualTo(number);
+  }
+
+  private String reverse(String value) {
+
+    char[] characters = value.toCharArray();
+    StringBuilder reversed = new StringBuilder();
+
+    for (int index = characters.length - 1; index > -1; index--) {
+      reversed.append(characters[index]);
+    }
+
+    return reversed.toString();
   }
 
   @Test
@@ -216,7 +227,7 @@ public class AreaCodeUnitTests {
 
     Renderer<AreaCode> mockRenderer = mock(Renderer.class);
 
-    doAnswer(invocation -> StringUtils.reverse(invocation.getArgument(0, AreaCode.class).getNumber()))
+    doAnswer(invocation -> reverse(invocation.getArgument(0, AreaCode.class).getNumber()))
       .when(mockRenderer).render(any());
 
     AreaCode areaCode = AreaCode.of("123");

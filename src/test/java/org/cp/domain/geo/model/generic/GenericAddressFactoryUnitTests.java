@@ -26,7 +26,7 @@ import org.cp.domain.geo.model.BaseAddressUnitTests;
 import org.cp.domain.geo.model.City;
 import org.cp.domain.geo.model.PostalCode;
 import org.cp.domain.geo.model.Street;
-import org.testcontainers.shaded.org.apache.commons.lang3.function.TriFunction;
+import org.cp.elements.function.TriFunction;
 
 /**
  * Unit Tests for {@link GenericAddressFactory}.
