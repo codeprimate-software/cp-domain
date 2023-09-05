@@ -352,7 +352,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   /**
    * Given this {@link Person person's} {@link #getBirthDate() date of birth},
    * determine this {@link Person person's} {@link Integer age}.
-   * <p>
+   *
    * @return the {@link Integer age} of this {@link Person} based on his or her {@link #getBirthDate() date of birth}
    * with consideration of the {@link Person Person's} {@link #getDateOfDeath() date of death}.
    * @see java.time.Period#between(LocalDate, LocalDate)
