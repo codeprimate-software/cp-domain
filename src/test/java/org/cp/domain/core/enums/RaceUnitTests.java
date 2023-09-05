@@ -21,8 +21,6 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import org.cp.elements.enums.Race;
-
 /**
  * Unit Tests for {@link Race}.
  *
