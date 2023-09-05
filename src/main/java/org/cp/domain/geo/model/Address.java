@@ -441,6 +441,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
   /**
    * Elements {@link Builder} used to construct a new {@link Address} using a {@link FluentApi} and {@link Dsl}.
    *
+   * @param <T> concrete {@link Class Type} of {@link Address} to build.
    * @see org.cp.elements.lang.Builder
    */
   @FluentApi
@@ -769,7 +770,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
 
     /**
      * Determines whether this {@link Address.Type} is a {@link #PO_BOX}.
-     * <p>
+     *
      * @return a boolean value determining whether this {@link Address.Type} is a {@link #PO_BOX}.
      * @see org.cp.domain.geo.model.Address.Type#PO_BOX
      */
@@ -785,7 +786,7 @@ public interface Address extends Cloneable, Comparable<Address>, Identifiable<Lo
      */
     @Override
     public @NotNull String toString() {
-      return getDescription().concat(isPoBox() ? StringUtils.EMPTY_STRING: " Address");
+      return getDescription().concat(isPoBox() ? StringUtils.EMPTY_STRING : " Address");
     }
   }
 }

@@ -29,10 +29,24 @@ import org.cp.elements.lang.annotation.Nullable;
  */
 public abstract class GeoUtils {
 
+  /**
+   * Resolves {@link Country} to {@link Country#localCountry() local Country} if {@literal null}.
+   *
+   * @param country {@link Country} to evaluate.
+   * @return the given {@link Country} if not {@literal null} or {@link Country#localCountry()}.
+   * @see org.cp.domain.geo.enums.Country
+   */
   public static @NotNull Country resolveCountry(@Nullable Country country) {
     return resolveCountry(country, Country::localCountry);
   }
 
+  /**
+   * Resolves {@link Country} to {@link Country#UNKNOWN} if {@literal null}.
+   *
+   * @param country {@link Country} to evaluate.
+   * @return the given {@link Country} if not {@literal null} or {@link Country#UNKNOWN}.
+   * @see org.cp.domain.geo.enums.Country
+   */
   public static @NotNull Country resolveToUnknownCountry(@Nullable Country country) {
     return resolveCountry(country, () -> Country.UNKNOWN);
   }

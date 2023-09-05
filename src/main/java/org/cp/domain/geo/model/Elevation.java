@@ -140,6 +140,7 @@ public class Elevation implements Comparable<Elevation>, Serializable {
    * Builder method used to set the {@link LengthUnit unit of measurement} measuring the {@literal altitude}
    * of this {@link Elevation}.
    *
+   * @param lengthUnit {@link LengthUnit} used as the {@literal }unit of measurement}.
    * @return this {@link Elevation}.
    * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.elements.enums.LengthUnit

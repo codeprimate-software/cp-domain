@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 import org.cp.domain.geo.enums.Country;
 
 /**
- * {@link Annotation Qualifier} by {@link Country}
+ * {@link Annotation Qualifier} by {@link Country}.
  *
  * @author John Blum
  * @see java.lang.annotation.Annotation

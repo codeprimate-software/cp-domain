@@ -26,6 +26,7 @@ import org.cp.elements.lang.Constants;
  * such as a {@literal household} or a {@literal store}.
  *
  * @author John Blum
+ * @param <T> {@link Class concrete type} of implementing {@link Class}.
  * @see java.lang.FunctionalInterface
  * @see org.cp.domain.geo.model.Address
  * @since 0.1.0

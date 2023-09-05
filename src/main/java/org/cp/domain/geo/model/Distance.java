@@ -470,7 +470,7 @@ public class Distance implements Comparable<Distance> {
     return String.format(DISTANCE_TO_STRING, measurement, lengthUnitName);
   }
 
-  protected static abstract class Conversions {
+  protected abstract static class Conversions {
 
     protected static final double FEET_IN_MILES = 5280.0d;
     protected static final double FEET_IN_YARDS = 3.0d;
@@ -628,6 +628,12 @@ public class Distance implements Comparable<Distance> {
     }
   }
 
+  /**
+   * {@link Enum Enumeration} of {@link Function conversion functions} on {@link Distance}.
+   *
+   * @see java.lang.Enum
+   * @see java.util.function.Function
+   */
   public enum ConversionFunctions implements Function<Distance, Distance> {
 
     TO_FEET {

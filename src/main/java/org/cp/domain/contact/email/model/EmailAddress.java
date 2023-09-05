@@ -349,7 +349,6 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
      * @throws IllegalArgumentException if the given {@link String name} is {@literal null} or {@literal empty},
      * or {@link Extension} is {@literal null}.
      * @see org.cp.domain.contact.email.model.EmailAddress.Domain.Extension
-     * @see Domain(String, String)
      */
     public Domain(@NotNull String name, @NotNull Extension extension) {
       this(name, ObjectUtils.requireObject(extension, "Domain.Extension is required").name());

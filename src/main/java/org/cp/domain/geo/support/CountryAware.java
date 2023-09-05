@@ -74,7 +74,7 @@ public interface CountryAware {
 
   /**
    * Builder method used to set the {@link Country} of origin for this implementing {@literal domain type}
-   * to the {@link Country#localCountry()}
+   * to the {@link Country#localCountry()}.
    *
    * @param <T> {@link Class type} of {@link Object domain object} implementing this interface.
    * @return the instance of this {@literal domain type}.

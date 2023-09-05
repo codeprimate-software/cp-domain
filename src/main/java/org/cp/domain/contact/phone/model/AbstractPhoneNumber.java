@@ -109,6 +109,12 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
     return Optional.ofNullable(this.extension);
   }
 
+  /**
+   * Sets the {@link Extension} at this {@link PhoneNumber}.
+   *
+   * @param extension {@link Extension} at this {@link PhoneNumber}.
+   * @see org.cp.domain.contact.phone.model.Extension
+   */
   public void setExtension(@Nullable Extension extension) {
     this.extension = extension;
   }
@@ -128,6 +134,11 @@ public abstract class AbstractPhoneNumber implements PhoneNumber {
     return Boolean.TRUE.equals(this.textEnabled);
   }
 
+  /**
+   * Sets whether this {@link PhoneNumber} allows texting.
+   *
+   * @param textEnabled boolean value indicating whether this {@link PhoneNumber} allows texting.
+   */
   public void setTextEnabled(@Nullable Boolean textEnabled) {
     this.textEnabled = textEnabled;
   }

@@ -90,6 +90,12 @@ public interface GeocodingService {
    */
   Address reverseGeocode(Coordinates coordinates);
 
+  /**
+   * Elements {@link ServiceLoaderSupport} implementation used to locate and load {@link GeocodingService} provider
+   * implementations, such as {@literal Google Maps}.
+   *
+   * @see org.cp.elements.service.loader.ServiceLoaderSupport
+   */
   interface Loader extends ServiceLoaderSupport<GeocodingService> {
 
     @Override

@@ -71,9 +71,9 @@ public class UnitedStatesPhoneNumber extends AbstractPhoneNumber {
    * @param areaCode {@link AreaCode} of this {@link PhoneNumber}; must not be {@literal null}.
    * @param exchangeCode {@link ExchangeCode} of this {@link PhoneNumber}; must not be {@literal null}.
    * @param lineNumber {@link LineNumber} of this {@link PhoneNumber}; must not be {@literal null}.
+   * @return a new {@link UnitedStatesPhoneNumber} initialized with the given, required {@link AreaCode},
    * @throws IllegalArgumentException if the given {@link AreaCode}, {@link ExchangeCode} or {@link LineNumber}
    * are {@literal null}.
-   * @return a new {@link UnitedStatesPhoneNumber} initialized with the given, required {@link AreaCode},
    * @see #UnitedStatesPhoneNumber(AreaCode, ExchangeCode, LineNumber)
    * {@link ExchangeCode} and {@link LineNumber}.
    * @see org.cp.domain.contact.phone.model.LineNumber

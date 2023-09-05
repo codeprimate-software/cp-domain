@@ -206,12 +206,14 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
    */
   private static @NotNull String stripSuffix(@NotNull String name) {
 
+    String nonSuffixName = name;
+
     for (Suffix suffix : Suffix.values()) {
-      int index = name.toLowerCase().indexOf(suffix.name().toLowerCase());
-      name = index > -1 ? name.substring(0, index).trim() : name;
+      int index = nonSuffixName.toLowerCase().indexOf(suffix.name().toLowerCase());
+      nonSuffixName = index > -1 ? nonSuffixName.substring(0, index).trim() : nonSuffixName;
     }
 
-    return name;
+    return nonSuffixName;
   }
 
   /**
@@ -223,14 +225,14 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
    */
   private static @NotNull String stripTitle(@NotNull String name) {
 
-    name = name.replaceAll(DOT_SEPARATOR_REGEX, StringUtils.EMPTY_STRING);
+    String nonTitleName = name.replaceAll(DOT_SEPARATOR_REGEX, StringUtils.EMPTY_STRING);
 
     for (Title title : Title.values()) {
-      int index = name.toLowerCase().indexOf(title.name().toLowerCase());
-      name = index > -1 ? name.substring(index + title.name().length()).trim() : name;
+      int index = nonTitleName.toLowerCase().indexOf(title.name().toLowerCase());
+      nonTitleName = index > -1 ? nonTitleName.substring(index + title.name().length()).trim() : nonTitleName;
     }
 
-    return name;
+    return nonTitleName;
   }
 
   private final String firstName;

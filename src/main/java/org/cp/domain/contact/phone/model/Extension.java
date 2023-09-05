@@ -70,9 +70,9 @@ public class Extension implements Cloneable, Comparable<Extension>, Renderable, 
    *
    * @param number {@link String} containing the {@literal number} of the {@link Extension};
    * must not be {@literal null} or {@literal empty}.
+   * @return a new {@link Extension} initialized with the given {@link String number}.
    * @throws IllegalArgumentException if the given {@link String number} is {@literal null}, {@literal empty}
    * or not {@link Character#isDigit(char) digits}.
-   * @return a new {@link Extension} initialized with the given {@link String number}.
    */
   public static @NotNull Extension of(@NotNull String number) {
     return new Extension(number);

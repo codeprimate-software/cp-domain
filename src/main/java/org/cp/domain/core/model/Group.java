@@ -83,7 +83,8 @@ public interface Group<T> extends Identifiable<UUID>, Iterable<T>, Nameable<Stri
       .forEach(entity -> entity.accept(visitor));
   }
 
-  /** Determines whether the given entity is a member of this {@link Group}.
+  /**
+   * Determines whether the given entity is a member of this {@link Group}.
    *
    * @param entity {@link Object entity} to evaluate for membership in this {@link Group}.
    * @return a boolean value indicating whether the given entity is a member of this {@link Group}.
@@ -270,7 +271,7 @@ public interface Group<T> extends Identifiable<UUID>, Iterable<T>, Nameable<Stri
 
   /**
    * Returns a {@link Stream} of entities belonging to this {@link Group}.
-
+   *
    * @return a {@link Stream} of entities belonging to this {@link Group}.
    * @see java.util.stream.Stream
    */
