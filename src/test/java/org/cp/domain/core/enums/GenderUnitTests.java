@@ -34,65 +34,65 @@ public class GenderUnitTests {
   @Test
   public void valueOfReturnsGender() {
 
-    Arrays.stream(org.cp.elements.enums.Gender.values()).forEach(gender ->
-      assertThat(org.cp.elements.enums.Gender.valueOf(gender.name())).isEqualTo(gender));
+    Arrays.stream(Gender.values()).forEach(gender ->
+      assertThat(Gender.valueOf(gender.name())).isEqualTo(gender));
   }
 
   @Test
   public void valueOfAbbreviationReturnsGender() {
 
-    Arrays.stream(org.cp.elements.enums.Gender.values()).forEach(gender ->
-      assertThat(org.cp.elements.enums.Gender.valueOfAbbreviation(gender.getAbbreviation())).isEqualTo(gender));
+    Arrays.stream(Gender.values()).forEach(gender ->
+      assertThat(Gender.valueOfAbbreviation(gender.getAbbreviation())).isEqualTo(gender));
   }
 
   @Test
   public void valueOfAbbreviationUsingNameReturnsNull() {
 
-    assertThat(org.cp.elements.enums.Gender.valueOfAbbreviation("Female")).isNull();
-    assertThat(org.cp.elements.enums.Gender.valueOfAbbreviation("Girl")).isNull();
-    assertThat(org.cp.elements.enums.Gender.valueOfAbbreviation("Woman")).isNull();
-    assertThat(org.cp.elements.enums.Gender.valueOfAbbreviation("Women")).isNull();
+    assertThat(Gender.valueOfAbbreviation("Female")).isNull();
+    assertThat(Gender.valueOfAbbreviation("Girl")).isNull();
+    assertThat(Gender.valueOfAbbreviation("Woman")).isNull();
+    assertThat(Gender.valueOfAbbreviation("Women")).isNull();
   }
 
   @Test
   public void valueOfInvalidAbbreviationReturnsNull() {
 
-    assertThat(org.cp.elements.enums.Gender.valueOfAbbreviation("B")).isNull(); // Boy
-    assertThat(org.cp.elements.enums.Gender.valueOfAbbreviation("G")).isNull(); // Guy / Girl
-    assertThat(org.cp.elements.enums.Gender.valueOfAbbreviation("W")).isNull(); // Woman
+    assertThat(Gender.valueOfAbbreviation("B")).isNull(); // Boy
+    assertThat(Gender.valueOfAbbreviation("G")).isNull(); // Guy / Girl
+    assertThat(Gender.valueOfAbbreviation("W")).isNull(); // Woman
   }
 
   @Test
   public void valueOfNullAbbreviationIsNullSafeAndReturnsNull() {
-    assertThat(org.cp.elements.enums.Gender.valueOfAbbreviation(null)).isNull();
+    assertThat(Gender.valueOfAbbreviation(null)).isNull();
   }
 
   @Test
   public void valueOfNameReturnsGender() {
 
-    Arrays.stream(org.cp.elements.enums.Gender.values()).forEach(gender ->
-      assertThat(org.cp.elements.enums.Gender.valueOfName(gender.getName())).isEqualTo(gender));
+    Arrays.stream(Gender.values()).forEach(gender ->
+      assertThat(Gender.valueOfName(gender.getName())).isEqualTo(gender));
   }
 
   @Test
   public void valueOfNameUsingAbbreviationReturnsNull() {
 
-    assertThat(org.cp.elements.enums.Gender.valueOfName("B")).isNull();
-    assertThat(org.cp.elements.enums.Gender.valueOfName("F")).isNull();
-    assertThat(org.cp.elements.enums.Gender.valueOfName("G")).isNull();
-    assertThat(org.cp.elements.enums.Gender.valueOfName("M")).isNull();
-    assertThat(org.cp.elements.enums.Gender.valueOfName("W")).isNull();
+    assertThat(Gender.valueOfName("B")).isNull();
+    assertThat(Gender.valueOfName("F")).isNull();
+    assertThat(Gender.valueOfName("G")).isNull();
+    assertThat(Gender.valueOfName("M")).isNull();
+    assertThat(Gender.valueOfName("W")).isNull();
   }
 
   @Test
   public void valueOfInvalidNameReturnsNull() {
 
-    assertThat(org.cp.elements.enums.Gender.valueOfName("Boy")).isNull();
-    assertThat(org.cp.elements.enums.Gender.valueOfName("Girl")).isNull();
-    assertThat(org.cp.elements.enums.Gender.valueOfName("Man")).isNull();
-    assertThat(org.cp.elements.enums.Gender.valueOfName("Men")).isNull();
-    assertThat(org.cp.elements.enums.Gender.valueOfName("Woman")).isNull();
-    assertThat(org.cp.elements.enums.Gender.valueOfName("Women")).isNull();
+    assertThat(Gender.valueOfName("Boy")).isNull();
+    assertThat(Gender.valueOfName("Girl")).isNull();
+    assertThat(Gender.valueOfName("Man")).isNull();
+    assertThat(Gender.valueOfName("Men")).isNull();
+    assertThat(Gender.valueOfName("Woman")).isNull();
+    assertThat(Gender.valueOfName("Women")).isNull();
   }
 
   @Test

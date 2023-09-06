@@ -39,7 +39,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
-import org.cp.elements.enums.Gender;
+import org.cp.domain.core.enums.Gender;
 import org.cp.elements.io.IOUtils;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Visitor;
@@ -52,8 +52,8 @@ import org.cp.elements.lang.Visitor;
  * @see java.util.UUID
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
+ * @see org.cp.domain.core.enums.Gender
  * @see org.cp.domain.core.model.Person
- * @see org.cp.elements.enums.Gender
  * @since 0.1.0
  */
 public class PersonUnitTests {

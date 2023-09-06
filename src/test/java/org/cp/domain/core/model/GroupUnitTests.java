@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-import org.cp.elements.enums.Gender;
+import org.cp.domain.core.enums.Gender;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.ArrayUtils;

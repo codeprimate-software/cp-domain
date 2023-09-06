@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.cp.elements.enums.Gender;
+import org.cp.domain.core.enums.Gender;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Identifiable;
@@ -53,7 +53,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see java.time.LocalDate
  * @see java.time.LocalDateTime
  * @see java.util.UUID
- * @see org.cp.elements.enums.Gender
+ * @see org.cp.domain.core.enums.Gender
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Nameable
  * @see org.cp.elements.lang.Renderable

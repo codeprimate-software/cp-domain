@@ -27,7 +27,7 @@ import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.annotation.Immutable;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
-import org.cp.elements.lang.concurrent.ThreadSafe;
+import org.cp.elements.lang.annotation.ThreadSafe;
 import org.cp.elements.security.model.User;
 import org.cp.elements.text.FormatUtils;
 import org.cp.elements.util.ComparatorResultBuilder;
@@ -41,7 +41,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see java.io.Serializable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.annotation.Immutable
- * @see org.cp.elements.lang.concurrent.ThreadSafe
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @see org.cp.elements.security.model.User
  * @since 0.1.0
  */

@@ -34,82 +34,82 @@ public class RaceUnitTests {
   @Test
   public void valueOfReturnsRace() {
 
-    Arrays.stream(org.cp.elements.enums.Race.values()).forEach(race ->
-      assertThat(org.cp.elements.enums.Race.valueOf(race.name())).isEqualTo(race));
+    Arrays.stream(Race.values()).forEach(race ->
+      assertThat(Race.valueOf(race.name())).isEqualTo(race));
   }
 
   @Test
   public void valueOfAbbreviationIsCorrect() {
 
-    Arrays.stream(org.cp.elements.enums.Race.values()).forEach(race ->
-      assertThat(org.cp.elements.enums.Race.valueOfAbbreviation(race.getAbbreviation())).isEqualTo(race));
+    Arrays.stream(Race.values()).forEach(race ->
+      assertThat(Race.valueOfAbbreviation(race.getAbbreviation())).isEqualTo(race));
   }
 
   @Test
   public void valueOfAbbreviationIsLenient() {
 
-    assertThat(org.cp.elements.enums.Race.valueOfAbbreviation("BLACK")).isEqualTo(org.cp.elements.enums.Race.AFRICAN_AMERICAN);
-    assertThat(org.cp.elements.enums.Race.valueOfAbbreviation("Indian")).isEqualTo(org.cp.elements.enums.Race.AMERICAN_INDIAN);
-    assertThat(org.cp.elements.enums.Race.valueOfAbbreviation("white")).isEqualTo(org.cp.elements.enums.Race.WHITE);
+    assertThat(Race.valueOfAbbreviation("BLACK")).isEqualTo(Race.AFRICAN_AMERICAN);
+    assertThat(Race.valueOfAbbreviation("Indian")).isEqualTo(Race.AMERICAN_INDIAN);
+    assertThat(Race.valueOfAbbreviation("white")).isEqualTo(Race.WHITE);
   }
 
   @Test
   public void valueOfAbbreviationIsNullSafeReturnsNull() {
-    assertThat(org.cp.elements.enums.Race.valueOfAbbreviation(null)).isNull();
+    assertThat(Race.valueOfAbbreviation(null)).isNull();
   }
 
   @Test
   public void valueOfAbbreviationUsingNameReturnsNull() {
-    assertThat(org.cp.elements.enums.Race.valueOfAbbreviation(org.cp.elements.enums.Race.AFRICAN_AMERICAN.getName())).isNull();
+    assertThat(Race.valueOfAbbreviation(Race.AFRICAN_AMERICAN.getName())).isNull();
   }
 
   @Test
   public void valueOfInvalidAbbreviationReturnsNull() {
 
-    assertThat(org.cp.elements.enums.Race.valueOfAbbreviation("")).isNull();
-    assertThat(org.cp.elements.enums.Race.valueOfAbbreviation("  ")).isNull();
-    assertThat(org.cp.elements.enums.Race.valueOfAbbreviation("alien")).isNull();
-    assertThat(org.cp.elements.enums.Race.valueOfAbbreviation("EURO")).isNull();
-    assertThat(org.cp.elements.enums.Race.valueOfAbbreviation("heBrew")).isNull();
-    assertThat(org.cp.elements.enums.Race.valueOfAbbreviation("muslim")).isNull();
-    assertThat(org.cp.elements.enums.Race.valueOfAbbreviation("Spanish")).isNull();
+    assertThat(Race.valueOfAbbreviation("")).isNull();
+    assertThat(Race.valueOfAbbreviation("  ")).isNull();
+    assertThat(Race.valueOfAbbreviation("alien")).isNull();
+    assertThat(Race.valueOfAbbreviation("EURO")).isNull();
+    assertThat(Race.valueOfAbbreviation("heBrew")).isNull();
+    assertThat(Race.valueOfAbbreviation("muslim")).isNull();
+    assertThat(Race.valueOfAbbreviation("Spanish")).isNull();
   }
 
   @Test
   public void valueOfNameIsCorrect() {
 
-    Arrays.stream(org.cp.elements.enums.Race.values()).forEach(race ->
-      assertThat(org.cp.elements.enums.Race.valueOfName(race.getName())).isEqualTo(race));
+    Arrays.stream(Race.values()).forEach(race ->
+      assertThat(Race.valueOfName(race.getName())).isEqualTo(race));
   }
 
   @Test
   public void valueOfNameIsLenient() {
 
-    assertThat(org.cp.elements.enums.Race.valueOfName("African American")).isEqualTo(org.cp.elements.enums.Race.AFRICAN_AMERICAN);
-    assertThat(org.cp.elements.enums.Race.valueOfName("ASIAN")).isEqualTo(org.cp.elements.enums.Race.ASIAN);
-    assertThat(org.cp.elements.enums.Race.valueOfName("white")).isEqualTo(org.cp.elements.enums.Race.WHITE);
+    assertThat(Race.valueOfName("African American")).isEqualTo(Race.AFRICAN_AMERICAN);
+    assertThat(Race.valueOfName("ASIAN")).isEqualTo(Race.ASIAN);
+    assertThat(Race.valueOfName("white")).isEqualTo(Race.WHITE);
   }
 
   @Test
   public void valueOfNameIsNullSafeReturnsNull() {
-    assertThat(org.cp.elements.enums.Race.valueOfName(null)).isNull();
+    assertThat(Race.valueOfName(null)).isNull();
   }
 
   @Test
   public void valueOfNameUsingAbbreviationReturnsNull() {
 
-    assertThat(org.cp.elements.enums.Race.valueOfName("Alaskan")).isNull();
-    assertThat(org.cp.elements.enums.Race.valueOfName("Hawaiian")).isNull();
-    assertThat(org.cp.elements.enums.Race.valueOfName("Indian")).isNull();
+    assertThat(Race.valueOfName("Alaskan")).isNull();
+    assertThat(Race.valueOfName("Hawaiian")).isNull();
+    assertThat(Race.valueOfName("Indian")).isNull();
   }
 
   @Test
   public void valueOfInvalidNameReturnsNull() {
 
-    assertThat(org.cp.elements.enums.Race.valueOfName("")).isNull();
-    assertThat(org.cp.elements.enums.Race.valueOfName("  ")).isNull();
-    assertThat(org.cp.elements.enums.Race.valueOfName("Eskimo")).isNull();
-    assertThat(org.cp.elements.enums.Race.valueOfName("Negro")).isNull();
+    assertThat(Race.valueOfName("")).isNull();
+    assertThat(Race.valueOfName("  ")).isNull();
+    assertThat(Race.valueOfName("Eskimo")).isNull();
+    assertThat(Race.valueOfName("Negro")).isNull();
     assertThat(Race.valueOfName("Redman")).isNull();
   }
 }

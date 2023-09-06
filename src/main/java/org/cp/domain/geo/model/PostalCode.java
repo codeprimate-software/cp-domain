@@ -25,7 +25,7 @@ import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.Immutable;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
-import org.cp.elements.lang.concurrent.ThreadSafe;
+import org.cp.elements.lang.annotation.ThreadSafe;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
@@ -37,7 +37,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see java.lang.Comparable
  * @see org.cp.domain.geo.enums.Country
  * @see org.cp.elements.lang.annotation.Immutable
- * @see org.cp.elements.lang.concurrent.ThreadSafe
+ * @see org.cp.elements.lang.annotation.ThreadSafe
  * @since 0.1.0
  */
 @Immutable
