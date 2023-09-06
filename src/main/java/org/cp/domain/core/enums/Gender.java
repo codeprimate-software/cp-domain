@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 import org.cp.elements.function.FunctionUtils;
+import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
@@ -27,10 +28,11 @@ import org.cp.elements.lang.annotation.Nullable;
  *
  * @author John J. Blum
  * @see java.lang.Enum
+ * @see org.cp.elements.lang.Nameable
  * @since 0.1.0
  */
 @SuppressWarnings("unused")
-public enum Gender {
+public enum Gender implements Nameable<String> {
 
   FEMALE("F", "Female"),
   MALE("M", "Male"),
