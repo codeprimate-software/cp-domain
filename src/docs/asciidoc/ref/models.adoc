@@ -5,20 +5,21 @@ The primary theme of Codeprimate Domain centers around Abstract Data Types (ADT)
 and entities used by software applications written in Java to represent (model), record and process data.
 
 Domain ADT, application domain model objects and entities are modeled using the lowest common denominator representation
-of a particular type definition. The Domain models are meant to represent things as they exist naturally
+for a particular type definition. The Domain models are meant to represent things as they exist naturally
 and are not specific to any one application context. Domain models are pure models.
 
 All Domain models use a fluent API and domain-specific language (DSL) to construct or build, and initialize the object.
 In addition, all Domain models are proper _JavaBeans_.
 
 Many of the Domain models build on and extend abstractions provided by Codeprimate Elements, such as,
-but not limited to: `Auditable`, Identifiable`, `Renderable`, `Versioned`, `Visitable`, and so on.
+but not limited to: `Auditable`, `Identifiable`, `Renderable`, `Versioned`, `Visitable`, and so on.
 
 Although most Domain model types are `Identifiable`, thus providing a non-natural, surrogate identifier, the ID
 is not required. IDs are commonly used in persistent data models.
 
 Where possible, Domain model types are designed as immutable. Such model types are even annotated as such using Elements
-`@Immutable` annotation.
+`@Immutable` annotation. If the model type is Thread-safe, then it will be declared as such using Elements `@ThreadSafe`
+annotation as well.
 
 [[domain-models-core]]
 === Core Domain Model Types
@@ -27,7 +28,7 @@ Codeprimate Domain contains core model types and enumerated values.
 
 One of the most common types modeled across any software application is a `Person` as well as a group of `People`.
 
-Minimally a `Person` can be represented or modeled and even identified with just a name, a date of birth and gender.
+Minimally, a `Person` can be represented or modeled, and even identified with, just a name, a date of birth and gender.
 Universally and fundamentally all persons (people) have a name, birthdate and a gender assigned or given at birth.
 For completeness, a `Person` can also have a `date of death`.
 
@@ -49,7 +50,7 @@ class Person {
 }
 ----
 
-You can easily build or constructs a new `Person` using the fluent API and DSL as follows:
+You can easily build or construct a new `Person` using the fluent API and DSL as follows:
 
 .Constructing a Person
 [source,java]
@@ -60,7 +61,7 @@ Person jonDoe = Person.newPerson("Jon", "Doe")
   .asMale();
 ----
 
-Even a `Person's` "name" is a formal type, called `Name`, which consists of a first, last and (optional) middle name
+Even a person's "name" is a formal type, called `Name`, which consists of a first, last and (optional) middle name
 along with optional support for `Title` and `Suffix`:
 
 .Name
@@ -94,7 +95,7 @@ Person jonDoe = Person.newPerson("Jane", "Doe")
 When getting a person's `age` (i.e. `person.getAge()`, returned as an `int` value), it is computed from the birthdate,
 taking date of death into consideration.
 
-A `Person` is additionally supported and represented by the `Gender` enum:
+A `Person` can additionally and optionally have a `Gender`:
 
 .Gender
 [source,java]
@@ -105,7 +106,7 @@ enum Gender {
 }
 ----
 
-Given the fluidity of `Gender`, non-female and non-male genders are simply represented by `NON_BINARY`.
+Given the fluidity of `Gender`, non-female and non-male genders are simply represented with `NON_BINARY`.
 
 The `Person` type also supports simple queries about the person, such as whether s/he is alive, or has the person
 even been born yet.
