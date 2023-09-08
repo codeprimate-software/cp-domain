@@ -249,7 +249,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
    * @see java.io.Serializable
    * @see org.cp.elements.lang.Nameable
    * @see org.cp.elements.lang.annotation.Immutable
-   * @see org.cp.elements.lang.concurrent.ThreadSafe
+   * @see org.cp.elements.lang.annotation.ThreadSafe
    * @since 0.1.0
    */
   @Immutable
