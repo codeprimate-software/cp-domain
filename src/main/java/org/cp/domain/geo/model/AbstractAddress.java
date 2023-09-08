@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import org.cp.domain.geo.enums.Country;
 import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.Id;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
@@ -50,10 +49,8 @@ import org.cp.elements.lang.annotation.Nullable;
  * @see org.cp.domain.geo.model.Unit
  * @see org.cp.domain.geo.model.generic.GenericAddress
  * @see org.cp.domain.geo.model.usa.UnitedStatesAddress
- * @see org.cp.elements.lang.annotation.FluentApi
  * @since 0.1.0
  */
-@FluentApi
 @SuppressWarnings("unused")
 public abstract class AbstractAddress implements Address {
 
