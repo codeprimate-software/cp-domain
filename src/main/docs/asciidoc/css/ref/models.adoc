@@ -177,4 +177,166 @@ Domain even offers one such typed `Group` out-of-the-box: `People`, which is a c
 [[domain-models-geo]]
 === Geo Domain Model Types
 
-Domain offers a package to model `Address` and other geographic types.
+Domain offers the `org.cp.domain.geo` package for modeling and processing geographic types, such as an `Address`
+or geographic `Coordinates`, which can be used to locate geographic objects.
+
+Additionally, Domain includes representations for, along with the ability to compute, `Elevation` and `Distance`.
+
+Every aspect of an `Address` is modeled with a formal type. Globally, an `Address` is minimally represented as
+and identified by a `Street`, `City`, `PostalCode` and `Country`. These elements make up the required components
+of an `Address`. `Street`, `City` and `PostalCode` are classes that can be extended and customized by `Locale`
+(for example, `Country`). The `Country` type is an enumeration of all the countries in the world.
+
+`Street` consists of a number, name and type, such as: `AVENUE` (AVE), `ROAD` (RD), `ROUTE` (RTE), STREET` (ST),
+`WAY` (WY) and so on. A `Street` can also declare a `Direction`, such as: `Southwest` (SW). `City` consists of
+a name, but can optionally declare a `Country`. Otherwise, the city's origin is undetermined, or can only be
+determined in the context of an `Address`. In the United States, a `City` can additionally have a `State`.
+The `PostalCode` consists of a number, but can optionally declare a `Country` as well. Like `City`, a postal code's
+origin is undermined, unless the `PostalCode` exists inside the context of an `Address`. Both `City` and `PostalCode`
+are immutable types.
+
+An `Address` can optionally have a `Unit` and geographic `Coordinates`. To compute the geographic `Coordinates`,
+Domain provides the `GeocodingService` SPI to integrate with and plugin different geocoding service providers,
+such as Google Maps or TomTom, for geocoding addresses as well as reverse geocoding coordinates.
+
+Addresses can be currently constructed by `Locale`, either using the "default" `Locale` or by specifying the `Country`
+of origin locating the `Address` on creation.
+
+To create an `Address` in the "default" (current) `Locale`, simply use the `AddressFactory`:
+
+.Using AddressFactory to create an Address located in the local Country
+[source,java]
+[subs="verbatim,attributes"]
+----
+Address localCountryAddress = AddressFactory.getInstance().newAddress(street, city, postalCode);
+----
+
+.Using AddressFactory to create an Address located in the requested Country
+[source,java]
+[subs="verbatim,attributes"]
+----
+Address addressInGermany = AddressFactory.getInstance(Country.GERMANY)
+    .newAddress(street, city, postalCode, Country.GERMANY);
+----
+
+TIP: Passing `Country` to the `AddressFactory.getInstance(:Country)` allows different providers to be plugged into
+the framework for creating local-specific geographic types. Otherwise, a `GenericAddressFactory` is provided by
+the framework to create addresses in any `Locale` (`Country`).
+
+`AddressFactory` also contains methods to acquire an `Address.Builder` to construct an `Address` programmatically
+using complex logic or conditions. The `Address.Builder` affords the developer more control over the construction
+of an `Address` at runtime.
+
+.Using Address.Builder to create an Address
+[source,java]
+[subs="verbatim,attributes"]
+----
+Address addressInEgypt = AddressFactory.newBuilder(Country.EGYPT)
+    .on(street)
+    .in(unit)
+    .in(city)
+    .in(postalCode)
+    .at(coordinates)
+    .build();
+----
+
+[[domain-models-geo-usa]]
+==== Geo Domain Model Types for the United States
+
+Domain includes extended support for addresses in the United States of America. All other countries currently result in
+an instance of `GenericAddress`.
+
+Some of the supporting classes for United States addresses include:
+
+* `UnitedStatesAddress`
+* `UnitedStatesCity` (extension of `City` with `Country` set to the United States)
+* `ZIP` (extension of `PostalCode` with `Country` set to the United States)
+* `County`
+* `State`
+
+An `UnitedStatesCity` also includes a `state` property as a `State` enumerated value for the State in which
+the city resides.
+
+To determine a `State` automatically, Domain provides the `StateZipCodesRepository` class
+in the `org.cp.domain.geo.model.usa.support` package to look up a `State` by `ZIP` code.
+
+Finally, Domain includes types for all the capital cities across the 50 states, such as `OlympiaWashington`, as well as
+the capital of the United States, `WashingtonDC`. Other well-known cities, such as `NewYorkNewYork`
+or `LosAngelesCalifornia`, are also specifically represented. United States specific cities are contained in
+the `org.cp.domain.geo.model.usa.cities` package for convenience.
+
+[[domain-models-contact]]
+=== Contact Domain Model Types
+
+Domain contains 2 types of contacts: `PhoneNumbers` and `EmailAddresses`.
+
+[[domain-models-contact-phonenumber]]
+==== PhoneNumber Domain Model Types
+
+Currently, Domain only includes support for the https://en.wikipedia.org/wiki/North_American_Numbering_Plan[North American Numbering Plan (NANP)].
+
+With that, Domain currently contains the `PhoneNumber` class in the `org.cp.domain.contact.phone.model` package
+to model a phone number in North America. This includes the United States, Canada along with a handful of
+other countries.
+
+A `PhoneNumber` is broken down into `AreaCode`, `ExchangeCode` and `LineNumber`, with an optional `Extension`.
+
+A `PhoneNumber` can easily be constructed using the `of(..)` factory method or builder:
+
+.Construct a `PhoneNumber`
+[source,java]
+[subs="verbatim,attributes"]
+----
+PhoneNumber phoneNumberOne = PhoneNumber.of(areaCode, exchangeCode, lineNumber);
+
+PhoneNumber phoneNumberTwo = PhoneNumber.builder()
+    .inLocalCountry()
+    .inAreaCode(areaCode)
+    .usingExchange(exchange)
+    .withLineNumber(lineNumber)
+    .withTextEnabled()
+    .build()
+----
+
+Additionally, `PhoneNumber` can be constructed from parsing a `String`:
+
+.Parse a `PhoneNumber`
+[source,java]
+[subs="verbatim,attributes"]
+----
+PhoneNumber phoneNumberOne = PhoneNumber.parse("(503) 555-1234")
+PhoneNumber phoneNumberTwo = PhoneNumber.parse("971-555-1234")
+----
+
+A `PhoneNumber` can be 1 of 4 types:
+
+.Types of `PhoneNumbers`
+[source,java]
+[subs="verbatim,attributes"]
+----
+enum PhoneNumber.Type {
+  CELL, LANDLINE, SATELLITE, VOIP
+}
+----
+
+Additionally, a `PhoneNumber` can indicate whether the line support text messages: `PhoneNumber.isTextEnabled()`.
+
+Finally, `Domain` includes dedicated support for phone numbers in the United States with the `UnitedStatesPhoneNumber`
+class in the `org.cp.domain.contact.phone.model.usa` package. The `UnitedStatesPhoneNumber` additionally has a `State`
+property that can be determined from the `AreaCode` using the `StateAreaCodesRepository`.
+
+[[domain-models-contact-email]]
+==== Email Domain Model Types
+
+Domain includes support for modeling an `EmailAddress` consisting of a `User` and a `Domain`.
+
+Like phone numbers, an `EmailAddress` can be constructed from its component parts or with parsing:
+
+.Construct an `EmailAddress`
+[source,java]
+[subs="verbatim,attributes"]
+----
+EmailAddress emailOne = EmailAddress.of(User.as("jonDoe"), Domain.of("gmail", Domain.Extension.COM));
+
+EmailAddress emailTwo = EmailAddress.parse("jonDoe@home.net");
+----
