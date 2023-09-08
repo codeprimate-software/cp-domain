@@ -13,9 +13,6 @@ whether distributed electronically or in print.
 
 toc::[]
 
-[[preface]]
-include::preface.adoc[]
-
 ifndef::leveloffset[:leveloffset: 0]
 
 :leveloffset: +1
