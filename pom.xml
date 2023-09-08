@@ -75,6 +75,7 @@
   <properties>
     <java-module-name>codeprimate.domain</java-module-name>
     <cp-elements.version>2.0.0-M3</cp-elements.version>
+    <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
   </properties>
 
   <dependencies>
@@ -96,6 +97,42 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>prepare-release</id>
+      <!-- $ mvn -P prepare-release install site -->
+      <properties>
+        <skipTests>false</skipTests>
+      </properties>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-changelog-plugin</artifactId>
+            <version>${maven-changelog-plugin.version}</version>
+            <reportSets>
+              <reportSet>
+                <id>all-reports</id>
+                <configuration>
+                  <type>date</type>
+                  <dates>
+                    <!-- Begin Date is inclusive -->
+                    <date implementation="java.lang.String">2000-01-01</date>
+                    <!-- End Date is exclusive -->
+                    <date implementation="java.lang.String">2023-09-08</date>
+                  </dates>
+                  <dateFormat>yyyy-MM-dd</dateFormat>
+                </configuration>
+                <reports>
+                  <report>changelog</report>
+                  <report>dev-activity</report>
+                  <report>file-activity</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
     </profile>
   </profiles>
 
