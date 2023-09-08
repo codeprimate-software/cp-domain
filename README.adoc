@@ -10,7 +10,7 @@ and entities for recording and processing data in a Java application.
 == Requirements
 
 1. Baseline is Java SE (JDK/JRE) 17.
-2. Built with Oracle JDK 17.0.7 2023-04-18 LTS
+2. Built with Oracle JDK 17.0.8 2023-07-18 LTS (build 17.0.8+9-LTS-211).
 
 [[license]]
 == License
