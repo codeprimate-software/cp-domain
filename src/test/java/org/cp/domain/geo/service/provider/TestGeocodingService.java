@@ -20,6 +20,7 @@ import org.cp.domain.geo.model.Address;
 import org.cp.domain.geo.model.City;
 import org.cp.domain.geo.model.Coordinates;
 import org.cp.domain.geo.model.Distance;
+import org.cp.domain.geo.model.Elevation;
 import org.cp.domain.geo.model.PostalCode;
 import org.cp.domain.geo.model.Street;
 import org.cp.domain.geo.service.spi.GeocodingService;
@@ -46,6 +47,11 @@ public class TestGeocodingService implements GeocodingService {
   @Override
   public @NotNull Distance distanceBetween(@Nullable Coordinates origin, @Nullable Coordinates destination) {
     return Distance.inMeters(100.0d);
+  }
+
+  @Override
+  public @NotNull Elevation elevationAt(@Nullable Coordinates target) {
+    return Elevation.atSeaLevel();
   }
 
   @Override

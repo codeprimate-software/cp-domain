@@ -20,6 +20,7 @@ import static org.mockito.Mockito.mock;
 import org.cp.domain.geo.model.Address;
 import org.cp.domain.geo.model.Coordinates;
 import org.cp.domain.geo.model.Distance;
+import org.cp.domain.geo.model.Elevation;
 import org.cp.domain.geo.service.spi.GeocodingService;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
@@ -43,6 +44,11 @@ public class MockGeocodingService implements GeocodingService {
   @Override
   public @NotNull Distance distanceBetween(@Nullable Coordinates origin, @Nullable Coordinates destination) {
     return mock(Distance.class);
+  }
+
+  @Override
+  public @NotNull Elevation elevationAt(@Nullable Coordinates target) {
+    return Elevation.atSeaLevel();
   }
 
   @Override

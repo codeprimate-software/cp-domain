@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.cp.domain.geo.model.Address;
 import org.cp.domain.geo.model.Coordinates;
 import org.cp.domain.geo.model.Distance;
+import org.cp.domain.geo.model.Elevation;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.service.annotation.Service;
 import org.cp.elements.service.loader.ServiceLoaderSupport;
@@ -69,6 +70,16 @@ public interface GeocodingService {
    * @see org.cp.domain.geo.model.Distance
    */
   Distance distanceBetween(Coordinates origin, Coordinates destination);
+
+  /**
+   * Computes the {@link Elevation} at the given geographic {@link Coordinates}.
+   *
+   * @param target {@link Coordinates} containing the geographic location, or point of interest.
+   * @return the {@link Elevation} at the given geographic {@link Coordinates}.
+   * @see org.cp.domain.geo.model.Coordinates
+   * @see org.cp.domain.geo.model.Elevation
+   */
+  Elevation elevationAt(Coordinates target);
 
   /**
    * Computes the geographic {@link Coordinates} of the given {@link Address}.
