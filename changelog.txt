@@ -1,0 +1,24 @@
+Codeprimate Domain changelog.txt
+--------------------------------
+https://github.com/codeprimate-software/cp-domain/blob/main/changelog.txt
+
+
+0.1.0 - 2023-September-07
+-------------------------
+First release of Codeprimate Domain containing base Abstract Data Types (ADT) and basic models.
+
+* Built on Oracle Java (JDK) 17.0.8 2023-July-18 LTS (build 17.0.8+9-LTS-211).
+* Based on Codeprimate Build 2.0.0-M4.
+* Based on Codeprimate Elements 2.0.0-M3.
+* Defines the Person class in the org.cp.domain.core.model package.
+* Defines the People class in the org.cp.domain.core.model package to group people (Person objects) together.
+* Defines the Group interface in the org.cp.domain.core.model package to generally define a collection
+for aggregating objects.
+* Defines the Address interface in the org.cp.domain.geo.model package.
+* Defines the GeocodingService SPI for [reverse] geocoding addresses and geographic coordinates.
+* Defines the PhoneNumber interface in the org.cp.domain.contact.phone.model package.
+* Defines the EmailAddress class in the org.cp.domain.contact.email.model package.
+* Defines the Gender and Race enums in the org.cp.domain.core.enums package.
+* Defines the Continent, Country, Direction and State enums in the org.cp.domain.geo.enums package.
+* Includes support for Locale-based addresses and United States address types in particular.
+* Includes support for the North American Numbering Plan (NANP) and a UnitedStatesPhoneNumber implementation.
