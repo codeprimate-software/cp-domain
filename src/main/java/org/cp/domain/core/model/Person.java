@@ -287,7 +287,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * Determines whether this {@link Person} is {@link Gender#FEMALE female}.
    *
    * @return a boolean value indicating whether this {@link Person} is {@link Gender#FEMALE female}.
-   * @see org.cp.elements.enums.Gender#FEMALE
+   * @see org.cp.domain.core.enums.Gender#FEMALE
    * @see #getGender()
    */
   public boolean isFemale() {
@@ -301,7 +301,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * Determines whether this {@link Person} is {@link Gender#MALE male}.
    *
    * @return a boolean value indicating whether this {@link Person} is {@link Gender#MALE male}.
-   * @see org.cp.elements.enums.Gender#MALE
+   * @see org.cp.domain.core.enums.Gender#MALE
    * @see #getGender()
    */
   public boolean isMale() {
@@ -315,7 +315,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * Determines whether this {@link Person} identifies as {@link Gender#NON_BINARY}.
    *
    * @return a boolean value indicating whether this {@link Person} identifies as {@link Gender#NON_BINARY}.
-   * @see org.cp.elements.enums.Gender#NON_BINARY
+   * @see org.cp.domain.core.enums.Gender#NON_BINARY
    * @see #getGender()
    */
   public boolean isNonBinary() {
@@ -467,7 +467,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * Sets this {@link Person person's} {@link Gender}.
    *
    * @param gender {@link Gender} of this {@link Person}.
-   * @see org.cp.elements.enums.Gender
+   * @see org.cp.domain.core.enums.Gender
    */
   public void setGender(@Nullable Gender gender) {
     this.gender = gender;
@@ -477,7 +477,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * Returns this {@link Person person's} {@link Gender}.
    *
    * @return an {@link Optional} containing this {@link Person person's} {@link Gender}.
-   * @see org.cp.elements.enums.Gender
+   * @see org.cp.domain.core.enums.Gender
    * @see java.util.Optional
    */
   public Optional<Gender> getGender() {
@@ -557,7 +557,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * @param gender {@link Gender} of this {@link Person}.
    * @return this {@link Person}.
    * @see org.cp.elements.lang.annotation.Dsl
-   * @see org.cp.elements.enums.Gender
+   * @see org.cp.domain.core.enums.Gender
    * @see #setGender(Gender)
    */
   @Dsl
@@ -570,8 +570,8 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * Builder method used to identify this {@link Person} as a {@link Gender#FEMALE}.
    *
    * @return this {@link Person}.
+   * @see org.cp.domain.core.enums.Gender#FEMALE
    * @see org.cp.elements.lang.annotation.Dsl
-   * @see org.cp.elements.enums.Gender#FEMALE
    * @see #as(Gender)
    */
   @Dsl
@@ -584,8 +584,8 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * Builder method used to identify this {@link Person} as a {@link Gender#MALE}.
    *
    * @return this {@link Person}.
+   * @see org.cp.domain.core.enums.Gender#MALE
    * @see org.cp.elements.lang.annotation.Dsl
-   * @see org.cp.elements.enums.Gender#MALE
    * @see #as(Gender)
    */
   @Dsl
@@ -598,7 +598,7 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * Builder method used to identify this {@link Person} as a {@link Gender#NON_BINARY} individual.
    *
    * @return this {@link Person}.
-   * @see org.cp.elements.enums.Gender#NON_BINARY
+   * @see org.cp.domain.core.enums.Gender#NON_BINARY
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #as(Gender)
    */
