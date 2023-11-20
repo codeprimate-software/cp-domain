@@ -100,6 +100,16 @@
       </build>
     </profile>
     <profile>
+      <id>java21</id>
+      <activation>
+        <jdk>[21,)</jdk>
+      </activation>
+      <properties>
+        <java.version>21</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+      </properties>
+    </profile>
+    <profile>
       <id>prepare-release</id>
       <!-- $ mvn -P prepare-release install site -->
       <properties>
