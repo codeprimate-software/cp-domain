@@ -78,6 +78,9 @@
     <cp-elements.version>2.0.0-M3</cp-elements.version>
     <google-guava-bom.version>33.2.1-jre</google-guava-bom.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
+    <protobuf.version>4.27.1</protobuf.version>
+    <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
+    <protoc.version>${protobuf.version}</protoc.version>
   </properties>
 
   <dependencyManagement>
@@ -97,6 +100,16 @@
       <groupId>org.codeprimate</groupId>
       <artifactId>elements</artifactId>
       <version>${cp-elements.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${protobuf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <version>${protobuf.version}</version>
     </dependency>
   </dependencies>
 
