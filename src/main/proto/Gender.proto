@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package cp.domain.proto;
+
+option java_package = "org.cp.domain.core.enums";
+option java_outer_classname = "GenderProto";
+
+enum Gender {
+  FEMALE = 0;
+  MALE = 1;
+}
