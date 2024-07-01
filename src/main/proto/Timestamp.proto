@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package cp.domain.proto;
+
+option java_package = "org.cp.domain.core.time.proto";
+option java_outer_classname = "TimestampProto";
+
+message Timestamp {
+  int64 milliseconds = 1;
+  int32 nanoseconds = 2;
+}
