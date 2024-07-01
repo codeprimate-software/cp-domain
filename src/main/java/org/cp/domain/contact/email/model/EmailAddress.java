@@ -448,7 +448,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
      *
      * @see java.lang.Enum
      */
-    enum Extension {
+    public enum Extension {
 
       BIZ,
       CO,
