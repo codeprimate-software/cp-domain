@@ -78,6 +78,7 @@
     <cp-elements.version>2.0.0-M3</cp-elements.version>
     <google-guava-bom.version>33.2.1-jre</google-guava-bom.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
+    <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
     <protobuf.version>4.27.1</protobuf.version>
     <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
     <protoc.version>${protobuf.version}</protoc.version>
@@ -112,6 +113,16 @@
       <version>${protobuf.version}</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>${os-maven-plugin.version}</version>
+      </extension>
+    </extensions>
+  </build>
 
   <profiles>
     <profile>
