@@ -250,7 +250,7 @@ public class StateZipCodesRepository {
     }
 
     protected @NotNull String getAdjustedZipCodeEnd() {
-      return StringUtils.pad(getZipCodeEnd(), '9', 9);
+      return StringUtils.padRight(getZipCodeEnd(), '9', 9);
     }
 
     protected @NotNull String getZipCodeStart() {
