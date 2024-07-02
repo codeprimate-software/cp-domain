@@ -8,4 +8,5 @@ option java_outer_classname = "GenderProto";
 enum Gender {
   FEMALE = 0;
   MALE = 1;
+  NON_BINARY = 2;
 }
