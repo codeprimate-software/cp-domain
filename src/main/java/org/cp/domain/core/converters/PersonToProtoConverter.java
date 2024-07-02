@@ -16,7 +16,9 @@
 package org.cp.domain.core.converters;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
+import org.cp.domain.core.enums.Gender;
 import org.cp.domain.core.enums.GenderProto;
 import org.cp.domain.core.model.Person;
 import org.cp.domain.core.model.proto.NameProto;
@@ -24,6 +26,9 @@ import org.cp.domain.core.model.proto.PersonProto;
 import org.cp.domain.core.time.proto.TimestampProto;
 import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.Converter;
+import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.CodeBlocks;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.time.DateTimeUtils;
 
 /**
@@ -39,44 +44,47 @@ public class PersonToProtoConverter extends AbstractConverter<Person, PersonProt
   @Override
   public PersonProto.Person convert(Person person) {
 
-    NameProto.Name name = NameProto.Name.newBuilder()
+    Assert.notNull(person, "Person to convert into a Protobuf message is required");
+
+    NameProto.Name name = buildName(person);
+
+    PersonProto.Person.Builder personBuilder = PersonProto.Person.newBuilder().setName(name);
+
+    person.getBirthDate().ifPresent(birthDate -> personBuilder.setBirthDate(buildTimestamp(birthDate)));
+    person.getDateOfDeath().ifPresent(deathDate -> personBuilder.setDeathDate(buildTimestamp(deathDate)));
+    person.getGender().ifPresent(gender -> personBuilder.setGender(toGender(gender)));
+
+    CodeBlocks.ifThen(person.getId(), Objects::nonNull, personBuilder::setId);
+
+    return personBuilder.build();
+  }
+
+  private TimestampProto.Timestamp buildTimestamp(LocalDateTime dateTime) {
+
+    return TimestampProto.Timestamp.newBuilder()
+      .setMilliseconds(DateTimeUtils.toMilliseconds(dateTime))
+      .build();
+  }
+
+  private NameProto.Name buildName(Person person) {
+
+    NameProto.Name.Builder nameBuilder = NameProto.Name.newBuilder()
       .setFirstName(person.getFirstName())
-      .setLastName(person.getLastName())
-      .setMiddleName(person.getMiddleName().orElse(null))
-      .build();
+      .setLastName(person.getLastName());
 
-    return PersonProto.Person.newBuilder()
-      .setId(person.getId())
-      .setName(name)
-      .setBirthDate(toTimestamp(person.getBirthDate().orElse(null)))
-      .setDeathDate(toTimestamp(person.getDateOfDeath().orElse(null)))
-      .setGender(toGender(person))
-      .build();
+    return person.getMiddleName()
+      .filter(StringUtils::hasText)
+      .map(nameBuilder::setMiddleName)
+      .map(NameProto.Name.Builder::build)
+      .orElseGet(nameBuilder::build);
   }
 
-  private TimestampProto.Timestamp toTimestamp(LocalDateTime dateTime) {
+  private GenderProto.Gender toGender(Gender gender) {
 
-    return dateTime != null
-      ? TimestampProto.Timestamp.newBuilder().setMilliseconds(DateTimeUtils.toMilliseconds(dateTime)).build()
-      : null;
-  }
-
-  private GenderProto.Gender toGender(Person person) {
-
-    return person.getGender()
-      .map(gender -> {
-        switch (gender) {
-          case FEMALE -> {
-            return GenderProto.Gender.FEMALE;
-          }
-          case MALE -> {
-            return GenderProto.Gender.MALE;
-          }
-          default -> {
-            return null;
-          }
-        }
-      })
-      .orElse(null);
+    return switch (gender) {
+      case FEMALE -> GenderProto.Gender.FEMALE;
+      case MALE -> GenderProto.Gender.MALE;
+      default -> GenderProto.Gender.NON_BINARY;
+    };
   }
 }

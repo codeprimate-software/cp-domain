@@ -27,6 +27,7 @@ import org.cp.domain.core.model.proto.PersonProto;
 import org.cp.domain.core.time.proto.TimestampProto;
 import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.Converter;
+import org.cp.elements.lang.Assert;
 
 /**
  * {@link Converter} used to convert a {@link PersonProto} to a {@link Person}.
@@ -42,9 +43,19 @@ public class ProtoToPersonConverter extends AbstractConverter<PersonProto.Person
   @Override
   public Person convert(PersonProto.Person person) {
 
-    return Person.newPerson(toName(person), toLocalDateTime(person.getBirthDate()))
-      .died(toLocalDateTime(person.getDeathDate()))
-      .as(toGender(person));
+    Assert.notNull(person, "Person message to convert is required");
+
+    Long id = person.hasId() ? person.getId() : null;
+
+    LocalDateTime birthDate = person.hasBirthDate() ? toLocalDateTime(person.getBirthDate()) : null;
+    LocalDateTime deathDate = person.hasDeathDate() ? toLocalDateTime(person.getDeathDate()) : null;
+
+    Gender gender = person.hasGender() ? toGender(person) : null;
+
+    return Person.newPerson(toName(person), birthDate)
+      .died(deathDate)
+      .as(gender)
+      .identifiedBy(id);
   }
 
   private Name toName(PersonProto.Person person) {
@@ -66,6 +77,7 @@ public class ProtoToPersonConverter extends AbstractConverter<PersonProto.Person
     return switch(person.getGender()) {
       case FEMALE -> Gender.FEMALE;
       case MALE -> Gender.MALE;
+      case NON_BINARY ->  Gender.NON_BINARY;
       default -> null;
     };
   }
