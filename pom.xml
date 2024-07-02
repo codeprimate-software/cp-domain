@@ -75,7 +75,7 @@
   <properties>
     <java-module-name>codeprimate.domain</java-module-name>
     <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
-    <cp-elements.version>2.0.0-M3</cp-elements.version>
+    <cp-elements.version>2.0.0-M4</cp-elements.version>
     <google-guava-bom.version>33.2.1-jre</google-guava-bom.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
     <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
