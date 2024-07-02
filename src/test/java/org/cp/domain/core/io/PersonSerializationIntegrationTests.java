@@ -17,17 +17,19 @@ package org.cp.domain.core.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.Month;
 
 import org.junit.jupiter.api.Test;
 
-import org.cp.domain.core.converters.ProtoToPersonConverter;
 import org.cp.domain.core.converters.PersonToProtoConverter;
+import org.cp.domain.core.converters.ProtoToPersonConverter;
 import org.cp.domain.core.model.Name;
 import org.cp.domain.core.model.Person;
 import org.cp.domain.core.serialization.PersonProtoSerializer;
+import org.cp.elements.io.IOUtils;
 
 /**
  * Integration Tests to test the de/serialization of {@link Person}.
@@ -59,4 +61,22 @@ public class PersonSerializationIntegrationTests {
     assertThat(deserializedPerson.getName()).isEqualTo(person.getName());
   }
 
+  @Test
+  void protobufSerializedBytesIsLessThanJavaSerializedBytes() throws IOException {
+
+    Person person = Person.newPerson(Name.of("Albert", "Einstein"))
+      .born(LocalDateTime.of(1879, Month.MARCH, 14, 0, 0))
+      .died(LocalDateTime.of(1955, Month.APRIL, 18, 0, 0))
+      .asMale()
+      .identifiedBy(1L);
+
+    byte[] javaSerializedData = IOUtils.serialize(person);
+    byte[] protobufSerializedData = this.personSerializer.serialize(this.personProtoConverter.convert(person)).array();
+
+    //System.out.printf("PROTOBUF [%d] vs. JAVA SERIALIZATION [%d]%n",
+    //  protobufSerializedData.length, javaSerializedData.length);
+
+    assertThat(javaSerializedData).isNotNull().isNotEmpty();
+    assertThat(protobufSerializedData).isNotNull().isNotEmpty().hasSizeLessThan(javaSerializedData.length);
+  }
 }
