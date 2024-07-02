@@ -251,7 +251,7 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
    * must not be {@literal null} of {@literal empty}.
    * @throws IllegalArgumentException if {@link String first name} or {@link String last name} are not specified.
    */
-  Name(@NotNull String firstName, @NotNull String middleName, @NotNull String lastName) {
+  Name(@NotNull String firstName, @Nullable String middleName, @NotNull String lastName) {
 
     this.firstName = StringUtils.requireText(firstName, "First name is required");
     this.lastName = StringUtils.requireText(lastName, "Last name is required");
