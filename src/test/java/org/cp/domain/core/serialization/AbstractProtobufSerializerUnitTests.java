@@ -16,7 +16,7 @@
 package org.cp.domain.core.serialization;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -31,7 +31,6 @@ import com.google.protobuf.Message;
 import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Constants;
-import org.cp.elements.lang.IllegalTypeException;
 
 /**
  * Unit Tests for {@link AbstractProtobufSerializer}.
@@ -64,9 +63,9 @@ public class AbstractProtobufSerializerUnitTests {
   void serializeInvalidMessage() {
 
     Arrays.asList(new Object(), "Message", null).forEach(object ->
-      assertThatExceptionOfType(IllegalTypeException.class)
+      assertThatIllegalArgumentException()
         .isThrownBy(() -> this.serializer.serialize(object))
-        .withMessage("Object must be an instance of Message")
+        .withMessage("Object [%s] must be an instance of Message", object)
         .withNoCause());
     ;
   }

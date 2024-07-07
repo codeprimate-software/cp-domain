@@ -15,12 +15,13 @@
  */
 package org.cp.domain.core.serialization;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
+
 import java.nio.ByteBuffer;
 
 import com.google.protobuf.Message;
 
 import org.cp.elements.data.serialization.Serializer;
-import org.cp.elements.lang.Assert;
 
 /**
  * Abstract base class and implementation of {@link Serializer} used to de/serialize Google Protobuf
@@ -37,8 +38,10 @@ public abstract class AbstractProtobufSerializer implements Serializer {
   @Override
   public ByteBuffer serialize(Object target) {
 
-    Assert.isInstanceOf(target, Message.class, "Object must be an instance of Message");
+    if (target instanceof Message message) {
+      return ByteBuffer.wrap(message.toByteArray());
+    }
 
-    return ByteBuffer.wrap(((Message) target).toByteArray());
+    throw newIllegalArgumentException("Object [%s] must be an instance of Message".formatted(target));
   }
 }
