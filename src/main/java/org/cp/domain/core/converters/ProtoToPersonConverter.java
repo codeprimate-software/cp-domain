@@ -18,6 +18,7 @@ package org.cp.domain.core.converters;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.function.Supplier;
 
 import org.cp.domain.core.enums.Gender;
 import org.cp.domain.core.model.Name;
@@ -25,9 +26,11 @@ import org.cp.domain.core.model.Person;
 import org.cp.domain.core.model.proto.NameProto;
 import org.cp.domain.core.model.proto.PersonProto;
 import org.cp.domain.core.time.proto.TimestampProto;
+import org.cp.domain.core.time.proto.TimestampProto.Timestamp;
 import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Condition;
 
 /**
  * {@link Converter} used to convert a {@link PersonProto} to a {@link Person}.
@@ -47,8 +50,8 @@ public class ProtoToPersonConverter extends AbstractConverter<PersonProto.Person
 
     Long id = person.hasId() ? person.getId() : null;
 
-    LocalDateTime birthDate = person.hasBirthDate() ? toLocalDateTime(person.getBirthDate()) : null;
-    LocalDateTime deathDate = person.hasDeathDate() ? toLocalDateTime(person.getDeathDate()) : null;
+    LocalDateTime birthDate = toLocalDateTime(person::hasBirthDate, person::getBirthDate);
+    LocalDateTime deathDate = toLocalDateTime(person::hasDeathDate, person::getDeathDate);
 
     Gender gender = person.hasGender() ? toGender(person) : null;
 
@@ -65,11 +68,12 @@ public class ProtoToPersonConverter extends AbstractConverter<PersonProto.Person
     return Name.of(name.getFirstName(), name.getMiddleName(), name.getLastName());
   }
 
-  private LocalDateTime toLocalDateTime(TimestampProto.Timestamp timestamp) {
+  private LocalDateTime toLocalDateTime(Condition timestampPresent, Supplier<Timestamp> timestampSupplier) {
+    return timestampPresent.evaluate() ? toLocalDateTime(timestampSupplier.get()) : null;
+  }
 
-    return timestamp != null
-      ? LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp.getMilliseconds()), ZoneOffset.systemDefault())
-      : null;
+  private LocalDateTime toLocalDateTime(TimestampProto.Timestamp timestamp) {
+    return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp.getMilliseconds()), ZoneOffset.systemDefault());
   }
 
   private Gender toGender(PersonProto.Person person) {
