@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package cp.domain.proto;
+
+import "Person.proto";
+
+option java_package = "org.cp.domain.core.model.proto";
+option java_outer_classname = "PeopleProto";
+
+message People {
+  repeated Person person = 1;
+}
