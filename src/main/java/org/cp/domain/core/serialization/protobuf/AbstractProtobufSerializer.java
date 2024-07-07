@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.domain.core.serialization;
+package org.cp.domain.core.serialization.protobuf;
 
-import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newSerializationException;
 
 import java.nio.ByteBuffer;
 
 import com.google.protobuf.Message;
 
 import org.cp.elements.data.serialization.Serializer;
+import org.cp.elements.lang.ClassUtils;
 
 /**
  * Abstract base class and implementation of {@link Serializer} used to de/serialize Google Protobuf
@@ -38,10 +40,25 @@ public abstract class AbstractProtobufSerializer implements Serializer {
   @Override
   public ByteBuffer serialize(Object target) {
 
-    if (target instanceof Message message) {
-      return ByteBuffer.wrap(message.toByteArray());
+    try {
+      return ByteBuffer.wrap(toMessage(target).toByteArray());
     }
-
-    throw newIllegalArgumentException("Object [%s] must be an instance of Message".formatted(target));
+    catch (Throwable t) {
+      throw newSerializationException(t, "Failed to serialize Object of type [%s] using Protobuf"
+        .formatted(ClassUtils.getClassName(target)));
+    }
   }
+
+  protected Message toMessage(Object target) {
+
+    try {
+      return target instanceof Message message ? message : convert(target);
+    }
+    catch (Throwable t) {
+      throw newConversionException(t, "Failed to convert [%s] into a Protobuf message".formatted(target));
+    }
+  }
+
+  protected abstract Message convert(Object target);
+
 }

@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.domain.core.serialization;
+package org.cp.domain.core.serialization.protobuf;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newDeserializationException;
 
 import java.nio.ByteBuffer;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Message;
 
+import org.cp.domain.core.model.Person;
 import org.cp.domain.core.model.proto.PersonProto;
+import org.cp.domain.core.serialization.protobuf.converters.PersonConverter;
+import org.cp.domain.core.serialization.protobuf.converters.PersonProtoConverter;
 import org.cp.elements.data.serialization.Serializer;
 
 /**
@@ -32,7 +37,29 @@ import org.cp.elements.data.serialization.Serializer;
  * @see org.cp.domain.core.model.proto.PersonProto
  * @since 0.2.0
  */
-public class PersonProtoSerializer extends AbstractProtobufSerializer {
+public class PersonSerializer extends AbstractProtobufSerializer {
+
+  private final PersonConverter personConverter = new PersonConverter();
+
+  private final PersonProtoConverter personProtoConverter = new PersonProtoConverter();
+
+  protected PersonConverter getPersonConverter() {
+    return this.personConverter;
+  }
+
+  protected PersonProtoConverter getPersonProtoConverter() {
+    return this.personProtoConverter;
+  }
+
+  @Override
+  protected Message convert(Object target) {
+
+    if (target instanceof Person person) {
+      return getPersonConverter().convert(person);
+    }
+
+    throw newConversionException("Cannot convert [%s] into a Protobuf message");
+  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -40,10 +67,10 @@ public class PersonProtoSerializer extends AbstractProtobufSerializer {
 
     try {
       byte[] data = byteBuffer.array();
-      return (T) PersonProto.Person.parseFrom(data);
+      return (T) getPersonProtoConverter().convert(PersonProto.Person.parseFrom(data));
     }
     catch (InvalidProtocolBufferException cause) {
-      throw newDeserializationException(cause, "Failed to deserialize byte array to PersonProto.Person");
+      throw newDeserializationException(cause, "Failed to deserialize byte array into a Person");
     }
   }
 }

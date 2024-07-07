@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.domain.core.converters;
+package org.cp.domain.core.serialization.protobuf.converters;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -33,7 +33,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Condition;
 
 /**
- * {@link Converter} used to convert a {@link PersonProto} to a {@link Person}.
+ * {@link Converter} used to convert a Protobuf message to a {@link Person}.
  *
  * @author John Blum
  * @see org.cp.domain.core.model.Person
@@ -41,7 +41,7 @@ import org.cp.elements.lang.Condition;
  * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 0.2.0
  */
-public class ProtoToPersonConverter extends AbstractConverter<PersonProto.Person, Person> {
+public class PersonProtoConverter extends AbstractConverter<PersonProto.Person, Person> {
 
   @Override
   public Person convert(PersonProto.Person person) {
