@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package cp.domain.model;
+
+option java_package = "org.cp.domain.math.proto";
+option java_outer_classname = "MeasurementsProto";
+option java_multiple_files = true;
+
+enum Length {
+  YOCTOMETER = 0;
+  ZEPTOMETER = 1;
+  ATTOMETER = 2;
+  FEMTOMETER = 3;
+  PICOMETER = 4;
+  NANOMETER = 5;
+  MICROMETER = 6;
+  MILLIMETER = 7;
+  CENTIMETER = 8;
+  DECIMETER = 9;
+  METER = 10;
+  DECAMETER = 11;
+  HECTOMETER = 12;
+  KILOMETER = 13;
+  MEGAMETER = 14;
+  GIGAMETER = 15;
+  TERAMETER = 16;
+  PETAMETER = 17;
+  EXAMETER = 18;
+  ZETAMETER = 19;
+  YOTTAMETER = 20;
+  INCH = 21;
+  FOOT = 22;
+  YARD = 23;
+  MILE = 24;
+  LIGHT_YEAR = 25;
+}
+
+enum Weight {
+  OUNCE = 0;
+  POUND = 1;
+  TON = 2;
+}
