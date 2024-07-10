@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+package cp.domain.model;
+
+option java_package = "org.cp.domain.geo.model.proto";
+option java_outer_classname = "GeoProto";
+option java_multiple_files = true;
+
+message Address {
+  Street street = 1;
+  City city = 2;
+  PostalCode postalCode = 3;
+  Country country = 4;
+}
+
+message Street {
+  enum Type {
+    ALLEY = 0;
+    AVENUE = 1;
+    BEND = 2;
+    BOULEVARD = 3;
+    BYPASS = 4;
+    CAUSEWAY = 5;
+    CENTER = 6;
+    CIRCLE = 7;
+    CORNER = 8;
+    COURT = 9;
+    CROSSING = 10;
+    CROSSROAD = 11;
+    CURVE = 12;
+    DRIVE = 13;
+    EXPRESSWAY = 14;
+    FERRY = 15;
+    FORK = 16;
+    FREEWAY = 17;
+    GATEWAY = 18;
+    HIGHWAY = 19;
+    JUNCTION = 20;
+    LANE = 21;
+    LOOP = 22;
+    MOTORWAY = 23;
+    OVERPASS = 24;
+    PARKWAY = 25;
+    PLACE = 26;
+    PLAZA = 27;
+    ROAD = 28;
+    ROUTE = 29;
+    SKYWAY = 30;
+    SQUARE = 31;
+    STREET = 32;
+    TURNPIKE = 33;
+    UNDERPASS = 34;
+    UNKNOWN = 35;
+    VIADUCT = 36;
+    WAY = 37;
+  }
+  int32 number = 1;
+  string name = 2;
+  Type type = 3;
+  optional Direction direction = 4;
+}
+
+message Unit {
+  enum Type {
+    APARTMENT = 0;
+    OFFICE = 1;
+    ROOM = 2;
+    SUITE = 3;
+    UNIT = 4;
+    UNKNOWN = 5;
+  }
+  string number = 1;
+  Type type = 2;
+}
+
+message City {
+  string name = 1;
+  optional Country country = 2;
+}
+
+message PostalCode {
+  string number = 1;
+  optional Country country = 2;
+}
+
+message Country {
+  string name = 1;
+  Continent continent = 2;
+  optional string isoTwo = 3;
+  optional string isoThree = 4;
+  optional string isoThreeDigitNumericCountryCode = 5;
+}
+
+enum Continent {
+  AFRICA = 0;
+  ANTARCTICA = 1;
+  ASIA = 2;
+  AUSTRALIA_AND_OCEANIA = 3;
+  EUROPE = 4;
+  NORTH_AMERICA = 5;
+  SOUTH_AMERICA = 6;
+  UNKNOWN = 7;
+}
+
+enum Direction {
+  NORTH = 0;
+  NORTHEAST = 1;
+  NORTHWEST = 2;
+  SOUTH = 3;
+  SOUTHEAST = 4;
+  SOUTHWEST = 5;
+  EAST = 6;
+  WEST = 7;
+}
