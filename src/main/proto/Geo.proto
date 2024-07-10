@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package cp.domain.model;
 
+import "Measurements.proto";
+
 option java_package = "org.cp.domain.geo.model.proto";
 option java_outer_classname = "GeoProto";
 option java_multiple_files = true;
@@ -102,6 +104,12 @@ enum Continent {
   UNKNOWN = 7;
 }
 
+message Coordinates {
+  double latitude = 1;
+  double longitude = 2;
+  optional Elevation elevation = 3;
+}
+
 enum Direction {
   NORTH = 0;
   NORTHEAST = 1;
@@ -111,4 +119,9 @@ enum Direction {
   SOUTHWEST = 5;
   EAST = 6;
   WEST = 7;
+}
+
+message Elevation {
+  double altitude = 1;
+  Length length = 2;
 }
