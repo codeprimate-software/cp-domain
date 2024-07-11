@@ -18,6 +18,8 @@ package org.cp.domain.core.serialization.protobuf.converters;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import com.google.protobuf.Message;
+
 import org.cp.domain.core.enums.Gender;
 import org.cp.domain.core.enums.GenderProto;
 import org.cp.domain.core.model.Person;
@@ -32,7 +34,7 @@ import org.cp.elements.lang.StringUtils;
 import org.cp.elements.time.DateTimeUtils;
 
 /**
- * {@link Converter} used to convert a {@link Person} to a Protobuf message.
+ * {@link Converter} used to convert a {@link Person} into a Protobuf {@link Message}.
  *
  * @author John Blum
  * @see org.cp.domain.core.model.Person
