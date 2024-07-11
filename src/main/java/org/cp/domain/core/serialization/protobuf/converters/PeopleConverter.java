@@ -23,7 +23,7 @@ import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.Converter;
 
 /**
- * {@link Converter} usd to convert {@link People} into a Protobuf {@link Message}.
+ * {@link Converter} used to convert {@link People} into a Protobuf {@link Message}.
  *
  * @author John Blum
  * @see org.cp.domain.core.model.People
