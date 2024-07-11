@@ -15,13 +15,13 @@
  */
 package org.cp.domain.core.serialization.protobuf;
 
-import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSerializationException;
 
 import java.nio.ByteBuffer;
 
 import com.google.protobuf.Message;
 
+import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.serialization.Serializer;
 import org.cp.elements.lang.ClassUtils;
 
@@ -43,8 +43,8 @@ public abstract class AbstractProtobufSerializer implements Serializer {
     try {
       return ByteBuffer.wrap(toMessage(target).toByteArray());
     }
-    catch (Throwable t) {
-      throw newSerializationException(t, "Failed to serialize Object of type [%s] using Protobuf"
+    catch (Throwable cause) {
+      throw newSerializationException(cause, "Failed to serialize Object of type [%s] using Protobuf"
         .formatted(ClassUtils.getClassName(target)));
     }
   }
@@ -54,8 +54,8 @@ public abstract class AbstractProtobufSerializer implements Serializer {
     try {
       return target instanceof Message message ? message : convert(target);
     }
-    catch (Throwable t) {
-      throw newConversionException(t, "Failed to convert [%s] into a Protobuf message".formatted(target));
+    catch (Throwable cause) {
+      throw new ConversionException("Failed to convert [%s] into a Protobuf message".formatted(target), cause);
     }
   }
 
