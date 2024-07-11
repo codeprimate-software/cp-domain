@@ -26,7 +26,7 @@ import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.Converter;
 
 /**
- * {@link Converter} used to convert a Protobuf {@link Message} to a collection of {@link People}.
+ * {@link Converter} used to convert a Protobuf {@link Message} into a collection of {@link People}.
  *
  * @author John Blum
  * @see org.cp.domain.core.model.People
