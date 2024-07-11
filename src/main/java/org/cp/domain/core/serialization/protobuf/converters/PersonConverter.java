@@ -53,9 +53,9 @@ public class PersonConverter extends AbstractConverter<Person, PersonProto.Perso
 
     PersonProto.Person.Builder personBuilder = PersonProto.Person.newBuilder().setName(name);
 
-    person.getBirthDate().ifPresent(birthDate -> personBuilder.setBirthDate(buildTimestamp(birthDate)));
-    person.getDateOfDeath().ifPresent(deathDate -> personBuilder.setDeathDate(buildTimestamp(deathDate)));
-    person.getGender().ifPresent(gender -> personBuilder.setGender(toGender(gender)));
+    person.getBirthDate().map(this::buildTimestamp).ifPresent(personBuilder::setBirthDate);
+    person.getDateOfDeath().map(this::buildTimestamp).ifPresent(personBuilder::setDeathDate);
+    person.getGender().map(this::toGender).ifPresent(personBuilder::setGender);
 
     CodeBlocks.ifThen(person.getId(), Objects::nonNull, personBuilder::setId);
 
