@@ -30,7 +30,7 @@ import org.cp.domain.core.serialization.protobuf.converters.PersonProtoConverter
 import org.cp.elements.data.serialization.Serializer;
 
 /**
- * {@link Serializer} used to de/serialize instances of {@link PersonProto}.
+ * {@link Serializer} used to de/serialize a {@link Person}.
  *
  * @author John Blum
  * @see java.nio.ByteBuffer
@@ -58,7 +58,7 @@ public class PersonSerializer extends AbstractProtobufSerializer {
       return getPersonConverter().convert(person);
     }
 
-    throw newConversionException("Cannot convert [%s] into a Protobuf message");
+    throw newConversionException("Cannot convert [%s] into a Protobuf message".formatted(target));
   }
 
   @Override
