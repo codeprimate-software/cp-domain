@@ -13,6 +13,7 @@ message Address {
   City city = 2;
   PostalCode postalCode = 3;
   Country country = 4;
+  optional Unit unit = 5;
 }
 
 message Street {
