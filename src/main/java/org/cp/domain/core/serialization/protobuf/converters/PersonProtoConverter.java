@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.function.Supplier;
 
+import com.google.protobuf.Message;
+
 import org.cp.domain.core.enums.Gender;
 import org.cp.domain.core.model.Name;
 import org.cp.domain.core.model.Person;
@@ -33,7 +35,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Condition;
 
 /**
- * {@link Converter} used to convert a Protobuf message to a {@link Person}.
+ * {@link Converter} used to convert a Protobuf {@link Message} into a {@link Person}.
  *
  * @author John Blum
  * @see org.cp.domain.core.model.Person
