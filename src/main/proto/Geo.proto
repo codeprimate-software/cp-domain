@@ -6,7 +6,6 @@ import "Measurements.proto";
 
 option java_package = "org.cp.domain.geo.model.proto";
 option java_outer_classname = "GeoProto";
-option java_multiple_files = true;
 
 message Address {
   Street street = 1;
