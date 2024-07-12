@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package cp.domain.model;
+
+option java_package = "org.cp.domain.contact.email.model.proto";
+option java_outer_classname = "EmailProto";
+
+message Email {
+  string username = 1;
+  string domainName = 2;;
+}
