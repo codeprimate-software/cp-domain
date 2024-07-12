@@ -76,7 +76,7 @@ public enum Gender implements Nameable<String> {
   private static @Nullable Gender valueOf(@NotNull Predicate<Gender> predicate) {
 
     return Arrays.stream(values())
-      .filter(FunctionUtils.nullSafePredicateMatchNone(predicate))
+      .filter(FunctionUtils.nullSafePredicateMatchingNone(predicate))
       .findFirst()
       .orElse(null);
   }

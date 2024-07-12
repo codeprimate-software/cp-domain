@@ -78,7 +78,7 @@ public enum Race {
   private static @Nullable Race valueOf(@NotNull Predicate<Race> predicate) {
 
     return Arrays.stream(values())
-      .filter(FunctionUtils.nullSafePredicateMatchNone(predicate))
+      .filter(FunctionUtils.nullSafePredicateMatchingNone(predicate))
       .findFirst()
       .orElse(null);
   }
