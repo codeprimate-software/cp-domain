@@ -23,7 +23,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 
 import org.cp.domain.contact.email.model.EmailAddress;
-import org.cp.domain.contact.email.model.proto.EmailProto;
+import org.cp.domain.contact.email.model.proto.EmailAddressProto;
 import org.cp.domain.contact.email.serialization.protobuf.converters.EmailAddressConverter;
 import org.cp.domain.contact.email.serialization.protobuf.converters.EmailAddressProtoConverter;
 import org.cp.domain.core.serialization.protobuf.AbstractProtobufSerializer;
@@ -35,7 +35,7 @@ import org.cp.elements.data.serialization.Serializer;
  *
  * @author John Blum
  * @see org.cp.domain.contact.email.model.EmailAddress
- * @see org.cp.domain.contact.email.model.proto.EmailProto
+ * @see org.cp.domain.contact.email.model.proto.EmailAddressProto
  * @see org.cp.domain.core.serialization.protobuf.AbstractProtobufSerializer
  * @since 0.2.0
  */
@@ -68,7 +68,7 @@ public class EmailAddressSerializer extends AbstractProtobufSerializer {
 
     try {
       byte[] data = bytes.array();
-      return (T) getEmailAddressProtoConverter().convert(EmailProto.Email.parseFrom(data));
+      return (T) getEmailAddressProtoConverter().convert(EmailAddressProto.EmailAddress.parseFrom(data));
     }
     catch (InvalidProtocolBufferException cause) {
       throw newDeserializationException(cause, "Failed to deserialize byte array into an EmailAddress");

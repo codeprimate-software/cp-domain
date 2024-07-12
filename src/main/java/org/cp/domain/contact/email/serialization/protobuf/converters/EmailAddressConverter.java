@@ -18,8 +18,7 @@ package org.cp.domain.contact.email.serialization.protobuf.converters;
 import com.google.protobuf.Message;
 
 import org.cp.domain.contact.email.model.EmailAddress;
-import org.cp.domain.contact.email.model.proto.EmailProto;
-import org.cp.domain.contact.email.model.proto.EmailProto.Email;
+import org.cp.domain.contact.email.model.proto.EmailAddressProto;
 import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.Converter;
 
@@ -28,16 +27,16 @@ import org.cp.elements.data.conversion.Converter;
  *
  * @author John Blum
  * @see org.cp.domain.contact.email.model.EmailAddress
- * @see org.cp.domain.contact.email.model.proto.EmailProto
+ * @see org.cp.domain.contact.email.model.proto.EmailAddressProto
  * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 0.2.0
  */
-public class EmailAddressConverter extends AbstractConverter<EmailAddress, EmailProto.Email> {
+public class EmailAddressConverter extends AbstractConverter<EmailAddress, EmailAddressProto.EmailAddress> {
 
   @Override
-  public Email convert(EmailAddress emailAddress) {
+  public EmailAddressProto.EmailAddress convert(EmailAddress emailAddress) {
 
-    return EmailProto.Email.newBuilder()
+    return EmailAddressProto.EmailAddress.newBuilder()
       .setUsername(emailAddress.getUsername())
       .setDomainName(emailAddress.getDomainName())
       .build();
