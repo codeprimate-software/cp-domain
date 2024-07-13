@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package cp.domain.model;
+
+option java_package = "org.cp.domain.contact.phone.model.proto";
+option java_outer_classname = "PhoneNumberProto";
+
+message PhoneNumber {
+  AreaCode areaCode = 1;
+  ExchangeCode exchangeCode = 2;
+  LineNumber lineNumber = 3;
+  optional Extension extension = 4;
+}
+
+message AreaCode {
+  string code = 1;
+}
+
+message ExchangeCode {
+  string code = 1;
+}
+
+message LineNumber {
+  string number = 1;
+}
+
+message Extension {
+  string extension = 1;
+}
