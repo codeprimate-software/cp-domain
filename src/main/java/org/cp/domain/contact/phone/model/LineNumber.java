@@ -64,7 +64,7 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Renderable
    * @throws IllegalArgumentException if the given {@link Integer number} is not {@literal 3-digits}.
    */
   public static @NotNull LineNumber of(int number) {
-    return new LineNumber(String.valueOf(Math.abs(number)));
+    return new LineNumber(java.lang.String.valueOf(Math.abs(number)));
   }
 
   /**
@@ -93,12 +93,27 @@ public class LineNumber implements Cloneable, Comparable<LineNumber>, Renderable
    */
   public static @NotNull LineNumber parse(@NotNull String phoneNumber) {
 
-    String digits = StringUtils.getDigits(phoneNumber);
+    String digits = StringUtils.getDigits(dropExtension(phoneNumber));
 
     Assert.isTrue(digits.length() >= REQUIRED_LINE_NUMBER_LENGTH,
       "Phone Number [%s] must be at least %d-digits", phoneNumber, REQUIRED_LINE_NUMBER_LENGTH);
 
     return new LineNumber(digits.substring(digits.length() - REQUIRED_LINE_NUMBER_LENGTH));
+  }
+
+  /**
+   * Drops the {@link String extension} from the given {@link String number}.
+   *
+   * @param number {@link String line number} to evaluate.
+   * @return the given {@link String line number} without an extension.
+   */
+  private static @NotNull String dropExtension(@Nullable String number) {
+
+    int index = String.valueOf(number).indexOf(Extension.SYMBOL);
+
+    index = index > -1 ? index : String.valueOf(number).indexOf(Extension.PREFIX);
+
+    return index > -1 ? number.substring(0, index) : number;
   }
 
   /**

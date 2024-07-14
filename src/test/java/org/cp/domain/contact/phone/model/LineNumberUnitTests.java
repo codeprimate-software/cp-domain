@@ -48,8 +48,9 @@ public class LineNumberUnitTests {
 
   private void assertLineNumber(LineNumber lineNumber, String number) {
 
-    assertThat(lineNumber).isNotNull();
-    assertThat(lineNumber.getNumber()).isEqualTo(number);
+    assertThat(lineNumber).isNotNull()
+      .extracting(LineNumber::getNumber)
+      .isEqualTo(number);
   }
 
   @Test
@@ -78,13 +79,35 @@ public class LineNumberUnitTests {
 
   @Test
   public void ofIntegerNumber() {
+    assertLineNumber(LineNumber.of(1234), "1234");
+    assertLineNumber(LineNumber.of(-1234), "1234");
     assertLineNumber(LineNumber.of(9876), "9876");
     assertLineNumber(LineNumber.of(-9876), "9876");
   }
 
   @Test
+  void ofInvalidIntegerNumber() {
+
+    Arrays.asList(999, 10_000).forEach(number ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> LineNumber.of(number))
+        .withMessage("LineNumber [%d] must be a 4-digit number", number)
+        .withNoCause());
+  }
+
+  @Test
   public void ofStringNumber() {
     assertLineNumber(LineNumber.of("1234"), "1234");
+  }
+
+  @Test
+  void ofInvalidStringNumber() {
+
+    Arrays.asList("123", "12345").forEach(number ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> LineNumber.of(number))
+        .withMessage("LineNumber [%s] must be a 4-digit number", number)
+        .withNoCause());
   }
 
   @Test
@@ -110,6 +133,19 @@ public class LineNumberUnitTests {
   }
 
   @Test
+  void parsePhoneNumberWithExtension() {
+    assertLineNumber(LineNumber.parse("4085551234x9876"), "1234");
+  }
+
+  @Test
+  void parseFormattedPhoneNumberWithExtension() {
+
+    assertLineNumber(LineNumber.parse("(408) 555-1234 x1248"), "1234");
+    assertLineNumber(LineNumber.parse("408-555-9876 x123"), "9876");
+    assertLineNumber(LineNumber.parse("(408) 555-2358 Ext. 1234"), "2358");
+  }
+
+  @Test
   public void parseFourDigitPhoneNumber() {
 
     assertLineNumber(LineNumber.parse("0012"), "0012");
@@ -121,6 +157,7 @@ public class LineNumberUnitTests {
   public void parseFormattedFourDigitPhoneNumber() {
 
     assertLineNumber(LineNumber.parse("[1234]"), "1234");
+    assertLineNumber(LineNumber.parse("[12345]"), "2345");
     assertLineNumber(LineNumber.parse("SOS-1248"), "1248");
   }
 
