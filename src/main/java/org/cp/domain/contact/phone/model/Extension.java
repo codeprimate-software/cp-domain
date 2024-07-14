@@ -40,6 +40,9 @@ import org.cp.elements.lang.annotation.Nullable;
 @Immutable
 public class Extension implements Cloneable, Comparable<Extension>, Renderable, Serializable {
 
+  public static final String PREFIX = "Ext";
+  public static final String SYMBOL = "x";
+
   /**
    * Factory method used to construct a new {@link Extension} copied from an existing, required {@link Extension}.
    *
