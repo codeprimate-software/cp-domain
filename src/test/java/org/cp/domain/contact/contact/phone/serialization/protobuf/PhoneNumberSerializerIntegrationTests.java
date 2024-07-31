@@ -73,8 +73,8 @@ public class PhoneNumberSerializerIntegrationTests {
     byte[] protobufBytes = this.phoneNumberSerializer.serialize(phoneNumber).array();
     byte[] javaSerializedBytes = IOUtils.serialize(phoneNumber);
 
-    System.out.printf("Protobuf Serialized bytes [%d] vs. Java Serialized bytes [%d]",
-      protobufBytes.length, javaSerializedBytes.length);
+    //System.out.printf("Protobuf Serialized bytes [%d] vs. Java Serialized bytes [%d]",
+    //  protobufBytes.length, javaSerializedBytes.length);
 
     assertThat(javaSerializedBytes).isNotNull().isNotEmpty();
     assertThat(protobufBytes).isNotNull().isNotEmpty().hasSizeLessThan(javaSerializedBytes.length);
