@@ -3,6 +3,22 @@ Codeprimate Domain changelog.txt
 https://github.com/codeprimate-software/cp-domain/blob/main/changelog.txt
 
 
+0.2.0 - 2024-July-30
+--------------------
+Release Codprimate Domain 0.2.0 with support for Google Protobuf de/serialization of Domain application types.
+
+* Build on Oracle Java (JDK) 17.0.12 2024-07-16 LTS (build 17.0.12+8-LTS-286).
+* Builds and supports Elements on (up to) Java (JDK) 21 2024-07-16 LTS (build 21.0.4+8-LTS-274).
+* Builds and supports Elements on (up to) Java (JDK) 22 2024-07-16 (build 22.0.2+9-70).
+* Add Google Protobuf support for o.c.domain.core.model.Person.
+* Add Google Protobuf support for o.c.domain.core.model.People.
+* Add Google Protobuf support for o.c.domain.geo.model.Address.
+* Add Google Protobuf support for o.c.domain.contact.email.EmailAddress.
+* Add Google Protobuf support for o.c.domain.contact.phone.PhoneNumber.
+* Upgrades to Codeprimate Build 2.0.0-M6.
+* Upgrades to Codeprimate Elements 2.0.0-M5.
+
+
 0.1.0 - 2023-September-07
 -------------------------
 First release of Codeprimate Domain containing base Abstract Data Types (ADT) and basic models.
