@@ -1,6 +1,6 @@
 [[codeprimate-domain]]
 = Codeprimate Domain
-:version: 0.1.0
+:version: 0.2.0
 
 
 The Codeprimate Domain project is a Java library of common Abstract Data Types (ADT), application domain model objects
