@@ -91,7 +91,7 @@
         <artifactId>guava-bom</artifactId>
         <version>${google-guava-bom.version}</version>
         <scope>import</scope>
-        <type>bom</type>
+        <type>pom</type>
       </dependency>
     </dependencies>
   </dependencyManagement>
