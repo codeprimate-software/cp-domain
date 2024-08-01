@@ -8,6 +8,8 @@
     Codeprimate Elements PMD Rules.
   </description>
 
+  <exclude-pattern>org/cp/domain/.*/proto/.*</exclude-pattern>
+
   <!-- Best Practices -->
   <rule ref="category/java/bestpractices.xml">
     <exclude name="AccessorClassGeneration"/>
