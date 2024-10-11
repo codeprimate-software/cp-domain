@@ -75,10 +75,11 @@
   <properties>
     <java-module-name>codeprimate.domain</java-module-name>
     <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
+    <changelog-start-date>2024-08-02</changelog-start-date>
+    <changelog-end-date>?</changelog-end-date>
     <cp-elements.version>2.0.0-M5</cp-elements.version>
     <google-guava-bom.version>33.2.1-jre</google-guava-bom.version>
     <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
-    <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
     <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
     <protobuf.version>4.27.2</protobuf.version>
     <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
@@ -183,42 +184,6 @@
         <java.version>21</java.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
       </properties>
-    </profile>
-    <profile>
-      <id>prepare-release</id>
-      <!-- $ mvn -P prepare-release install site -->
-      <properties>
-        <skipTests>false</skipTests>
-      </properties>
-      <reporting>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-changelog-plugin</artifactId>
-            <version>${maven-changelog-plugin.version}</version>
-            <reportSets>
-              <reportSet>
-                <id>all-reports</id>
-                <configuration>
-                  <type>date</type>
-                  <dates>
-                    <!-- Begin Date is inclusive -->
-                    <date implementation="java.lang.String">2023-09-08</date>
-                    <!-- End Date is exclusive -->
-                    <date implementation="java.lang.String">2024-08-01</date>
-                  </dates>
-                  <dateFormat>yyyy-MM-dd</dateFormat>
-                </configuration>
-                <reports>
-                  <report>changelog</report>
-                  <report>dev-activity</report>
-                  <report>file-activity</report>
-                </reports>
-              </reportSet>
-            </reportSets>
-          </plugin>
-        </plugins>
-      </reporting>
     </profile>
     <profile>
       <id>release</id>
