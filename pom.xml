@@ -78,7 +78,7 @@
     <changelog-start-date>2024-08-02</changelog-start-date>
     <changelog-end-date>?</changelog-end-date>
     <cp-elements.version>2.0.0-M5</cp-elements.version>
-    <google-guava-bom.version>33.2.1-jre</google-guava-bom.version>
+    <google-guava-bom.version>33.3.1-jre</google-guava-bom.version>
     <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
     <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
     <protobuf.version>4.27.2</protobuf.version>
