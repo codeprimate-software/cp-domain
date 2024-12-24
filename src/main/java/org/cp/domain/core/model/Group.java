@@ -198,10 +198,21 @@ public interface Group<T> extends Identifiable<UUID>, Iterable<T>, Nameable<Stri
    * Determines whether this {@link Group} contains any members.
    *
    * @return a boolean value indicating whether this {@link Group} contains any members.
+   * @see #isNotEmpty()
    * @see #size()
    */
   default boolean isEmpty() {
     return size() < 1;
+  }
+
+  /**
+   * Determines whether this {@link Group} contains any members.
+   *
+   * @return a boolean value indicating whether this {@link Group} contains any members.
+   * @see #isEmpty()
+   */
+  default boolean isNotEmpty() {
+    return !isEmpty();
   }
 
   /**
