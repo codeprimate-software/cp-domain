@@ -16,6 +16,7 @@
 package org.cp.domain.core.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -210,6 +211,26 @@ public class PeopleUnitTests {
 
     assertThat(group).isNotNull();
     assertThat(group).isEmpty();
+  }
+
+  @Test
+  void onePerson() {
+
+    People people = People.one(this.jonDoe);
+
+    assertThat(people).isNotNull();
+    assertThat(people).hasSize(1);
+    assertThat(people).containsExactly(this.jonDoe);
+  }
+
+  @Test
+  void onePersonWithNoPerson() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> People.one(null))
+      .withMessage("Single Person is required")
+      .withNoCause();
+
   }
 
   @Test

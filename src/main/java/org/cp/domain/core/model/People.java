@@ -26,6 +26,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Integers;
 import org.cp.elements.lang.StringUtils;
@@ -106,6 +107,19 @@ public class People implements Group<Person> {
     return group;
   }
 
+  /**
+   * Factory method used to construct a new {@link Group} of {@link People} consisting of 1 {@link Person}.
+   *
+   * @param person {@link Person} to add to the {@link Group} of {@link People}.
+   * @return a new {@link Group} of {@link People} containing the given, single {@link Person}.
+   * @throws IllegalArgumentException if {@link Person} is {@literal null}.
+   * @see #of(Person...)
+   */
+  public static @NotNull People one(Person person) {
+    Assert.notNull(person, "Single Person is required");
+    return of(person);
+  }
+
   // Stores and orders people by last name first, date of birth (oldest to youngest), then first name and middle initial
   @SuppressWarnings({ "rawtypes", "unchecked" })
   private final Set<Person> people = new TreeSet<>((personOne, personTwo) ->
@@ -156,7 +170,7 @@ public class People implements Group<Person> {
   public @Nullable String getName() {
 
     String name = this.name;
-    String resolvedName = StringUtils.defaultIfBlank(name);
+    String resolvedName = StringUtils.hasText(name) ? name : null;
 
     resolvedName = resolvedName == null && Objects.nonNull(getId())
       ? GROUP_ID_NAME.formatted(getId())
