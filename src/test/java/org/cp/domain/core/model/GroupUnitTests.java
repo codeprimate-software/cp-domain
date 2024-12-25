@@ -71,6 +71,7 @@ public class GroupUnitTests {
 
     doAnswer(invocation -> ArrayUtils.asIterator(people)).when(mockGroup).iterator();
     doCallRealMethod().when(mockGroup).spliterator();
+    doCallRealMethod().when(mockGroup).stream();
 
     return mockGroup;
   }
@@ -252,11 +253,13 @@ public class GroupUnitTests {
     verify(mockGroupOne, times(1)).findBy(isNotNull(Predicate.class));
     verify(mockGroupOne, times(1)).iterator();
     verify(mockGroupOne, times(1)).spliterator();
+    verify(mockGroupOne, times(1)).stream();
     Arrays.asList(mockPersonOne, mockPersonTwo).forEach(mockPerson ->
       verify(mockGroupTwo, times(1)).contains(eq(mockPerson)));
     verify(mockGroupTwo, times(2)).findOne(isNotNull(Predicate.class));
     verify(mockGroupTwo, times(2)).iterator();
     verify(mockGroupTwo, times(2)).spliterator();
+    verify(mockGroupTwo, times(2)).stream();
     verifyNoMoreInteractions(mockGroupOne, mockGroupTwo);
     verifyNoInteractions(mockPersonOne, mockPersonTwo);
   }
@@ -282,6 +285,7 @@ public class GroupUnitTests {
     verify(mockGroupOne, times(1)).findBy(isNotNull(Predicate.class));
     verify(mockGroupOne, times(1)).iterator();
     verify(mockGroupOne, times(1)).spliterator();
+    verify(mockGroupOne, times(1)).stream();
     verifyNoInteractions(mockGroupTwo, mockPerson);
     verifyNoMoreInteractions(mockGroupOne);
   }
@@ -309,10 +313,12 @@ public class GroupUnitTests {
     verify(mockGroupOne, times(1)).findBy(isNotNull(Predicate.class));
     verify(mockGroupOne, times(1)).iterator();
     verify(mockGroupOne, times(1)).spliterator();
+    verify(mockGroupOne, times(1)).stream();
     verify(mockGroupTwo, times(1)).contains(eq(mockPerson));
     verify(mockGroupTwo, times(1)).findOne(isNotNull(Predicate.class));
     verify(mockGroupTwo, times(1)).iterator();
     verify(mockGroupTwo, times(1)).spliterator();
+    verify(mockGroupTwo, times(1)).stream();
     verifyNoMoreInteractions(mockGroupOne, mockGroupTwo);
     verifyNoInteractions(mockPerson);
   }
@@ -529,6 +535,7 @@ public class GroupUnitTests {
     verify(mockGroupOne, times(1)).findBy(isNotNull(Predicate.class));
     verify(mockGroupOne, times(1)).iterator();
     verify(mockGroupOne, times(1)).spliterator();
+    verify(mockGroupOne, times(1)).stream();
     verify(mockGroupTwo, times(2)).contains(isA(Person.class));
     verifyNoMoreInteractions(mockGroupOne, mockGroupTwo);
     verifyNoInteractions(mockPersonOne, mockPersonTwo);
@@ -566,6 +573,7 @@ public class GroupUnitTests {
       verify(mockGroup, times(1)).findBy(isNotNull(Predicate.class));
       verify(mockGroup, times(1)).iterator();
       verify(mockGroup, times(1)).spliterator();
+      verify(mockGroup, times(1)).stream();
     });
 
     verifyNoMoreInteractions(mockGroupOne, mockGroupTwo);
@@ -594,6 +602,7 @@ public class GroupUnitTests {
     verify(mockGroupOne, times(1)).findBy(isNotNull(Predicate.class));
     verify(mockGroupOne, times(1)).iterator();
     verify(mockGroupOne, times(1)).spliterator();
+    verify(mockGroupOne, times(1)).stream();
     verify(mockGroupTwo, times(1)).contains(eq(mockPerson));
     verifyNoMoreInteractions(mockGroupOne, mockGroupTwo);
     verifyNoInteractions(mockPerson);
