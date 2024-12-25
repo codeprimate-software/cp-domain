@@ -77,7 +77,7 @@ public interface Group<T> extends Identifiable<UUID>, Iterable<T>, Nameable<Stri
   @Override
   default void accept(@NotNull Visitor visitor) {
 
-    StreamUtils.stream(this)
+    stream()
       .filter(Visitable.class::isInstance)
       .map(Visitable.class::cast)
       .forEach(entity -> entity.accept(visitor));
@@ -110,7 +110,7 @@ public interface Group<T> extends Identifiable<UUID>, Iterable<T>, Nameable<Stri
 
     Assert.notNull(predicate, "Predicate is required");
 
-    long count = StreamUtils.stream(this)
+    long count = stream()
       .filter(predicate)
       .count();
 
@@ -151,7 +151,7 @@ public interface Group<T> extends Identifiable<UUID>, Iterable<T>, Nameable<Stri
 
     Assert.notNull(predicate, "Predicate is required");
 
-    return StreamUtils.stream(this)
+    return stream()
       .filter(predicate)
       .collect(Collectors.toSet());
   }
@@ -172,7 +172,7 @@ public interface Group<T> extends Identifiable<UUID>, Iterable<T>, Nameable<Stri
 
     Assert.notNull(predicate, "Predicate is required");
 
-    return StreamUtils.stream(this)
+    return stream()
       .filter(predicate)
       .findFirst();
   }
@@ -276,7 +276,7 @@ public interface Group<T> extends Identifiable<UUID>, Iterable<T>, Nameable<Stri
    * @see #isEmpty()
    */
   default int size() {
-    long count = StreamUtils.stream(this).count();
+    long count = stream().count();
     return Long.valueOf(count).intValue();
   }
 
