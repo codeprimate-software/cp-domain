@@ -41,6 +41,7 @@ import org.cp.elements.util.stream.StreamUtils;
  * Abstract Data Type (ADT) modeling a {@link Iterable collection} of {@link Person people}.
  *
  * @author John Blum
+ * @see java.time.LocalDateTime
  * @see java.util.UUID
  * @see org.cp.domain.core.model.Group
  * @see org.cp.domain.core.model.Person
@@ -55,6 +56,7 @@ public class People implements Group<Person> {
   private static final String EMPTY_NO_ID_GROUP_NAME = "EMPTY NON-IDENTIFIED GROUP";
   private static final String GROUP_ID_NAME = "GROUP ID [%s]";
   private static final String GROUP_OF_NAME = "GROUP of [%s]";
+  private static final String LAST_NAME_FIRST_NAME_MIDDLE_NAME = "%1$s, %2$s%3$s";
 
   /**
    * Factory method used to construct a new, empty {@link Group} of {@link People}.
@@ -153,22 +155,24 @@ public class People implements Group<Person> {
   @Override
   public @Nullable String getName() {
 
-    String resolvedName = StringUtils.hasText(this.name) ? this.name : null;
+    String name = this.name;
+    String resolvedName = StringUtils.defaultIfBlank(name);
 
     resolvedName = resolvedName == null && Objects.nonNull(getId())
-      ? String.format(GROUP_ID_NAME, getId())
+      ? GROUP_ID_NAME.formatted(getId())
       : resolvedName;
 
     if (resolvedName == null) {
-      resolvedName = Optional.of(StreamUtils.stream(this)
+      resolvedName = Optional.of(stream()
           .map(Person::getLastName)
           .collect(Collectors.toSet()))
         .filter(set -> Integers.isOne(set.size()))
-        .map(set -> String.format(GROUP_OF_NAME, set.iterator().next()))
+        .map(set -> GROUP_OF_NAME.formatted(set.iterator().next()))
         .orElse(resolvedName);
     }
 
-    return resolvedName != null ? resolvedName : EMPTY_NO_ID_GROUP_NAME;
+    return resolvedName != null ? resolvedName
+      : EMPTY_NO_ID_GROUP_NAME;
   }
 
   @Override
@@ -177,6 +181,7 @@ public class People implements Group<Person> {
   }
 
   @Override
+  @SuppressWarnings("all")
   public Iterator<Person> iterator() {
     return Collections.unmodifiableSet(this.people).iterator();
   }
@@ -221,7 +226,7 @@ public class People implements Group<Person> {
     StringBuilder builder = new StringBuilder("[");
 
     StreamUtils.stream(this).forEach(person -> {
-      builder.append(builder.length() > 1 ? "; " : StringUtils.EMPTY_STRING);
+      builder.append(builder.length() > 1 ? StringUtils.SEMICOLON_SPACE_SEPARATOR : StringUtils.EMPTY_STRING);
       builder.append(toString(person));
     });
 
@@ -236,6 +241,7 @@ public class People implements Group<Person> {
       .map(StringUtils.SINGLE_SPACE::concat)
       .orElse(StringUtils.EMPTY_STRING);
 
-    return String.format("%1$s, %2$s%3$s", person.getLastName(), person.getFirstName(), resolvedMiddleName);
+    return LAST_NAME_FIRST_NAME_MIDDLE_NAME
+      .formatted(person.getLastName(), person.getFirstName(), resolvedMiddleName);
   }
 }
