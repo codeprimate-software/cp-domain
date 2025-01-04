@@ -70,6 +70,9 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   @Serial
   private static final long serialVersionUID = -8623980477296948648L;
 
+  public static final int ADULT_AGE = 18;
+  public static final int TEENAGE = 13;
+
   protected static final String BIRTH_DATE_PATTERN = "yyyy-MM-dd";
   protected static final String BIRTH_DATE_TIME_PATTERN = "yyyy-MM-dd hh:mm a";
   protected static final String DATE_OF_DEATH_PATTERN = BIRTH_DATE_PATTERN;
@@ -257,6 +260,16 @@ public class Person extends AbstractVersionedObject<Person, UUID>
   }
 
   /**
+   * Determines whether this {@link Person} is an adult.
+   *
+   * @return a boolean value indicating whether this {@link Person} is an adult.
+   * @see #getAge()
+   */
+  public boolean isAdult() {
+    return getAge().filter(age -> age >= ADULT_AGE) .isPresent();
+  }
+
+  /**
    * Determines whether this {@link Person} is alive.
    *
    * @return a boolean value indicating whether this {@link Person} is alive.
@@ -322,6 +335,19 @@ public class Person extends AbstractVersionedObject<Person, UUID>
 
     return getGender()
       .filter(Gender.NON_BINARY::equals)
+      .isPresent();
+  }
+
+  /**
+   * Determines whether this {@link Person} is a teenager.
+   *
+   * @return a boolean value indicating whether this {@link Person} is a teenager.
+   * @see #getAge()
+   */
+  public boolean isTeenager() {
+
+    return getAge()
+      .filter(age -> age >= TEENAGE && age < ADULT_AGE)
       .isPresent();
   }
 

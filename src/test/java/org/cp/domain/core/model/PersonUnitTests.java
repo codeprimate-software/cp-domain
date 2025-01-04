@@ -36,6 +36,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
@@ -319,6 +320,34 @@ public class PersonUnitTests {
   }
 
   @Test
+  void isAdultReturnsTrue() {
+
+    Person person = Person.newPerson("Some", "Person").age(5);
+
+    assertThat(person).isNotNull();
+
+    IntStream.range(18, 100).forEach(age -> {
+      assertThat(person.age(age)).isSameAs(person);
+      assertThat(person.getAge().orElse(-1)).isEqualTo(age);
+      assertThat(person.isAdult()).isTrue();
+    });
+  }
+
+  @Test
+  void isNotAdult() {
+
+    Person person = Person.newPerson("Some", "Person").age(21);
+
+    assertThat(person).isNotNull();
+
+    IntStream.range(0, 17).forEach(age -> {
+      assertThat(person.age(age)).isSameAs(person);
+      assertThat(person.getAge().orElse(-1)).isEqualTo(age);
+      assertThat(person.isAdult()).isFalse();
+    });
+  }
+
+  @Test
   public void isAliveWithNoDateOfDeathReturnsTrue() {
 
     Person person = Person.newPerson("Some", "Person");
@@ -421,6 +450,40 @@ public class PersonUnitTests {
   @Test
   public void isGenderWhenNullIsNullSafeReturnsFalse() {
     assertNoGender(Person.newPerson("Some", "Person"));
+  }
+
+  @Test
+  void isTeenagerReturnsTrue() {
+
+    Person person = Person.newPerson("Some", "Person").age(5);
+
+    assertThat(person).isNotNull();
+
+    IntStream.range(13, 17).forEach(age -> {
+      assertThat(person.age(age)).isSameAs(person);
+      assertThat(person.getAge().orElse(-1)).isEqualTo(age);
+      assertThat(person.isTeenager()).isTrue();
+    });
+  }
+
+  @Test
+  void isNotTeenage() {
+
+    Person person = Person.newPerson("Some", "Person").age(21);
+
+    assertThat(person).isNotNull();
+
+    IntStream.range(0, 12).forEach(age -> {
+      assertThat(person.age(age)).isSameAs(person);
+      assertThat(person.getAge().orElse(-1)).isEqualTo(age);
+      assertThat(person.isTeenager()).isFalse();
+    });
+
+    IntStream.range(18, 100).forEach(age -> {
+      assertThat(person.age(age)).isSameAs(person);
+      assertThat(person.getAge().orElse(-1)).isEqualTo(age);
+      assertThat(person.isTeenager()).isFalse();
+    });
   }
 
   @Test
