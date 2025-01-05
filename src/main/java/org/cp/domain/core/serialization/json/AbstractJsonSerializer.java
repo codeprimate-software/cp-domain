@@ -83,7 +83,7 @@ public abstract class AbstractJsonSerializer<T extends JsonSerializable> impleme
       return getJsonMapper().writeValueAsString(target);
     }
     catch (JsonProcessingException cause) {
-      throw newSerializationException(cause, "Failed to serialize object [%s] as JSON", target);
+      throw newSerializationException(cause, "Failed to serialize object [{0}] as JSON", target);
     }
   }
 
