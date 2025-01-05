@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.cp.domain.core.enums.Gender;
+import org.cp.domain.core.serialization.json.JsonSerializable;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Identifiable;
@@ -65,7 +66,8 @@ import org.cp.elements.util.ComparatorResultBuilder;
  */
 @FluentApi
 public class Person extends AbstractVersionedObject<Person, UUID>
-    implements Cloneable, Comparable<Person>, Identifiable<Long>, Nameable<Name>, Renderable, Serializable, Visitable {
+    implements Cloneable, Comparable<Person>, Identifiable<Long>, JsonSerializable, Nameable<Name>, Renderable,
+      Serializable, Visitable {
 
   @Serial
   private static final long serialVersionUID = -8623980477296948648L;
