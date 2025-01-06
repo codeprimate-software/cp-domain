@@ -62,9 +62,10 @@ public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, 
   public static final String DOT_SEPARATOR_REGEX = "\\.";
   public static final String NAME_COMPONENT_SEPARATOR = StringUtils.SINGLE_SPACE;
   public static final String NAME_COMPONENT_SEPARATOR_PATTERN = "\\s+";
+  public static final String NO_MIDDLE_NAME = null;
 
   @SuppressWarnings("all")
-  protected static final String DEFAULT_MIDDLE_NAME = null;
+  protected static final String DEFAULT_MIDDLE_NAME = NO_MIDDLE_NAME;
 
   @SuppressWarnings("all")
   protected static final String COMPARABLE_MIDDLE_NAME = String.valueOf(DEFAULT_MIDDLE_NAME);
