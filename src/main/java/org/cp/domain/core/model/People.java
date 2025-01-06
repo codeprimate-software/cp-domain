@@ -26,6 +26,11 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import org.cp.domain.core.serialization.json.PeopleJsonDeserializer;
+import org.cp.domain.core.serialization.json.PeopleJsonSerializer;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Integers;
@@ -49,6 +54,8 @@ import org.cp.elements.util.stream.StreamUtils;
  * @since 0.1.0
  */
 @SuppressWarnings("unused")
+@JsonSerialize(using = PeopleJsonSerializer.class)
+@JsonDeserialize(using = PeopleJsonDeserializer.class)
 public class People implements Group<Person> {
 
   private static final LocalDateTime EPOCH_BIRTH_DATE =
