@@ -52,9 +52,11 @@ public class PersonJsonSerializerUnitTests {
 
     String json = this.jsonSerializer.serialize(person);
 
+    //System.out.printf("JSON [%s]%n", json);
+
     assertThat(json).isNotBlank();
-    assertThat(JsonPath.<String>read(json, "$.firstName")).isEqualTo("Jon");
-    assertThat(JsonPath.<String>read(json, "$.lastName")).isEqualTo("Doe");
+    assertThat(JsonPath.<String>read(json, "$.name.firstName")).isEqualTo("Jon");
+    assertThat(JsonPath.<String>read(json, "$.name.lastName")).isEqualTo("Doe");
 
     Person deserializedPerson = this.jsonSerializer.deserialize(json);
 

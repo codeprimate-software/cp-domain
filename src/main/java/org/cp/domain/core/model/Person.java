@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.cp.domain.core.enums.Gender;
@@ -54,7 +55,6 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see java.io.Serializable
  * @see java.lang.Cloneable
  * @see java.lang.Comparable
- * @see java.time.LocalDate
  * @see java.time.LocalDateTime
  * @see java.util.UUID
  * @see org.cp.domain.core.enums.Gender
@@ -69,6 +69,10 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @since 0.1.0
  */
 @FluentApi
+@JsonIgnoreProperties({
+  "alive", "age", "adult", "born", "currentVersion", "female", "firstName", "lastName", "male", "middleName",
+  "teenager", "nonBinary", "new", "notNew"
+})
 public class Person extends AbstractVersionedObject<Person, UUID> implements Cloneable, Comparable<Person>,
     Identifiable<Long>, JsonSerializable, Nameable<Name>, Renderable, Serializable, Visitable {
 
@@ -113,12 +117,14 @@ public class Person extends AbstractVersionedObject<Person, UUID> implements Clo
    * @param name {@link Name} of the {@link Person}; must not be {@literal null}.
    * @return a new {@link Person} initialized with the given {@link Name}.
    * @throws IllegalArgumentException if {@link Name} is {@literal null}.
+   * @see com.fasterxml.jackson.annotation.JsonCreator
    * @see org.cp.elements.lang.annotation.Dsl
    * @see org.cp.domain.core.model.Name
    * @see #Person(Name)
    */
   @Dsl
-  public static @NotNull Person newPerson(@NotNull Name name) {
+  @JsonCreator
+  public static @NotNull Person newPerson(@NotNull @JsonProperty("name") Name name) {
     return new Person(name);
   }
 
@@ -192,14 +198,11 @@ public class Person extends AbstractVersionedObject<Person, UUID> implements Clo
    * @throws IllegalArgumentException if either the {@link String first name} or {@link String last name}
    * of the person were not given.
    * @see org.cp.domain.core.model.Name#of(String, String)
-   * @see com.fasterxml.jackson.annotation.JsonCreator
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #newPerson(Name)
    */
   @Dsl
-  @JsonCreator
-  public static @NotNull Person newPerson(@NotNull @JsonProperty("firstName") String firstName,
-      @NotNull @JsonProperty("lastName") String lastName) {
+  public static @NotNull Person newPerson(@NotNull String firstName, @NotNull String lastName) {
 
     return newPerson(Name.of(firstName, lastName));
   }
