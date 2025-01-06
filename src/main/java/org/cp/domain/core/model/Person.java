@@ -24,6 +24,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.cp.domain.core.enums.Gender;
 import org.cp.domain.core.serialization.json.JsonSerializable;
 import org.cp.elements.lang.Assert;
@@ -55,6 +58,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see java.time.LocalDateTime
  * @see java.util.UUID
  * @see org.cp.domain.core.enums.Gender
+ * @see org.cp.domain.core.serialization.json.JsonSerializable
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Nameable
  * @see org.cp.elements.lang.Renderable
@@ -65,9 +69,8 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @since 0.1.0
  */
 @FluentApi
-public class Person extends AbstractVersionedObject<Person, UUID>
-    implements Cloneable, Comparable<Person>, Identifiable<Long>, JsonSerializable, Nameable<Name>, Renderable,
-      Serializable, Visitable {
+public class Person extends AbstractVersionedObject<Person, UUID> implements Cloneable, Comparable<Person>,
+    Identifiable<Long>, JsonSerializable, Nameable<Name>, Renderable, Serializable, Visitable {
 
   @Serial
   private static final long serialVersionUID = -8623980477296948648L;
@@ -189,11 +192,15 @@ public class Person extends AbstractVersionedObject<Person, UUID>
    * @throws IllegalArgumentException if either the {@link String first name} or {@link String last name}
    * of the person were not given.
    * @see org.cp.domain.core.model.Name#of(String, String)
+   * @see com.fasterxml.jackson.annotation.JsonCreator
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #newPerson(Name)
    */
   @Dsl
-  public static @NotNull Person newPerson(@NotNull String firstName, @NotNull String lastName) {
+  @JsonCreator
+  public static @NotNull Person newPerson(@NotNull @JsonProperty("firstName") String firstName,
+      @NotNull @JsonProperty("lastName") String lastName) {
+
     return newPerson(Name.of(firstName, lastName));
   }
 
