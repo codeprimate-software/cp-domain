@@ -22,6 +22,11 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import org.cp.domain.core.serialization.json.NameJsonDeserializer;
+import org.cp.domain.core.serialization.json.NameJsonSerializer;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
@@ -57,6 +62,8 @@ import org.cp.elements.util.ComparatorResultBuilder;
 @FluentApi
 @Immutable
 @ThreadSafe
+@JsonSerialize(using = NameJsonSerializer.class)
+@JsonDeserialize(using = NameJsonDeserializer.class)
 public final class Name implements Cloneable, Comparable<Name>, Nameable<Name>, Serializable, Visitable {
 
   public static final String DOT_SEPARATOR_REGEX = "\\.";
