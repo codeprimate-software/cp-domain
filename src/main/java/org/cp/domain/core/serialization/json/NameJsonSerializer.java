@@ -30,8 +30,9 @@ import org.cp.elements.lang.ThrowableOperation;
  * Jackson {@link JsonSerializer} implementation for {@link Name}.
  *
  * @author John Blum
- * @see com.fasterxml.jackson.databind.JsonSerializer
  * @see org.cp.domain.core.model.Name
+ * @see com.fasterxml.jackson.core.JsonGenerator
+ * @see com.fasterxml.jackson.databind.JsonSerializer
  * @since 0.3.0
  */
 public class NameJsonSerializer extends JsonSerializer<Name> {
