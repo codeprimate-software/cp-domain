@@ -79,15 +79,25 @@ public class PeopleUnitTests {
       .born(birthDateForAge(28))
       .asMale();
 
-  private final Person lanDoe = Person.newPerson(Name.of("Lan", "Doe"), birthDateForAge(29)).asMale();
+  private final Person lanDoe = Person.newPerson(Name.of("Lan", "Doe"))
+    .born(birthDateForAge(29))
+    .asMale();
 
   private final Person moeDoe = Person.newPerson(Name.of("Moe", "R", "Doe"))
     .born(birthDateForAge(30))
     .asMale();
 
-  private final Person pieDoe = Person.newPerson(Name.of("Pie", "Doe"), birthDateForAge(16)).asFemale();
+  private final Person playDoe = Person.newPerson(Name.of("Play", "Doe"))
+    .born(birthDateForAge(92))
+    .asMale();
 
-  private final Person sourDoe = Person.newPerson(Name.of("Sour", "Doe"), birthDateForAge(13)).asMale();
+  private final Person pieDoe = Person.newPerson(Name.of("Pie", "Doe"))
+    .born(birthDateForAge(16))
+    .asFemale();
+
+  private final Person sourDoe = Person.newPerson(Name.of("Sour", "Doe"))
+    .born(birthDateForAge(13))
+    .asMale();
 
   private void assertNew(Identifiable<?> target) {
 
