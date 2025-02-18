@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.domain.contact;
+package org.cp.domain.contact.email.serialization.protobuf;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.domain.contact.email.model.EmailAddress;
 import org.cp.domain.contact.email.model.EmailAddress.Domain;
-import org.cp.domain.contact.email.serialization.protobuf.EmailAddressSerializer;
 import org.cp.elements.io.IOUtils;
 import org.cp.elements.security.model.User;
 
@@ -32,8 +31,8 @@ import org.cp.elements.security.model.User;
  * Integration Test for {@link EmailAddressSerializer}.
  *
  * @author John Blum
- * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.contact.email.serialization.protobuf.EmailAddressSerializer
+ * @see org.junit.jupiter.api.Test
  * @since 0.2.0
  */
 public class EmailAddressSerializerIntegrationTests {
