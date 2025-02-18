@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 
 import org.cp.domain.contact.email.model.EmailAddress;
 import org.cp.domain.contact.email.model.EmailAddress.Domain;
-import org.cp.domain.contact.email.model.EmailAddress.Domain.Extension;
 import org.cp.domain.contact.email.serialization.protobuf.EmailAddressSerializer;
 import org.cp.elements.io.IOUtils;
 import org.cp.elements.security.model.User;
@@ -44,7 +43,7 @@ public class EmailAddressSerializerIntegrationTests {
   @Test
   void serializeDeserializeEmailAddress() {
 
-    EmailAddress emailAddress = EmailAddress.of(User.named("jonDoe"), Domain.of("home", Extension.COM));
+    EmailAddress emailAddress = EmailAddress.of(User.named("jonDoe"), Domain.of("home", Domain.Extensions.COM));
 
     byte[] data = this.emailAddressSerializer.serialize(emailAddress).array();
 

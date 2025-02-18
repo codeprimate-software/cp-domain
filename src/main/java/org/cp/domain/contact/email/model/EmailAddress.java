@@ -29,7 +29,6 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.annotation.ThreadSafe;
 import org.cp.elements.security.model.User;
-import org.cp.elements.text.FormatUtils;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
@@ -54,21 +53,19 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
   private static final String EMAIL_ADDRESS_TO_STRING = "%1$s".concat(EMAIL_ADDRESS_AT_SYMBOL).concat("%2$s");
 
   /**
-   * Factory method used to construct a new {@link EmailAddress} copied from the given, required {@link EmailAddress}.
+   * Factory method used to construct a new {@link EmailAddress} copied from the given {@link EmailAddress}.
    *
    * @param emailAddress {@link EmailAddress} to copy; must not be {@literal null}.
    * @return a new {@link EmailAddress} copied from the existing, required {@link EmailAddress}.
    * @throws IllegalArgumentException if the given {@link EmailAddress} to copy is {@literal null}.
    */
   public static @NotNull EmailAddress from(@NotNull EmailAddress emailAddress) {
-
     Assert.notNull(emailAddress, "Email Address to copy is required");
-
     return new EmailAddress(emailAddress.getUser(), emailAddress.getDomain());
   }
 
   /**
-   * Factory method used to construct a new {@link EmailAddress} initialized with the given, required {@link User}
+   * Factory method used to construct a new {@link EmailAddress} initialized with the given {@link User}
    * and {@link Domain}.
    *
    * @param user {@link User} containing the {@link String username} used as the {@literal handle}
@@ -84,7 +81,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
   }
 
   /**
-   * Factory method used to construct a new {@link EmailAddress} parsed from the given, required {@link String}
+   * Factory method used to construct a new {@link EmailAddress} parsed from the given {@link String}
    * representing an {@literal email address}.
    * <p>
    * {@link String Email Addresses} are expected to be in the format {@link String jonDoe@example.com}.
@@ -103,7 +100,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
     String username = emailAddress.substring(0, indexOfAtSymbol);
     String domainName = emailAddress.substring(indexOfAtSymbol + 1);
 
-    return new EmailAddress(asUser(username), Domain.parse(domainName));
+    return new EmailAddress(User.named(username), Domain.parse(domainName));
   }
 
   private static int assertEmailAddress(String emailAddress) {
@@ -115,24 +112,6 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
     Assert.isTrue(indexOfAtSymbol > 0, "Email Address [%s] format is not valid", emailAddress);
 
     return indexOfAtSymbol;
-  }
-
-  protected static @NotNull User<String> asUser(@NotNull String name) {
-
-    Assert.hasText(name, "User name [%s] is required", name);
-
-    return new User<>() {
-
-      @Override
-      public String getId() {
-        return null;
-      }
-
-      @Override
-      public String getName() {
-        return name;
-      }
-    };
   }
 
   private final Domain domain;
@@ -237,7 +216,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
 
   @Override
   public @NotNull String toString() {
-    return FormatUtils.format(EMAIL_ADDRESS_TO_STRING, getUsername(), getDomainName());
+    return EMAIL_ADDRESS_TO_STRING.formatted(getUsername(), getDomainName());
   }
 
   /**
@@ -261,22 +240,20 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
     private static final String DOMAIN_TO_STRING = "%1$s".concat(DOMAIN_DOT_SEPARATOR).concat("%2$s");
 
     /**
-     * Factory method used to construct a new {@link Domain} copied from the given, required {@link Domain}.
+     * Factory method used to construct a new {@link Domain} copied from the given {@link Domain}.
      *
      * @param domain {@link Domain} to copy; must not be {@literal null}.
      * @return a new {@link Domain} copied from the existing, required {@link Domain}.
      * @throws IllegalArgumentException if the given {@link Domain} to copy is {@literal null}.
      */
     public static @NotNull Domain from(@NotNull Domain domain) {
-
       Assert.notNull(domain, "Domain to copy is required");
-
       return new Domain(domain.getName(), domain.getExtensionName());
     }
 
     /**
-     * Factory method used to construct a new {@link Domain} initialized with the given, required {@link String name}
-     * and {@link Extension}.
+     * Factory method used to construct a new {@link Domain} initialized with the given {@link String name}
+     * and {@link Extensions}.
      *
      * @param name {@link String name} of this {@link Domain}; must not be {@literal null} or {@literal empty}.
      * @param extension {@link Extension} of this {@link Domain}.
@@ -290,7 +267,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
     }
 
     /**
-     * Factory method used to construct a new {@link Domain} initialized with the given, required {@link String name}
+     * Factory method used to construct a new {@link Domain} initialized with the given {@link String name}
      * and {@link String domain extension}.
      *
      * @param name {@link String name} of the new {@link Domain}; must not be {@literal null} or {@literal empty}.
@@ -306,7 +283,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
     }
 
     /**
-     * Factory method used to construct a new {@link Domain} initialized by parsing a given, required {@link String}
+     * Factory method used to construct a new {@link Domain} initialized by parsing a given {@link String}
      * representing a {@literal domain name}.
      *
      * @param domainName {@link String} containing the {@literal domain name} to parse;
@@ -337,12 +314,24 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
       return indexOfDot;
     }
 
+    private static String requireExtensionName(String extensionName) {
+      return StringUtils.requireText(extensionName, "Extension [%s] is required");
+    }
+
+    private static Extension resolveExtension(String extensionName) {
+
+      String resolvedExtensionName = requireExtensionName(extensionName).toLowerCase();
+
+      return Extensions.from(extensionName)
+        .orElseGet(() -> Extension.named(resolvedExtensionName));
+    }
+
     private final String name;
-    private final String extensionName;
+
+    private final Extension extension;
 
     /**
-     * Constructs a new {@link Domain} initialized with the given, required {@link String name}
-     * and {@link Extension}.
+     * Constructs a new {@link Domain} initialized with the given {@link String name} and {@link Extension}.
      *
      * @param name {@link String name} of this {@link Domain}; must not be {@literal null} or {@literal empty}.
      * @param extension {@link Extension} of this {@link Domain}.
@@ -351,7 +340,9 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
      * @see org.cp.domain.contact.email.model.EmailAddress.Domain.Extension
      */
     public Domain(@NotNull String name, @NotNull Extension extension) {
-      this(name, ObjectUtils.requireObject(extension, "Domain.Extension is required").name());
+
+      this.name = StringUtils.requireText(name, "Name [%s] is required");
+      this.extension = ObjectUtils.requireObject(extension, "Domain Extension is required");
     }
 
     /**
@@ -365,10 +356,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
      * is {@literal null} or {@literal empty}.
      */
     public Domain(@NotNull String name, @NotNull String extensionName) {
-
-      this.name = StringUtils.requireText(name, "Name [%s] is required");
-      this.extensionName = StringUtils.toLowerCase(StringUtils.requireText(extensionName,
-        "Extension [%s] is required"));
+      this(name, resolveExtension(extensionName));
     }
 
     /**
@@ -381,17 +369,18 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
     }
 
     /**
-     * Returns an {@link Optional} {@link Extension} modeling this {@link Domain Domain's}
+     * Returns an {@link Optional} {@link Extensions} modeling this {@link Domain Domain's}
      * {@link #getExtensionName() extension}.
      *
-     * @return an {@link Optional} {@link Extension} modeling this {@link Domain Domain's}
+     * @return an {@link Optional} {@link Extensions} modeling this {@link Domain Domain's}
      * {@link #getExtensionName() extension}.
-     * @see Extension
+     * @see Extensions
      * @see #getExtensionName()
      * @see Optional
      */
-    public Optional<Extension> getExtension() {
-      return Extension.from(getExtensionName());
+    @SuppressWarnings("all")
+    public Extension getExtension() {
+      return this.extension;
     }
 
     /**
@@ -400,7 +389,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
      * @return the {@link String extension name} of this {@link Domain}.
      */
     public @NotNull String getExtensionName() {
-      return this.extensionName;
+      return getExtension().getName();
     }
 
     @Override
@@ -440,15 +429,51 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
 
     @Override
     public @NotNull String toString() {
-      return FormatUtils.format(DOMAIN_TO_STRING, getName(), getExtensionName());
+      return DOMAIN_TO_STRING.formatted(getName(), getExtensionName());
+    }
+
+    /**
+     * Abstract Data Type (ADT) modeling a domain extension, such as {@literal .com}.
+     *
+     * @see java.lang.FunctionalInterface
+     * @see java.io.Serializable
+     * @see org.cp.elements.lang.Nameable
+     */
+    @FunctionalInterface
+    public interface Extension extends Nameable<String>, Serializable {
+
+      /**
+       * Factory method used to construct an {@link Extension} with the given {@link String name}.
+       *
+       * @param name {@link String name} of this {@link Extension}; required.
+       * @return a new {@link Extension} with the given {@link String name}.
+       * @throws IllegalArgumentException if {@link String name} is {@literal null} or {@literal empty}.
+       */
+      static Extension named(@NotNull String name) {
+        Assert.hasText(name, "Name [%s] is required", name);
+        return () -> name;
+      }
+
+      /**
+       * Gets an {@link Optional} {@link Extensions common extenstion} if known.
+       *
+       * @return an {@link Optional} {@link Extensions common extension} if known.
+       * @see org.cp.domain.contact.email.model.EmailAddress.Domain.Extensions
+       * @see java.util.Optional
+       */
+      default Optional<Extension> getExt() {
+        return this instanceof Extensions extension ? Optional.of(extension)
+          : Extensions.from(getName());
+      }
     }
 
     /**
      * {@link Enum Enumeration} of common {@link Domain} {@link String Extensions}.
      *
      * @see java.lang.Enum
+     * @see Extension
      */
-    public enum Extension {
+    public enum Extensions implements Extension {
 
       BIZ,
       CO,
@@ -469,11 +494,11 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
       public static Optional<Extension> from(@Nullable String domainName) {
 
         return Optional.ofNullable(domainName)
-          .map(Extension::trimmedLowerCase)
           .filter(StringUtils::hasText)
-          .map(Extension::stripName)
-          .flatMap(it -> Arrays.stream(Extension.values())
-            .filter(ext -> it.endsWith(ext.name().toLowerCase()))
+          .map(Extensions::trimmedLowerCase)
+          .map(Extensions::stripName)
+          .flatMap(it -> Arrays.stream(Extensions.values())
+            .filter(ext -> it.endsWith(ext.getName()))
             .findFirst());
       }
 
@@ -482,7 +507,12 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
       }
 
       private static String trimmedLowerCase(String value) {
-        return StringUtils.trim(StringUtils.toLowerCase(value));
+        return StringUtils.toLowerCase(StringUtils.trim(value));
+      }
+
+      @Override
+      public String getName() {
+        return name().toLowerCase();
       }
     }
   }

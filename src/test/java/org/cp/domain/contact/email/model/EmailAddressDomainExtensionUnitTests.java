@@ -16,49 +16,65 @@
 package org.cp.domain.contact.email.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
 import org.cp.domain.contact.email.model.EmailAddress.Domain.Extension;
+import org.cp.domain.contact.email.model.EmailAddress.Domain.Extensions;
 
 /**
  * Unit Tests for {@link EmailAddress.Domain.Extension}.
  *
  * @author John Blum
- * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.contact.email.model.EmailAddress.Domain.Extension
- * @since 0.1.0
+ * @see org.junit.jupiter.api.Test
+ * @see org.mockito.Mockito
+ * @since 0.3.0
  */
 public class EmailAddressDomainExtensionUnitTests {
 
   @Test
-  void fromValidEmailAddressDomainAndExtension() {
+  void fromName() {
 
-    EmailAddress.Domain.Extension extension = EmailAddress.Domain.Extension
-      .from("comcast.net")
-      .orElse(null);
+    Extension extension = Extension.named("ABC");
 
     assertThat(extension).isNotNull();
-    assertThat(extension).isEqualTo(EmailAddress.Domain.Extension.NET);
+    assertThat(extension.getName()).isEqualTo("ABC");
+    assertThat(extension.getExt()).isNotNull();
+    assertThat(extension.getExt()).isNotPresent();
   }
 
   @Test
-  void fromValidEmailAddressDomainExtension() {
+  void fromIllegalName() {
 
-    Arrays.stream(EmailAddress.Domain.Extension.values()).forEach(domainExtension ->
-      assertThat(EmailAddress.Domain.Extension.from(domainExtension.name()).orElse(null))
-        .isEqualTo(domainExtension));
+    Arrays.asList("  ", "", null).forEach(name ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> Extension.named(name))
+        .withMessage("Name [%s] is required", name)
+        .withNoCause());
   }
 
   @Test
-  void fromInvalidEmailAddressDomainExtension() {
+  void extensionOfExtensions() {
 
-    Optional<Extension> emailAddressDomainExtension = EmailAddress.Domain.Extension.from("XXX");
+    Extension extension = Extension.named("net");
 
-    assertThat(emailAddressDomainExtension).isNotNull();
-    assertThat(emailAddressDomainExtension).isNotPresent();
+    assertThat(extension).isNotNull();
+    assertThat(extension).isNotSameAs(Extensions.NET);
+    assertThat(extension.getName()).isEqualTo("net");
+    assertThat(extension.getExt()).isPresent();
+    assertThat(extension.getExt().orElse(null)).isEqualTo(Extensions.NET);
+  }
+
+  @Test
+  void allExtensionsAreAnExtension() {
+
+    Arrays.stream(Extensions.values()).forEach(extension -> {
+      assertThat(extension.getName()).isEqualTo(extension.name().toLowerCase());
+      assertThat(extension.getExt().orElse(null)).isSameAs(extension);
+    });
   }
 }

@@ -35,7 +35,6 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 import org.cp.domain.contact.email.model.EmailAddress.Domain;
-import org.cp.domain.contact.email.model.EmailAddress.Domain.Extension;
 import org.cp.elements.io.IOUtils;
 import org.cp.elements.security.model.User;
 
@@ -46,9 +45,9 @@ import lombok.RequiredArgsConstructor;
  * Unit Tests for {@link EmailAddress}.
  *
  * @author John Blum
+ * @see org.cp.domain.contact.email.model.EmailAddress
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
- * @see org.cp.domain.contact.email.model.EmailAddress
  * @since 0.1.0
  */
 public class EmailAddressUnitTests {
@@ -78,8 +77,7 @@ public class EmailAddressUnitTests {
     assertThat(domain).isNotNull();
     assertThat(domain.getName()).isEqualTo(domainName);
     assertThat(domain.getExtensionName()).isEqualTo(domainExtensionName);
-    assertThat(domain.getExtension().orElse(null))
-      .isEqualTo(EmailAddress.Domain.Extension.valueOf(domainExtensionName.toUpperCase()));
+    assertThat(domain.getExtension()).isEqualTo(Domain.Extensions.valueOf(domainExtensionName.toUpperCase()));
   }
 
   @Test
@@ -88,7 +86,6 @@ public class EmailAddressUnitTests {
 
     User<String> mockUser = mock(User.class);
     Domain mockDomain = mock(EmailAddress.Domain.class);
-
     EmailAddress emailAddress = new EmailAddress(mockUser, mockDomain);
 
     assertEmailAddress(emailAddress, mockUser, mockDomain);
@@ -158,7 +155,6 @@ public class EmailAddressUnitTests {
 
     User<String> mockUser = mock(User.class);
     Domain mockDomain = mock(EmailAddress.Domain.class);
-
     EmailAddress emailAddress = EmailAddress.of(mockUser, mockDomain);
 
     assertEmailAddress(emailAddress, mockUser, mockDomain);
@@ -171,7 +167,7 @@ public class EmailAddressUnitTests {
 
     EmailAddress emailAddress = EmailAddress.parse("jonDoe@gmail.com");
 
-    assertEmailAddress(emailAddress, "jonDoe","gmail.com");
+    assertEmailAddress(emailAddress, "jonDoe", "gmail.com");
 
     User<String> user = emailAddress.getUser();
 
@@ -242,8 +238,7 @@ public class EmailAddressUnitTests {
   void cloneIsCorrect() throws CloneNotSupportedException {
 
     User<String> user = TestUser.as("TestUser");
-    Domain domain = Domain.of("gmail", Extension.COM);
-
+    Domain domain = Domain.of("gmail", Domain.Extensions.COM);
     EmailAddress emailAddress = new EmailAddress(user, domain);
 
     Object clone = emailAddress.clone();
@@ -270,7 +265,7 @@ public class EmailAddressUnitTests {
   @Test
   void equalEmailAddressesAreEqual() {
 
-    EmailAddress one = EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", Domain.Extension.COM));
+    EmailAddress one = EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", Domain.Extensions.COM));
     EmailAddress two = EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", "com"));
 
     assertThat(one).isEqualTo(two);
@@ -281,8 +276,7 @@ public class EmailAddressUnitTests {
   @SuppressWarnings("all")
   void identicalEmailAddressesAreEqual() {
 
-    EmailAddress emailAddress =
-      EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", Domain.Extension.COM));
+    EmailAddress emailAddress = EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", Domain.Extensions.COM));
 
     assertThat(emailAddress.equals(emailAddress)).isTrue();
   }
@@ -290,8 +284,8 @@ public class EmailAddressUnitTests {
   @Test
   void unequalEmailAddressesAreNotEqual() {
 
-    EmailAddress one = EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", Domain.Extension.COM));
-    EmailAddress two = EmailAddress.of(TestUser.as("janeDoe"), Domain.of("example", Domain.Extension.NET));
+    EmailAddress one = EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", Domain.Extensions.COM));
+    EmailAddress two = EmailAddress.of(TestUser.as("janeDoe"), Domain.of("example", Domain.Extensions.NET));
 
     assertThat(one).isNotEqualTo(two);
   }
@@ -299,30 +293,28 @@ public class EmailAddressUnitTests {
   @Test
   @SuppressWarnings("all")
   void emailAddressIsNotEqualToNullIsNullSafe() {
-    assertThat(EmailAddress.of(TestUser.as("jonDoe"),
-      Domain.of("example", Domain.Extension.IO)).equals(null)).isFalse();
+    assertThat(EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", Domain.Extensions.IO))
+      .equals(null)).isFalse();
   }
 
   @Test
   void emailAddressIsNotEqualToObject() {
-    assertThat(EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", Domain.Extension.IO)))
+    assertThat(EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", Domain.Extensions.IO)))
       .isNotEqualTo("jonDoe@example.io");
   }
 
   @Test
   void hashCodeIsCorrect() {
 
-    EmailAddress emailAddress =
-      EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", Domain.Extension.IO));
+    EmailAddress emailAddress = EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", Domain.Extensions.IO));
 
     int emailAddressHashCode = emailAddress.hashCode();
 
     assertThat(emailAddressHashCode).isNotZero();
     assertThat(emailAddressHashCode).isEqualTo(emailAddress.hashCode());
-    assertThat(emailAddress).hasSameHashCodeAs(EmailAddress.of(TestUser.as("jonDoe"),
-      Domain.of("example", "io")));
+    assertThat(emailAddress).hasSameHashCodeAs(EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", "io")));
     assertThat(emailAddress).doesNotHaveSameHashCodeAs(EmailAddress.of(TestUser.as("jonBloom"),
-      Domain.of("example", Domain.Extension.COM)));
+      Domain.of("example", Domain.Extensions.COM)));
     assertThat(emailAddress).doesNotHaveSameHashCodeAs("jonDoe@example.io");
   }
 
@@ -330,8 +322,7 @@ public class EmailAddressUnitTests {
   void toStringIsCorrect() {
 
     User<String> user = TestUser.as("TestUser");
-    Domain domain = Domain.of("gmail", Extension.COM);
-
+    Domain domain = Domain.of("gmail", Domain.Extensions.COM);
     EmailAddress emailAddress = new EmailAddress(user, domain);
 
     assertThat(emailAddress).hasToString("TestUser@gmail.com");
@@ -340,8 +331,7 @@ public class EmailAddressUnitTests {
   @Test
   void serializationIsCorrect() throws IOException, ClassNotFoundException {
 
-    EmailAddress emailAddress =
-      EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", Domain.Extension.COM));
+    EmailAddress emailAddress = EmailAddress.of(TestUser.as("jonDoe"), Domain.of("example", Domain.Extensions.COM));
 
     byte[] emailAddressBytes = IOUtils.serialize(emailAddress);
 

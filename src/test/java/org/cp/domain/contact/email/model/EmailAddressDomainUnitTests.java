@@ -30,35 +30,32 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 import org.cp.domain.contact.email.model.EmailAddress.Domain;
-import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.lang.StringUtils;
 
 /**
  * Unit Tests for {@link EmailAddress.Domain}.
  *
  * @author John Blum
+ * @see org.cp.domain.contact.email.model.EmailAddress.Domain
  * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
- * @see org.cp.domain.contact.email.model.EmailAddress.Domain
  * @since 0.1.0
  */
 public class EmailAddressDomainUnitTests {
 
   private void assertDomain(Domain domain, String domainName, String domainExtensionName) {
 
-    Domain.Extension domainExtension = ObjectUtils.doOperationSafely(args ->
-      Domain.Extension.valueOf(StringUtils.toUpperCase(domainExtensionName)), Domain.Extension.XYZ);
-
     assertThat(domain).isNotNull();
     assertThat(domain.getName()).isEqualTo(domainName);
-    assertThat(domain.getExtensionName()).isEqualTo(domainExtensionName);
-    assertThat(domain.getExtension().orElse(Domain.Extension.XYZ)).isEqualTo(domainExtension);
+    assertThat(domain.getExtension()).isNotNull();
+    assertThat(domain.getExtension().getExt()).isNotNull();
+    assertThat(domain.getExtensionName()).isEqualTo(domainExtensionName)
+      .isEqualTo(domain.getExtension().getName());
   }
 
   @Test
   void constructDomain() {
 
-    Domain domain = new Domain("home", Domain.Extension.NET);
+    Domain domain = new Domain("home", Domain.Extensions.NET);
 
     assertDomain(domain, "home", "net");
   }
@@ -76,7 +73,7 @@ public class EmailAddressDomainUnitTests {
 
     Arrays.asList("  ", "", null).forEach(illegalDomainName ->
       assertThatIllegalArgumentException()
-        .isThrownBy(() -> new Domain(illegalDomainName, Domain.Extension.IO))
+        .isThrownBy(() -> new Domain(illegalDomainName, Domain.Extensions.IO))
         .withMessage("Name [%s] is required", illegalDomainName)
         .withNoCause());
   }
@@ -96,7 +93,7 @@ public class EmailAddressDomainUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new Domain("example", (Domain.Extension) null))
-      .withMessage("Domain.Extension is required")
+      .withMessage("Domain Extension is required")
       .withNoCause();
   }
 
@@ -106,7 +103,9 @@ public class EmailAddressDomainUnitTests {
     Domain domain = new Domain("test", "vip");
 
     assertDomain(domain, "test", "vip");
-    assertThat(domain.getExtension()).isNotPresent();
+    assertThat(domain.getExtension()).isNotNull();
+    assertThat(domain.getExtension().getName()).isEqualTo("vip");
+    assertThat(domain.getExtension().getExt()).isNotPresent();
   }
 
   @Test
@@ -138,7 +137,7 @@ public class EmailAddressDomainUnitTests {
   @Test
   void ofNameAndExtension() {
 
-    Domain domain = Domain.of("example", Domain.Extension.NET);
+    Domain domain = Domain.of("example", Domain.Extensions.NET);
 
     assertDomain(domain, "example", "net");
   }
@@ -182,7 +181,7 @@ public class EmailAddressDomainUnitTests {
   @Test
   void cloneIsCorrect() throws CloneNotSupportedException {
 
-    Domain domain = Domain.of("example", Domain.Extension.NET);
+    Domain domain = Domain.of("example", Domain.Extensions.NET);
 
     Object clone = domain.clone();
 
@@ -194,8 +193,8 @@ public class EmailAddressDomainUnitTests {
   void compareToIsCorrect() {
 
     Domain exampleDotIo = Domain.of("example", "io");
-    Domain homeDotNet = Domain.of("home", Domain.Extension.NET);
-    Domain microsoftDotCom = Domain.of("microsoft", Domain.Extension.COM);
+    Domain homeDotNet = Domain.of("home", Domain.Extensions.NET);
+    Domain microsoftDotCom = Domain.of("microsoft", Domain.Extensions.COM);
     Domain nonprofitDotOrg = Domain.of("nonprofit", "orG");
     Domain schoolDotEdu = Domain.of("school", "edu");
     Domain vmwareDotCom = Domain.of("vmware", "com");
@@ -210,7 +209,7 @@ public class EmailAddressDomainUnitTests {
   @Test
   void equalDomainsAreEqual() {
 
-    Domain one = Domain.of("example", Domain.Extension.COM);
+    Domain one = Domain.of("example", Domain.Extensions.COM);
     Domain two = Domain.of("example", "com");
 
     assertThat(one).isEqualTo(two);
@@ -221,7 +220,7 @@ public class EmailAddressDomainUnitTests {
   @SuppressWarnings("all")
   void identicalDomainsAreEqual() {
 
-    Domain domain = Domain.of("example", Domain.Extension.NET);
+    Domain domain = Domain.of("example", Domain.Extensions.NET);
 
     assertThat(domain.equals(domain)).isTrue();
   }
@@ -229,8 +228,8 @@ public class EmailAddressDomainUnitTests {
   @Test
   void unequalDomainsAreNotEqual() {
 
-    Domain one = Domain.of("example", Domain.Extension.COM);
-    Domain two = Domain.of("example", Domain.Extension.NET);
+    Domain one = Domain.of("example", Domain.Extensions.COM);
+    Domain two = Domain.of("example", Domain.Extensions.NET);
 
     assertThat(one).isNotEqualTo(two);
   }
@@ -250,21 +249,21 @@ public class EmailAddressDomainUnitTests {
   @Test
   void hashCodeIsCorrect() {
 
-    Domain domain = Domain.of("example", Domain.Extension.EDU);
+    Domain domain = Domain.of("example", Domain.Extensions.EDU);
 
     int domainHashCode = domain.hashCode();
 
     assertThat(domainHashCode).isNotZero();
     assertThat(domainHashCode).isEqualTo(domain.hashCode());
     assertThat(domain).hasSameHashCodeAs(Domain.of("example", "edu"));
-    assertThat(domain).doesNotHaveSameHashCodeAs(Domain.of("example", Domain.Extension.IO));
+    assertThat(domain).doesNotHaveSameHashCodeAs(Domain.of("example", Domain.Extensions.IO));
     assertThat(domain).doesNotHaveSameHashCodeAs("example.edu");
   }
 
   @Test
   void toStringIsCorrect() {
 
-    Domain domain = Domain.of("example", Domain.Extension.COM);
+    Domain domain = Domain.of("example", Domain.Extensions.COM);
 
     assertThat(domain).hasToString("example.com");
   }
