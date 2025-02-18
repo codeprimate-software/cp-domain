@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.domain.contact.contact.phone.serialization.protobuf;
+package org.cp.domain.contact.phone.serialization.protobuf;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,15 +27,14 @@ import org.cp.domain.contact.phone.model.ExchangeCode;
 import org.cp.domain.contact.phone.model.Extension;
 import org.cp.domain.contact.phone.model.LineNumber;
 import org.cp.domain.contact.phone.model.PhoneNumber;
-import org.cp.domain.contact.phone.serialization.protobuf.PhoneNumberSerializer;
 import org.cp.elements.io.IOUtils;
 
 /**
  * Integration Tests for {@link PhoneNumberSerializer}.
  *
  * @author John Blum
- * @see org.junit.jupiter.api.Test
  * @see org.cp.domain.contact.phone.serialization.protobuf.PhoneNumberSerializer
+ * @see org.junit.jupiter.api.Test
  * @since 0.2.0
  */
 public class PhoneNumberSerializerIntegrationTests {
