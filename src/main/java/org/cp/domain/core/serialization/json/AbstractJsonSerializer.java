@@ -24,9 +24,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.security.model.User;
 
 /**
  * Abstract base class and {@link JsonSerializer} implementation used to de/serialize an {@link Object}
@@ -51,6 +53,12 @@ public abstract class AbstractJsonSerializer<T extends JsonSerializable> impleme
       .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
       .build();
 
+    SimpleModule module = new SimpleModule();
+
+    module.addSerializer(User.class, new UserJsonSerializer());
+    module.addDeserializer(User.class, new UserJsonDeserializer());
+
+    this.jsonMapper.registerModule(module);
     this.jsonMapper.findAndRegisterModules();
   }
 
