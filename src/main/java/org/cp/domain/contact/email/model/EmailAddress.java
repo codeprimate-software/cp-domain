@@ -19,11 +19,17 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.cp.domain.core.serialization.json.JsonSerializable;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Visitable;
+import org.cp.elements.lang.annotation.Alias;
 import org.cp.elements.lang.annotation.Immutable;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
@@ -38,6 +44,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see java.lang.Cloneable
  * @see java.lang.Comparable
  * @see java.io.Serializable
+ * @see org.cp.domain.core.serialization.json.JsonSerializable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.annotation.Immutable
  * @see org.cp.elements.lang.annotation.ThreadSafe
@@ -46,8 +53,8 @@ import org.cp.elements.util.ComparatorResultBuilder;
  */
 @Immutable
 @ThreadSafe
-@SuppressWarnings("unused")
-public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serializable, Visitable {
+@JsonIgnoreProperties({ "domainName", "username" })
+public class EmailAddress implements Cloneable, Comparable<EmailAddress>, JsonSerializable, Serializable, Visitable {
 
   private static final String EMAIL_ADDRESS_AT_SYMBOL = "@";
   private static final String EMAIL_ADDRESS_TO_STRING = "%1$s".concat(EMAIL_ADDRESS_AT_SYMBOL).concat("%2$s");
@@ -76,7 +83,10 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
    * @see org.cp.domain.contact.email.model.EmailAddress.Domain
    * @see org.cp.elements.security.model.User
    */
-  public static @NotNull EmailAddress of(@NotNull User<String> user, @NotNull Domain domain) {
+  @JsonCreator
+  public static @NotNull EmailAddress of(@NotNull @JsonProperty("user") User<String> user,
+      @NotNull @JsonProperty("domain") Domain domain) {
+
     return new EmailAddress(user, domain);
   }
 
@@ -180,6 +190,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
 
   @Override
   @SuppressWarnings("all")
+  @Alias(forMember = "from")
   protected Object clone() throws CloneNotSupportedException {
     return from(this);
   }
@@ -233,7 +244,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
    */
   @Immutable
   @ThreadSafe
-  @SuppressWarnings("unused")
+  @JsonIgnoreProperties("extensionName")
   public static class Domain implements Cloneable, Comparable<Domain>, Nameable<String>, Serializable {
 
     private static final String DOMAIN_DOT_SEPARATOR = StringUtils.DOT_SEPARATOR;
@@ -248,7 +259,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
      */
     public static @NotNull Domain from(@NotNull Domain domain) {
       Assert.notNull(domain, "Domain to copy is required");
-      return new Domain(domain.getName(), domain.getExtensionName());
+      return new Domain(domain.getName(), domain.getExtension());
     }
 
     /**
@@ -262,7 +273,10 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
      * or {@link Extension} is {@literal null}.
      * @see org.cp.domain.contact.email.model.EmailAddress.Domain.Extension
      */
-    public static @NotNull Domain of(@NotNull String name, @NotNull Extension extension) {
+    @JsonCreator
+    public static @NotNull Domain of(@NotNull @JsonProperty("name") String name,
+        @NotNull @JsonProperty("extension") Extension extension) {
+
       return new Domain(name, extension);
     }
 
@@ -364,6 +378,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
      *
      * @return the {@link String name} of this {@link Domain}.
      */
+    @Override
     public @NotNull String getName() {
       return this.name;
     }
@@ -419,7 +434,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
       }
 
       return ObjectUtils.equals(this.getName(), that.getName())
-        && ObjectUtils.equals(this.getExtensionName(), that.getExtensionName());
+        && StringUtils.equalsIgnoreCase(this.getExtensionName(), that.getExtensionName());
     }
 
     @Override
@@ -429,7 +444,9 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
 
     @Override
     public @NotNull String toString() {
-      return DOMAIN_TO_STRING.formatted(getName(), getExtensionName());
+      String domainName = getName();
+      String extension = getExtensionName().toLowerCase();
+      return DOMAIN_TO_STRING.formatted(domainName, extension);
     }
 
     /**
@@ -438,6 +455,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
      * @see java.lang.FunctionalInterface
      * @see java.io.Serializable
      * @see org.cp.elements.lang.Nameable
+     * @see Extensions
      */
     @FunctionalInterface
     public interface Extension extends Nameable<String>, Serializable {
@@ -449,6 +467,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
        * @return a new {@link Extension} with the given {@link String name}.
        * @throws IllegalArgumentException if {@link String name} is {@literal null} or {@literal empty}.
        */
+      @JsonCreator
       static Extension named(@NotNull String name) {
         Assert.hasText(name, "Name [%s] is required", name);
         return () -> name;
@@ -468,7 +487,7 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
     }
 
     /**
-     * {@link Enum Enumeration} of common {@link Domain} {@link String Extensions}.
+     * {@link Enum Enumeration} of common {@link Domain} {@link Extension Extensions}.
      *
      * @see java.lang.Enum
      * @see Extension
@@ -503,7 +522,8 @@ public class EmailAddress implements Cloneable, Comparable<EmailAddress>, Serial
       }
 
       private static String stripName(String domainName) {
-        return domainName.substring(domainName.lastIndexOf(StringUtils.DOT_SEPARATOR) + 1);
+        int beginIndex = domainName.lastIndexOf(StringUtils.DOT_SEPARATOR) + 1;
+        return domainName.substring(beginIndex);
       }
 
       private static String trimmedLowerCase(String value) {
