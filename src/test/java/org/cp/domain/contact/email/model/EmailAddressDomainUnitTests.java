@@ -112,16 +112,18 @@ public class EmailAddressDomainUnitTests {
   void fromDomain() {
 
     Domain mockDomain = mock(Domain.class);
+    Domain.Extension mockExtension = mock(Domain.Extension.class);
 
+    doReturn("com").when(mockExtension).getName();
     doReturn("example").when(mockDomain).getName();
-    doReturn("com").when(mockDomain).getExtensionName();
+    doReturn(mockExtension).when(mockDomain).getExtension();
 
     Domain copy = Domain.from(mockDomain);
 
     assertDomain(copy, "example", "com");
 
     verify(mockDomain, times(1)).getName();
-    verify(mockDomain, times(1)).getExtensionName();
+    verify(mockDomain, times(1)).getExtension();
     verifyNoMoreInteractions(mockDomain);
   }
 
