@@ -22,7 +22,12 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import org.cp.domain.contact.phone.model.AbstractPhoneNumber.GenericPhoneNumber;
+import org.cp.domain.contact.phone.serialization.json.PhoneNumberJsonDeserializer;
+import org.cp.domain.core.serialization.json.JsonSerializable;
 import org.cp.domain.geo.enums.Country;
 import org.cp.domain.geo.support.CountryAware;
 import org.cp.elements.lang.Assert;
@@ -54,6 +59,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see org.cp.domain.contact.phone.model.ExchangeCode
  * @see org.cp.domain.contact.phone.model.Extension
  * @see org.cp.domain.contact.phone.model.LineNumber
+ * @see org.cp.domain.core.serialization.json.JsonSerializable
  * @see org.cp.domain.geo.enums.Country
  * @see org.cp.domain.geo.support.CountryAware
  * @see org.cp.elements.lang.Identifiable
@@ -66,8 +72,10 @@ import org.cp.elements.util.ComparatorResultBuilder;
  */
 @FluentApi
 @SuppressWarnings("unused")
-public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, CountryAware,
-    Identifiable<Long>, Renderable, Serializable, Visitable {
+@JsonDeserialize(using = PhoneNumberJsonDeserializer.class)
+@JsonIgnoreProperties({ "new", "notNew", "cell", "landline", "roaming", "satellite", "unknown", "voip" })
+public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, CountryAware, Identifiable<Long>,
+    JsonSerializable, Renderable, Serializable, Visitable {
 
   int REQUIRED_PHONE_NUMBER_LENGTH = AreaCode.REQUIRED_AREA_CODE_LENGTH
     + ExchangeCode.REQUIRED_EXCHANGE_CODE_LENGTH
@@ -644,8 +652,8 @@ public interface PhoneNumber extends Cloneable, Comparable<PhoneNumber>, Country
       return Arrays.stream(values())
         .filter(type -> type.getAbbreviation().equalsIgnoreCase(abbreviation))
         .findFirst()
-        .orElseThrow(() -> newIllegalArgumentException("PhoneNumber.Type for abbreviation [%s] was not found",
-          abbreviation));
+        .orElseThrow(() ->
+          newIllegalArgumentException("PhoneNumber.Type for abbreviation [%s] was not found", abbreviation));
     }
 
     private final String abbreviation;
