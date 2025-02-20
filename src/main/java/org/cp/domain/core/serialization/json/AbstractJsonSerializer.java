@@ -46,7 +46,7 @@ public abstract class AbstractJsonSerializer<T extends JsonSerializable> impleme
 
   public AbstractJsonSerializer() {
 
-    this.jsonMapper = JsonMapper.builder()
+    JsonMapper jsonMapper = JsonMapper.builder()
       .configure(SerializationFeature.INDENT_OUTPUT, true)
       .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
       .configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true)
@@ -58,8 +58,10 @@ public abstract class AbstractJsonSerializer<T extends JsonSerializable> impleme
     module.addSerializer(User.class, new UserJsonSerializer());
     module.addDeserializer(User.class, new UserJsonDeserializer());
 
-    this.jsonMapper.registerModule(module);
-    this.jsonMapper.findAndRegisterModules();
+    jsonMapper.registerModule(module);
+    jsonMapper.findAndRegisterModules();
+
+    this.jsonMapper = customize(jsonMapper);
   }
 
   protected JsonMapper getJsonMapper() {
@@ -70,6 +72,10 @@ public abstract class AbstractJsonSerializer<T extends JsonSerializable> impleme
 
   protected String getTypeName() {
     return getType().getName();
+  }
+
+  protected JsonMapper customize(JsonMapper jsonMapper) {
+    return jsonMapper;
   }
 
   @Override
