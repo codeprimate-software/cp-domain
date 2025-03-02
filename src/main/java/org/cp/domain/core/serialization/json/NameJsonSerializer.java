@@ -46,7 +46,7 @@ public class NameJsonSerializer extends JsonSerializer<Name> {
 
     name.getMiddleName()
       .filter(StringUtils::hasText)
-      .ifPresent(middleName -> ObjectUtils.doOperationSafely(ThrowableOperation.fromVoidReturning(args ->
+      .ifPresent(middleName -> ObjectUtils.doSafely(ThrowableOperation.fromVoidReturning(args ->
         jsonGenerator.writeStringField("middleName", middleName))));
 
     jsonGenerator.writeEndObject();

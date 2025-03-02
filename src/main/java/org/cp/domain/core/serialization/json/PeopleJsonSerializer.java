@@ -42,7 +42,7 @@ public class PeopleJsonSerializer extends JsonSerializer<People> {
 
     jsonGenerator.writeStartArray();
 
-    people.forEach(person -> ObjectUtils.doOperationSafely(ThrowableOperation.fromVoidReturning(args ->
+    people.forEach(person -> ObjectUtils.doSafely(ThrowableOperation.fromVoidReturning(args ->
       jsonGenerator.writeObject(person))));
 
     jsonGenerator.writeEndArray();

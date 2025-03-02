@@ -50,7 +50,7 @@ public class PeopleJsonDeserializer extends JsonDeserializer<People> {
     List<Person> personList = new ArrayList<>();
 
     peopleNode.forEach(personNode -> {
-      Person person = ObjectUtils.doOperationSafely(args ->
+      Person person = ObjectUtils.doSafely(args ->
         deserializationContext.readTreeAsValue(personNode, Person.class));
       personList.add(person);
     });

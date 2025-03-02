@@ -139,7 +139,7 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
       return Optional.of(Direction.fromAbbreviation(direction));
     }
     catch (Throwable ignore) {
-      return ObjectUtils.doOperationSafely(args ->
+      return ObjectUtils.doSafely(args ->
         Optional.of(Direction.fromName(direction)), Optional.empty());
     }
   }
@@ -161,7 +161,7 @@ public class Street implements Cloneable, Comparable<Street>, Nameable<String>, 
       return Optional.of(Street.Type.fromAbbreviation(streetType));
     }
     catch (Throwable ignore) {
-      return ObjectUtils.doOperationSafely(args ->
+      return ObjectUtils.doSafely(args ->
         Optional.of(Street.Type.fromName(streetType)), Optional.empty());
     }
   }
