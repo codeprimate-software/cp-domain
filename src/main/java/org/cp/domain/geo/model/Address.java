@@ -23,7 +23,12 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import org.cp.domain.core.serialization.json.JsonSerializable;
 import org.cp.domain.geo.enums.Country;
+import org.cp.domain.geo.serialization.json.AddressJsonDeserializer;
 import org.cp.domain.geo.util.GeoUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
@@ -51,6 +56,7 @@ import org.cp.elements.util.ComparatorResultBuilder;
  * @see java.lang.Cloneable
  * @see java.lang.Comparable
  * @see java.util.Locale
+ * @see org.cp.domain.core.serialization.json.AbstractJsonSerializer
  * @see org.cp.domain.geo.enums.Country
  * @see org.cp.domain.geo.model.AbstractAddress
  * @see org.cp.domain.geo.model.Address.Builder
@@ -71,8 +77,10 @@ import org.cp.elements.util.ComparatorResultBuilder;
  */
 @FluentApi
 @SuppressWarnings("unused")
-public interface Address extends Cloneable, Comparable<Address>, Identifiable<Long>, Locatable<Address>, Renderable,
-    Serializable, Visitable {
+@JsonDeserialize(using = AddressJsonDeserializer.class)
+@JsonIgnoreProperties({ "new", "notNew", "billing", "home", "mailing", "poBox", "located" })
+public interface Address extends Cloneable, Comparable<Address>, Identifiable<Long>, JsonSerializable,
+    Locatable<Address>, Renderable, Serializable, Visitable {
 
   /**
    * Factory method used to construct a new {@link Address.Builder} to build a new {@link Address}
