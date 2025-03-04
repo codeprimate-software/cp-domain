@@ -1,6 +1,6 @@
 [[codeprimate-domain]]
 = Codeprimate Domain
-:version: 0.2.0
+:version: 0.3.0
 
 
 The Codeprimate Domain project is a Java library of common Abstract Data Types (ADT), application domain model objects
@@ -10,7 +10,7 @@ and entities for recording and processing data in a Java application.
 == Requirements
 
 1. Baseline is Java SE (JDK/JRE) 17.
-2. Built with Oracle JDK 17.0.8 2023-07-18 LTS (build 17.0.8+9-LTS-211).
+2. Built with Oracle JDK 17.0.14 2025-01-21 LTS (build 17.0.14+8-LTS-191).
 
 [[license]]
 == License
