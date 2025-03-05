@@ -82,7 +82,7 @@
     <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
     <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
-    <protobuf.version>4.30.0-RC2</protobuf.version>
+    <protobuf.version>4.30.0</protobuf.version>
     <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
     <protoc.version>${protobuf.version}</protoc.version>
   </properties>
