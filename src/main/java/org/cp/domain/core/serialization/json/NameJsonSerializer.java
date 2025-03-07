@@ -38,7 +38,8 @@ import org.cp.elements.lang.ThrowableOperation;
 public class NameJsonSerializer extends JsonSerializer<Name> {
 
   @Override
-  public void serialize(Name name, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+  public void serialize(Name name, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
+      throws IOException {
 
     jsonGenerator.writeStartObject();
     jsonGenerator.writeStringField("firstName", name.getFirstName());
