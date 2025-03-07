@@ -20,7 +20,6 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentEx
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 import org.cp.domain.geo.enums.Country;
@@ -32,6 +31,7 @@ import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.MapBuilder;
 
 /**
  * Repository of {@link State} to {@link ZIP} codes declared in the {@link Country#UNITED_STATES_OF_AMERICA}.
@@ -48,58 +48,60 @@ public class StateZipCodesRepository {
 
   private static final StateZipCodesRepository STATE_ZIP_CODES_REPOSITORY = new StateZipCodesRepository();
 
-  private static final Map<State, ZipCodeRegion> repository = new ConcurrentHashMap<>();
+  private static final Map<State, ZipCodeRegion> repository;
 
   static {
-    repository.put(State.ALABAMA, ZipCodeRegion.of("35", "36"));
-    repository.put(State.ALASKA, ZipCodeRegion.of("995", "999"));
-    repository.put(State.ARIZONA, ZipCodeRegion.of("85", "86"));
-    repository.put(State.ARKANSAS, ZipCodeRegion.of("716", "729"));
-    repository.put(State.CALIFORNIA, ZipCodeRegion.of("900", "961"));
-    repository.put(State.COLORADO, ZipCodeRegion.of("80", "81"));
-    repository.put(State.CONNECTICUT, ZipCodeRegion.of("06"));
-    repository.put(State.DISTRICT_OF_COLUMBIA, ZipCodeRegion.of("200", "205"));
-    repository.put(State.FLORIDA, ZipCodeRegion.of("32", "34"));
-    repository.put(State.GEORGIA, ZipCodeRegion.of("30", "31"));
-    repository.put(State.HAWAII, ZipCodeRegion.of("967", "968"));
-    repository.put(State.IDAHO, ZipCodeRegion.of("832", "839"));
-    repository.put(State.ILLINOIS, ZipCodeRegion.of("60", "62"));
-    repository.put(State.INDIANA, ZipCodeRegion.of("46", "47"));
-    repository.put(State.IOWA, ZipCodeRegion.of("50", "52"));
-    repository.put(State.KANSAS, ZipCodeRegion.of("66", "67"));
-    repository.put(State.KENTUCKY, ZipCodeRegion.of("40", "42"));
-    repository.put(State.LOUISIANA, ZipCodeRegion.of("700", "715"));
-    repository.put(State.MAINE, ZipCodeRegion.of("039", "049"));
-    repository.put(State.MASSACHUSETTS, ZipCodeRegion.of("010", "027"));
-    repository.put(State.MICHIGAN, ZipCodeRegion.of("48", "49"));
-    repository.put(State.MINNESOTA, ZipCodeRegion.of("550", "567"));
-    repository.put(State.MISSISSIPPI, ZipCodeRegion.of("386", "399"));
-    repository.put(State.MISSOURI, ZipCodeRegion.of("63", "65"));
-    repository.put(State.MONTANA, ZipCodeRegion.of("59"));
-    repository.put(State.NEBRASKA, ZipCodeRegion.of("68", "69"));
-    repository.put(State.NEVADA, ZipCodeRegion.of("889", "899"));
-    repository.put(State.NEW_HAMPSHIRE, ZipCodeRegion.of("030", "038"));
-    repository.put(State.NEW_JERSEY, ZipCodeRegion.of("07", "08"));
-    repository.put(State.NEW_MEXICO, ZipCodeRegion.of("870", "884"));
-    repository.put(State.NEW_YORK, ZipCodeRegion.of("10", "14"));
-    repository.put(State.NORTH_CAROLINA, ZipCodeRegion.of("27", "28"));
-    repository.put(State.NORTH_DAKOTA, ZipCodeRegion.of("58"));
-    repository.put(State.OHIO, ZipCodeRegion.of("43", "45"));
-    repository.put(State.OKLAHOMA, ZipCodeRegion.of("73", "74"));
-    repository.put(State.OREGON, ZipCodeRegion.of("97"));
-    repository.put(State.PENNSYLVANIA, ZipCodeRegion.of("150", "196"));
-    repository.put(State.RHODE_ISLAND, ZipCodeRegion.of("028", "029"));
-    repository.put(State.SOUTH_CAROLINA, ZipCodeRegion.of("29"));
-    repository.put(State.SOUTH_DAKOTA, ZipCodeRegion.of("57"));
-    repository.put(State.TENNESSEE, ZipCodeRegion.of("370", "385"));
-    repository.put(State.TEXAS, ZipCodeRegion.of("75", "79"));
-    repository.put(State.UTAH, ZipCodeRegion.of("84"));
-    repository.put(State.VERMONT, ZipCodeRegion.of("05"));
-    repository.put(State.VIRGINIA, ZipCodeRegion.of("220", "246"));
-    repository.put(State.WASHINGTON, ZipCodeRegion.of("980", "984"));
-    repository.put(State.WEST_VIRGINIA, ZipCodeRegion.of("247", "269"));
-    repository.put(State.WISCONSIN, ZipCodeRegion.of("53", "54"));
-    repository.put(State.WYOMING, ZipCodeRegion.of("820", "831"));
+    repository = MapBuilder.<State, ZipCodeRegion>newConcurrentMap()
+      .put(State.ALABAMA, ZipCodeRegion.of("35", "36"))
+      .put(State.ALASKA, ZipCodeRegion.of("995", "999"))
+      .put(State.ARIZONA, ZipCodeRegion.of("85", "86"))
+      .put(State.ARKANSAS, ZipCodeRegion.of("716", "729"))
+      .put(State.CALIFORNIA, ZipCodeRegion.of("900", "961"))
+      .put(State.COLORADO, ZipCodeRegion.of("80", "81"))
+      .put(State.CONNECTICUT, ZipCodeRegion.of("06"))
+      .put(State.DISTRICT_OF_COLUMBIA, ZipCodeRegion.of("200", "205"))
+      .put(State.FLORIDA, ZipCodeRegion.of("32", "34"))
+      .put(State.GEORGIA, ZipCodeRegion.of("30", "31"))
+      .put(State.HAWAII, ZipCodeRegion.of("967", "968"))
+      .put(State.IDAHO, ZipCodeRegion.of("832", "839"))
+      .put(State.ILLINOIS, ZipCodeRegion.of("60", "62"))
+      .put(State.INDIANA, ZipCodeRegion.of("46", "47"))
+      .put(State.IOWA, ZipCodeRegion.of("50", "52"))
+      .put(State.KANSAS, ZipCodeRegion.of("66", "67"))
+      .put(State.KENTUCKY, ZipCodeRegion.of("40", "42"))
+      .put(State.LOUISIANA, ZipCodeRegion.of("700", "715"))
+      .put(State.MAINE, ZipCodeRegion.of("039", "049"))
+      .put(State.MASSACHUSETTS, ZipCodeRegion.of("010", "027"))
+      .put(State.MICHIGAN, ZipCodeRegion.of("48", "49"))
+      .put(State.MINNESOTA, ZipCodeRegion.of("550", "567"))
+      .put(State.MISSISSIPPI, ZipCodeRegion.of("386", "399"))
+      .put(State.MISSOURI, ZipCodeRegion.of("63", "65"))
+      .put(State.MONTANA, ZipCodeRegion.of("59"))
+      .put(State.NEBRASKA, ZipCodeRegion.of("68", "69"))
+      .put(State.NEVADA, ZipCodeRegion.of("889", "899"))
+      .put(State.NEW_HAMPSHIRE, ZipCodeRegion.of("030", "038"))
+      .put(State.NEW_JERSEY, ZipCodeRegion.of("07", "08"))
+      .put(State.NEW_MEXICO, ZipCodeRegion.of("870", "884"))
+      .put(State.NEW_YORK, ZipCodeRegion.of("10", "14"))
+      .put(State.NORTH_CAROLINA, ZipCodeRegion.of("27", "28"))
+      .put(State.NORTH_DAKOTA, ZipCodeRegion.of("58"))
+      .put(State.OHIO, ZipCodeRegion.of("43", "45"))
+      .put(State.OKLAHOMA, ZipCodeRegion.of("73", "74"))
+      .put(State.OREGON, ZipCodeRegion.of("97"))
+      .put(State.PENNSYLVANIA, ZipCodeRegion.of("150", "196"))
+      .put(State.RHODE_ISLAND, ZipCodeRegion.of("028", "029"))
+      .put(State.SOUTH_CAROLINA, ZipCodeRegion.of("29"))
+      .put(State.SOUTH_DAKOTA, ZipCodeRegion.of("57"))
+      .put(State.TENNESSEE, ZipCodeRegion.of("370", "385"))
+      .put(State.TEXAS, ZipCodeRegion.of("75", "79"))
+      .put(State.UTAH, ZipCodeRegion.of("84"))
+      .put(State.VERMONT, ZipCodeRegion.of("05"))
+      .put(State.VIRGINIA, ZipCodeRegion.of("220", "246"))
+      .put(State.WASHINGTON, ZipCodeRegion.of("980", "984"))
+      .put(State.WEST_VIRGINIA, ZipCodeRegion.of("247", "269"))
+      .put(State.WISCONSIN, ZipCodeRegion.of("53", "54"))
+      .put(State.WYOMING, ZipCodeRegion.of("820", "831"))
+      .build();
   }
 
   /**
