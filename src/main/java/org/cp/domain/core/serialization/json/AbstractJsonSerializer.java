@@ -35,6 +35,7 @@ import org.cp.elements.security.model.User;
  * as {@literal JSON}.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the {@link JsonSerializable} object to de/serialize.
  * @see com.fasterxml.jackson.databind.json.JsonMapper
  * @see org.cp.domain.core.serialization.json.JsonSerializable
  * @see org.cp.domain.core.serialization.json.JsonSerializer
