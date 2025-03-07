@@ -31,7 +31,7 @@ import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.serialization.Serializer;
 
 /**
- * {@link Serializer} used to de/serialize a {@link PhoneNumber} using Protobuf
+ * {@link Serializer} used to de/serialize a {@link PhoneNumber} using Protobuf.
  *
  * @author John Blum
  * @see org.cp.domain.contact.phone.model.PhoneNumber
