@@ -80,10 +80,10 @@ public class PersonProtoConverter extends AbstractConverter<PersonProto.Person, 
 
   private Gender toGender(PersonProto.Person person) {
 
-    return switch(person.getGender()) {
+    return switch (person.getGender()) {
       case FEMALE -> Gender.FEMALE;
       case MALE -> Gender.MALE;
-      case NON_BINARY ->  Gender.NON_BINARY;
+      case NON_BINARY -> Gender.NON_BINARY;
       default -> null;
     };
   }
