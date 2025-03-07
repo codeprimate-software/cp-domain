@@ -17,7 +17,6 @@ package org.cp.domain.core.serialization.json;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -38,7 +37,7 @@ import org.cp.domain.core.model.Name;
 public class NameJsonDeserializer extends JsonDeserializer<Name> {
 
   @Override
-  public Name deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
+  public Name deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
 
     ObjectCodec objectCodec = jsonParser.getCodec();
     JsonNode jsonNode = objectCodec.readTree(jsonParser);
