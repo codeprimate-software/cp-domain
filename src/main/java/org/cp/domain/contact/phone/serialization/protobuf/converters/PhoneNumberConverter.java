@@ -28,7 +28,7 @@ import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.lang.Assert;
 
 /**
- * {@link Converter} used to convert a {@link PhoneNumber} into a Protobuf {@link Message}
+ * {@link Converter} used to convert a {@link PhoneNumber} into a Protobuf {@link Message}.
  *
  * @author John Blum
  * @see org.cp.domain.contact.phone.model.PhoneNumber
