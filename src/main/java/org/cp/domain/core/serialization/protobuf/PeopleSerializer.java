@@ -16,6 +16,7 @@
 package org.cp.domain.core.serialization.protobuf;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newDeserializationException;
 
 import java.nio.ByteBuffer;
 
@@ -26,7 +27,6 @@ import org.cp.domain.core.model.People;
 import org.cp.domain.core.model.proto.PeopleProto;
 import org.cp.domain.core.serialization.protobuf.converters.PeopleConverter;
 import org.cp.domain.core.serialization.protobuf.converters.PeopleProtoConverter;
-import org.cp.elements.data.serialization.DeserializationException;
 import org.cp.elements.data.serialization.Serializer;
 import org.cp.elements.lang.Assert;
 
@@ -74,7 +74,7 @@ public class PeopleSerializer extends AbstractProtobufSerializer {
       return (T) getPeopleProtoConverter().convert(PeopleProto.People.parseFrom(data));
     }
     catch (InvalidProtocolBufferException cause) {
-      throw new DeserializationException("Failed to deserialize byte array into a group of People");
+      throw newDeserializationException(cause, "Failed to deserialize byte array into a group of People");
     }
   }
 }
