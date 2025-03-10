@@ -19,6 +19,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newDeserializationE
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSerializationException;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -86,7 +87,7 @@ public abstract class AbstractJsonSerializer<T extends JsonSerializable> impleme
 
     T typedTarget = getType().cast(target);
     String json = serialize(typedTarget);
-    byte[] bytes = json.getBytes();
+    byte[] bytes = json.getBytes(Charset.defaultCharset());
 
     return ByteBuffer.wrap(bytes);
   }
@@ -108,7 +109,7 @@ public abstract class AbstractJsonSerializer<T extends JsonSerializable> impleme
   @SuppressWarnings("unchecked")
   public <T> T deserialize(@NotNull ByteBuffer bytes) {
     Assert.notNull(bytes, "ByteBuffer is required");
-    String json = new String(bytes.array());
+    String json = new String(bytes.array(), Charset.defaultCharset());
     return (T) deserialize(json);
   }
 
