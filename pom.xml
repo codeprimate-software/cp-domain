@@ -184,6 +184,26 @@
 
   <profiles>
     <profile>
+      <id>java23</id>
+      <activation>
+        <jdk>[23,)</jdk>
+      </activation>
+      <properties>
+        <java.version>23</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+      </properties>
+    </profile>
+    <profile>
+      <id>java21</id>
+      <activation>
+        <jdk>[21,23)</jdk>
+      </activation>
+      <properties>
+        <java.version>21</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+      </properties>
+    </profile>
+    <profile>
       <id>docs</id>
       <build>
         <plugins>
@@ -193,26 +213,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-    <profile>
-      <id>java22</id>
-      <activation>
-        <jdk>[22,)</jdk>
-      </activation>
-      <properties>
-        <java.version>22</java.version>
-        <maven.compiler.release>${java.version}</maven.compiler.release>
-      </properties>
-    </profile>
-    <profile>
-      <id>java21</id>
-      <activation>
-        <jdk>[21,)</jdk>
-      </activation>
-      <properties>
-        <java.version>21</java.version>
-        <maven.compiler.release>${java.version}</maven.compiler.release>
-      </properties>
     </profile>
     <profile>
       <id>release</id>
