@@ -628,11 +628,14 @@ public class GroupUnitTests {
 
     doReturn(1).when(mockGroup).size();
     doCallRealMethod().when(mockGroup).isEmpty();
+    doCallRealMethod().when(mockGroup).isNotEmpty();
 
     assertThat(mockGroup.isEmpty()).isFalse();
+    assertThat(mockGroup.isNotEmpty()).isTrue();
 
-    verify(mockGroup, times(1)).isEmpty();
-    verify(mockGroup, times(1)).size();
+    verify(mockGroup, times(2)).isEmpty();
+    verify(mockGroup, times(1)).isNotEmpty();
+    verify(mockGroup, times(2)).size();
     verifyNoMoreInteractions(mockGroup);
   }
 
@@ -643,13 +646,16 @@ public class GroupUnitTests {
 
     doReturn(0, -1, -2).when(mockGroup).size();
     doCallRealMethod().when(mockGroup).isEmpty();
+    doCallRealMethod().when(mockGroup).isNotEmpty();
 
     assertThat(mockGroup.isEmpty()).isTrue();
     assertThat(mockGroup.isEmpty()).isTrue();
     assertThat(mockGroup.isEmpty()).isTrue();
+    assertThat(mockGroup.isNotEmpty()).isFalse();
 
-    verify(mockGroup, times(3)).isEmpty();
-    verify(mockGroup, times(3)).size();
+    verify(mockGroup, times(4)).isEmpty();
+    verify(mockGroup, times(1)).isNotEmpty();
+    verify(mockGroup, times(4)).size();
     verifyNoMoreInteractions(mockGroup);
   }
 
