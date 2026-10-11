@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.awt.Point;
@@ -43,10 +44,10 @@ import org.cp.elements.io.IOUtils;
  * @see org.cp.domain.geo.model.Coordinates
  * @since 0.1.0
  */
-public class CoordinatesUnitTests {
+class CoordinatesUnitTests {
 
   @Test
-  public void constructCoordinatesWithLatitudeAndLongitude() {
+  void constructCoordinatesWithLatitudeAndLongitude() {
 
     Coordinates coordinates = new Coordinates(1.0d, 2.0d);
 
@@ -57,7 +58,7 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void atLatitudeAndLongitude() {
+  void atLatitudeAndLongitude() {
 
     Coordinates coordinates = Coordinates.at(1.0d, 2.0d);
 
@@ -68,7 +69,7 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void atLatitudeLongitudeAndElevation() {
+  void atLatitudeLongitudeAndElevation() {
 
     Coordinates coordinates = Coordinates.at(1.0d, 2.0d).at(4.0d);
 
@@ -82,7 +83,7 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void fromPoint() {
+  void fromPoint() {
 
     Point point = new Point(1, 2);
 
@@ -95,7 +96,7 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void fromNullPoint() {
+  void fromNullPoint() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> Coordinates.from(null))
@@ -104,7 +105,22 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void altitudeIsAnAliasForElevation() {
+  void nullSafeCoordinatesWithNonNullCoordinates() {
+
+    Coordinates mockCoordinates = mock(Coordinates.class);
+
+    assertThat(Coordinates.nullSafe(mockCoordinates)).isSameAs(mockCoordinates);
+
+    verifyNoInteractions(mockCoordinates);
+  }
+
+  @Test
+  void nullSafeCoordinatesWithNull() {
+    assertThat(Coordinates.nullSafe(null)).isEqualTo(Coordinates.NULL_ISLAND);
+  }
+
+  @Test
+  void altitudeIsAnAliasForElevation() {
 
     Elevation mockElevation = mock(Elevation.class);
 
@@ -123,7 +139,7 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void coordinatesAsPoint() {
+  void coordinatesAsPoint() {
 
     Point point = Coordinates.at(1.0d, 2.0d).asPoint();
 
@@ -133,7 +149,7 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void atElevationWithAltitudeSetsElevationAndReturnsThis() {
+  void atElevationWithAltitudeSetsElevationAndReturnsThis() {
 
     Coordinates coordinates = Coordinates.at(1.0d, 2.0d);
 
@@ -149,7 +165,7 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void atElevationWithAltitudeAndLengthUnitSetsElevationReturnsThis() {
+  void atElevationWithAltitudeAndLengthUnitSetsElevationReturnsThis() {
 
     Coordinates coordinates =  Coordinates.at(1.0d, 2.0d);
 
@@ -167,7 +183,7 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void atElevationWithElevationSetsElevationReturnsThis() {
+  void atElevationWithElevationSetsElevationReturnsThis() {
 
     Elevation elevation = Elevation.at(8.0d).in(LengthUnit.MILE);
 
@@ -185,7 +201,7 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void equalCoordinatesAreEqual() {
+  void equalCoordinatesAreEqual() {
 
     Coordinates coordinatesOne = Coordinates.at(1.0d, 2.0d).at(Elevation.at(3.0d).inMeters());
     Coordinates coordinatesTwo = Coordinates.at(1.0d, 2.0d).at(Elevation.at(3.0d).inFeet());
@@ -195,7 +211,7 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void identicalCoordinatesAreEqual() {
+  void identicalCoordinatesAreEqual() {
 
     Coordinates coordinates = Coordinates.at(1.0d, 2.0d).at(Elevation.at(3.0d).inMeters());
 
@@ -203,7 +219,7 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void unequalCoordinatesAreNotEqual() {
+  void unequalCoordinatesAreNotEqual() {
 
     Coordinates coordinatesOne = Coordinates.at(1.0d, 2.0d).at(Elevation.at(4.0d).inMeters());
     Coordinates coordinatesTwo = Coordinates.at(2.0d, 1.0d).at(Elevation.at(-4.0d).inMeters());
@@ -213,17 +229,17 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void equalsNullIsNullSafeReturnsFalse() {
+  void equalsNullIsNullSafeReturnsFalse() {
     assertThat(Coordinates.at(1.0d, 2.0d).at(3.0d)).isNotEqualTo(null);
   }
 
   @Test
-  public void equalsObjectReturnsFalse() {
+  void equalsObjectReturnsFalse() {
     assertThat(Coordinates.at(1.0d, 2.0d).at(Elevation.at(3.0d).inMeters())).isNotEqualTo("test");
   }
 
   @Test
-  public void hashCodeIsCorrect() {
+  void hashCodeIsCorrect() {
 
     Coordinates coordinates = Coordinates.at(1.0d, 2.0d);
 
@@ -239,14 +255,14 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void hashCodesForUnequalCoordinatesAreNotEqual() {
+  void hashCodesForUnequalCoordinatesAreNotEqual() {
 
     assertThat(Coordinates.at(1.0d, 2.0d).at(Elevation.at(3.0d).inMeters()))
       .doesNotHaveSameHashCodeAs(Coordinates.at(2.0d, 1.0d).at(Elevation.at(3.0d).inMeters()));
   }
 
   @Test
-  public void toStringIsCorrect() {
+  void toStringIsCorrect() {
 
     Elevation threeMeters = Elevation.at(3.0d).inMeters();
 
@@ -255,7 +271,7 @@ public class CoordinatesUnitTests {
   }
 
   @Test
-  public void serializationIsCorrect() throws IOException, ClassNotFoundException {
+  void serializationIsCorrect() throws IOException, ClassNotFoundException {
 
     Elevation elevation = Elevation.at(4.0d).in(LengthUnit.KILOMETER);
 

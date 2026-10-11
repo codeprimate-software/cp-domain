@@ -86,6 +86,17 @@ public class Coordinates implements Serializable {
   }
 
   /**
+   * Factory method used to guard against {@literal null} {@link Coordinates}.
+   *
+   * @param coordinates {@link Coordinates} to evaluate as {@literal null}.
+   * @return the given {@link Coordinates} if not {@literal null}, otherwise return {@link Coordinates#NULL_ISLAND}.
+   * @see #NULL_ISLAND
+   */
+  public static Coordinates nullSafe(@Nullable Coordinates coordinates) {
+    return coordinates != null ? coordinates : NULL_ISLAND;
+  }
+
+  /**
    * North-South position on the Earth's surface.
    * <p>
    * Lines of latitude, also called parallels, are imaginary lines that divide the Earth. They run east to west,
