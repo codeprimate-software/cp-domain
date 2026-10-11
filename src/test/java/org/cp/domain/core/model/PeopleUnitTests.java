@@ -17,6 +17,8 @@ package org.cp.domain.core.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -144,6 +146,25 @@ class PeopleUnitTests {
   }
 
   @Test
+  void nonNullPeopleReturnsSamePeople() {
+
+    People mockPeople = mock(People.class);
+
+    assertThat(People.nullSafe(mockPeople)).isSameAs(mockPeople);
+
+    verifyNoInteractions(mockPeople);
+  }
+
+  @Test
+  void nullPeopleReturnsEmptyPeople() {
+
+    People people = People.nullSafe(null);
+
+    assertThat(people).isNotNull();
+    assertThat(people).isEmpty();
+  }
+
+  @Test
   void groupAnArrayOfPeople() {
 
     People group = People.of(this.jonDoe, this.janeDoe, this.cookieDoe, this.froDoe, this.hoeDoe, this.joeDoe,
@@ -156,6 +177,15 @@ class PeopleUnitTests {
   }
 
   @Test
+  void groupAnArrayOfNoPeople() {
+
+    People group = People.of();
+
+    assertThat(group).isNotNull();
+    assertThat(group).isEmpty();
+  }
+
+  @Test
   void groupAnArrayOfOnePerson() {
 
     People group = People.of(this.jonDoe);
@@ -163,15 +193,6 @@ class PeopleUnitTests {
     assertThat(group).isNotNull();
     assertThat(group).hasSize(1);
     assertThat(group).containsExactly(this.jonDoe);
-  }
-
-  @Test
-  void groupAnArrayOfNoPeople() {
-
-    People group = People.of();
-
-    assertThat(group).isNotNull();
-    assertThat(group).isEmpty();
   }
 
   @Test
@@ -196,6 +217,15 @@ class PeopleUnitTests {
   }
 
   @Test
+  void groupOfIterableOfNoPeople() {
+
+    People group = People.of(Collections.emptyList());
+
+    assertThat(group).isNotNull();
+    assertThat(group).isEmpty();
+  }
+
+  @Test
   void groupOfIterableOfOnePerson() {
 
     People group = People.of(Collections.singletonList(this.jonDoe));
@@ -203,15 +233,6 @@ class PeopleUnitTests {
     assertThat(group).isNotNull();
     assertThat(group).hasSize(1);
     assertThat(group).containsExactly(this.jonDoe);
-  }
-
-  @Test
-  void groupOfIterableOfNoPeople() {
-
-    People group = People.of(Collections.emptyList());
-
-    assertThat(group).isNotNull();
-    assertThat(group).isEmpty();
   }
 
   @Test

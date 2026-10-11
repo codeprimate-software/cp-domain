@@ -76,6 +76,17 @@ public class People implements Group<Person> {
   }
 
   /**
+   * Factory method used to guard against potentially {@literal null} a {@link People} instance.
+   *
+   * @param people {@link People} instance to evaluate.
+   * @return the given {@link People} instance if not {@literal null}, otherwise return a new, {@link #empty()} instance.
+   * @see #empty()
+   */
+  public static People nullSafe(@Nullable People people) {
+    return people != null ? people : empty();
+  }
+
+  /**
    * Factory method used to construct a new {@link Group} of {@link People} initialized from
    * the given array of {@link Person people}.
    *
