@@ -74,6 +74,17 @@ public class Elevation implements Comparable<Elevation>, Serializable {
     return at(SEA_LEVEL_VALUE);
   }
 
+  /**
+   * Factory method used to guard against {@literal null} {@link Elevation}.
+   *
+   * @param elevation {@link Elevation} to evaluate as {@literal null}.
+   * @return the given {@link Elevation} if not {@literal null}, otherwise return {@link Elevation#atSeaLevel()}.
+   * @see #atSeaLevel()
+   */
+  public static Elevation nullSafe(@Nullable Elevation elevation) {
+    return elevation != null ? elevation : Elevation.atSeaLevel();
+  }
+
   private final double altitude;
 
   private LengthUnit lengthUnit;

@@ -16,6 +16,8 @@
 package org.cp.domain.geo.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -35,10 +37,10 @@ import org.cp.elements.io.IOUtils;
  * @see org.cp.domain.geo.model.Elevation
  * @since 0.1.0
  */
-public class ElevationUnitTests {
+class ElevationUnitTests {
 
   @Test
-  public void constructElevationAboveSeaLevel() {
+  void constructElevationAboveSeaLevel() {
 
     Elevation elevation = new Elevation(1.0d);
 
@@ -48,7 +50,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void constructElevationAtSeaLevel() {
+  void constructElevationAtSeaLevel() {
 
     Elevation elevation = new Elevation(Elevation.SEA_LEVEL_VALUE);
 
@@ -58,7 +60,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void constructElevationBelowSeaLevel() {
+  void constructElevationBelowSeaLevel() {
 
     Elevation elevation = new Elevation(-1.0d);
 
@@ -68,7 +70,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void elevationAtAltitudeIsCorrect() {
+  void elevationAtAltitudeIsCorrect() {
 
     Elevation elevation = Elevation.at(100.0d);
 
@@ -78,7 +80,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void elevationAtSeaLevelIsCorrect() {
+  void elevationAtSeaLevelIsCorrect() {
 
     Elevation elevation = Elevation.atSeaLevel();
 
@@ -88,7 +90,22 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void setAndGetLengthUnit() {
+  void nullSafeElevationWithNonNullElevation() {
+
+    Elevation mockElevation = mock(Elevation.class);
+
+    assertThat(Elevation.nullSafe(mockElevation)).isSameAs(mockElevation);
+
+    verifyNoInteractions(mockElevation);
+  }
+
+  @Test
+  void nullSafeElevationWithNullElevation() {
+    assertThat(Elevation.nullSafe(null)).isEqualTo(Elevation.atSeaLevel());
+  }
+
+  @Test
+  void setAndGetLengthUnit() {
 
     Elevation elevation = Elevation.atSeaLevel();
 
@@ -105,7 +122,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void inSetsLengthUnitReturnsThis() {
+  void inSetsLengthUnitReturnsThis() {
 
     Elevation elevation = Elevation.at(1.0d);
 
@@ -124,7 +141,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void inFeetSetsLengthUnitToFootReturnsThis() {
+  void inFeetSetsLengthUnitToFootReturnsThis() {
 
     Elevation elevation = Elevation.at(1.0d).inFeet();
 
@@ -134,7 +151,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void inMetersSetsLengthUnitToMeterReturnsThis() {
+  void inMetersSetsLengthUnitToMeterReturnsThis() {
 
     Elevation elevation = Elevation.at(1.0d).inMeters();
 
@@ -144,43 +161,43 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void isAboveSeaLevelReturnsTrue() {
+  void isAboveSeaLevelReturnsTrue() {
     assertThat(Elevation.at(1.0d).isAboveSeaLevel()).isTrue();
   }
 
   @Test
-  public void isAboveSeaLevelReturnsFalse() {
+  void isAboveSeaLevelReturnsFalse() {
 
     assertThat(Elevation.atSeaLevel().isAboveSeaLevel()).isFalse();
     assertThat(Elevation.at(-1.0d).isAboveSeaLevel()).isFalse();
   }
 
   @Test
-  public void isAtSeaLevelReturnsTrue() {
+  void isAtSeaLevelReturnsTrue() {
     assertThat(Elevation.atSeaLevel().isAtSeaLevel()).isTrue();
   }
 
   @Test
-  public void isAtSeaLevelReturnsFalse() {
+  void isAtSeaLevelReturnsFalse() {
 
     assertThat(Elevation.at(1.0d).isAtSeaLevel()).isFalse();
     assertThat(Elevation.at(-1.0d).isAtSeaLevel()).isFalse();
   }
 
   @Test
-  public void isBelowSeaLevelReturnsTrue() {
+  void isBelowSeaLevelReturnsTrue() {
     assertThat(Elevation.at(-1.0d).isBelowSeaLevel()).isTrue();
   }
 
   @Test
-  public void isBelowSeaLevelReturnsFalse() {
+  void isBelowSeaLevelReturnsFalse() {
 
     assertThat(Elevation.atSeaLevel().isBelowSeaLevel()).isFalse();
     assertThat(Elevation.at(1.0d).isBelowSeaLevel()).isFalse();
   }
 
   @Test
-  public void compareToIsCorrect() {
+  void compareToIsCorrect() {
 
     Elevation fortyEightThousandInches = Elevation.at(48_000.0d).in(LengthUnit.INCH);
     Elevation thirtyTwoThousandFeet = Elevation.at(32_000.0d).inFeet();
@@ -203,7 +220,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void equalElevationsAreEqual() {
+  void equalElevationsAreEqual() {
 
     Elevation elevationOne = Elevation.at(1.0d).inMeters();
     Elevation elevationTwo = Elevation.at(1.0d).inMeters();
@@ -214,7 +231,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void equalElevationsWithCommonMeasurementsAreEqual() {
+  void equalElevationsWithCommonMeasurementsAreEqual() {
 
     assertThat(Elevation.atSeaLevel().inFeet()).isEqualTo(Elevation.atSeaLevel().inMeters());
 
@@ -232,7 +249,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void equalElevationsWithEquivalentMeasurementsAreEqual() {
+  void equalElevationsWithEquivalentMeasurementsAreEqual() {
 
     Elevation fiveMiles = Elevation.at(5).in(LengthUnit.MILE);
     Elevation elevationInMeters = Elevation.at(8046.7d).inMeters();
@@ -243,7 +260,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void identicalElevationsAreEqual() {
+  void identicalElevationsAreEqual() {
 
     Elevation elevation = Elevation.at(1.0d).inMeters();
 
@@ -253,22 +270,22 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void unequalElevationsAreNotEqual() {
+  void unequalElevationsAreNotEqual() {
     assertThat(Elevation.at(1.0d).inFeet()).isNotEqualTo(Elevation.at(1.0d).inMeters());
   }
 
   @Test
-  public void equalsNullIsNullSafeReturnsFalse() {
+  void equalsNullIsNullSafeReturnsFalse() {
     assertThat(Elevation.atSeaLevel()).isNotEqualTo(null);
   }
 
   @Test
-  public void equalsObjectReturnsFalse() {
+  void equalsObjectReturnsFalse() {
     assertThat(Elevation.atSeaLevel()).isNotEqualTo("test");
   }
 
   @Test
-  public void hashCodeIsCorrect() {
+  void hashCodeIsCorrect() {
 
     Elevation elevation = Elevation.at(1.0d).inFeet();
 
@@ -297,7 +314,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void toStringIsCorrect() {
+  void toStringIsCorrect() {
 
     assertThat(Elevation.at(1.0d).in(LengthUnit.YARD).toString()).isEqualTo("1.0 yard");
     assertThat(Elevation.at(2.0d).in(LengthUnit.YARD).toString()).isEqualTo("2.0 yards");
@@ -306,7 +323,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void toStringWithSpecialPluralFormIsCorrect() {
+  void toStringWithSpecialPluralFormIsCorrect() {
 
     assertThat(Elevation.at(1.0d).inFeet().toString()).isEqualTo("1.0 foot");
     assertThat(Elevation.at(2.0d).inFeet().toString()).isEqualTo("2.0 feet");
@@ -315,7 +332,7 @@ public class ElevationUnitTests {
   }
 
   @Test
-  public void serializationDeserializationIsCorrect() throws IOException, ClassNotFoundException {
+  void serializationDeserializationIsCorrect() throws IOException, ClassNotFoundException {
 
     Elevation elevation = Elevation.at(10.0d).inMeters();
 
