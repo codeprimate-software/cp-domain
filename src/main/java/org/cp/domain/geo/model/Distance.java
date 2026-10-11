@@ -26,7 +26,7 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract Data Type (ADT) used to model distance from one point to another.
+ * Abstract Data Type (ADT) used to model distance from one point to different, distant point.
  *
  * @author John Blum
  * @see java.lang.Comparable
@@ -35,6 +35,9 @@ import org.cp.elements.lang.annotation.Nullable;
  */
 @Immutable
 public class Distance implements Comparable<Distance> {
+
+  @SuppressWarnings("unused")
+  public static final Distance ZERO = Distance.of(0.0d);
 
   protected static final String DISTANCE_TO_STRING = "%s %s";
   protected static final String METER_NAME = "meter";

@@ -102,6 +102,14 @@ public class DistanceUnitTests {
   }
 
   @Test
+  void distanceZero() {
+
+    assertThat(Distance.ZERO).isNotNull();
+    assertThat(Distance.ZERO.getMeasurement()).isZero();
+    assertThat(Distance.ZERO.getLengthUnit()).isEqualTo(LengthUnit.getDefault());
+  }
+
+  @Test
   public void inFeetIsCorrect() {
     assertDistanceOfOneInUnitLength(Distance.inFeet(1.0d), LengthUnit.FOOT);
   }
