@@ -289,6 +289,16 @@ class DistanceUnitTests {
   }
 
   @Test
+  void isZeroReturnsTrue() {
+    assertThat(Distance.ZERO.isZero()).isTrue();
+  }
+
+  @Test
+  void isZeroReturnsFalse() {
+    assertThat(Distance.of(1.0d).isZero()).isFalse();
+  }
+
+  @Test
   void toFeetFromFeetIsSame() {
 
     Distance distance = Distance.inFeet(12.0d);

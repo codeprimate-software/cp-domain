@@ -323,6 +323,16 @@ public class Distance implements Comparable<Distance> {
   }
 
   /**
+   * Query method to determine if the {@link Distance} is {@literal zero}.
+   *
+   * @return a boolean value indicating whether the {@link Distance} is {@literal zero}.
+   * @see #getMeasurement()
+   */
+  public boolean isZero() {
+    return getMeasurement() == 0.0d;
+  }
+
+  /**
    * Convert this {@link Distance} {@link #getMeasurement()} in {@link #getLengthUnit()}
    * to {@link LengthUnit#FOOT feet}.
    * <p>
