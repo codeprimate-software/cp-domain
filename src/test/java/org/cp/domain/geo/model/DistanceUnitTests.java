@@ -18,6 +18,8 @@ package org.cp.domain.geo.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.withPrecision;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +42,7 @@ import org.cp.elements.util.CollectionUtils;
  * @see org.cp.elements.enums.LengthUnit
  * @since 0.1.0
  */
-public class DistanceUnitTests {
+class DistanceUnitTests {
 
   private void assertDistanceInFeet(Distance distance, double measurement) {
     assertDistanceInUnitLength(distance, measurement, LengthUnit.FOOT);
@@ -74,7 +76,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void constructNewDistance() {
+  void constructNewDistance() {
 
     Distance distance = new Distance(1.0d, LengthUnit.METER);
 
@@ -84,7 +86,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void constructNewDistanceWithNegativeMeasurement() {
+  void constructNewDistanceWithNegativeMeasurement() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new Distance(-1.0d, LengthUnit.NANOMETER))
@@ -93,7 +95,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void constructNewDistanceWithNullLengthUnit() {
+  void constructNewDistanceWithNullLengthUnit() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new Distance(1.0d, null))
@@ -110,42 +112,62 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void inFeetIsCorrect() {
+  void inFeetIsCorrect() {
     assertDistanceOfOneInUnitLength(Distance.inFeet(1.0d), LengthUnit.FOOT);
   }
 
   @Test
-  public void inKilometersIsCorrect() {
+  void inKilometersIsCorrect() {
     assertDistanceOfOneInUnitLength(Distance.inKilometers(1.0d), LengthUnit.KILOMETER);
   }
 
   @Test
-  public void inMetersIsCorrect() {
+  void inMetersIsCorrect() {
     assertDistanceOfOneInUnitLength(Distance.inMeters(1.0d), LengthUnit.METER);
   }
 
   @Test
-  public void inMilesIsCorrect() {
+  void inMilesIsCorrect() {
     assertDistanceOfOneInUnitLength(Distance.inMiles(1.0d), LengthUnit.MILE);
   }
 
   @Test
-  public void inYardsIsCorrect() {
+  void inYardsIsCorrect() {
     assertDistanceOfOneInUnitLength(Distance.inYards(1.0d), LengthUnit.YARD);
   }
 
   @Test
-  public void ofMeasurementIsCorrect() {
+  void nullSafeDistanceWithNonNullDistance() {
+
+    Distance mockDistance = mock(Distance.class);
+
+    assertThat(Distance.nullSafe(mockDistance)).isSameAs(mockDistance);
+
+    verifyNoInteractions(mockDistance);
+  }
+
+  @Test
+  void nullSafeDistanceWithNull() {
+
+    Distance distance = Distance.nullSafe(null);
+
+    assertThat(distance).isNotNull();
+    assertThat(distance.getMeasurement()).isZero();
+    assertThat(distance.getLengthUnit()).isEqualTo(LengthUnit.getDefault());
+  }
+
+  @Test
+  void ofMeasurementIsCorrect() {
     assertDistanceOfOneInUnitLength(Distance.of(1.0d), LengthUnit.getDefault());
   }
 
   @Test
-  public void ofMeasurementInLengthUnitIsCorrect() {
+  void ofMeasurementInLengthUnitIsCorrect() {
     assertDistanceOfOneInUnitLength(Distance.of(1.0d, LengthUnit.MICROMETER), LengthUnit.MICROMETER);
   }
 
   @Test
-  public void lengthUnitIsMetric() {
+  void lengthUnitIsMetric() {
 
     Set<LengthUnit> nonMetricUnits = CollectionUtils
       .asSet(LengthUnit.INCH, LengthUnit.FOOT, LengthUnit.YARD, LengthUnit.MILE, LengthUnit.LIGHT_YEAR);
@@ -155,7 +177,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void lengthUnitIsNotMetric() {
+  void lengthUnitIsNotMetric() {
 
     Set<LengthUnit> nonMetricUnits = CollectionUtils
       .asSet(LengthUnit.INCH, LengthUnit.FOOT, LengthUnit.YARD, LengthUnit.MILE, LengthUnit.LIGHT_YEAR);
@@ -165,41 +187,41 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void nullLengthUnitIsNotMetricAndIsNullSafe() {
+  void nullLengthUnitIsNotMetricAndIsNullSafe() {
     assertThat(Distance.isMetric(null)).isFalse();
   }
 
   @Test
-  public void isInFeetReturnsTrue() {
+  void isInFeetReturnsTrue() {
     assertThat(Distance.of(10.0d, LengthUnit.FOOT).isInFeet()).isTrue();
   }
 
   @Test
-  public void isInFeetReturnsFalse() {
+  void isInFeetReturnsFalse() {
 
     assertThat(Distance.of(12.0d, LengthUnit.INCH).isInFeet()).isFalse();
     assertThat(Distance.of(1.0d, LengthUnit.METER).isInFeet()).isFalse();
   }
 
   @Test
-  public void isInKilometersReturnsTrue() {
+  void isInKilometersReturnsTrue() {
     assertThat(Distance.of(2.0d, LengthUnit.KILOMETER).isInKilometers()).isTrue();
   }
 
   @Test
-  public void isInKilometersReturnsFalse() {
+  void isInKilometersReturnsFalse() {
 
     assertThat(Distance.of(1000.0d, LengthUnit.METER).isInKilometers()).isFalse();
     assertThat(Distance.of(1.0d, LengthUnit.MILE).isInKilometers()).isFalse();
   }
 
   @Test
-  public void isInMetersReturnsTrue() {
+  void isInMetersReturnsTrue() {
     assertThat(Distance.of(10.0d, LengthUnit.METER).isInMeters()).isTrue();
   }
 
   @Test
-  public void isInMetersReturnsFalse() {
+  void isInMetersReturnsFalse() {
 
     assertThat(Distance.of(1000.0d, LengthUnit.MILLIMETER).isInMeters()).isFalse();
     assertThat(Distance.of(100.0d, LengthUnit.CENTIMETER).isInMeters()).isFalse();
@@ -208,24 +230,24 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void isInMilesReturnsTrue() {
+  void isInMilesReturnsTrue() {
     assertThat(Distance.of(100.0d, LengthUnit.MILE).isInMiles()).isTrue();
   }
 
   @Test
-  public void isInMilesReturnsFalse() {
+  void isInMilesReturnsFalse() {
 
     assertThat(Distance.of(Conversions.FEET_IN_MILES, LengthUnit.FOOT).isInMiles()).isFalse();
     assertThat(Distance.of(1.60934, LengthUnit.KILOMETER).isInMiles()).isFalse();
   }
 
   @Test
-  public void isInYardsReturnsTrue() {
+  void isInYardsReturnsTrue() {
     assertThat(Distance.of(100, LengthUnit.YARD).isInYards()).isTrue();
   }
 
   @Test
-  public void isInYardsReturnsFalse() {
+  void isInYardsReturnsFalse() {
 
     assertThat(Distance.of(36.0d, LengthUnit.INCH).isInYards()).isFalse();
     assertThat(Distance.of(3.0d, LengthUnit.FOOT).isInYards()).isFalse();
@@ -233,7 +255,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void isMetricReturnsTrue() {
+  void isMetricReturnsTrue() {
 
     assertThat(Distance.of(1000.0d, LengthUnit.NANOMETER).isMetric()).isTrue();
     assertThat(Distance.of(1000.0d, LengthUnit.MILLIMETER).isMetric()).isTrue();
@@ -243,14 +265,14 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void isMetricReturnsFalse() {
+  void isMetricReturnsFalse() {
 
     assertThat(Distance.of(Conversions.METERS_IN_FEET, LengthUnit.FOOT).isMetric()).isFalse();
     assertThat(Distance.of(1.0d, LengthUnit.YARD).isMetric()).isFalse();
   }
 
   @Test
-  public void isNonMetricReturnsTrue() {
+  void isNonMetricReturnsTrue() {
 
     assertThat(Distance.of(1.0d, LengthUnit.INCH).isNonMetric()).isTrue();
     assertThat(Distance.of(10.0d, LengthUnit.FOOT).isNonMetric()).isTrue();
@@ -259,7 +281,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void isNonMetricReturnsFalse() {
+  void isNonMetricReturnsFalse() {
 
     assertThat(Distance.of(10_000.0d, LengthUnit.MICROMETER).isNonMetric()).isFalse();
     assertThat(Distance.of(100.0d, LengthUnit.METER).isNonMetric()).isFalse();
@@ -267,7 +289,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void toFeetFromFeetIsSame() {
+  void toFeetFromFeetIsSame() {
 
     Distance distance = Distance.inFeet(12.0d);
 
@@ -276,7 +298,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void toFeetIsCorrect() {
+  void toFeetIsCorrect() {
 
     assertDistanceInFeet(Distance.of(51.0d, LengthUnit.MILLIMETER).toFeet(), 0.1673d);
     assertDistanceInFeet(Distance.of(725.0d, LengthUnit.CENTIMETER).toFeet(), 23.7861d);
@@ -287,7 +309,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void toKilometersFromKilometersIsSame() {
+  void toKilometersFromKilometersIsSame() {
 
     Distance distance = Distance.inKilometers(2.0d);
 
@@ -296,7 +318,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void toKilometersIsCorrect() {
+  void toKilometersIsCorrect() {
 
     assertDistanceInKilometers(Distance.of(120.0d, LengthUnit.INCH).toKilometers(), 0.0030d);
     assertDistanceInKilometers(Distance.of(32_000.0d, LengthUnit.FOOT).toKilometers(), 9.7536d);
@@ -306,7 +328,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void toMetersFromMetersIsSame() {
+  void toMetersFromMetersIsSame() {
 
     Distance distance = Distance.inMeters(100.0d);
 
@@ -315,7 +337,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void toMetersIsCorrect() {
+  void toMetersIsCorrect() {
 
     assertDistanceInMeters(Distance.of(5000.0d, LengthUnit.INCH).toMeters(), 127.0d);
     assertDistanceInMeters(Distance.of(6.0d, LengthUnit.FOOT).toMeters(), 1.8288d);
@@ -325,7 +347,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void toMilesFromMilesIsSame() {
+  void toMilesFromMilesIsSame() {
 
     Distance distance = Distance.inMiles(5.0d);
 
@@ -334,7 +356,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void toMilesIsCorrect() {
+  void toMilesIsCorrect() {
 
     assertDistanceInMiles(Distance.of(500.0d, LengthUnit.FOOT).toMiles(), 0.0947d);
     assertDistanceInMiles(Distance.of(4000.0d, LengthUnit.METER).toMiles(), 2.4854d);
@@ -342,7 +364,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void toYardsFromYardsIsSame() {
+  void toYardsFromYardsIsSame() {
 
     Distance distance = Distance.inYards(100.0d);
 
@@ -351,7 +373,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void toYardsIsCorrect() {
+  void toYardsIsCorrect() {
 
     assertDistanceInYards(Distance.of(36.0d, LengthUnit.INCH).toYards(), 1.0d);
     assertDistanceInYards(Distance.of(300.0d, LengthUnit.FOOT).toYards(), 100.0d);
@@ -360,7 +382,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void compareToIsCorrect() {
+  void compareToIsCorrect() {
 
     Distance fiveMiles = Distance.inMiles(5.0d);
     Distance fourYards = Distance.inYards(4.0d);
@@ -385,7 +407,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void equalsEqualDistanceReturnsTrue() {
+  void equalsEqualDistanceReturnsTrue() {
 
     Distance oneHundredMetersOne = Distance.inMeters(100.0d);
     Distance oneHundredMetersTwo = Distance.inMeters(100.0d);
@@ -397,7 +419,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void equalsEquivalentDistanceReturnsTrue() {
+  void equalsEquivalentDistanceReturnsTrue() {
 
     Distance oneThousandMeters = Distance.inMeters(1000.0d);
     Distance oneKilometer = oneThousandMeters.toKilometers();
@@ -412,7 +434,7 @@ public class DistanceUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void equalsSelfReturnsTrue() {
+  void equalsSelfReturnsTrue() {
 
     Distance distance = Distance.inMeters(100.0d);
 
@@ -422,17 +444,17 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void equalsNullIsNullSafeReturnsFalse() {
+  void equalsNullIsNullSafeReturnsFalse() {
     assertThat(Distance.inMeters(100.0d)).isNotEqualTo(null);
   }
 
   @Test
-  public void equalsObjectReturnsFalse() {
+  void equalsObjectReturnsFalse() {
     assertThat(Distance.inMeters(100.0d)).isNotEqualTo("100 meters").isNotEqualTo("100m");
   }
 
   @Test
-  public void hashCodeIsCorrect() {
+  void hashCodeIsCorrect() {
 
     Distance distance = Distance.inMeters(1234.0d);
 
@@ -445,7 +467,7 @@ public class DistanceUnitTests {
   }
 
   @Test
-  public void toStringIsCorrect() {
+  void toStringIsCorrect() {
 
     assertThat(Distance.inMeters(1.0d).toString()).isEqualTo("1.0 METER");
     assertThat(Distance.inMeters(100.0d).toString()).isEqualTo("100.0 METERS");

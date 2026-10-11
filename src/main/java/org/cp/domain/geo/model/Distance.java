@@ -123,6 +123,17 @@ public class Distance implements Comparable<Distance> {
   }
 
   /**
+   * Factory method used to guard against null {@link Distance}.
+   *
+   * @param distance {@link Distance} to evaluate as {@literal null}.
+   * @return the given {@link Distance} if not {@literal null}, otherwise return {@link Distance#ZERO}.
+   * @see Distance#ZERO
+   */
+  public static Distance nullSafe(@Nullable Distance distance) {
+    return distance != null ? distance : ZERO;
+  }
+
+  /**
    * Factory method used to construct a new {@link Distance} with a given {@link Double measurement}
    * in the {@link LengthUnit#getDefault() default LengthUnit} as determined by the current {@link java.util.Locale}.
    *
